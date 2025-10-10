@@ -1,0 +1,11 @@
+PROGS = \
+gw$(e) \
+gw1$(e) \
+gw_cluster$(e) \
+gw_convert$(e) \
+gw_many$(e) \
+gw_param$(e) \
+gw_redraw$(e) \
+gw_tam1$(e) \
+gw_tam2$(e) \
+gw_tam3$(e)

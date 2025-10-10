@@ -1,0 +1,14 @@
+OBJECTS = \
+_approximating$(o) \
+_bigfloat$(o) \
+_digit$(o) \
+_digit_vector$(o) \
+_filtered_integer$(o) \
+_filtered_rational$(o) \
+_integer$(o) \
+_interval$(o)\
+_interval_constants$(o)\
+_rational$(o) \
+_real$(o) \
+_residual$(o)
+

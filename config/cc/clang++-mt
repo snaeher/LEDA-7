@@ -1,0 +1,10 @@
+
+CC      = clang++$(VERS) -std=c++11 -Wall -Wno-unused -pthread -DLEDA_MULTI_THREAD 
+PLAIN_C = clang$(VERS) -Wall -pthread 
+CCLIB   = clang++$(VERS) -pthread -shared
+LD      = clang++$(VERS) -pthread
+
+PIC     = -fpic
+CFLAGS  = -O2
+WERR    = -Werror
+

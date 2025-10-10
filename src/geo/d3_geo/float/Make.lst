@@ -1,0 +1,13 @@
+OBJECTS = \
+_d3_point$(o) \
+_d3_segment$(o) \
+_d3_ray$(o) \
+_d3_line$(o) \
+_d3_plane$(o) \
+_d3_simplex$(o) \
+_d3_sphere$(o) \
+_d3_triangle$(o) \
+_f_d3_hull$(o)
+
+_f_d3_hull$(o) : ../generic/d3_hull.cpp
+

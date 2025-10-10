@@ -1,0 +1,31 @@
+~~1:~\bf procedure \rm preprocess
+~~2:~\bf begin
+~~3:~~~~~\tt compute the exact distance labels dist(.) 
+~~4:~~~~~\tt dist(s) := |V|
+~~5:~~~~~\bf forall \tt edges e incident to s \bf do \tt saturate e\n
+~~6:~\bf end
+~~
+~~
+~~
+~~7:~\bf procedure \rm push/relabel(v)
+~~8:~\bf begin
+~~9:~~~~\bf if \tt the network contains an admissible arc (v,w)~ \bf then
+10:~~~~~~~~\tt push min{ excess(v), rcap(v,w) } units of flow from v to w 
+11:~~~~\bf else 
+12:~~~~~~~~\tt replace dist(v) by min{ dist(w)+1 : rcap(v,w) > 0 } 
+13:~\bf end
+~~
+~~
+~~
+14:~\bf procedure \rm preflow-push
+15:~\bf begin
+16:~~~~\tt preprocess
+17:~~~~\bf while \tt the network contains an active node \bf do
+18:~~~~~~~~\tt select an active node v
+19:~~~~~~~~\tt push/relabel(v)
+20:~\bf end
+~~
+~~
+~~
+\bf Ahuja, Magnanti, Orlin:\blue Network Algorithms.
+

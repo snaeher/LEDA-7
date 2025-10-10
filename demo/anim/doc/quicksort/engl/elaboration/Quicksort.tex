@@ -1,0 +1,178 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+\setlength{\oddsidemargin}{-0.5cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textwidth}{17cm}
+\setlength{\textheight}{25cm}
+\setlength{\headsep}{1cm}
+\setlength{\topmargin}{-1.5cm}
+\setlength{\parindent}{0cm}
+
+\begin{document}
+
+\theoremstyle{plain}  \newtheorem{satz*}{Theorem}[]
+
+\section*{Quicksort}
+
+Quicksort is a general sorting algorithm of type "Divide and Conquer".
+It is based on splitting the array that is to be sorted into two parts and sorting the two
+parts independently. The algorithm has the following form:
+
+\begin{verbatim}
+void quicksort (int A[], int l, int r)
+{
+  if(l >= r) return;  
+  int i = l;
+  int j = r+1;
+  int v = A[l];
+  for (;;)
+  {
+    while(A[++i] < v && i < r);
+    while(A[--j] > v);
+    if(i >= j) {
+      swap(A, l, j);    			
+      break;
+    }
+    swap(A, i, j);
+  }
+  quicksort(A, l, j-1);
+  quicksort(A, j+1, r);
+}
+\end{verbatim}
+\mbox{}\\[-1ex]
+The parameter {\tt l} and {\tt r} bound the part of the array inside the original array that is to be sorted;
+the call {\tt quicksort(A, 0, A.size()-1)} sorts the whole array. 
+\\\\[-1ex]
+The crucial part of the method is the code inside the infinite loop
+{\tt for(;;)}, which rearranges the array in such a way that the following conditions are satisfied:
+
+\begin{enumerate}
+\item [i.]  For an arbitrary {\tt j} the element  {\tt A[j]} is in its final position in the array.
+\item [ii.]  All elements {\tt A[l],\ldots,A[j-1]} are smaller than or equal to  {\tt A[j]}.
+\item [iii.] All elements {\tt A[j+1],\ldots,A[r]} are greater than or equal {\tt A[j]}.\\[-1ex]
+\end{enumerate}
+
+In the first step  the splitting element {\tt v = A[l]} is chosen,
+which is to be placed in its final position. Now the search begins from the left until an element 
+is found that is greater than {\tt v} . Then the search begins from the right  until an element 
+is found that is smaller than {\tt v}. \\
+If the pointers {\tt i} and {\tt j} have not yet met, the elements
+{\tt A[i]} and {\tt A[j]} are exchanged, otherwise another exchange operation ensures
+condition i. and the infinite loop is left by a {\tt break}. \\
+
+In the following the function is called recursively for the left part and afterwards for the right part of the 
+array. Finally the array is in non-decreasing order.\\
+
+\newpage 
+
+{\bf Correctness of the Algorithm}
+\begin{proof}
+\mbox{}\\
+It has to be shown that the following holds in every iteration step:\\[-2ex]
+\begin{center}
+{\tt A[l],\ldots A[i] $\leq$ A[j],\ldots,A[r]}.
+\end{center}
+\mbox{}\\
+{\em Induction Base:} \\[-2ex]
+
+Before the first iteration we have {\tt i = l} and {\tt j = r+1}.\\
+
+{\em Induction Step:} \\[-2ex]
+
+The transition from {\tt i}$_{old} \to $ {\tt i}$_{new}$ and {\tt j}$_{old} \to $ {\tt j}$_{new}$.\\
+
+By Induction Hypothesis we have:\\[-2ex]
+\begin{center}
+{\tt A[l],\ldots,A[i$_{old}$] $\leq$ A[j$_{old}$],\ldots,A[r]}
+\end{center}
+\mbox{}\\
+By construction we have:
+\begin{center}
+{\tt A[i$_{old}$+1],\ldots,A[i$_{new}$-1] $\leq$ A[j$_{new}$+1],\ldots,A[j$_{old}$+1]}
+\end{center}
+It follows that 
+\begin{center}
+{\tt A[l],\ldots,A[i$_{new}$-1] $\leq$ A[j$_{new}$+1],\ldots,A[r]}
+\end{center}
+It is also true that
+\begin{center}
+{\tt A[i$_{new}$] $\geq x $} und {\tt A[j$_{new}$] $\leq x $}
+\end{center}
+\mbox{}\\
+After exchanging {\tt A[i$_{new}$]} and {\tt A[j$_{new}$]} we have:\\[-2ex]
+\begin{center}
+{\tt A[l],\ldots,A[i$_{new}$] $\leq$ A[j$_{new}$],\ldots,A[r]}
+\end{center}
+\end{proof}
+\mbox{}\\
+
+{\bf Running Time (worst-case)}\\[-1ex]
+
+We assume that we have the worst case if the array is already in non-decreasing order. In this case
+in every recursive call only one element is removed from the still to be sorted part of the array (see animation).
+The resulting running time $T(n)$ has the complexity.
+
+\begin{align*}
+T(n)&=\text{$\cal O$}\;\left(\sum_{i=2}^n i + n \cdot c\right)\\
+    &=\text{$\cal O$}\;\left(n^2\right)\\
+\end{align*}
+
+\newpage
+
+\begin{proof}
+\mbox{}\\
+In general we have:
+\begin{align*}
+T(n) &=\max_{1\leq q \leq n-1} \{ T(q) + T(n-q) + c_1 \cdot n\}
+\intertext{It is shown now that $T(n) \leq \left( c\cdot n^2\right)$ for $c\geq 
+\dfrac{c_1}{2}\cdot\dfrac{n_0}{n-1}$ for $n_0$ big enough holds.}
+T(n) &\leq\max_{1\leq q \leq n-1}\{T(q) + T(n-q) + c_1\cdot n\}\\
+     &\overset{\text{I.H.}}{\leq} \max_{1\leq q \leq n-1}\{c\cdot q^2 + c\cdot (n-q)^2 + c_1\cdot n\}\\
+     &= c \cdot \max_{1\leq q \leq n-1}\{ q + (n-q)^2 - 2q \cdot (n-q) \} + c_1 \cdot n\\
+     &= c \cdot n^2 - 2c \cdot \min_{1\leq q\leq n-1}\{q\cdot (n-q)\} + c_1\cdot n\\
+     &= c \cdot n^2 - 2c \cdot 1(n-1) + c_1 \cdot n\\
+\intertext{For $n$ big enough it follows that}
+T(n) &= c\cdot n - 2\cdot \frac{c_1}{2}\cdot\frac{n}{n-1} \cdot (n-1) + c_1\cdot n\\
+     &= c \cdot n^2
+\end{align*}
+\end{proof}
+\mbox{}\\
+In practice the algorithm is used very often. One reason, among others, is the 
+average running time, which is examined in the following.\\
+
+\begin{satz*}
+Quicksort needs on average $2\log n + \Theta(1)$ many comparisons. By randomized
+quicksort (randomly exchanging two elements in the still to be sorted part of the array)  
+the worst case is avoided with high probability.\\
+\end{satz*}
+
+\begin{proof}
+\begin{align*}
+QSA(n) = n + 2 + \frac{1}{n-1}\cdot&\sum_{1\leq q \leq n - 1} (QSA(q) + QSA(n-q)) 
+\intertext{with}
+\sum_{1\leq q \leq n - 1} QSA(q) &=  \sum_{1\leq q \leq n - 1} QSA(n-q))
+\intertext{follows}
+QSA(n) &= n + 2 + \frac{2}{n-1}\cdot\sum_{1\leq q \leq n - 1} QSA(q)\\\\
+(n-1)\cdot QSA(n) &= (n+2)\cdot(n-1) + 2 \cdot \sum_{1\leq q \leq n - 1} QSA(q) \qquad |- \\
+(n-2)\cdot QSA(n) &= (n+1)\cdot(n-2) + 2 \cdot \sum_{1\leq q \leq n - 1} QSA(q) \qquad  \\\\
+(n-1)\cdot QSA(n) - (n-2)\cdot QSA(n-1) &= \underbrace{(n+2)\cdot(n-1)}_{n^2-n + 2} 
+- \underbrace{(n+1)\cdot(n-2)}_{n^2+n - 2} + 2\cdot QSA(n-1)\\\\
+(n-1)\cdot QSA(n) &= 2\cdot n + n \cdot QSA(n-1) \qquad |: n\cdot(n-1)\\\\
+\frac{QSA(n)}{n} &= \frac{QSA(n-1)}{n-1} + \frac{2}{n-1}\\
+&= \frac{QSA(n-2)}{n-2} + \frac{2}{n-2} + \frac{2}{n-1}\\
+&= \frac{QSA(n-2)}{n-3} + \frac{2}{n-3} + \frac{2}{n-2} + \frac{2}{n-1}\\
+& \ldots\\\\
+\intertext{$QSA(k) = c$ for a fixed  $k$ follows}
+\frac{QSA(n)}{n} &= \Theta\left( c + 2 \cdot \sum_{i=1}^{n-1} \frac{1}{i}\right) \\
+                 &= 2 \log n + \Theta(1)\\
+                 &= \Theta\left(\log n\right)\\\\
+QSA(n) &= \Theta\left(n \log n\right)
+\end{align*}
+\end{proof}
+
+\end{document}

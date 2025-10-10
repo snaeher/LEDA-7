@@ -1,0 +1,6 @@
+PROGS = \
+graphwin$(e) \
+spring_drawing$(e) \
+ortho_drawing$(e) \
+tutte_drawing$(e) \
+visibility_drawing$(e)

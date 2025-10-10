@@ -1,0 +1,708 @@
+
+
+
+    \chapter{The golden LEDA rules}
+    
+
+    
+
+    
+
+    
+
+    
+
+ The following rules must be adhered to when programming with
+    LEDA in order to write syntactically and semantically correct
+    and efficient LEDA programs. The comprehension of most of the
+    rules is eased by the categorization of the LEDA types given in
+    section \htmlref{rules-exp}{rules-exp}.
+
+
+
+ Every rule is illustrated in section \htmlref{rules-exp}{rules-exp}
+by one or more code examples.
+    
+
+
+    
+      \section{The LEDA rules in detail}
+
+    \begin{enumerate}
+ 
+
+      \item 
+
+	
+
+ (Definition with initialization by copying) Definition
+	with initialization by copying is possible for every LEDA
+	type. It initializes the defined variable with a copy of the
+	argument of the definition. The next rule states precisely
+	what a copy of a value is.
+      
+
+
+      \item 
+
+
+          
+
+ (Copy of a value) Assignment operator and copy
+          constructor of LEDA types create copies of values. This rule
+          defines \emph{recursively} what is meant by
+          the notion ``copy of a value''.
+ 
+\begin{enumerate}
+ 
+
+
+
+
+
+	  \item 
+              
+
+ A copy of a value of a primitive type (built-in
+              type, pointer type, item type) is a bitwise copy of this
+              value.
+	  
+
+
+	  \item 
+              
+
+ A value \verb$x$ of a
+              simple-structured type is a set or a sequence of values,
+              respectively.
+
+              
+
+ A copy of \verb$x$ is a componentwise
+              copy of all constituent values of this set or this
+              sequence, respectively.
+	  
+
+
+      \item 
+              
+
+ A value \verb$x$ of an item-based,
+              structured type is a structured collection of
+              values.
+
+              
+
+ A copy of \verb$x$ is a collection of
+              new values, each one of which is the copy of a value of
+              \verb$x$, the original . The
+              combinatorical structure imposed to the new values is
+              isomorphic to the structure of \verb$x$, the
+              original.
+
+      
+
+	
+\end{enumerate}
+      
+
+
+      \item 
+
+
+          
+
+ (Equality and identity) This rule defines when two
+          objects \verb$x$ and \verb$y$ are
+          considered as equal and identical, respectively.
+
+          \begin{enumerate}
+ 
+
+
+
+	  \item 
+              
+
+ For objects \verb$x$ and
+              \verb$y$ of a dependent item type, the
+              equality predicate \verb$x==y$ means
+              equality between the values of these objects.
+
+	  
+
+	  \item 
+
+              
+
+ For objects \verb$x$ and
+              \verb$y$ of an independent item type
+              \verb$T$, the equality predicate
+              \verb$x==y$ is defined individually for each
+              such item type. In the majority of cases it means
+              equality between the values of \verb$x$ and
+              \verb$y$, but this is not guaranteed for
+              every type.
+
+
+              
+
+ Provided that the identity predicate
+
+\begin{verbatim}bool identical(const T&, const T&);
+\end{verbatim}
+
+is defined on type \verb$T$, it means equality between the values of these objects.
+	  
+
+          \item 
+              
+
+ For objects \verb$x$ and
+              \verb$y$ of a structured type the equality
+              predicate \verb$x==y$ means equality
+              between the values of these objects.
+          
+
+
+	
+\end{enumerate}
+      
+
+
+
+      \item 
+	
+
+ (Illegal access via an item) It is illegal to access a
+	container which has been destroyed via an item, or to access
+	a container via the item \verb$nil$.
+      
+
+
+      \item 
+
+	
+
+ (Initialization of attributes of an independent item
+	type) The attributes of an independent item type are always
+	defined. In particular, a definition with default
+	initialization initializes all attributes. Such a type may
+	specify the initial values, but it need not.
+      
+
+
+
+
+      \item 
+
+
+
+          
+
+ (Specification of the structure to be traversed in \verb$forall$-macros) 
+
+The argument in a \verb$forall$-macro which specifies the
+structure to be traversed should not be a function call which
+returns this structure, but rather an object by itself which
+represents this structure.
+      
+
+
+      \item 
+
+
+	
+
+ (Modification of objects of an item-based container type
+	while iterating over them)
+
+
+An iteration over an object \verb$x$ of an item-based
+container type must not add new elements to \verb$x$.  It
+may delete the element which the iterator item points to, but no other
+element. The values of the elements may be modified without any
+restrictions.
+
+      
+
+
+
+      \item 
+	
+
+ (Requirements for type parameters) 
+
+Every type parameter \verb$T$ must implement the following functions:
+
+\begin{tabular}[h]{|ll|}
+   \hline
+   
+	    
+	      
+		a default constructor & \verb$T::T()$\\
+   \hline
+		a copy constructor & \verb$T::T(const T&)$\\
+   \hline
+		an assigment operator & \verb$T& T::operator = (const T&)$\\
+   \hline
+		an input operator & \verb$istream& operator >> (istream&, T&)$\\
+   \hline
+		an output operator & \verb$ostream& operator << (ostream&, const T&)$\\
+   \hline
+	      
+	    
+	  \end{tabular}
+
+
+      
+
+
+      \item 
+        
+
+ (Requirements for linearly ordered types) 
+
+In addition to the 
+Requirements for type parameters a linearly ordered type must implement 
+
+\begin{tabular}[h]{|ll|}
+   \hline
+   
+	    
+	      
+		a compare function & \verb$int compare(const T&, const T&)$\\
+   \hline
+	      
+	    
+	  \end{tabular}
+
+
+
+        
+
+ Here, for the function \verb$compare()$
+        the following must hold:
+
+\begin{enumerate}
+ 
+            \item 
+                
+
+ It must be put in the namespace \verb$leda$.
+            
+            \item 
+                
+
+ It must realize a linear order on \verb$T$.
+            
+            \item 
+                
+
+ If \verb$y$ is the copy of a value \verb$x$ of type \verb$T$, then
+                \verb$compare(x,y) == 0$ must hold.
+            
+          
+\end{enumerate}
+
+
+      
+
+
+
+      \item 
+        
+
+ (Requirements for hashed types) 
+In addition to the
+ Requirements for type parameters a hashed type must implement
+
+
+\begin{tabular}[h]{|ll|}
+   \hline
+   
+	    
+	      
+		a hash function & \verb$int Hash(const T&)$\\
+   \hline
+		an equality operator & \verb$bool operator == (const T&, const T&)$\\
+   \hline
+	      
+	    
+	  \end{tabular}
+
+
+
+
+        
+
+ 
+
+Here, for the function \verb$Hash()$ the following must
+hold:
+
+\begin{enumerate}
+ 
+            \item 
+              
+
+ It must be put in the namespace \verb$leda$.
+            
+            \item 
+                
+
+ For all objects \verb$x$ and
+                \verb$y$ of type \verb$T$: If
+                \verb$x == y$ holds, then so does \verb$Hash(x) == Hash(y)$.
+            
+          
+\end{enumerate}
+
+
+
+
+
+
+        
+
+ For the equality operator
+        \verb$operator==()$ the following must hold:
+
+\begin{enumerate}
+ 
+            \item 
+                
+
+ It defines an equivalence relation on
+                \verb$T$.
+            
+            \item 
+                
+
+ If \verb$y$ is a copy of a value
+                \verb$x$ of type \verb$T$, then
+                \verb$x == y$ must hold.
+            
+          
+\end{enumerate}
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+\item 
+
+
+ (Requests for numerical types)
+In addition to the
+Requirements for type parameters 
+a numerical type must offer the arithmetical operators
+\verb$operator+()$,
+\verb$operator-()$, and \verb$operator*()$,
+as well as the comparison operators
+\verb$operator<()$,
+\verb$operator<=()$,
+\verb$operator>()$,
+\verb$operator>=()$,
+\verb$operator==()$, and
+\verb$operator!=()$.
+
+
+
+      
+
+
+
+
+
+    
+\end{enumerate}
+
+
+
+
+
+    
+      \section{Code examples for the LEDA rules}\label{rules-exp}
+
+      \begin{enumerate}
+ 
+
+        \item 
+\begin{verbatim}string s("Jumping Jack Flash");
+string t(s);  // definition with initialization by copying
+string u = s; // definition with initialization by copying
+
+stack<int> S;
+// ... fill S with some elements
+stack<int> T(S); // definition with initialization by copying
+\end{verbatim}
+        
+
+
+        \item 
+
+          \begin{enumerate}
+ 
+
+            \item 
+\begin{verbatim}list_item it1, it2;
+// ...
+it2 = it1; // it2 now references the same container as it1
+\end{verbatim}
+
+
+            \item 
+
+\begin{verbatim}array<int> A, B;
+// ...fill A with some elements...
+B = A;
+\end{verbatim}
+
+              
+
+ Now \verb$B$ contains the same number
+              of integers as \verb$A$, in the same order,
+              with the same values.
+
+              
+
+ However, \verb$A$ and \verb$B$ do not contain the same objects:
+
+\begin{verbatim}int* p = A[0];
+int* q = B[0];
+p == q; // false
+
+\end{verbatim}
+
+
+
+              
+
+ \verb$A$ and \verb$B$ are different objects:
+
+\begin{verbatim}A == B; // false
+\end{verbatim}
+
+
+
+
+            \item 
+\begin{verbatim}list<int> L, M;
+list_item it1, it2;
+L.push(42);
+L.push(666);
+M = L;
+\end{verbatim}
+
+
+              
+
+ \verb$L$ and \verb$M$ now
+              both contain the numbers 666 and 42. These numbers are
+              not the same objects:
+
+\begin{verbatim}it1 = L.first();
+it2 = M.first();
+it1 == it2; // false
+
+\end{verbatim}
+
+
+              
+
+ \verb$L$ and \verb$M$ are
+              different objects as well:
+
+
+\begin{verbatim}L == M; // false
+\end{verbatim}
+
+
+
+
+
+
+          
+\end{enumerate}
+
+          
+
+ In the following assignment the rules c, b, and a are
+          applied recursivley (in this order):
+
+\begin{verbatim}list< array<int> > L, M;
+// ...fill L with some array<int>s
+// each of them filled with some elements...
+M = L;
+\end{verbatim}
+
+
+        
+
+
+        \item 
+
+          \begin{enumerate}
+ 
+
+            \item 
+\begin{verbatim}list_item it1, it2;
+// ...
+it2 = it1; // it2 now references the same container as it1
+it1 == it2; // true
+\end{verbatim}
+
+
+            \item 
+\begin{verbatim}point p(2.0, 3.0);
+point q(2.0, 3.0);
+p == q; // true (as defined for class point)
+identical(p, q); // false
+point r;
+r = p;
+identical(p, r); // true
+
+\end{verbatim}
+
+
+
+            \item 
+\begin{verbatim}list<int> L, M;
+// ...fill L with some elements...
+M = L; 
+L == M; // false
+\end{verbatim}
+
+
+          
+\end{enumerate}
+
+
+
+        
+
+
+
+
+        \item 
+\begin{verbatim}list_item it = L.first();
+L.del_item(it);
+L.contents(it); // illegal access
+it = nil;
+L.contents(it); // illegal access
+\end{verbatim}
+        
+
+
+        \item 
+\begin{verbatim}point p(2.0, 3.0); // p has coordinates (2.0, 3.0)
+point q; // q has coordinates but it is not known which
+\end{verbatim}
+        
+
+
+
+        \item 
+\begin{verbatim}edge e;
+forall(e, G.all_edges()) // dangerous!
+  { ... } 
+
+// do it like this
+list<edge> E = G.all_edges();
+forall(e, E) 
+ { ... }
+\end{verbatim}
+        
+
+
+        \item 
+\begin{verbatim}list_item it;
+forall(it, L) {
+  L.append(1); // illegal; results in infinite loop
+  if(L[it] == 5 ) L.del(it); // legal
+  if(L[it] == 6 ) L.del(L.succ(it)); // illegal
+  L[it]++; // legal
+}
+\end{verbatim}
+        
+
+
+
+        \item 
+\begin{verbatim}class pair {
+public:
+ int x, y;
+
+ pair() { x = y = 0; }
+ pair(const pair& p) { x = p.x; y = p.y; }
+ pair& operator=(const pair& p) {
+       if(this != &p) { x = p.x; y = p.y; }
+       return *this;
+       }
+};
+
+std::istream& operator>> (std::istream& is, pair& p) 
+   { is >> p.x >> p.y; return is; }
+std::ostream& operator<< (std::ostream& os, const pair& p) 
+   { os << p.x << " " << p.y; return os; }
+\end{verbatim}
+        
+
+
+        \item 
+\begin{verbatim}namespace leda {
+int compare(const pair& p, const pair& q)
+{
+  if (p.x < q.x) return  -1;
+  if (p.x > q.x) return   1; 
+  if (p.y < q.y) return  -1;
+  if (p.y > q.y) return   1;
+  return 0;
+}
+};
+\end{verbatim}
+        
+
+
+        \item 
+\begin{verbatim}namespace leda {
+int Hash(const pair& p)
+{
+  return p.x ^ p.y;
+}
+};
+
+bool operator == (const pair& p, const pair& q)
+{
+   return (p.x == q.x && p.y == q.y) ? true : false;
+}
+\end{verbatim}
+        
+
+
+
+
+      
+\end{enumerate}
+
+
+
+
+
+    
+
+
+
+
+
+ 

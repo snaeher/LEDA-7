@@ -1,0 +1,21 @@
+#!/bin/sh -f
+if [ "$1" = "" -o "$2" = "" ] 
+then
+  echo ""
+  echo "Usage is"
+  echo "          lextract infile outfile [options]"
+  echo ""
+  echo "Extracts the manual comments from infile into outfile."
+  exit
+fi
+infile=$1
+outfile=$2
+shift
+shift
+perl -S -I$LEDAROOT/Manual/cmd ext.pl lextract $infile "$@"
+manfile=$infile
+manfile=`basename $manfile .lw`
+manfile=`basename $manfile .nw`
+manfile=`basename $manfile .h`
+mv $manfile.man $outfile
+

@@ -1,0 +1,5 @@
+\bf Phase II - Heapabbau
+
+Nachdem der Heap aufgebaut wurde, wird er nun schrittweise wieder abgebaut.
+
+Die Heapgröße \tt N \rm wird bei jedem Schleifendurchlauf um eins dekrementiert.

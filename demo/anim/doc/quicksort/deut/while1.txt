@@ -1,0 +1,5 @@
+Die erste innere \tt while \rm - Schleife lässt den linken Zeiger \tt\blue2 i \rm\black soweit nach rechts 
+laufen, solange die Schluessel \tt A[i] \rm kleiner sind als \tt\red v \rm\black .
+
+Ist \tt\red v \rm\black das grösste Element im Intervall, wird die Schleife beendet, wenn die rechte 
+Intervallgrenze von \tt\blue2 i \rm\black erreicht ist.

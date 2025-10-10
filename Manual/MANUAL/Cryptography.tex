@@ -1,0 +1,352 @@
+
+\chapter {Symmetric Key Cryptography} \label{Cryptography}
+
+LEDA covers the following aspects of symmetric key cryptography:
+\begin{itemize}
+\item encryption (=\,enciphering) and decryption (=\,deciphering) of a 
+stream:\\
+\emph{Encryption} takes as input some \emph{plaintext} (a stream of data) and
+a \emph{key} (a small piece of secret data) and outputs some \emph{ciphertext}.
+\emph{Decryption} is the reverse operation: its input consists of the
+ciphertext and a key, and its output is the original plaintext.
+The idea is that the plaintext cannot be recovered from the ciphertext without
+knowing the correct decryption key. This property is called \emph{secrecy}.
+It allows you to send the ciphertext through an insecure channel or to store  
+it on an insecure filesystem. 
+There are algorithms where the decryption key differs from the corresponding
+encryption key. An algorithm which uses the same key for both operations is
+called \emph{symmetric}. (All algorithms provided by LEDA have this property.)
+\item authentication of a stream:\\
+\emph{Authentication} takes as input a message and a key and outputs a 
+so-called \emph{Message Authentication Code} (MAC). A MAC can be seen as a 
+key-dependent checksum. The idea is that nobody can generate a valid MAC for a
+message without knowing the key. 
+So if message and MAC are sent through an insecure channel then the receiver 
+-- given that he knows the key -- can verify that the text has not been 
+tampered with (\emph{integrity}) and that it originates from someone knowing
+the key (\emph{authentication}). MACs are also useful if you want to make sure
+that no intruder (in particular no virus) can alter a file on your system. (If
+ordinary checksums were used the intruder could change the file and then
+simply update corresponding checksum.)
+\item key generation:\\
+The security of a cryptographic system depends heavily on the strength of its
+keys. If an attacker can obtain your keys he can decrypt your messages or fake
+MACs no matter how good the encryption and authentication algorithms are.
+In order to support the user LEDA provides secure methods to generate a key
+from a human-readable passphrase. Of course, the user has the responsibility to
+chose a good passphrase, i.e.~a phrase that cannot be guessed easily by an
+attacker.
+\end{itemize}
+
+All these topics will be discussed in detail later. 
+We want to point out that secrecy and authentication are two orthogonal
+concepts. If you use only authentication, nobody will be able to change your
+message without being detected but everybody can read it. On the other hand,
+if you use only encryption then nobody can read your message but an attacker
+could change it. At first sight this does not seem to make much sense because
+the attacker can only alter ciphertext and he will not be able to predict what
+the corresponding plaintext will look like. However, this may still cause
+damage. Imagine for example a satellite that is remote controlled via encrypted
+but unauthenticated commands. If an attacker manages to make the satellite
+listen to his commands, he cannot exploit the device but he might be able to 
+make it leave its orbit and crash. \\
+Hence, sometimes secrecy and authentication must be used together to achieve
+the desired security. LEDA makes it easy to combine these different aspects. 
+The example below will illustrate this. 
+The program is similar to the opening example of Chapter~\htmlref{Compression}{Compression}. It
+consists of three parts: key generation, encoding and decoding. Each part will 
+be explained below.
+
+\begin{verbatim}
+#include <LEDA/coding/crypt.h> // contains all cryptography classes
+
+using namespace leda;
+
+void generate_keys(CryptKey& auth_key, CryptKey& cipher_key)
+{
+  // key generation (two keys)
+  CryptByteString passphrase = CryptKey::read_passphrase("Passphrase: ");
+  CryptByteString salt(1);
+  salt[0] = 'a'; // for authentication
+  auth_key = CryptKey::generate_key(128/8, passphrase, salt);
+  salt[0] = 'c'; // for enciphering/deciphering
+  cipher_key = CryptKey::generate_key(128/8, passphrase, salt);
+}
+
+int main()
+{
+  string str = "Hello World";
+  CryptKey auth_key, cipher_key;
+
+  // encode: MAC -> compress -> encipher
+  typedef CoderPipe3< OMACCoder<>, PPMIICoder, CBCCoder<> > CryptCoder;
+  encoding_ofstream<CryptCoder> out("foo");
+  generate_keys(auth_key, cipher_key);
+  out.get_coder()->get_coder1()->set_key(auth_key);
+  out.get_coder()->get_coder3()->set_key(cipher_key);
+  out << str << "\n";
+  out.close();
+  if (out.fail()) std::cout << "error writing foo" << "\n";
+
+  // decode: decipher -> decompress -> MAC
+  decoding_ifstream<CryptCoder> in("foo");
+  generate_keys(auth_key, cipher_key);
+  in.get_coder()->get_coder1()->set_key(auth_key);
+  in.get_coder()->get_coder3()->set_key(cipher_key);
+  str.read_line(in);
+  in.finish(); // read till EOF is reached and then close "in"
+  if (in.fail()) std::cout << "error authenticating foo" << "\n";
+
+  std::cout << "decoded string: " << str << "\n";
+
+  return 0;
+}
+\end{verbatim}
+
+In the first part of the program (function $\mathit{generate\_keys}$) two keys
+are generated. The input for each generation is a passphrase and a salt. The
+passphrase is a human-readable and easy-to-remember string which must be kept
+secret. The salt is an array of bytes (in the example just one byte) which
+should be unique but it can be made public without endangering security. It
+allows to generate different keys from a single passphrase. In the example we
+generate one key for authentication and one key for encryption. 
+More information on key generation can be found in Section~\htmlref{CryptKey}{CryptKey}. \\
+In the second part (beginning of $\mathit{main}$) we encode a message. We use
+a coder pipe $\mathit{CryptCoder}$ which first authenticates
+($\mathit{OMACCoder}$), then compresses ($\mathit{PPMIICoder}$) and finally
+encrypts ($\mathit{CBCCoder}$) its source stream. 
+Observe that the output of the $\mathit{OMACCoder}$ (in encoding mode) is the
+original input plus the MAC for this input. (In decoding mode this MAC will be
+verified automatically.)
+In order to use the $\mathit{CryptCoder}$ we construct an 
+$\mathit{encoding\_ofstream}$ called $\mathit{out}$. After setting the keys of 
+the cryptographic coders we can use $\mathit{out}$ just like an ordinary 
+$\mathit{ofstream}$. \\
+We want to point out that the order of the coders in the pipe is not
+arbitrary. It makes sense to put the authentication at the very beginning 
+because you want to authenticate the original plaintext and not some compressed
+or encrypted version of it. Moreover, it is important to place compression
+\emph{before} encryption for two reasons: Since compression usually destroys
+patterns and structures in the plaintext it can be seen as a way of obscuring
+the plaintext, which can be a helpful preprocessing step for encryption. 
+But the following is even more important: As encryption transforms its input
+into a seemingly random stream applying compression after encryption usually
+increases the length of stream. (Some cryptographers even warn not to trust an
+encryption algorithm if its output can be compressed well \cite{Schneier}.)\\
+Now we describe the decoding process (at the end of $\mathit{main}$).
+It looks very similar to the encoding process but instead of
+$\mathit{encoding\_ofstream}$ we use its counterpart
+$\mathit{decoding\_ifstream}$. After the key set up the stream $\mathit{in}$
+can be used as a usual \CC{} input stream. However, there is one subtle point
+that we want to highlight: When we are done with $\mathit{in}$ we do not call 
+the $\mathit{close}$ but the $\mathit{finish}$ method. This reads the stream
+till its end before closing it. This ensures that the $\mathit{OMACCoder}$
+verifies the MAC and reports an error if the computed MAC and the MAC found in
+the stream differ.
+(If $\mathit{in}$ were closed before its end is reached then no authentication
+would be performed and no error would be signaled. The reader is invited to
+try this out.)
+
+We want to discuss a feature of LEDA that can simplify the decoding process. 
+Suppose a friend of yours has sent you an authenticated and encrypted file over
+the internet, and he has provided you the authentication and the encryption key
+(via a secure channel). But unfortunately he did not tell you which coders he
+actually used for encoding his message. 
+Then you can use the $\mathit{CryptAutoDecoder}$ to decode his message. This
+class is able to automatically reconstruct the coder (or the coder pipe) that 
+was used for encoding the stream:
+\begin{verbatim}
+  decoding_ifstream<CryptAutoDecoder> in("foo");
+  in.get_coder()->add_key(auth_key);
+  in.get_coder()->add_key(cipher_key);
+\end{verbatim}
+
+Of course, LEDA also supports encryption and decryption of files:
+\begin{verbatim}
+  // encryption
+  CoderPipe3< OMACCoder<>, PPMIICoder, CBCCoder<> > coder;
+  coder.set_src_file("input.txt"); coder.set_tgt_file("output");
+  coder.get_coder1()->set_key(auth_key);
+  coder.get_coder3()->set_key(cipher_key);
+  coder.encode();
+
+  // decryption
+  CryptAutoDecoder auto("output", "input.txt");
+  auto->add_key(auth_key); auto->add_key(cipher_key);
+  auto.decode();
+\end{verbatim}
+
+We want to discuss some security assumptions made by LEDA, i.e.~some
+preconditions that must be fullfilled in order to ensure the security of your
+data:
+\begin{itemize}
+\item Your passphrases and your keys must be safe.\\
+That means that the user is responsible for chosing passphrases that cannot be
+guessed easily by an attacker. One way to ``generate'' such a passphrase is to
+take a sentence and to deliberately add some typos like ``LEDA's crytografic
+algorhythms are very good!''. (If you get tired of such long phrases you could
+use a phrase that consists basically of the first letter of every word: 
+``L'scaa++!'')
+If passphrases or keys are stored on a disc this disc must be protected
+against an attacker. (Also take care of temporary copies, they must be
+thoroughly wiped out. Simply deleting a file does not suffice because its
+contents can still be recovered with certain tools. Some specialists are even
+capable of recovering data on a hard disc that has been overwritten once.)
+\item The main memory of your computer must be safe.\\
+While cryptographic operations are performed passphrases and keys are stored
+in plaintext in the main memory of the computer.
+Therefore the user must make sure that no attacker can inspect any memory used
+by his process (in particular while the process is running).
+Some features of LEDA support the user in making this kind of attack harder:
+The class $\mathit{CryptByteString}$ and the derived class $\mathit{CryptKey}$
+overwrite their memory before they free it and return it to the system. 
+We want to point out that this precaution can be foiled by the operating
+system. If it swaps some security sensitive part of the memory to a swap file
+on a hard disc then this data may remain there after the termination of your
+process. 
+(On some platforms LEDA prevents this swapping, see Section~\htmlref{CryptKey}{CryptKey}.) 
+\end{itemize}
+
+We want to address another important issue. Some readers might be worried about
+the fact that a potential attacker can purchase a copy of the source code of
+LEDA. One may wonder if this is a security risk. Fortunately, this is not the 
+case.
+The cryptographic algorithms in LEDA have been designed under the assumption
+that a potential attacker knows the algorithm (but not the key). 
+All the algorithms have appeared in scientific publications and successfully 
+passed thorough cryptographic analysis. 
+The fact that the source code can be purchased allows you to verify that the
+developers of LEDA did not put any trap-doors into the code which allow 
+them to decrypt data without knowing the key. 
+(This means: If you loose your passphrase or your key then we are not
+able to help you to recover your encrypted data.)
+
+\newpage
+\input extract/crypt_key.tex
+
+\newpage
+\section{Encryption and Decryption with Ciphers}
+\label{stream-ciphers}\label{block-ciphers}
+
+A \emph{stream-cipher} is a coder that encrypts or decrypts streams of data.
+An example for such a coder is the class $\mathit{CBCCoder}$ that we have
+already seen in the sample program at the beginning of this chapter.
+Every stream-cipher in LEDA uses a block-cipher as building block.
+A \emph{block-cipher} operates on ``small'' fixed-size blocks of plaintext or 
+ciphertext -- usually 64 or 128 bits.
+Mathematically, a block-cipher can be seen as pair of two functions $E_K$ and
+$D_K$ that depend on a key $K$. $E_K$ takes as input a block $B$ of size $b$
+and returns the encrypted block (also of size $b$), $D_K$ describes the
+decryption operation. We have $D_K(E_K(B)) = B$ for all blocks $B$ of size $b$ 
+and every admissible key $K$.
+
+A stream-cipher is usually built by combining a block-cipher and some sort of
+feedback via some simple operations. 
+The most simple stream-cipher is the \emph{electronic codebook} (ECB)
+mode: No chaining is used. The plaintext is partitioned into $n$ blocks $P_1,
+\dots, P_n$ of size $b$. (If the last block $P_n$ is shorter than $b$ it is
+padded appropriately.)
+The ciphertext blocks $C_1, \dots, C_n$ are obtained by applying the 
+block-cipher to each block of the plaintext. 
+More formally, $C_i = E_K(P_i)$. Decryption is simple, too: $P_i = D_K(C_i)$.
+This simplicity has an important drawback: If a block $B$ appears several times
+in the plaintext each occurence encrypts to the same ciphertext block. This
+can be exploited by an attacker: Suppose that the attacker knows $P_1$ (maybe
+because every plaintext starts with a fixed header) then he is able to detect 
+every occurence of $P_1$ in the plaintext without knowing the key!
+
+To overcome this serious drawback stream-ciphers with feedback have been
+invented. They hide patterns in the plaintext in the ciphertext. 
+In \emph{cipher block chaining} (CBC) mode the current plaintext block is
+XORed with the previous ciphertext block (as feedback) before encryption.
+In short, $C_i = E_K(P_i \oplus C_{i-1})$. And decryption works as follows: 
+$P_i = D_K(C_i) \oplus C_{i-1}$. In order to compute $C_1$ we need a so-called
+initialization vector (IV) $C_0$. The IV does not have to be secret but it
+should be unique for every plaintext stream that is encrypted with a particular
+key $K$. The reason is the following: If you encrypt two streams with the same
+key and the same IV they will encrypt to same ciphertext up to the first
+position where the two plaintexts differ. 
+
+Another feedback mode is the \emph{cipher feedback} (CFB) mode. It also uses an
+initialization vector $C_0$. Encryption and decryption work as follows:
+$C_i = P_i \oplus E_K(C_{i-1})$ and $P_i = C_i \oplus E_K(C_{i-1})$. 
+(Observe that the block-cipher is only used in encryption mode.)
+The IV for CFB \textbf{must} be unique (for CBC it \textbf{should} be unique),
+otherwise a cryptoanalyst can recover the plaintext (see 
+\cite[Chapter 9.6]{Schneier}). 
+
+Finally, we want to describe the \emph{output feedback} (OFB) mode.
+It computes a feedback stream $S_0, S_1, \dots, S_n$, where $S_0$ is an IV that
+should be unique. Despite the name of this mode, the feedback stream is
+completely internal it depends neither on the plaintext nor on the ciphertext:
+$S_i = E_K(S_{i-1})$.
+This mode looks as follows:
+$C_i = P_i \oplus S_i$ and $P_i = C_i \oplus S_i$. 
+
+Let us compare the four stream-ciphers from above. In terms of efficiency they
+are almost identical. The number of ciphertext blocks equals the number of
+plaintext blocks (not counting the IV). ECB is the fastest mode but the total
+running time is dominated by the time consumed by the block-cipher, the XOR
+operations used in the other modes are negligible. 
+With respect to fault tolerance OFB is the best: One bit error in the 
+ciphertext affects only one bit in the decrypted plaintext. 
+In ECB mode one bit in the ciphertext affects the complete corresponding
+plaintext block. For CBC it affects the full corresponding block in the
+plaintext and one bit in the next block. And in CFB mode the corresponding bit 
+in the plaintext is affected as well as the complete next block.
+As to security ECB is clearly the worst because patterns in the
+plaintext are not hidden. The other three modes hide these patterns and they
+are almost comparable in terms of security. 
+CBC has some small advantages (cf.~\cite[Chapter 9.11]{Schneier}).
+So if your are in doubt use CBC as stream-cipher.\\
+The following table summarizes some facts about the stream-ciphers in LEDA:
+\begin{center}
+\begin{tabular}{|l|l|l|c|c|}
+\hline
+mode & encryption       & decryption       & IV   & security \\
+\hline
+ECB  & $C_i = E_K(P_i)$ & $P_i = D_K(C_i)$ & none & $-$ \\
+CBC  & $C_i = E_K(P_i \oplus C_{i-1})$ & $P_i = D_K(C_i) \oplus C_{i-1}$ 
+     & unique & $+(+)$ \\
+CFB  & $C_i = P_i \oplus E_K(C_{i-1})$ & $P_i = C_i \oplus E_K(C_{i-1})$ 
+     & unique! & $+$ \\
+OFB  & $C_i = P_i \oplus S_i$, $S_i = E_K(S_{i-1})$ & $P_i = C_i \oplus S_i$ 
+     & unique & $+$ \\
+\hline
+\end{tabular}
+\end{center}
+
+As stated above a block-cipher is needed to make the stream-ciphers work. 
+The following block-ciphers are part of LEDA:
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+block-cipher   & block size / bits & key-size / bits \\
+\hline
+Blowfish       &  64               & 32 -- 448 \\
+Twofish        & 128               & 128 -- 256 \\
+Rijndael (AES) & 128               & 128 -- 256 \\
+\hline
+\end{tabular}
+\end{center}
+
+Comparing the ciphers in terms of performance $\mathit{Blowfish}$ comes out 
+worst (probably because of the smaller block size). Our implementation of 
+$\mathit{Twofish}$ is slightly faster than that of $\mathit{Rijndael}$. 
+In terms of security it is hard to rank the three ciphers. All of them have
+been intensively cryptoanalyzed and no weaknesses have been found so far. 
+$\mathit{Blowfish}$ is used in the $\mathit{ssh}$ command of Unix, 
+$\mathit{Rijndael}$ won the contest for the Advanced Encryption Standard (AES),
+and $\mathit{Twofish}$ reached the final round of that contest.
+
+\newpage
+\input extract/stream_ciphers.tex
+
+\newpage
+\input extract/authentication.tex
+
+\newpage
+\input extract/crypt_auto_decoder.tex
+
+\newpage
+\input extract/secure_socket_streambuf.tex

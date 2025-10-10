@@ -1,0 +1,7 @@
+PROGS = \
+max_flow$(e) \
+mcf_cost_scaling$(e) \
+mc_matching$(e) \
+mc_matching1$(e) \
+std_vs_leda_list$(e) \
+std_vs_leda_map$(e) 

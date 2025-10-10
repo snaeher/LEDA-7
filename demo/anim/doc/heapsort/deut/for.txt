@@ -1,0 +1,8 @@
+\bf Phase I - Heapaufbau
+In der \tt for \rm - Schleife wird der Heap erzeugt, indem man rückwärts das Feld
+durchläuft und kleine Heaps von unten her erzeugt. Dazu wird \tt N/2 \rm mal 
+die Funktion \tt heapfiy \rm aufgrufen.
+
+\bf Bemerkung
+Es ist nicht erforderlich Heaps der Größe 1 zu betrachten, daher beginnt das
+Durchlaufen bereits auf halben Wege rückwärts durch das Feld.

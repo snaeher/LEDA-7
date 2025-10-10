@@ -1,0 +1,5 @@
+Die letzte Bedingung die durch einen weiteren Austausch erfuellt werden muss:
+
+	c)~Das zerlegende Element befindet sich an seiner endgueltigen Position 
+	~~~~im Feld.
+

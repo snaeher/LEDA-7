@@ -1,0 +1,31 @@
+
+PROGS = \
+bar_test$(e) \
+blue$(e) \
+color$(e) \
+dblclick$(e) \
+event$(e) \
+file_handler$(e) \
+file_panel$(e) \
+font$(e) \
+gw_back$(e) \
+handle_event$(e) \
+hilbert$(e) \
+hilbert1$(e) \
+clock$(e) \
+dclock$(e) \
+lclock$(e) \
+panel$(e) \
+panel_bar$(e) \
+pol_simple$(e) \
+precision$(e) \
+rectest$(e) \
+rgb$(e) \
+sierpinski$(e) \
+spline$(e) \
+windows$(e) \
+win_error$(e) \
+win_pos$(e)
+
+
+#persist$(e)

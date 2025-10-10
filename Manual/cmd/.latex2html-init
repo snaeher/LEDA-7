@@ -1,0 +1,70 @@
+# This number will determine the size of the equations, special characters,
+# and anything which will be converted into an inlined image
+# *except* "image generating environments" such as "figure", "table"
+# or "minipage".
+# Effective values are those greater than 0.
+# Sensible values are between 0.1 - 4.
+$MATH_SCALE_FACTOR = 1.4;
+ 
+# This number will determine the size of
+# image generating environments such as "figure", "table" or "minipage".
+# Effective values are those greater than 0.
+# Sensible values are between 0.1 - 4.
+$FIGURE_SCALE_FACTOR = 1.4;
+ 
+# If this is set then the resulting HTML will look marginally better if viewed
+# with Netscape.
+$NETSCAPE_HTML = 1;
+
+# We want a friendly white backround for the manual
+$BODYTEXT = 'BGCOLOR="#FFFFFF" BACKGROUND="ledabg.jpg"';
+$HTML_VERSION = "3.2,math";
+$NO_SIMPLE_MATH = 1;
+$MAX_SPLIT_DEPTH = 4;
+$CUSTOM_TITLES = 3;
+# $LONG_TITLES = 3;
+# $SHOW_SECTION_NUMBERS = 1;
+$SHORT_INDEX = 1;
+$LOCAL_ICONS = 1;
+$NAV_BORDER = 0;
+$ALTERNATIVE_ICONS = $ENV{'LEDAROOT'}."/Manual/noweb/icons";
+$EXTERNAL_UP_LINK = "http://www.mpi-sb.mpg.de/LEDA";
+$EXTERNAL_UP_TITLE = "LEDA home page";
+
+$iconsizes{'up'} = 'WIDTH="44" HEIGHT="44"';
+$iconsizes{'next'} = 'WIDTH="44" HEIGHT="44"';
+$iconsizes{'previous'} = 'WIDTH="44" HEIGHT="44"';
+$iconsizes{'contents'} = 'WIDTH="44" HEIGHT="44"';
+$iconsizes{'index'} = 'WIDTH="44" HEIGHT="44"';
+
+
+# the following custom title production procedure makes almost
+# the same as the LONG_TILTLES version, only it finds doubles
+# and takes our short section names in the brackets if there
+sub custom_title_hook  {
+    local($_)= @_;
+    local($num_words) = $CUSTOM_TITLES;
+    $_ =~ s/(^|\s)\s*($GENERIC_WORDS)(\'|\b)//ig;
+    #remove leading numbering, unless that's all there is.
+    local($sec_num);
+    if (!(/^\d+(\.\d*)*\s*$/)&&(s/^\s*(\d+(\.\d*)*)\s*/$sec_num=$1;''/e))
+    { $num_words-- };
+    #revert entities, etc. to TeX-form...
+    &remove_markers; s/<[^>]*>//g; #remove tags
+    $_ = &revert_to_raw_tex($_);
+
+    # get $CUSTOM_TITLES number of words from what remains
+    if ( /[^\(]*\(([^\)]*)\)/ ) { $_ = $1; }
+    else { $_ = &get_first_words($_, $num_words) if ($num_words); }
+    if ( $ledaschondrin{$_} ) 
+    { my $tmp=$_; $_ .= "$ledaschondrin{$_}"; ++$ledaschondrin{$tmp}; }
+    else { $ledaschondrin{$_} = 1; }
+    # ...and cleanup accents, spaces and punctuation
+    s/\\\W\{?|\}//g; s/^\s*//g; s/\s*$//g; s/\s/_/g; s/\W/_/g; s/__+/_/g; s/_+$//;
+    $_;
+}
+
+  
+
+1;      # This must be the last line    
+

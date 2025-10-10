@@ -1,0 +1,10 @@
+PROGS = \
+geowin$(e) \
+geowin_voronoi$(e) \
+intersect_segments$(e) \
+polygon_demo$(e) \
+polygon_holes$(e) \
+polygon_triang$(e) \
+voronoi_demo$(e) \
+3d_convex_hull$(e) 
+

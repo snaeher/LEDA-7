@@ -1,0 +1,26 @@
+
+INCL = $(LROOT)\incl
+SLIB  = $(LROOT)\$(L).lib
+o    = .obj
+
+.asm.obj:
+	$(ASM) -o $*.obj $*.asm
+
+.c.obj:
+	$(PLAIN_C) $(CFLAGS) $(WERR) -I$(INCL) -DLEDA_INSTALL $(DFLAGS) $*.c
+
+.cpp.obj:
+	$(CC) $(CFLAGS) $(WERR) -I$(INCL) -DLEDA_INSTALL $(DFLAGS) $*.cpp
+
+all: $(SLIB)
+
+include Make.lst
+
+$(SLIB): $(OBJECTS)
+	@echo lib -nologo $(SLIB) $?
+	@if not exist $(SLIB) (lib -nologo -out:$(SLIB) $?) else (lib -nologo $(SLIB) $?)
+
+
+clean:
+	del $(OBJECTS)
+

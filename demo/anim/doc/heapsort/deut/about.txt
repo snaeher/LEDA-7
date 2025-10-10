@@ -1,0 +1,6 @@
+	\bf Animation des Heapsort Algorithmus
+
+	\tt	 programmiert von  Oliver Zlotowski
+\tt Martin-Luther-Universität Halle/Wittenberg
+
+\tt\grey2 Dezember 1998

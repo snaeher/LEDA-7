@@ -1,0 +1,10 @@
+#!/bin/sh -f
+
+for f
+do
+   core=`basename $f .tex`
+   mv $core.tex $core.temp
+   perl $LEDAROOT/Manual/cmd/handle_refs.pl $core.temp > $core.tex
+   rm $core.temp
+done
+

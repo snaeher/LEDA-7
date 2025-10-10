@@ -1,0 +1,41 @@
+#!/bin/sh -f
+if [ "$1" = "" ]; then
+  echo ""
+  echo "Usage is"
+  echo "          lweave foo[.lw] [noweave_options]"
+  echo ""
+  echo "Converts an Lweb file foo.lw into a LaTeX file foo.tex."
+  exit
+fi
+file=`basename $1 .lw`
+location=`dirname $1`
+name="$location/$file"
+if [ "$#" != "1" ]; then shift; fi
+if [ "$1" = "HTML" ]; then
+  mode=HTML 
+  if [ "$#" != "1" ]; then shift; fi
+  optarg='-latex+html'
+fi
+if [ "$1" = "Cdoc" ]; then
+  mode=Cdoc
+  if [ "$#" != "1" ]; then shift; fi
+fi
+
+if [ -f $name.lw ]; then
+  echo "Calling lw2nw $mode on $name.lw ..."
+  echo ""
+    lw2nw $name.lw $mode > $name.nw
+  shift
+  echo "Calling noweave -delay $optarg $@ on $name.nw ..."
+  echo ""
+    noweave -delay $optarg "$@" $name.nw > $name.tmp
+
+  echo "Treating empty lines in $name.tex ..."
+  echo ""
+    emptyline $name.tmp $mode > $name.tex
+else
+  echo "Error: File $name.lw does not exist."
+  echo ""
+  exit
+fi
+

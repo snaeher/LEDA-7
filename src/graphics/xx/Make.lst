@@ -1,0 +1,13 @@
+
+ifeq ($(OSTYPE),linux)
+
+OBJECTS =  _ws$(o) _x_basic$(o)
+#OBJECTS =  _x11$(o) _x_basic$(o)
+
+else
+
+OBJECTS =  _mswin$(o) _x_basic$(o)
+
+endif
+
+

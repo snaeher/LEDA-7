@@ -1,0 +1,550 @@
+
+%the following settings are adequate for European size a4 paper
+\if@twoside
+\textwidth 16cm  
+\textheight 24 cm  
+\topmargin -14mm    
+\evensidemargin -5mm 
+\oddsidemargin 3mm
+\else
+\textwidth 16cm  
+\textheight 24 cm  
+\topmargin -14mm    
+\evensidemargin 3mm 
+\oddsidemargin 3mm
+\fi
+%the following settings are adequate for US legal size paper
+%\textwidth 16cm  
+%\textheight 24 cm  
+%\topmargin -14mm    
+%\evensidemargin 3mm 
+%\oddsidemargin 3mm
+\sloppy 
+
+\usepackage{noweb}
+\setlength{\codemargin}{\parindent}
+\def\nwendcode{\endtrivlist \endgroup } %\filbreak
+\nwcodepenalty=0  %\@highpenalty
+\let\nwdocspar=\par%\filbreak 
+
+\def\nwendcode{\endtrivlist \endgroup }
+\nwcodepenalty=0 
+\let\nwdocspar=\par%\filbreak 
+\let\nowebsize=\small%selects small font for code
+%\nwcodetopsep = 3pt plus 1.2pt minus 1pt   so stehts im Orginal
+\nwcodetopsep = 10pt plus .5pt minus .5pt
+
+\newlength{\Lcodetopsep}
+\newlength{\Lcodebotsep}
+\newlength{\Lcodelineskip}
+%\setlength{\Lcodetopsep}{-10pt plus 1.2pt minus 1pt}
+%\setlength{\Lcodebotsep}{-12pt plus 1.2pt minus 1pt}
+\setlength{\Lcodetopsep}{0pt plus 1.2pt minus 1pt}  % -10
+\setlength{\Lcodebotsep}{2pt plus 1.2pt minus 1pt}  % -12
+\setlength{\Lcodelineskip}{-0.7\baselineskip plus 0.1\baselineskip minus
+0.1\baselineskip}  % -10% KM new @c code layout 11/00
+
+\newcommand{\LcodeS}{\hspace*{1.2ex}}
+\newcommand{\noeffect}{}
+ 
+\newcommand{\headerline}[1]{
+\smallskip\par
+\parbox[t]{\textwidth}{{\bf #1}}\par
+\nopagebreak
+}
+%empty line before bracket is crucial 
+
+\newcounter{manctr}
+\newenvironment{manual}{
+\setcounter{manctr}{1}
+\baselineskip 3.0ex   
+%\spaceskip  .4em plus .25em minus .25em
+%\xspaceskip .65em
+\parskip 11pt plus 1pt minus 1pt
+\parindent 0pt
+\newcommand{\mansection}[1]{
+\headerline{\arabic{manctr}. ##1}\stepcounter{manctr}}
+\newcommand{\resetmancounter}{\setcounter{manctr}{1}}
+}{}
+
+
+\newcommand{\Lless}{\texttt{<}}
+\newcommand{\Lgreater}{\texttt{>}}
+\newcommand{\Ltemplateless}{\texttt{<}}
+\newcommand{\Ltemplategreater}{\texttt{>}}
+\newcommand{\<}{\ensuremath{\mathtt{<}}}
+\renewcommand{\>}{\ensuremath{\mathtt{>}}}
+\newcommand{\Lle}{\le}
+\newcommand{\Lge}{\ge}
+\newcommand{\Dplus}{{++}}
+\newcommand{\Dminus}{{--}}
+\newcommand{\Lass}[1]{\mathrel{{#1}{=}}}
+\newcommand{\Lminuseq}{{-}{=}}
+\newcommand{\Noteq}{{!}{=}}
+%\newcommand{\Leq}{\equiv}
+\newcommand{\Leq}{\mathbin {{=}{=}}}
+\newcommand{\Larrow}{\rightarrow}
+\newcommand{\tildeop}{{\sim}}
+\newcommand{\Tildeop}{{\char126}}
+\newcommand{\circumflexop}{\hbox{\^{}}}
+\newcommand{\DP}{\hspace{.1em}{::}\hspace{-.2em}} % symbol for ::
+\newcommand{\nspacedot}{\hspace{-0.09em}}
+\newcommand{\nspaceunderscore}{\hspace{-0.13em}}
+\newcommand{\Lrquote}{\mbox{'}}
+\newcommand{\Llquote}{\mbox{`}}
+\newcommand{\KLL}{@$\Lless\Lless$}           % geaendert von \<\<
+\newcommand{\KGG}{@$\Lgreater\Lgreater$}
+\newcommand{\DLK}{\mbox{\tt [[}}
+\newcommand{\DRK}{\mbox{\tt ]]}}
+\newcommand{\Ln}{\mbox{$\backslash${\tt n}}} 
+
+
+\newcommand{\CC}{C\raise.06ex\hbox{\texttt{++}}}
+\newcommand{\CCC}{C\raise.08ex\hbox{\texttt{++}}}
+\newcommand{\gpp}{g\hbox{\texttt{++}\ }} 
+\newcommand{\nat}{\hbox{\rm\vrule\kern-0.045em N}}
+\newcommand{\real}{\hbox{\rm\vrule\kern-0.035em R}}
+
+\newlength{\setspacing}
+\setlength{\setspacing}{0.05em}
+\newcommand{\sset}[1]{\{\hspace{\setspacing}#1\hspace{\setspacing} \}}
+\newcommand{\set}[2]{ \left\{\hspace{\setspacing} #1 \mbox{ ; } #2 \hspace{\setspacing} \right\}  }
+\newcommand{\range}[2]{[#1 \, .. \, #2]}
+
+\newlength{\Labsspacing}
+\setlength{\Labsspacing}{0.01em}
+\newcommand{\precond}{{\it Precondition}: }
+\newcommand{\Labs}[1]{%
+\hbox{$| \hspace{\Labsspacing} #1 \hspace{\Labsspacing} |$}}
+
+\newcommand{\Lvert}{|}
+\newcommand{\Litem}[1]{\hbox{$\langle #1 \rangle$}}
+\newcommand{\Lchunk}[1]{$\langle${\it #1}$\rangle$}
+
+
+\newlength{\rowsep} \setlength{\rowsep}{0.7ex} 
+%separation in two-row layout
+\newlength{\entrysep} \setlength{\entrysep}{0.2ex} 
+%additional space between entries
+
+\newlength{\colsep} \settowidth{\colsep}{\ }    
+\newlength{\typewidth} \setlength{\typewidth}{0.15\textwidth}    
+\newlength{\longtypewidth} \setlength{\longtypewidth}{0.4\textwidth}    
+\newlength{\restoretypewidth} \setlength{\restoretypewidth}{0.15\textwidth}    
+\newlength{\callwidth} \setlength{\callwidth}{.25\textwidth}      
+\newlength{\restorecallwidth} \setlength{\restorecallwidth}{.25\textwidth}     
+\newlength{\declwidth} \setlength{\declwidth}{0.25\textwidth}  
+
+\newlength{\longcallwidth}
+\newlength{\descriptwidth}
+\newlength{\createtextwidth}
+\newlength{\textminusdescriptwidth}
+\newlength{\typepluscallwidth}
+
+\newcommand{\computewidths}{
+          \setlength{\createtextwidth}{\textwidth}
+          \addtolength{\createtextwidth}{-\declwidth}             
+
+          \setlength{\longcallwidth}{\textwidth} 
+          \addtolength{\longcallwidth}{-\typewidth}
+
+         \setlength{\descriptwidth}{\textwidth}
+         \addtolength{\descriptwidth}{-\typewidth}
+         \addtolength{\descriptwidth}{-\callwidth} 
+
+         \setlength{\textminusdescriptwidth}{\textwidth}
+         \addtolength{\textminusdescriptwidth}{-\descriptwidth}
+
+         \setlength{\typepluscallwidth}{\typewidth}
+         \addtolength{\typepluscallwidth}{\callwidth}
+       }
+
+\newcommand{\setopdims}[2]{
+  \setlength{\restoretypewidth}{\typewidth}
+  \setlength{\restorecallwidth}{\callwidth}
+  \setlength{\typewidth}{#1}
+  \setlength{\callwidth}{#2}
+  \computewidths
+}
+
+\newcommand{\restoreopdims}{
+  \setlength{\typewidth}{\restoretypewidth} 
+  \setlength{\callwidth}{\restorecallwidth}
+  \computewidths
+}
+
+\computewidths    % initializes all widths
+
+
+\newlength{\templatestubwidth}
+\newlength{\templatebodywidth}
+\newlength{\templatelistwidth}
+
+\newcommand{\template}[1]{
+\settowidth{\templatestubwidth}{template \Ltemplateless}
+\addtolength{\templatestubwidth}{\colsep}
+\settowidth{\templatebodywidth}{#1}
+\ifthenelse{\templatebodywidth > 0}{%
+ \setlength{\templatebodywidth}{\textwidth}
+ \addtolength{\templatebodywidth}{-\templatestubwidth}
+ \noindent 
+ template \Ltemplateless
+ \parbox[t]{\templatebodywidth}{#1\Ltemplategreater}
+ \settowidth{\templatelistwidth}{#1}
+ \ifthenelse{\templatelistwidth > \templatebodywidth}%
+ {\vspace{\rowsep}\\}{}
+}{}%else empty
+}
+
+
+\usepackage{ifthen}
+\newlength{\actualcallwidth}
+\newlength{\actualtypewidth}
+\newlength{\actualtypepluscallwidth}
+\newlength{\fnamewidth}
+\newlength{\checkwidth}
+\newcommand{\returntype}{\,}
+
+\newcommand{\function}[5][]{ 
+ \setlength{\checkwidth}{\typewidth}
+ \renewcommand{\returntype}{#2}   
+ \addtolength{\checkwidth}{\callwidth}
+ \addtolength{\checkwidth}{\descriptwidth}
+ \ifthenelse{\lengthtest{\checkwidth = \textwidth}}
+            {}
+            {\typein{WARNING: The invariant 
+\typewidth + \callwidth + \descriptwidth = \textwidth is violated. 
+Did you change one of the quantities without calling
+\protect\computewidths? I do it for you. If the output looks okay
+and you changed textwidth after reading in Lweb.sty it is safe to ignore
+this warning. Type any character to proceed.}
+\computewidths}
+ \settowidth{\actualcallwidth}{#3(#4)}        
+ \settowidth{\actualtypewidth}{#2}
+ \addtolength{\actualcallwidth}{\colsep}
+ \addtolength{\actualtypewidth}{\colsep} 
+ \template{#1}
+ \ifthenelse{\actualtypewidth > \longtypewidth}
+ {%\typeout{long return type}
+  \parbox[t]{\textwidth}{#2}\\
+  \renewcommand{\returntype}{\ }
+  \settowidth{\actualtypewidth}{\returntype}
+  \addtolength{\actualcallwidth}{\colsep}
+ }{}%empty else case
+ \ifthenelse{\actualtypewidth > \typewidth}
+ {%\typeout{actualtypewidth larger than typewidth}
+  \settowidth{\actualtypepluscallwidth}{\returntype\ #3(#4)}
+  \addtolength{\actualtypepluscallwidth}{\colsep}
+  \ifthenelse{\actualtypepluscallwidth > \typepluscallwidth}
+  {% begin then1
+   \settowidth{\fnamewidth}{\returntype\ #3(}%
+   \setlength{\parlistwidth}{\textwidth}%
+   \addtolength{\parlistwidth}{-\fnamewidth}%
+   \noindent
+   \parbox[t]{\textwidth}{%
+     \parbox[t]{\fnamewidth}{\returntype\ #3(}%
+     \parbox[t]{\parlistwidth}{\raggedright \sloppy #4)}\vspace{\rowsep}\\%
+     \hspace*{\typewidth}\hfill\parbox[t]{\descriptwidth}{\sloppy #5 }%
+   }%end big parbox       
+  }%end then1
+  {%else descript on same line
+   \parbox[t]{\typepluscallwidth}{\returntype\ #3(#4)}%  
+   \parbox[t]{\descriptwidth}{\sloppy #5 }%
+  }% end else descript on same line 
+ }% end return type does not fit
+ {% else return type fits
+  %\typeout{actualtypewidth smaller than typewidth}
+  \ifthenelse{\actualcallwidth > \callwidth}
+  {\settowidth{\fnamewidth}{#3(}%
+   \setlength{\parlistwidth}{\longcallwidth}%
+   \addtolength{\parlistwidth}{-\fnamewidth}%
+   \noindent
+   \parbox[t]{\textwidth}{%
+    \parbox[t]{\typewidth}{\returntype}\parbox[t]{\fnamewidth}{#3(}%
+    \parbox[t]{\parlistwidth}{\raggedright \sloppy #4)}\vspace{\rowsep}\\%
+    \hspace*{\typewidth}\hfill\parbox[t]{\descriptwidth}{\sloppy  #5 }%
+   }%end big parbox       
+  }%end then
+  {\noindent%\typeout{actualcallwidth smaller than callwidth}
+   \parbox[t]{\typewidth}{\fussy \returntype}%
+   \parbox[t]{\callwidth}{\raggedright \sloppy #3(#4)}%
+   \parbox[t]{\descriptwidth}{\sloppy #5 }%
+  }%end else
+ }%end return type fits
+ \vspace{\entrysep}\par
+}
+
+\newcommand{\operator}[4][]{%
+ %\smallskip
+ \template{#1}
+ \settowidth{\actualcallwidth}{#3} 
+ \settowidth{\actualtypewidth}{#2}
+ \addtolength{\actualcallwidth}{\colsep}
+ \addtolength{\actualtypewidth}{\colsep} 
+ \ifthenelse{\actualtypewidth > \typewidth}
+ {\settowidth{\actualtypepluscallwidth}{#2\ #3}
+  \addtolength{\actualtypepluscallwidth}{\colsep}
+  \ifthenelse{\actualtypepluscallwidth > \typepluscallwidth}
+  {\parbox[t]{\textwidth}{%
+    \parbox[t]{\textwidth}{#2\ #3}\vspace{\rowsep}\\%
+    \hspace*{\textminusdescriptwidth}\hfill%
+    \parbox[t]{\descriptwidth}{\sloppy #4}%
+   } %end big parbox
+  }
+  {%else descript on same line
+   \parbox[t]{\typepluscallwidth}{#2\ #3}  
+   \parbox[t]{\descriptwidth}{\sloppy #4}%
+  }
+ }
+ {%else return type fits                     
+  \ifthenelse{\actualcallwidth > \callwidth}
+  {\noindent%\typeout{wide actualcallwidth}
+   \parbox[t]{\textwidth}{%
+    \parbox[t]{\typewidth}{\fussy #2}
+    \parbox[t]{\longcallwidth}{\raggedright\sloppy #3}\vspace{\rowsep}\\%
+    \hspace*{\textminusdescriptwidth}\hfill%
+    \parbox[t]{\descriptwidth}{\sloppy #4}%
+   } %end big parbox
+  }%end then
+  {\noindent%\typeout{fitting actualcallwidth}%
+   \parbox[t]{\typewidth}{\fussy #2}%
+   \parbox[t]{\callwidth}{\raggedright\sloppy #3}%
+   \parbox[t]{\descriptwidth}{\sloppy #4}%
+  }%end else
+ }%end outermost else
+ \vspace{\entrysep}\par
+}
+
+
+\usepackage{ifthen}
+\newlength{\actualdeclwidth} 
+\newlength{\parlistwidth}
+\newcommand{\decl}{\,}        % was empty before but creates trouble 2html
+\newcommand{\createpref}{\,}  % was empty before but creates trouble 2html
+\newlength{\actualtypeplusnamewidth}
+\newlength{\createtypewidth}
+
+\newcommand{\create}[5][]{
+ \setlength{\checkwidth}{\declwidth}   
+ \addtolength{\checkwidth}{\createtextwidth}
+ \ifthenelse{\lengthtest{\checkwidth = \textwidth}}
+ {}
+ {\typein{WARNING: The invariant 
+\declwidth + \createtextwidth = \textwidth is violated. 
+Did you change one of the quantities without calling
+\protect\computewidths? I do it for you. If the output looks okay and you
+changed textwidth after reading Lweb.sty it is safe to ignore this warning. 
+Type any character to proceed.}\computewidths}
+ \template{#1}
+ \ifthenelse{\equal{#4}{}}%
+ {\renewcommand{\decl}{#2\ \ #3;}}%
+ {\renewcommand{\decl}{#2\ \ #3(#4);}}% end of ifthenelse
+ \settowidth{\createtypewidth}{#2}
+ \ifthenelse{\createtypewidth > \longtypewidth}
+ {\parbox[t]{\textwidth}{#2}\\
+  \ifthenelse{\equal{#4}{}}%
+  {\renewcommand{\decl}{\hspace*{\typewidth}#3;}}%
+  {\renewcommand{\decl}{\hspace*{\typewidth}#3(#4);}}%
+  \renewcommand{\createpref}{\hspace*{\typewidth}#3}
+ }{%else
+  \renewcommand{\createpref}{#2\ \ #3}%
+ }
+ \settowidth{\actualdeclwidth}{\decl}
+ \addtolength{\actualdeclwidth}{\colsep}
+ \ifthenelse {\actualdeclwidth > \declwidth}
+ {%\typeout{decl is long}
+  \ifthenelse{\actualdeclwidth > \textwidth}
+  {%\typeout{decl is very long}
+   \settowidth{\actualtypeplusnamewidth}{\createpref(}%
+   \setlength{\parlistwidth}{\textwidth}%
+   \addtolength{\parlistwidth}{-\actualtypeplusnamewidth}%
+   \parbox[t]{\textwidth}{%
+    \parbox[t]{\actualtypeplusnamewidth}{\createpref(}%
+    \parbox[t]{\parlistwidth}{\raggedright #4);}%
+    \vspace{\rowsep}\\%
+    \hspace*{1cm}\hfill%
+    \parbox[t]{\createtextwidth}{\sloppy #5 }% 
+   }%end parbox
+  }
+  {%\typeout{decl is long}
+   \parbox[t]{\textwidth}{%
+    \parbox[t]{\textwidth}{\decl}\vspace{\rowsep}\\%
+    \hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy  #5 }% 
+   }%end parbox
+  }
+ }%end then 
+ {%\typeout{decl is short}
+  \parbox[t]{\declwidth}{\decl}%
+  \parbox[t]{\createtextwidth}{\sloppy #5 }%
+ }%end else
+ \vspace{\entrysep}\par
+}
+
+
+\usepackage{ifthen}
+\newlength{\actualdestructwidth}
+
+\newcommand{\destruct}[2]{
+  \settowidth{\actualdestructwidth}{$\sim$#1()}
+  \ifthenelse {\actualdestructwidth > \declwidth}
+  {\noindent
+   \parbox[t]{\textwidth}{%
+    \parbox[t]{\textwidth}{$\sim$#1()}\vspace{\rowsep}\\%
+    \hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #2}%
+   } 
+  }
+  {\noindent\parbox[t]{\declwidth}{$\sim$#1()}%
+   \parbox[t]{\createtextwidth}{\sloppy #2}%
+  }
+  \vspace{\entrysep}\par 
+}
+
+
+\newlength{\firstcolwidth}
+
+\newcommand{\enum}[3]{%
+\settowidth{\firstcolwidth}{#1\ \{\ #2\ \}}
+\ifthenelse {\firstcolwidth > \declwidth}{
+\noindent\parbox[t]{\textwidth}{%
+\parbox[t]{\textwidth}{#1\ \{\ #2\ \}}\vspace{\rowsep}\\%
+\hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #3}%
+}}% else
+{\noindent\parbox[t]{\declwidth}{#1\ \{\ #2\ \}}%
+\parbox[t]{\createtextwidth}{\sloppy #3}%
+}\par}
+
+\newcommand{\typemember}[3][]{%
+ \settowidth{\firstcolwidth}{#2}%
+ \addtolength{\firstcolwidth}{\colsep}%
+ \template{#1}
+ \ifthenelse {\firstcolwidth > \declwidth}%
+ {\noindent%
+  \parbox[t]{\textwidth}{%
+   \parbox[t]{\textwidth}{#2}\vspace{\rowsep}\\%
+   \hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #3}%
+  }% end parbox
+ }% end then
+ {\noindent\parbox[t]{\declwidth}{#2}%
+  \parbox[t]{\createtextwidth}{\sloppy #3}%
+ }% end else
+ \par%
+}
+
+\newcommand{\typedef}[3]{%
+\settowidth{\firstcolwidth}{typedef #1 #2}
+\ifthenelse {\firstcolwidth > \declwidth}{
+\noindent\parbox[t]{\textwidth}{%
+\parbox[t]{\textwidth}{typedef #1 #2}\vspace{\rowsep}\\%
+\hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #3}%
+}}% else
+{\noindent\parbox[t]{\declwidth}{typedef #1\ #2\ }%
+\parbox[t]{\createtextwidth}{\sloppy #3}%
+}\par}
+
+\newcommand{\event}[2]{%
+\settowidth{\firstcolwidth}{#1}
+\addtolength{\firstcolwidth}{\colsep}
+\ifthenelse {\firstcolwidth > \declwidth}{
+\noindent\parbox[t]{\textwidth}{%
+\parbox[t]{\textwidth}{#1}\vspace{\rowsep}\\%
+\hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #2}%
+}}
+{\noindent\parbox[t]{\declwidth}{#1}%
+\parbox[t]{\createtextwidth}{\sloppy #2}%
+}\par}
+
+
+\newcounter{classwidth}
+\newcounter{arrowtip}
+\newcounter{arrowline}
+\newcounter{indentcol}
+\newcounter{framerow}
+\newcounter{arrowrow}
+
+\newcommand{\adjustclassframe}[2]{% #1 is frame width, #2 is linenum times 4
+  \setcounter{classwidth}{#1}
+  \setcounter{arrowtip}{#1}
+  \setcounter{arrowline}{#1}
+  \addtocounter{arrowline}{3}
+  \setcounter{indentcol}{0}
+  \setcounter{framerow}{#2}
+  \setcounter{arrowrow}{#2}
+  \addtocounter{arrowrow}{1}
+}
+
+\newcommand{\indentframe}{%
+  \addtocounter{arrowline}{4}
+  \addtocounter{arrowtip}{4}
+  \addtocounter{indentcol}{4}
+}
+
+\setlength{\unitlength}{1ex}
+\newsavebox{\genarrowbox}
+\savebox{\genarrowbox}{%
+  \begin{picture}(0,0)%
+  \put(0,0){$\triangleleft$}
+  \put(1,0.55){\line(1,0){2}}
+  \put(3,0.55){\line(0,-1){1}}
+  \end{picture}
+}
+
+\newcommand{\genarrow}[1]{% #1 length of line downwards 
+  \put(\value{arrowtip},\value{arrowrow}){\usebox{\genarrowbox}}
+  \put(\value{arrowline},\value{arrowrow}){\line(0,-1){#1}}
+}
+
+\newcommand{\classframe}[1]{%
+% #1 classname
+  \addtocounter{framerow}{-4}\addtocounter{arrowrow}{-4}
+  \put(\value{indentcol},\value{framerow})%
+  {\framebox(\value{classwidth},3){\textbf{#1}}}
+}
+
+
+
+
+\newlength{\semwidth}
+\setlength{\semwidth}{\textwidth}
+\newlength{\semindent}
+\settowidth{\semindent}{{\bf Semantics}:\ }
+\addtolength{\semindent}{\parindent}
+\addtolength{\semwidth}{-\semindent}
+
+\newcommand{\semantics}[1]{
+\vspace{-2ex}\nopagebreak%\hspace{\codemargin}
+{\bf Semantics}:\ \parbox[t]{\semwidth}{#1}
+%\vspace{2ex}
+}
+
+
+\newenvironment{Lcode}%
+{\begin{list}{}{%
+\setlength{\topsep}{0pt}
+\setlength{\labelwidth}{0pt}
+\setlength{\itemindent}{0pt}
+\setlength{\labelsep}{0pt}
+\setlength{\leftmargin}{\codemargin}
+\small 
+\item[] 
+\vspace{-1ex plus 0.5pt minus 0.5pt}
+}%
+}%
+{\end{list}\vspace{1ex  plus 1.2pt minus 1pt}}
+
+% KM new @c code layout 11/00
+%\newenvironment{Lcode}{%
+%\addtolength{\topsep}{-8pt}% am 11. April zu 2.8 von 2.5ex geandert
+%\vspace{\Lcodetopsep}
+%\@begincode  
+%}{\endtrivlist\vspace{\Lcodebotsep}
+%\vspace{0.3ex}  
+% Leerzeile ist wichtig?? am 11 April 99 zu 0.3 geaendert von 0.5
+%}
+
+\newlength{\Lemptyline}
+%\setlength{\Lemptyline}{1ex} changed by KM for Book 99
+\setlength{\Lemptyline}{0.7ex plus 0.1ex minus 0.1ex} 
+\newcount\Lhighpen \Lhighpen=10000
+\newcount\Llowpen \Llowpen=-30
+
+

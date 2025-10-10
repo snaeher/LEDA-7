@@ -1,0 +1,8 @@
+In dieser \tt if \rm - Anweisung wird die Heapeigenschaft überprüft.
+
+Es wird der größere Sohn mit seinem Vater verglichen. 
+
+Ist der Vater größer oder gleich seinem größten Sohn, wird die \tt while \rm - Schleife 
+und damit die Funktion \tt heapify \rm verlassen.
+
+Der Vater \tt\red A[k] \black\rm ist die Wurzel eines Heaps.

@@ -1,0 +1,4 @@
+PROGS = \
+size$(e) \
+slink$(e)
+

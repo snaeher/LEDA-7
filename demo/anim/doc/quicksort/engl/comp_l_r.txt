@@ -1,0 +1,5 @@
+By comparing array indices it is checked, whether \tt l \rm is still to the left of \tt r.
+
+The recursive call is finished if \tt l \rm is greater than or equal \tt r\rm.
+
+

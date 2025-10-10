@@ -1,0 +1,28 @@
+OBJECTS = \
+_point$(o) \
+_polygis$(o) \
+_segment$(o) \
+_ray$(o) \
+_rectangle$(o) \
+_triangle$(o) \
+_line$(o) \
+_logo$(o) \
+_circle$(o) \
+_polygon$(o) \
+_gen_polygon$(o) \
+_gen_points$(o) \
+_transform$(o) \
+_point_set$(o) \
+_point_locator$(o) \
+_range_tree$(o) \
+_truncate_points$(o) \
+_dxf_io$(o) \
+_wkb_io$(o)
+
+_polygon$(o)       : ../generic/polygon.cpp
+_gen_polygon$(o)   : ../generic/gen_polygon.cpp
+_transform$(o)     : ../generic/transform.cpp
+_point_set$(o)     : ../generic/POINT_SET.cpp
+_point_locator$(o) : ../generic/POINT_LOCATOR.cpp
+_gen_points$(o)    : ../generic/gen_points.cpp
+

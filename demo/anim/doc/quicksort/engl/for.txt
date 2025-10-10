@@ -1,0 +1,5 @@
+The splitting-loop is implemented as an infinite loop. It is left with a \tt break \rm if the pointers meet.
+
+This approach is a typical example for the usefulness of \tt break.
+
+

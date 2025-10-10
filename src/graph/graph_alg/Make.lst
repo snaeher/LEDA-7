@@ -1,0 +1,51 @@
+OBJECTS = \
+_ABMP_matching$(o) \
+_BF_GEN$(o) \
+_FFB_matching$(o) \
+_FF_DFS_matching$(o) \
+_FF_matching$(o) \
+_HK_matching$(o) \
+_HK1_matching$(o) \
+_HK2_matching$(o) \
+_bfs$(o) \
+_bicomponents$(o) \
+_bl_planar$(o) \
+_check_kuratowski$(o) \
+_components$(o) \
+_d$(o) \
+_dfs$(o) \
+_dfsnum$(o) \
+_euler_tour$(o) \
+_feasible_flow$(o) \
+_five_color$(o) \
+_five_color_c$(o) \
+_ht_planar$(o) \
+_independent$(o) \
+_kuratowski$(o) \
+_max_flow$(o) \
+_max_flow_gen$(o) \
+_mc_matching$(o) \
+_mc_matching_gabow$(o) \
+_mc_matching_kececioglu$(o) \
+_mcb_matching$(o) \
+_mcf_cap_scaling$(o) \
+_mcf_cost_scaling$(o) \
+_mcf_cost_scaling_old$(o) \
+_mcf_primal_dual$(o) \
+_min_cut$(o) \
+_min_spanning$(o) \
+_minimum_ratio_cycle$(o) \
+_mw_matching$(o) \
+_mwb_matching$(o) \
+_planar$(o) \
+_shortest_path$(o) \
+_sort_edges$(o) \
+_spanning$(o) \
+_stnumb$(o) \
+_strongcomp$(o) \
+_st_matching$(o) \
+_topsort$(o) \
+_transclosure$(o) \
+_triang$(o)
+
+

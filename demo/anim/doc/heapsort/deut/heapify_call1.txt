@@ -1,0 +1,4 @@
+Es wird nun die Funktion \tt heapfiy \rm für das Feld \tt A \rm aufgerufen.
+
+Übergeben wird der Parameter \tt i \rm für den Index der Wurzel und der Parmeter \tt N 
+\rm für die Feldgröße.

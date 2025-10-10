@@ -1,0 +1,5 @@
+Die \tt if \rm - Anweisung überprüft die Existenz des rechten Sohnes und vergleicht 
+anschließend beide Söhne \tt A[j] \rm und \tt A[j+1] \rm miteinander.
+
+Der Index des größeren Sohnes wird sich in \tt j \rm gemerkt und farblich hervorge-
+hoben. 

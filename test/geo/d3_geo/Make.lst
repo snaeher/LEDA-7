@@ -1,0 +1,5 @@
+
+PROGS = \
+intersect_plane$(e) \
+plane_test$(e) \
+orient_test$(e)

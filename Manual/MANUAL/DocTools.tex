@@ -1,0 +1,344 @@
+%\chapter{The LEDA Tools for Manual Production and Documentation}
+\section{The LEDA Tools for Manual Production and Documentation}
+\label{DocTools}
+\index{DocTools}\index{Manual Production}
+
+The Lman and Fman utilities give online access to the manual pages of the LEDA
+system.  Lman produces \LaTeX-output and Fman produces low quality ASCII-output
+for quick reference. The usage is
+\begin{verbatim}
+Lman T[.h] options
+Fman T[.h] filter
+\end{verbatim}
+\index{Lman}\index{Fman}
+where T is the name of a LEDA type, e.g., list, sortseq, or point. Without
+options Lman produces manual pages as contained in the LEDA manual. Thus,
+\verb-Lman list- produces the manual page for the LEDA type list and 
+\verb-Fman list- produces a low quality version of it.  Please try out Lman 
+and Fman before proceeding.  If they do not work the error is very likely 
+to be one of the following.
+
+\begin{itemize}
+\item You don't have a current version of \emph{perl} installed and accessible.
+\item You don't have a current version of \emph{latex} installed and accessible.
+\item The environment variable \verb-LEDAROOT- is not set to the root directory of 
+the LEDA system.
+\item \verb-$LEDAROOT/Manual/cmd- is not part of your \verb-PATH-.
+\item \verb-$LEDAROOT/Manual/tex- is not part of your \verb-TEXINPUTS-.
+\end{itemize}
+\index{TEXINPUTS}\index{PATH}\index{\LaTeX}\index{Perl}
+
+The behavior of Lman and Fman can be fine-tuned by options. A call
+\texttt{Lman} without arguments gives a short survey of all available
+options. Options are specified in assignment syntax
+\texttt{variable=value}. There must be no blank on either side of the equality
+sign. In the list of options to follow we list the default value of each option
+first.
+
+\begin{description}
+\item[size=\{12, 11, 10\}] Determines the font size.
+
+\item[constref=\{no, yes\}] Determines how const-ref parameters are
+displayed. With the no-option a const-ref parameter 
+\verb-const T& x- is displayed as a value parameter \verb-T x- and
+with the yes-option it is displayed in full.
+
+\item[partypes=\{no, yes\}] Determines how parameters of unary and 
+binary operators are displayed. Consider for example an operator \verb|+| of a
+class number. With the no-option the operator 
+\verb|operator+(number x, number y)| is displayed as \verb|x + y| 
+and with the yes-option it is displayed as
+\verb|number x + number y|.
+
+\item[numbered=\{no, yes\}] Determines whether the headerline of the
+manual page is numbered. You probably want it numbered when the manual page
+becomes part of a larger document.
+
+\item[warnings=\{yes, no\}] Determines whether Lman gives warnings. 
+We recommend to use the option warnings=yes and to deal with individual
+warnings as later in the chapter.
+
+\item[verbosity=\{yes, no\}] Determines whether Lman gives status information.  
+
+\item[ack=\{no, yes\}] Determines whether Lman asks for 
+acknowledgments of warnings.
+
+\item[usesubscripts=\{yes, no\}] Determines whether variables 
+consisting of a single character followed by a number are displayed as
+subscripted variables.
+
+\item[filter=\{all,]\textbf{signatures, definition, creation, operations,
+implementation, example, opname\}} Determines which part of the manual page is
+shown. The all-option shows the complete manual page, the signature-options
+shows the signatures of all operations of the data type, the next five options
+show only the corresponding section of the manual page, and the opname-option
+shows only the operation with the same name. Thus \verb-Fman list insert- shows
+the insert operation for lists and \verb-Lman point filter=operator+- extracts
+the + operator of the point type (write arrop to inquire about the array
+operator and funop to inquire about the function operator).
+
+\item[outfile=\{"",string\}] Determines whether the \TeX-file generated
+is written on a temporary file (the default option) or on the file with name
+string. Only available for Lman.
+
+\item[latexruns=\{1, 0, 2\}] Determines the number of \LaTeX\  runs 
+used to produce the manual page. You need to run \LaTeX\ twice if the manual
+page contains cross references.
+
+\item[xdvi=\{yes, no\}] Determines whether the manual page is 
+displayed by xdvi.
+\end{description}
+
+Lman can be customized by putting options in a file Lman.cfg in either the home
+directory or the working directory. Command line options take precedence over
+options in the working directory which in turn take precedence over options in
+the home directory.
+
+Fman is the utility for quick reference. It takes two arguments, a typename and
+one of the filters, and directly displays its output. For example, the call
+\texttt{Fman list signatures} will display the signatures of all operations of
+the list data type.
+
+Lman and Fman are not only applicable to the header files of the LEDA system,
+they can be applied to any file containing (possibly among other things)
+\CCC-code suitably augmented by so-called manual comments. A manual comment is
+any comment of the form \verb|/*{\Mcommand ...}*/| where Mcommand is one of
+so-called manual commands. We discuss manual commands in detail below.  Every
+manual comment produces part of the manual page. 
+
+\latexhtml{\begin{figure}[t!]}{
+The following part shows the enriched header file of data type stack:
+\label{Header file of Stack}}%\latexhtml
+{\footnotesize
+\begin{verbatim}
+#ifndef LEDA_STACK_H
+#define LEDA_STACK_H
+
+#include <LEDA/basic.h>
+#include <LEDA/impl/slist.h>
+
+/*{\Manpage {stack} {E} {Stacks} {S}}*/
+
+template<class E> class _CLASSTYPE stack : private SLIST
+{
+/*{\Mdefinition
+An instance |S| of the parameterized data type |\Mname| is a sequence of 
+elements of data type |E|, called the element type of |S|. Insertions or
+deletions of elements take place only at one end of the sequence, called 
+the top of |S|. The size of |S| is the length of the sequence, a stack
+of size zero is called the empty stack.}*/
+
+public:
+
+/*{\Mcreation}*/
+
+  stack() {}
+/*{\Mcreate creates an instance |\Mvar| of type |\Mname| and initializes 
+it to the empty stack.}*/
+
+  stack(const stack<E>& S) : SLIST(S) {}
+ ~stack() { clear(); }
+  stack<E>& operator=(const stack<E>& S) 
+  { return (stack<E>&)SLIST::operator=(S); }
+
+/*{\Moperations 2.5 4}*/
+
+E top()   const { return ACCESS(E,SLIST::head());}
+/*{\Mop      returns the top element of |\Mvar|.\\ 
+             \precond $S$ is not empty.}*/
+
+void push(E x)  { SLIST::push(Copy(x)); }
+/*{\Mop      adds $x$ as new top element to |\Mvar|.}*/
+
+E pop()         { E x=top(); SLIST::pop(); return x; }
+/*{\Mop      deletes and returns the top element of |\Mvar|.\\ 
+             \precond $S$ is not empty.}*/
+
+\*{\Mimplementation
+Stacks are implemented by singly linked linear lists. All operations take 
+time $O(1)$.}*/ 
+};
+#endif
+\end{verbatim}
+}% end of footnotesize
+\latex{
+\caption{The header file for the stack data type.}\label{Header file of Stack}
+\end{figure}}%\latex
+
+
+\begin{latexonly}% this part for the latex production only
+\begin{figure}[t!]
+\_\hrulefill
+
+\begin{manual}
+{\bf Stacks ( stack )}
+
+\mansection{ Definition }
+
+An instance \mbox{$S$} of the parameterized data type 
+\mbox{$\mathit{stack}\Ltemplateless E\Ltemplategreater $} is a sequence of 
+elements of data type \mbox{$E$}, called the element type of \mbox{$S$}. Insertions or
+deletions of elements take place only at one end of the sequence, called 
+the top of \mbox{$S$}. The size of \mbox{$S$} is the length of the sequence, a stack
+of size zero is called the empty stack. 
+
+
+\mansection{ Creation }
+
+\create{\mbox{$\mathit{stack}\Ltemplateless E\Ltemplategreater $}}
+{\mbox{$S$}} {} {creates an instance \mbox{$S$} of type
+\mbox{$\mathit{stack}\Ltemplateless E\Ltemplategreater $} and initializes it to
+the empty stack.  }
+
+\setlength{\typewidth}{2.5cm}
+\setlength{\callwidth}{4cm}
+\computewidths
+
+
+\mansection{ Operations }
+
+\function{\mbox{$E$}}
+{\mbox{$S\nspacedot.$}top} {$\,$} {returns the top element of \mbox{$S$}.\\
+\precond $S$ is not empty.  }
+
+\function{\mbox{$\mathit{void}$}}
+{\mbox{$S\nspacedot.$}push} {\mbox{$E\ x$}} {adds $x$ as new top element to
+\mbox{$S$}.  }
+
+\function{\mbox{$E$}}
+{\mbox{$S\nspacedot.$}pop} {$\,$} {deletes and returns the top element of
+\mbox{$S$}.\\ \precond $S$ is not empty.  }
+
+\mansection{ Implementation }
+
+Stacks are implemented by singly linked linear lists. All operations take
+time $O(1)$, except clear which takes time $O(n)$, where $n$ is the size of
+the stack.
+\end{manual}
+
+\_\hrulefill
+% This section was produced in the following way:
+% Take the body of the previous figure and
+% put into stack.h. Run lextract to obtain stack.tex. 
+% Then edit stack.tex. Remove everything before 
+% \begin{manual} and after \end{manual}
+\caption{The manual page for the stack data type}\label{A Man-Page}
+\end{figure}
+\end{latexonly}
+
+\latexhtml{Figure \htmlref{Header file of Stack}{Header file of Stack}}{The section 
+\htmlref{Header file of Stack}} shows a header file augmented by manual comments and 
+\latexhtml{figure \htmlref{A Man-Page}{A Man-Page}}{\htmlref{the stack manual page}{Stacks}} 
+shows the manual page produced from it. The body of a manual comment is an
+ordinary \LaTeX-text augmented by the possiblity to \emph{quote code}. Code is
+quoted by enclosing it either between vertical bars ($\Lvert$\ldots$\Lvert$) or
+between double square brackets (\mbox{\tt [[}\ldots\mbox{\tt ]]}). Code quoted
+by double square brackets is typeset using typewriter font and code quoted by
+vertical bars is given a math-like appearance. So \mbox{\tt [[}S.insert(E
+x)\mbox{\tt ]]} produces {\tt S.insert(E x)} and $\Lvert$S.insert(E x)$\Lvert$
+produces $S$.{\it insert}($E$ $x$).
+
+
+\begin{figure}[h] 
+\begin{center}
+\setlength{\unitlength}{3mm}
+\begin{picture}(50,8)
+  \thicklines
+  \put(0,6){\makebox(5,0){\tt foo.[lw|nw|w]}}
+  \put(8,6){\vector(1,0){6}}
+  \put(10,7){\makebox(1,0)[b]{\em ldel}}
+  \put(21,6){\makebox(0,0){\tt foo-del.[lw|nw|w]}}
+  \put(27,6){\vector(1,0){7}}
+  \put(30,7){\makebox(0,0)[b]{\em XXXweave}}
+  \put(38,6){\makebox(0,0){\tt foo.tex}}
+  \put(41,6){\vector(1,0){5}}
+  \put(43,7){\makebox(0,0)[b]{\em latex}}
+  \put(0,5){\vector(0,-1){4}}
+  \put(1,3){\makebox(1,0)[l]{\em lextract}}
+  \put(0,0){\makebox(1,0){\tt foo.man}}
+  \put(4,0){\line(1,0){34}}
+  \put(38,0){\vector(0,1){5}}
+  \put(37,3){\makebox(0,0)[r]{$\backslash${\em input}}}
+\end{picture}
+\end{center}
+\caption{The Manual Production Process}\label{ldel and lextract}
+\end{figure}
+
+Lman is based on the command lextract. See figure \htmlref{ldel and lextract}{ldel and lextract}.
+\index{ldel}\index{lextract}
+\begin{verbatim}
+  lextract infile outfile [options]
+\end{verbatim}
+reads infile, processes the manual commands in it, and writes the core of a
+\TeX-file on outfile. All Lman options apply. Lman itself works in three phases. 
+It first produces a tempory \LaTeX-file
+
+\begin{verbatim}
+\documentclass[a4paper,size pt]{article}  
+\usepackage{Lweb}
+\begin{document}
+  output of lextract
+\end{document}
+\end{verbatim}
+
+and then applies latex and xdvi to it. 
+%The outfile-option allows to write 
+%the generated \TeX-file on a user-specified file.
+
+\begin{figure}[h] 
+\setlength{\unitlength}{2mm}
+\begin{picture}(50,11)
+  \thicklines
+  \put(20,10){\makebox(5,0){\tt LEDAROOT}}
+  \put(22,9){\line(0,-1){1}}
+  \put(7,6){\line(0,1){2}}
+  \put(37,6){\line(0,1){2}}
+  \put(7,8){\line(1,0){30}}
+  \put(5,5){\makebox(5,0){\tt incl}}
+  \put(7,1){\line(0,1){3}}
+  \put(5,0){\makebox(5,0){\tt LEDA}}
+  \put(35,5){\makebox(5,0){\tt Manual}}
+  \put(37,4){\line(0,-1){1}}
+  \put(22,1){\line(0,1){2}}
+  \put(32,1){\line(0,1){2}}
+  \put(42,1){\line(0,1){2}}
+  \put(52,1){\line(0,1){2}}
+  \put(22,3){\line(1,0){30}}
+  \put(20,0){\makebox(5,0){\tt cmd}}
+  \put(30,0){\makebox(5,0){\tt noweb}}
+  \put(40,0){\makebox(5,0){\tt tex}}
+  \put(50,0){\makebox(5,0){\tt MANUAL}}
+\end{picture}
+\caption{Manual relevant directories}\label{The LEDA directory tree}
+\end{figure}
+
+Ldoc is the tool to produce full documentations consisting of manual page,
+implementation, and test routines. Ldoc is based on noweb \cite{Ramsey:noweb},
+and Lweb. Lweb is a dialect of noweb which we developed for the production of
+the LEDA book and the documentation of the LEDA system. You should have a
+working knowledge of noweb before proceeding. Ldoc is based on the commands
+\emph{lextract}, \emph{ldel}, and \emph{weave}.  We discussed lextract
+already. \index{noweb}
+\begin{verbatim}
+  ldel infile outfile
+\end{verbatim}
+\noindent reads infile, deletes all manual comments from it, and writes the
+result on outfile. Weave is the weave-command of the literate programming tool
+in use, i.e., noweave for noweb, and lweave for Lweb. Ldoc works on 
+noweb-, and Lweb-files. It first uses lextract to extract the manual and ldel
+to extract a file pure of manual comments, it then applies the appropriate
+weave command to the output of ldel, and it finally applies latex and xdvi to
+the resulting file. All Lman options apply.
+
+Figure \htmlref{The LEDA directory tree}{The LEDA directory tree} shows the parts of the LEDAROOT directory
+that are relevant for manual production. Subdirectory \texttt{Manual} splits
+into cmd, noweb, tex, and MANUAL: \texttt{cmd} contains the commands Lman,
+Fman, \ldots, \texttt{noweb} contains the full documentation (written in noweb)
+of all commands, \texttt{tex} contains the style-files for manual production, and
+\texttt{MANUAL} contains the actual LEDA manual.
+
+For more information about the LEDA tools for manual production and
+documentation we refer the reader to the corresponding chapter of
+\cite{LEDAbook}.
+
+

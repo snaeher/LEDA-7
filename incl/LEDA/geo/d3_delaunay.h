@@ -1,0 +1,43 @@
+/*******************************************************************************
++
++  LEDA 7.2.1  
++
++
++  d3_delaunay.h
++
++
++  Copyright (c) 1995-2025
++  by Algorithmic Solutions Software GmbH
++  All rights reserved.
++ 
+*******************************************************************************/
+
+
+#include <LEDA/geo/d3_rat_point.h>
+#include <LEDA/geo/d3_rat_sphere.h>
+#include <LEDA/graph/graph.h>
+
+LEDA_BEGIN_NAMESPACE
+
+/*{\Manpage {d3_delaunay} {} {3D Triangulation and Voronoi Diagram Algorithms} }*/
+
+/*{\Mtext
+\setopdims{1cm}{3cm}
+}*/
+extern __exportF 
+void D3_TRIANG(const list<d3_rat_point>& L, GRAPH<d3_rat_point,int>& G);
+/*{\Mfuncl  computes a triangulation |G| of the points in |L|. }*/
+
+extern __exportF 
+void D3_DELAUNAY(const list<d3_rat_point>& L, GRAPH<d3_rat_point,int>& G);
+/*{\Mfuncl  computes a delaunay triangulation |G| of the points in |L|.}*/
+
+extern __exportF 
+void D3_VORONOI(const list<d3_rat_point>& L0, GRAPH<d3_rat_sphere,int>& G);
+/*{\Mfuncl  computes the voronoi diagramm |G| of the points in |L|.}*/
+
+extern __exportF 
+void D3_VORONOI(const list<d3_rat_point>& L0, GRAPH<d3_rat_point,int>& G, bool flag);
+
+
+LEDA_END_NAMESPACE

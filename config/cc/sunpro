@@ -1,0 +1,10 @@
+
+CC      = CC$(VERS) -m64 -pto
+PLAIN_C = cc$(VERS) -m64
+CCLIB   = CC$(VERS) -m64 -G
+LD      = CC$(VERS) -m64
+
+PIC     = -KPIC
+CFLAGS  = -O2
+MISALGN_FLAG = -misalign
+

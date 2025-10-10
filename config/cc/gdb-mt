@@ -1,0 +1,11 @@
+
+CC      = g++$(VERS) -Wall -Wno-unused -pthread -DLEDA_MULTI_THREAD
+PLAIN_C = gcc$(VERS) -Wall -pthread
+CCLIB   = g++$(VERS) -shared -pthread
+LD      = g++$(VERS) -pthread
+
+PIC     = -fpic
+
+CFLAGS  = -g -fno-strict-aliasing 
+WERR    = -Werror
+

@@ -1,0 +1,23 @@
+OBJECTS = \
+_rat_point$(o) \
+_rat_segment$(o) \
+_rat_line$(o) \
+_rat_ray$(o) \
+_rat_rectangle$(o) \
+_rat_triangle$(o) \
+_rat_circle$(o) \
+_rat_polygon$(o) \
+_rat_gen_polygon$(o) \
+_rat_transform$(o) \
+_rat_point_set$(o) \
+_rat_point_locator$(o) \
+_gen_rat_points$(o)
+
+
+_rat_polygon$(o)       : ../generic/polygon.cpp
+_rat_gen_polygon$(o)   : ../generic/gen_polygon.cpp
+_rat_transform$(o)     : ../generic/transform.cpp
+_rat_point_set$(o)     : ../generic/POINT_SET.cpp
+_rat_point_locator$(o) : ../generic/POINT_LOCATOR.cpp
+_gen_rat_points$(o)    : ../generic/gen_points.cpp
+

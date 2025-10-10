@@ -1,0 +1,320 @@
+#!/bin/sh
+
+
+CDPATH=0
+
+#if svn info >& /dev/null; then
+#  echo
+#  echo Do not run lconfig in a directory under version control.
+#  exit
+#fi
+
+
+if [ $(pwd) == /home/naeher/leda ]; then
+  echo
+  echo Do not run lconfig in /home/naeher/leda
+  exit
+fi
+
+
+if  [ ! -f lconfig ]; then
+  echo
+  echo lconfig must be started in LEDA root directory.
+  exit
+fi
+
+
+#check if yasm is available
+
+cmd=yasm
+cmd_path=$(command -v $cmd)
+
+if [ "$cmd_path" != "" ]; then
+  echo
+  echo \'$cmd\' found: $cmd_path
+else
+  echo
+  echo "'$cmd' not found."
+  echo "Please install the '$cmd' assembler package."
+  exit
+fi
+
+: '
+
+# check whether libX11 and libXft are installed
+
+libX11=$(ldconfig -p | grep libX11x.so)
+if [ "$libX11" == "" ]; then
+  echo
+  echo "Missing X11 Library: libX11.so."
+  echo "Please install the 'X11' development package."
+  exit
+fi
+
+libXft=$(ldconfig -p | grep libXftx.so)
+if [ "$libXft" == "" ]; then
+  echo
+  echo "Missing X11 Library: libXft.so."
+  echo "Please install the 'Xft' development package."
+  exit
+fi
+
+'
+
+
+
+
+name=$1
+lib=$2
+cvers=$3
+
+if [ "$lib" = "" ]; then
+  lib=static
+fi
+
+if [ "$lib" = "dll" ]; then
+  lib=shared
+fi
+
+
+sys=`uname`
+ver=`uname -r`
+mach=`uname -m`       
+
+case $sys in
+
+  Linux)   sys=Linux
+           ;;
+
+  Darwin)  sys=Darwin
+           ;;
+
+  SunOS)   sys=SunOS
+           ;;
+
+  CYGWIN*) sys=Cygwin
+           ;;
+esac
+
+
+comp=$name
+
+case $name in
+     *g++*) comp=g++
+            ;;
+       CC*) comp=sunpro
+            ;;
+      xlc*) comp=xlc
+            ;;
+      KCC*) comp=KCC
+            ;;
+      msc*) comp=msc
+            ;;
+esac
+
+
+
+if [ "$name" = "" -o $lib != shared -a $lib != static ]
+then 
+   echo ""
+   echo "usage: lconfig  compiler [ static | shared ]"
+   echo ""
+if [ $sys == Cygwin ]; then
+   echo -n "known compilers: "
+   cd config/cc
+   ls msc*
+   cd ../..
+else
+   echo "known compilers: g++ clang msc cc sunpro"
+fi
+   echo ""
+   exit
+fi
+
+
+if [ $sys = Cygwin -a $comp = g++ ]; then
+  sys=Cygwin-g++
+fi
+
+
+echo
+echo Configuring makefiles for $name $Platform and $lib libraries on $sys / $mach
+
+confdir=config/$sys
+
+cp config/cmd/build.sh .
+
+#------------------------------------------------------------------------------
+# Make.src, Make.pro, shared.mk, static.mk, build.sh
+#------------------------------------------------------------------------------
+
+rm -f */Make.src */Make.pro shared.mk static.mk 
+
+ccfile=config/cc/$name
+
+if [ -f $ccfile ]
+then 
+
+  echo
+  echo $ccfile 
+
+  echo  >> Make.src
+  echo "VERS = $cvers" >> Make.src
+
+  cat $ccfile          >> Make.src
+
+  if [ -f $confdir/shared.mk -a $lib = shared ]; then
+    cat Make.src $confdir/shared.mk > shared.mk
+  fi
+  
+  if [ -f $confdir/static.mk ]; then
+    cat Make.src $confdir/static.mk > static.mk
+  fi
+
+else 
+  echo " "
+  echo "WARNING: $name not found in the list of known compilers,"
+  echo "         (lconfig without arguments prints the list)"
+  echo " "
+  echo "CC = $name"  > Make.src
+  echo "PLAIN_C = $name" >> Make.src
+  echo "LD = $name" >> Make.src
+fi
+
+
+# configure assembler command
+
+ASM="ASM ="
+
+if [ $sys = Cygwin ]; then
+
+  if [ "$Platform" = "x64" ]; then
+    ASM="ASM = yasm -m amd64 -f win64"
+  else
+    ASM="ASM = nasm -Dwin32 -f win32"
+  fi
+
+elif [ $sys = Cygwin-g++ ]; then
+  ASM="ASM = nasm -Dwin32 -f win32"
+
+elif [ $sys = Darwin32 ]; then
+  ASM="ASM = yasm -f macho32 --prefix=_"
+
+elif [ $sys = Darwin ]; then
+  ASM="ASM = yasm -m amd64 -f macho64 --prefix=_"
+
+elif [ $sys = Linux32 ]; then
+  ASM="ASM = yasm -m x86 -f elf"
+
+elif [ $sys = Linux ]; then
+  ASM="ASM = yasm -m amd64 -f elf"
+
+elif [ $sys = sunos ]; then
+
+  if [ $lib = shared ]; then
+    ASM="ASM = as -P -K PIC"
+  else
+    ASM="ASM = as -P"
+  fi
+
+fi
+
+echo $ASM >> Make.src
+
+cp Make.src Make.pro
+
+
+# configure system libraries (XLIB)
+
+if [ $sys = Cygwin-g++ ]; then
+
+  echo "XLIB = -lX11 -lXft -luser32 -lgdi32 -lmsimg32 -lcomdlg32 -lshell32 -lwsock32" >> Make.pro
+
+elif [ $sys = Cygwin ]; then
+
+   echo "XLIB = user32.lib gdi32.lib msimg32.lib comdlg32.lib shell32.lib advapi32.lib wsock32.lib" >> Make.pro
+
+else
+
+   echo "XLIB = -lX11 -lXft" >> Make.pro
+
+fi
+
+cat Make.src
+
+# append config/sys/Make.src[.shared] to Make.src 
+
+if [ -f $confdir/Make.src.$lib ]; then
+  cat $confdir/Make.src.$lib >> Make.src
+else
+  cat $confdir/Make.src      >> Make.src
+fi
+
+
+# append config/sys/Make.pro[.shared] to Make.src 
+
+if [ -f $confdir/Make.pro.$lib ]; then
+  cat $confdir/Make.pro.$lib >> Make.pro
+else
+  cat $confdir/Make.pro      >> Make.pro
+fi
+
+
+cp Make.src src
+
+cp Make.pro app
+cp Make.pro demo
+cp Make.pro test
+cp Make.pro prog
+cp Make.pro res
+
+rm Make.src Make.pro
+
+
+# configure (x86) asm directory
+
+echo
+
+cd src/numbers/asm > /dev/null
+
+if [ $sys = Linux -o $sys = Darwin ]; then
+  asm_dir=x86_64
+else
+#  echo Platform =  $Platform
+  if [ "$Platform" != "x64" ]; then
+    asm_dir=x86_32
+  else
+    asm_dir=none
+  fi
+fi
+
+
+if [ $asm_dir != none ]; then
+  echo Use Assembler in  src/numbers/asm/$asm_dir
+  mkdir -p x86
+  cp $asm_dir/*.asm x86 
+  cp $asm_dir/Make* x86 
+else
+  rm -r -f x86
+  mkdir x86
+  echo  NO ASSEMBLER for x64
+fi
+
+cd ../../..
+
+
+# AGD
+
+if [ -d AGD ]; then
+  cp src/Make.src AGD/src
+  cp demo/Make.pro AGD/demo
+
+  cd ./incl
+  rm -f AGD
+  ln -s ../AGD/incl/AGD .
+  cd ..
+fi
+
+  
+touch .lconfig
+

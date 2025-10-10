@@ -1,0 +1,51 @@
+
+\section{The LEDA graph input/output format}\label{leda-format}
+
+The following passage describes the format of the output produced by the
+function {\tt graph::write(ostream\& out)}. The output consists of several lines
+which are separated by endl. Comment-lines have a {\tt \#} character
+in the first column and are ignored. The output can be partitioned in three
+sections:
+
+\paragraph{Header Section}\ \\
+The first line always contains the string {\tt LEDA.GRAPH}. If the graph
+type is not parameterized, i.e. graph or ugraph, the following two
+lines both contain the string {\tt void}. In case the graph is parameterized,
+i.e. {\tt GRAPH} or {\tt UGRAPH}, these lines contain a description
+of the node type and the edge type, which is obtained by calling the
+macro {\tt LEDA\_TYPE\_NAME}.The fourth line specifies if the graph is either 
+directed (-1) or undirected (-2).
+
+\paragraph{Nodes Section}\ \\
+The first line contains n, the number of nodes in the graph. The nodes
+are ordered and numbered according to their position in the node list
+of the graph. Each of the following n lines contains the information
+which is associated with the respective node of the graph. When the
+information of a node (or an edge) is sent to an output stream, it is
+always enclosed by the strings {\tt |\{} and {\tt \}|}. If the graph is not
+parameterized, then the string between these parantheses is empty, so
+that all the n lines contain the string {\tt |\{\}|}.
+
+\paragraph{Edges Section}\ \\
+The first line contains m, the number of edges in the graph. The edges
+of the graph are ordered by two criteria: first according to the number
+of their source node and second according to their position in the
+adjacency list of the source node. Each of the next m lines contains
+the description of an edge which consists of four space-separated
+parts:
+\begin{description}
+\item{(a)} the number of the source node
+\item{(b)} the number of the target node
+\item{(c)} the number of the reversal edge or 0, if no such edge is set
+\item{(d)} the information associated with the edge (cf. nodes section)
+\end{description}
+
+{\bf Note}:
+For the data type {\tt planar\_map} the order of the edges is important,
+because the ordering of the edges in the adjacency list of a node
+corresponds to the counter-clockwise ordering of these edges around the node
+in the planar embedding. And the information about reversal edges is also
+vital for this data type.
+
+
+

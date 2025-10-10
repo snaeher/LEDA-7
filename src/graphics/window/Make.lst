@@ -1,0 +1,15 @@
+
+OBJECTS = \
+_base_window$(o) \
+_base_panel$(o) \
+_color$(o) \
+_d3_window$(o) \
+_file_panel$(o) \
+_file_view$(o) \
+_geo_graph$(o) \
+_motion$(o) \
+_window$(o) \
+_param_panel$(o) \
+_ps_file$(o) \
+_rat_window$(o) \
+_real_window$(o)

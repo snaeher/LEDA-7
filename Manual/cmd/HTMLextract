@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ "$1" = "" ]; then
+    echo "usage:"
+    echo "       HTMLextract file[.lw]"
+    echo "       extracts all manual pages in input format for latex2html"
+    exit
+else
+  base=`basename $1 .lw`
+  if [ -d $base ]; then rm -rf $base; fi
+fi
+
+perl -S -I$LEDAROOT/Manual/cmd ext.pl HTMLdoc $1 extractonly=yes
+

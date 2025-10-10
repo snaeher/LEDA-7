@@ -1,0 +1,22 @@
+PROGS = \
+FF_matching_time$(e) \
+compact_versus_noncompact_representation$(e) \
+max_flow_time$(e) \
+mc_matching_time$(e) \
+mcb_dfs_vs_bfs$(e) \
+mcb_effect_of_heuristic$(e) \
+mcb_matching_time$(e) \
+min_cut_time$(e) \
+minspantree_time$(e) \
+node_arrays_versus_node_maps$(e) \
+planarity_time$(e) \
+random_graph_demo$(e) \
+shortest_path_time$(e) \
+speed_of_basic_graph_algorithms$(e) \
+minimum_ratio_cycle_demo$(e) \
+mwb_matching_time$(e) \
+shortest_path_via_assignment_time$(e)
+
+#max_flow_large_time$(e)
+#max_flow_summary_time$(e)
+

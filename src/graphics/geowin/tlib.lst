@@ -1,0 +1,9 @@
++ src\graphics\GeoWin\geo_algo.obj &
++ src\graphics\GeoWin\geo_default_fl.obj &
++ src\graphics\GeoWin\geo_default_rat.obj &
++ src\graphics\GeoWin\geo_gen.obj &
++ src\graphics\GeoWin\geo_ledaobj.obj &
++ src\graphics\GeoWin\geo_menu.obj &
++ src\graphics\GeoWin\geo_scene.obj &
++ src\graphics\GeoWin\geo_win.obj &
+, tlib

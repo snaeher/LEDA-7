@@ -1,0 +1,15 @@
+OBJECTS = \
+_ab_tree$(o) \
+_avl_tree$(o) \
+_avl_tree1$(o) \
+_bb_tree$(o) \
+_bin_tree$(o) \
+_bin_tree1$(o) \
+_ch_hash$(o) \
+_ch_map$(o) \
+_ch_map2$(o) \
+_d_int_set$(o) \
+_int_set$(o) \
+_rb_tree$(o) \
+_rs_tree$(o) \
+_skiplist$(o)

@@ -1,0 +1,321 @@
+#ifndef ViewVariable_H
+#define ViewVariable_H
+
+//
+//  Class: ViewVariable
+// 
+//  by Oliver Zlotowski (1998)
+//
+//  Operations:
+//
+//  void extract_frame_label(string <filename>)
+//  void open_with_timeout(int <x_WindowPos>, int <y_WindowPos>, int <time>)
+//  void create_table(const list<string> <ArgList>, const list<string> <AtrList>)
+//  void update_table(const list<string> <AtrList>)
+//
+//  void set_window_label(const string <window label>)
+//  void set_display_position(const int <x_WindowPos>, const int <y_WindowPos>)
+//  void set_fontsize(const int <FontSize>)
+//  void set_tupel_per_line(const int <TupelperLine>)
+//  void set_tupel_distance(const int <DistY>)
+//  void set_texture(const bool <ShowTexture>)
+//
+//  GraphWin* get_graphwindow_ptr() 
+//  int get_window_height()
+//  int get_window_width()
+//
+//  void display(int <x_WindowPos>, int <y_WindowPos>)          
+//  void clear()
+//  void close()
+//
+//  int wait_of_mouse_event()   
+//  void wait_with_timeout(int <time>) 
+//
+
+
+#include <LEDA/graphics/graphwin.h>
+#include <LEDA/system/file.h>
+#include <LEDA/core/stack.h>
+#include <LEDA/system/stream.h>
+
+
+#if !defined(Slate_Texture)
+#define Slate_Texture
+
+
+static const char *slate_xpm[] = {
+/* width height ncolors chars_per_pixel */
+"128 128 6 1",
+/* colors */
+"` c #222222",
+"a c #333333",
+"b c #444444",
+"c c #555555",
+"d c #666666",
+"e c #777777",
+/* pixels */
+"bbbdcbbbcccdbcbcbbccccbccbbbddcccdcdbbbbcccbcbccbacbbbbbcbcdccccccccbbcccbcccdcbcccbccccccccccccbbabbcccbcbcccccbcbcdcbbbbcbcbcc",
+"ccbcbccdcccbabbbbbccccccbbccdcbbddbbabcbccbcbaaaaccccbcdccccbccbbbcccbbcacccccbbccccdcbbbcdcccbccbcbcbbbcbcbcbbcbccdcdcbcccccccc",
+"bbccccdcccbbbbbcbcddcddbbbcdcccccbcabbccbbbaaabbbbcccbccccccccbaccbbbabbbccccbcbcccbccbccccccbbcbbbcbdcccbbbbbbcbccddcbacccbbccc",
+"bcccbcbcccbccccbcbccccbccbecccccccbacbcbbbbabbbcccbbbccccccbbbabbcbbcbcdcccbbbccccbbccbbccccbccccbcbcbbbcbbbcccccceccbbbdcbbdcbb",
+"bbcacdbdbbcdcdbcbccdcccdcdccccbdccabbbbcbbbbcbcbbbbcbcdccbbbbbbccbbcbcdccdbcbcbdcbbcccbbccccbccdcccbbbcccabcccccdcdcbccccbcccbcc",
+"ccccdccbabbcbcccccddcccbcbbbbcbbcbcbccccccbcccdcbbcddccbbcbbcccbbbbbcbcbbbbcdccbbbcbcbabbbccbbbcabacacbcbbbbccccbcbbcacbbabcbcbb",
+"ccbbbcbbaccccdcccdddcbcbbabbccccbbbbcbcbccccdccbbcccdbbbcdabcbbcacbccbcbbbbdccccbdcabbacbcbcbcbcabbcbbcccbbccccbbbbdabbbbbcccdcb",
+"ccbcccbcdccccbcbccdcbcbbbbbbcdbcbbbbbcbcccbcccbbccccbcbbcbcbbcccbbccbcbbbcccbcbbcbbbcbbbcccbcacbbabbaaccbccbccbbcbcdccbdbbcddcbb",
+"dcccbcbccbcdccbcbdcbcbcbacccdcbcbbbbcbbcdccdcbcbccccccccccbadcdcbcbbcccbbccbccbbcbbbbaacbcccbbbbbbbbbcccccccccbbbccccbcccbccdbbc",
+"ccccccccbcbbccbbbcbabbbaccccbccbcbccbbbbdccbbbcccccccccbbbbccdbbbcbbbbbbcccdccbbccbcbbcbcccbabbbbbbbccbccbbccccdccbbbbcabadbcccb",
+"cdbbccccbbccbbbbcdcbbbbbcbbaccacbbbbcbccccccbbcccdccccabccbccccacbccccbccddbdbbccbcdbcbdbcbacbabbccccccbccccbbcccccbccaabbcbbcbc",
+"ccbbbcbcbbccdbccccabbbcbcbcbcccbbcabbbccccbcbcdccbbbccbbbbbbccabbcbbdbcdcbbdbcbcacbbbbbbbbbabbbbbcbbbcccdcbcbbccbcbcccacccbbcbcc",
+"ccbbcbbcccccbcccccabcbabbccbcbbbbbccbbcbccbbcddbccbcbcaabbbcbbbbcccccbccccdcbcbbcbcbbbbcbbabcbbbcccccccccbbbccdbccbccabccdccccbb",
+"cbbbcbbbbbbccbcccbbbccbdccbbbcbbbcbbabbbbcbcdcbbccbbbcabbbcbbbbbbbbbacbbabcbbbcbbbbcbcbbbbbbbbcbcbbbbcbbbbbcbcbccbbbbbccccccccdc",
+"bcbcbacccccdbbccccbccbdcdbbbccbcbcbabbbbbcddccbccbbbccbcbccbbcbabababcbbbccbcccabbbdbcbbbccbbcbcbcbbccbbabcccbbbbbcbbdcbccccccdc",
+"bbcccbcbbbcccddcccbbbcbcbbbccbbcbcbbbcbcdbccccabccbbbbbaaabbababbbbccbbbccccbbbbbcbbbcbbbbabcccbbababbbbbbcbbccccccddccdcccccdcd",
+"bcccabcbcbddccccdbccbcbcbbbcbbcbccbbbccdbbccbbbbcbbacaa`bacbbbbabacccbcccccacaabcbbcbcbbbbcbcccccbabcbabbabbbdccccddcccccccccdcc",
+"cbbbccbbccccccccbccccbcbbabcacdcccbccbcbbdcdccbcccbbbbabcbccabbbabbbbcccbbacbbcbcbbbccbacbbcdbbcabbbcbccabdcdcbcbbccbbbabcccccbc",
+"bbccbcdccbdccbccbdbcbcbcbbbbcdcccacbbabcccdbbcbdcbbbbbbcbbcbbbbababbcbcbbbbcbbcbbbbbbbbbcccccbbbbbbbbbbcabccdcccbccbbcbbbddcccbb",
+"ccccbcbbbbccccdcdcbbdcbbcbccdcbaabccbcbcbbcbdccbbbccaabbbacbbbcccbbccbbbabcbbccbbcbcbcbbcbbcbcabbbbbcbcbbccdbcbcbbbcbabbcbcbcbbb",
+"cccdbcbbbbbbbccdbcbccbbcbcdccbbcabcbbccccccbcbcccbbbbbbbbbbcbbcbbbcdbabbbcbbccbbcbbbbbbcbccbcbbbbbcccacabbcccccbbcbbbbbcccbbcbbc",
+"cbbbbabbbcccccbbbbbabbababbcbbbbbbbcbbcbccccbbbbbbbbaabbbbbcbbbbbccbcbbbcdccbbccbcccbdcbcbbbbbabbcbcbbbbccbccbcbbcbcbcbcbbcbcccb",
+"bcccaabbbccccdbbbcbbbbabbbcbccbbacbccbbbcbcbbdcbbbbbaabcabbbbbbbacbbabccddcbbbbcbbccccccbbabbabbbccbbbbcbcccbcbbbbbbcdccacbbbcbb",
+"cbcbabbccdcccdabcbbbbbbabcbbbbbababbcbdbbbbbcbabcbbbaabcbabcbbbbbbbbbcbcccbcccccbccbbbbbbbbbbccbcbbbbbbbdbcbbbbbabcccbbbbcdccccb",
+"cdcbbbbcccccccbcbcabbbaaccbbccbbbbcbccbcbccbbbbcbababbbcababbbbbbcbcbccbdcbccbccbcbbbbbaccbbcabbbbabcbbcccbbbcbbbdbcbcbbbccbcbbc",
+"bbabbacbcccbbbbbbcbbbcbbccbcbcbbaacccbcbccbbcbbcababbbbbbbcbcbbbaabbbbbdbccbabccbcbccbbbbcbcbccccbcbcbbcccbccccccbcabcaabcbbbbcb",
+"ccabbaccddbbbbbcbbccbbbcbcbbcbaabbccbbbcbbbaccccbbbcbbcbbccbbbbbabbbaaccdcbabbcbbcbcbbbbbbbbcbccbcbbcbbbbbbbbbcbdbbbccbbbcbbbaba",
+"ccabbcbdcdbbcbccbccccbbccbbbabbbbcdccccbbbacccbabbcbbbbbcbbbbcbbbbbbccccbbbccccccbcbbbcbbbccbccbbaccbcccccccbcbcacbbccabcbbbabcc",
+"cbbccbcdccbbccbcbcdcdcbbcbbbababccccccbbbbcccbbbbcbbbbcbbcabbbbbacbbcbcbbbbbcbdcccbabbbbbcbcccbbccbacbccccbcbbcbbcbbcbbcbababbbb",
+"bbcbccdcbbbbbbcccbbcbacbdcbccccdcccccbabccbccbbccbbbbbcbbbbbbcbbbbccbcbcccccbcbcbcccccbcbcdcbbbbbbbccbbccbcbcccccccccbbbbbcccccb",
+"ccbbbbcbcccbccbcb`bbbbbcbcbcbdddbbccbabcbbdcbbccccbccdcbccbaccbbcbbccbbdccbcccbccccbcbbccccdacccbbbccccbccbcbcccccccbbbcbccccccc",
+"bcccdcccbbcbbccbbbbcbbcbbccbdcccbbccbcdcbcdcbbbbcbcdcbbcbaabccbbbabcbcdcccccbbccdcccbbbbcbbcbbbbbbccbcbccdbcccccccbcbbcbcbcccccc",
+"bccccbcbccbbbccbbabcabbcccbcdbccbccccbcbcccbbbccbbcbbbbbbaacbcbbaaccbdcccbbcbcbdcdcbbbcbcbbcbbbbbbcbcccccbcbcccccbbcbabbcdccccbc",
+"cccccccdccbcccabbabccbcbbccbbbbbbcccbcccccccbcccccbbbbabaacbcbbbabccccacaccbcbdccdbcbbbcbcbbccbbcbccbcbcccbbcbbcbbcbbbdcdccbdbbc",
+"cccccbccdcbbcbbbbbbcbcbbbcbbbbbccccbccbcccccccccbbbcbaabbcbbbbaabbcbcabbcbcbbacddccbabbcccbbccbbcccbcccdcacbbcccbbbcbbccbbbccbcd",
+"bcccbbccbcacccabcccbbcccdcbcbcccccbbbbcbbbbcbbcbbbcaabcbbbaabababbbbbccbbcccacdccbaabaccbbbcdccbbbbccbdbbccbbcbbacccbbccccbbabbc",
+"cbcccbbbbcbcbacbbbbcccccbbbbbbccccbbbcbbbcbcbbbbbcbabbbbbbbabbabbbbbbbbbcccbccdccbbbbbccbcbbccbbbccccccccbcabcbacbbbbcccbbbbbccb",
+"bcccbbcbccbabbcccbcbbccccbccbccccbbcbbcbccdbccbbccbbcbbbbbacbaccbcbdbdcbcbccccbbddbcbbbbbbbbbbbacbccbcccbcccccbccbccccbbcbcbdcbb",
+"bbbbbbbcccbababcbbbcccbbbbccccdbcbccbcbccdbbcbbbbcbbcbbbbbbbbbbbccccccccbccccbcdbcbccbccbcbbbbbabbccccbacccbcccdbcbbccbcbccdbccc",
+"bbcccccdbbbcccccbbcbcbcdbbdcccbbccbbbacccbbbcbcbcbbcbbbccbbbcbccccbbcbbbcbdcbccccdbbabccbbbabbbbcccbbbcccbccbbcbbbccdcbbcbbcbbbc",
+"bcdbcccbcbbbcccbbccbbbcbcbdbbcbcbbbbabcbccbbbbccbbbbbbcbcbcccbcdbbbbcbccbcbbccbccccabbcbbbbbbbacccbbbbbbcdcbcccbbccbcbbbbcbbbccb",
+"ccbbcbccbccdcbbcdcbbccccbbccccbcbcbacbcbbcbbcbcbacccbbbcbbbbbbbbbcccccbbccccddbbccacabcbccacbccccbbbcbccccbcbbabbbbbbccbbbcbcbcb",
+"cbccbcbcbcccbbbddccbcbdbbbccbbccccbbaabccdabbcbacdbacbccbbbbabbbbbccbbbbcdcbcccccbbbbcbbbbcccdcccbbbbbcbcbbcbbabccbcccbbbccbcbbc",
+"ccbbcdcbbcdbbcdcbbbbcbcbbccccbbbcabbcbcbccaacbbcccbbccbcabbbbbcbccbcbcccccccdcabbbccbbbbbcbbcbbbbccdcccdccbcbbbaccbbcccbbcbcbbdb",
+"bbbcbcbcbcccbccbbcbccaccbccbbcbbbbbbbacccbabbbbccbacccbcbbbbcbbacbcbcbcccccdcbcbcbbbccbbcccbbbbbccdbccddbbcbababbabccccccbcbcbbb",
+"dcbcdcccbbbcbabcccbabbcbbbcccbbcbcccbcbbccbabcbcccbccbbbcbacbbcadccbbcbbcbcbbbbbbcbbbbabbbcccccccbbbabcbbbbbbaabbbbdcbbbabbbbbbc",
+"ccddccbbbbbabbbcccbbbbbbbcbcccbccccccbcbbcacbcbccbcbbbbcbbcbbcbbcbcbbbcbcbbccbbacbbcabbbbcccdcccbbcccccbcbbaaaabbbddcbbbcbcbaccc",
+"cbcbbccbcccccbcccbabcbcbccdcbccccdcdcbcbccbbcbcbcdccbcccccbcbbbbccbbcbbcccbbbbbacbbbbbbcbbbcacbaaabcbdbbbaaaabcbcbdbccbccccccbbc",
+"cbbbdcbbbccbcbcdbbccbbbcccbbdccccccbcbcbcccbcbcbdccbcccbbbbbbbbcbcbabbcabbbabbbbbbabaabcbccbccabbcbcccbbbbbbbbbbbccdbbbbcbbbccbb",
+"bdccbccbcbbccbcbbbbabbcbbcccbbcbccbbcbbcabbcbbccdcbbbbbcbbbbbbbbccbcccbbccabcbbbbccbdcdbcccbcbabcbcbcbbbcabbccbcbbdcbcbacccbcbbc",
+"cccccdcabbccbbbbabbbbbcbcdcbbcccabbdabbaccbccccdcbabbabbabcbcccccbccccbcbcbcccbcbccccccbcccbbcbcccbcbbabbbbbbcbbbccbbbbbcbbcbbbc",
+"ccccbbbccccbbcbbcbcbcbbccbaccbcbbcbbbcbbbbbbbbdbbcbbcbbbbbbbbcbbcccccbbbcbbbccbbcbbcbbbcdbbaccbbccbbacbbbbcbdbbccbcbcbcbcbcbcccb",
+"cccbccbbbccabbbbbbcbbbbcbbcbbcbbbbccbbbacabbcbcbbcabbabbbccbcbcdbcccbabbbaccbbbcbbcbbccccbbbcacbcbbcbbbabbbbccbcbbccbbbbcccccccb",
+"cbbcbcbcccbabbccbbccbbbbcbcccccbbbbbcbacbcbccccbbccbccccbbbccccbcbbbbbbbbbdbbbcabacbccbbabbbbbbcbbbbbcbcbbbbcbcbccbbcccbbbbbbbbb",
+"cccbcdccccbbcbbbbacbbbcccbbccbcbbccdabcccbcdcccaddbbcccccccbccbdabbcbabbcbcbbcbababbcbbbabbababcccbcbbcbbbbbcdbcbcccbccbbcbcbbbb",
+"cccbcccbccbbbbbcabbbbbcccbbbbbbbccccbccbbcccbcbccbaccccbcbbccccbbbccbcccccbbdbcbbbccbcabccbbbbccbcbbbbbcbbcccbbaccbccbbbcdbbccbb",
+"ccbcbbbbbcbbbcbbbbbbbbbbbbbcbbbcccccbcbbbbcbdccbcccccccbbbbbcbbcbcbbcbcccbcccbbbbbcbccccbbbbbbcbcbbbbbbbbbdcccacbbcdcbcdccbccbbc",
+"ccbccdccccbacbcbdbbcdbcccbbbccccccccbbccbcbcbcabbbcbbbbbbccccdbbbbccbcbbbbbcbcabcbccbcbbbbabbbcbcbbccbcbbbbccccccccbcccbcbbccccc",
+"ccddcbcbdbbbbbccbbccbcbcbbbccccccccabcbbbbbcbbbbcdbbbcbcbcccccbaccbbbcbabcccbabbbbccbbbbbbbbbcccccbcbabbbbbbbbbcbbccbbbbbbccbbcb",
+"ccddbbbbcbbbcbbbabbbbbbccbbccccbcbbbdcbbbcccbbccdbbbbbbbbcbbcbbcbcbbbabccbbaabbbcccababbbbabcbcbbbbbbbbcbbccccbcabccbccccccccbcd",
+"ddccccbccbbbcbbabcbbcbcdbccbcccbcbbbcbbbccccbbbccbbbbbbcbcbbbcbbbabbacbccbabbcbacbbabbbbbbbcbdbbcbbcbbccccbcccccbbcccddcbcccbcdd",
+"bdcbbbbbbbbcbbbbccabbccbbcbcbbbcabbcbbbbbbbbbcccbbbbbdbdccbbcbbbbbcbbbbbbbbbbbbccbbccbccbbcbcbbbbbcbccbbbacbcbbbcccbccbbbcbccdcc",
+"cdbbbbbcbbbbbbbccbbbbbccccbbcbbbabccbbbcbabbbcbcaaabcdccccbbbaabbabcbcbbbbcbbcbccccdbbcccbbccbcccccbcbbbaacbcbcccabbcbbbcccccccb",
+"ddbbcbccbbbcbbbbbcbbcbccacabbbccbbccbacabbcbdcabbbccccbbcabbbbbbacdccbccccbbcccbbcbbbccbacccbcbbccccbbabbbdbbbbbbcddccbcdccbbccc",
+"cdccbcbbbccbcabbbbcbcbbbbcabbccbbccbbbbbbabcbbbcbaccccbcbbbababbbdbcbccdcbbccbcbcccccccbbccbbcccbcbcabbbbcbcbbbcccccbbccccbbcccc",
+"bbacbbbbcabbabacbbbaaabbccbbcbbbbaabbabaabbbcbbbabcccbbbbbababcbcbcbccbbabccbbacccbaccbbbcbcccbbccbbbbcbcbbcbcccccbbbcccbcbcccdb",
+"ccccbbcbaabaabcbbcbabbcccbbbbaccbbbbbcbacbbcccbabbbcbbbbaabaaccccbcbbbcbbbbababccbbbbabbbcccccbbccbbbabcaaccbbbdbbbccccbcbccccbb",
+"cccbbaabaaaaaababbbacbcbbbabbcbcaccccbababbcccbbbcbbabaabbacbbcbbcbcbcbcbccbcccdbbcbbbbcabccccbccbbbcccbabccbbddbccbcbcbccbbcdcc",
+"cccbbbabbaabbaaabbaabcbbbbbbbbbcccbbcbbbbcccbaacbcbcbbbababcabbcbccbbbccccbccccccbcbbcbbbccccabccccbbcbbbbcbcccbbbcccccbcdccdccc",
+"ccabaacbacbbbbbbcbbbcbbbbcbccbbcbbbbbababcbcbbcbbbbcbbbbcbacbbccbbbbccccbbbbbbbbabbbccbcccbcabccbbacbbbbccbccccbcbcccbbbbcbbcccc",
+"cbbcabbcbbabccbcccbcccbbbdbcccccabcbbbbbcbcabbbabbbbbbbbbbcccbbccccbdccccbabbbbcbccccbcccbcbbbccbbcccbbbcbcdccccbbcbbbcbccbccdcc",
+"bbbbbbcbbbccbbcbbcbcbbbdcccbcccbabbccbabccbbcbbbccbbbbbbbadccccbccbcccaabbabbcbcccccccccccbcbbbcbbcbbbcbbcccbcbbcbccdcbcccbcccbb",
+"bcbabbcbbcbbcbcbcbbbbbccccccccbabbcbbabcbbbccbbcbbbabbbabbccbccbcbbdccbbbaabcbccbbcccbccccbbccbcbbbbbbbccccbbbbcbcddbcccbbcbcccb",
+"bcbbcbbbccabbbbbbbbbccdccccbbbcbbcabbcbcbbcaababbbbbbcabcbcbccbccbcbbbababccccdbccbcbcabbbbbccbcbbbcbccbccbbcbbccbbbcbbbbbccccac",
+"bbbabaccbcbcabbbbbbccccbccbbbbabbbbbccbbbbaabbabbbbcbbbcbbbcccccbccbcbabbccbccbbbbccbbbbbcbbccbcbccccbcacbccbacdbcbbbacbbccccbbc",
+"cbacacbccbcbbccbbcbbcccccbcbdccbabbbccbacbbbcbbcccbcabcbbcddbcbbacbcbcbabbbcccbbbcbcbbabccabbbcbbabcbbbcbdabbcdcaaabbbbbbbdbbbbc",
+"cbbbbbcbcccccbabbbccbccbcbccbbbabccbcbaabaabbbbbccbcbcabbcccccabbcbbbbabbcccdccbcccbbbbcbcabccbabbcbaabbccccbccbbbabbbbbddbabbcc",
+"cbbbbcccbcababbcbcbbbccdccbbbabbcbbcbbbbcccbbbcccbbbbccbccbccccbcbcbbcbbbbbccbbccbcbbbccbbccbcbbabcbbbbbcccbcbbcabcccbcccdcccbcc",
+"bbbcbdbcbcbbacbcbbbbcdcdccbbbacbbbccbbcbccbbbbccccbccccccdcccccbcbbbbcbcbccccbbccdcacdcbccbcbbbbbbbbbcdccccccbcbbbdcbcccdccbcbbd",
+"cabcdcbbcbcbccccbbbdcccbbbcabbbbbbbbcbbbcbbbbcccbbccbdbbdbbccbbbbbbcbcbcbbcccbcccabbbbbbcbbabbcbbbccccddcbbbbcccbcccccdcdcbcbccb",
+"bbbdbbcabbbbccccbbccdbbbbcbbbbbcbbccacbbccbbcbcbcccbcdccbbcdbcacbacaccccbbcccbbccbbbdccbcbbbbbbbbbccdddbbcbdbdcccccccbcdcccbcbcc",
+"cbdbcdbcbbbcccbbabcccbccccabbbccbcbbcbcbbcbcccccbccbcbbbbadbbbbabcccccbbaccccbccccdcccbcddacccccbcbcbbbbbaccdbccbccbcbdcccabbbcc",
+"ccccccbbbbcbccbbabddbbcdbbbcbbccbbcbccccccbbccbccccbcbbbabbcabbbcccbcbabbbdcbbcccccccccddccbcbbbbccbccbbbccdbbccbbcccbdbbbbccbcb",
+"ccbcccbbbbcdbcbbbbccbcccabcbbccdbbcccbbacbbbcccbcdbbbcbbbbdcabbbdcabcdbcccccbccccdcbcbccbbbbbabbbbbccccbcccccbcbbcbbbccdcbccbcbc",
+"cccdbcbbcccbcbbbbcdccccabbcbccdcbcbccbbabbbcbcccccbbcbbcbccbcbccccccdbcccccccccbddbbccbbbbaaacbabcbccbcccddcbbccccbbcbccbbcbcbcb",
+"ddcccbbaccbcbcccbbbbbbabcbbcabbbbbcbbcbccbdcddcbccbbcbcbbbcbbccccdbcbccccccccbcccccccbcbbcbbcbbbcbcbccdccccbccccccccbdcccccccccc",
+"cbbcbbbbdccacccbcbccbbcbbbbbbbbcacbabccbbcccccbbccbcccbbbcbbddccccbbcdcccdcccccccccbcbbbccbcbbabcccbcccdbcbacccdcccccddcccbbcbbc",
+"bcbbbbbcbcbccbcccbbbbbabbccbbcdccbbcccbccccccbcbddcbbbccbbccdcbcccbcdbcdcccbcbcbbcbbbccbcaabbbbdccccddbcccbccccccbcccbcccccccbbc",
+"bcbdbccbccbccbbbbaacbcbcccbbccbcbccbcbccbcbbcbcccbbbbcbbccddccbccccdcbbcccccbccbbccbccbbbabbcbcccbcccbcbcccdcdddbccdbcccccccbccc",
+"ccdcdbcbcccbabcbbbbbbbccbbcbcbbbbbbcabdcbbccbcbcccbcbccdbccccbdbccccccdbcbbbbbbcccbccbbbbaccbcbcccbbccccdcccbcdcccccbbccbccbbccc",
+"ccccccbbccbbbbcbaabbccbbccccbbbcbbbbccbbcbbbcccdbbbcccdcccccbccbcccccdccbbcdbbdccbccbbcabbccbcccbbcccdcdcbcdbcccccccccbbcbcccbcc",
+"cccbbbbbcbccbcbbbbbbbcbcccbcbccbbccbbcbcbbccbcbbbbcccbccbcdcdcccbcccccbbcbcbbbdcbcbbbcbbbcccbcbbbcccdccbccdcdccdbccccccdcccdcccc",
+"ccbbbbbcccbbccbbabcccccccbccbbbbccbbcbbbbccbccbcaccccbcbccdcdbcbcccccccccbccccccccbbbcbcbbcbbbbbbccdccbcdccccddccccdcbbcccccccbc",
+"cbbbcccbbcbcbbbabbbbcccbbcccbbccccbcaccbcbcccbcacbbcbbccbcccabcbcccbbbccbcccbcccccbcdccbbbcccdcdccccdccbccccccabbbccbccbcccdcbcc",
+"cbbbdcccccbbaaabbcbcccbbbcccbbccbabcbbbcbbcbcdbbbbbbccbbccbbbcccccbbcccbcccdbcbcccccccbbbccccccccdddbcccbbcbccbcbbbcbbbbccdcbbcb",
+"abcdcccabbaabbcbcccbccbbccbbbccbabcbbcccbcccccbcccbcccbccccccbccccccccbcccdcbccccdccbcbbbbcdbccccbdcbcccdbcccccbbcdbbcbddbcbbbcb",
+"ccccccbabcbbbcbbbcccccbbcbbbbccabbccbccbcacccccccbccccccccccccccccccbcccbccbccccddbcdccbccdccccccccbddcdcbccccbcbcbcbcccccbcbbaa",
+"ccdcbbbbccbccbbbcccccbbcbccbdcbbbbcbbbbbbccccbbbbbbcccbccbbccccccdccbbcdccbcbdcdccbcbbcbcbcdbcbcccbbbbcbbbccbdcccdccbcccccbbcccc",
+"dcccbabbcdcdbbcccccdbcbbcbcccbaacabbbbbcccccbccaaaccccbccccccbdcdccbcbcbbccccddcccccbbcbcaddccbdccbcbbbcbbccddbcccdccccccbbccdcc",
+"bccbbbccccbabbcccccbcabcbbbababbacbcbbbbbbbcbbbccbccbcbbbcbccbcccbbbbbcdcccdccccbcaaccbbbcdcccccbbbbbbcccccdbcccdccccbbcbcbccdbc",
+"ccbcbbbdccbbccccddcdabbcccbbbabaccbcbbccbcbbbcbbbcbcbbccbccbcccccbbbbdcdcdceddcbbcbccbbbccdcccdcccbccccbcbccdcccccccbbbcccccddcc",
+"cbbbbccbbbccdbdbcbcbccccbccbbbbccbcbcbcbcccccdbbcbcbbcbccbccdcbccbbccccbcbcabbcbcbcbccbbcbccbbcccccccbcccddcccddddcbbbcbccbbdcbc",
+"bbbccbcbbdbcccbaccbbbccdccccbbbccbbbccbbccbcccbbbcbbcccccccccbbcbbcccdbbcbbbccabbbbbbcbbcbcbcdccbbbcbcbdddccbcbccbbbbcbbccbcccbc",
+"cbcbbcbcbcdcccbccccbcccbccbbacbbbcccbccccbcccdbbcbbccccccccbcbbcbbbccbcbcccbbbcbbcbccbbbbcbbccbbbbccbbcbbcccdcddbcbbbbcccdbbcbbc",
+"bbccccbcbdccccbccbbbcccccbbabbbbcbcccccbcbcdccbbbbcdcccccbccbccbbccbbbcacbbbccabcccbbbabbcbccbbbcccbbbbcddcdcccdcccccbdbcbbccbcc",
+"bcbbbcbccbdcbcbbcbbcccccacbbbccccccccbcbcdcccbabbbcdbbbbccdcdbccdbbdccccccdbcdcbccbbcbccccbccdbccbcbbdccdcccbdbbbcbbbabcccbccccc",
+"bbbccdbcbcdbccbcbbbcbbbbccbabbbcbcddccbccccbbcbcbcccbacdbcdbcccccbccccccddcbdcbcccbcbbbccbddccccccbcbddccdcccdccccbbaacdcbccbccb",
+"cccbdcbbccbdbcbbbcdcbbbcbbbbccccbbdbbdbbdcbcddbbbbdbabccccbcbccbcccbcbccccabdcccbccbccccbbcbbbcbcccbccbcccbcccbbbcbabbcbbbcbbcdc",
+"bbcccccccddcbbbccccbcbbcbbbcbcbbbdccccccdccdccbbbccbbbccbcbccbcccccbbbccbbbcccccccbccccccbbcccbdbbcbccdccbcbccbaccaaaccbbbbbcccb",
+"ccccbcccbcbbbbbccbbcbbcbbbcbaabcccccbbccccccbbaabbbccbcbbdbdcbcbbbbcbcbcccbcdbcbbbccbbbbacbcccbbbbbcccbcbcbcbbbbbbbbbcccccccccbc",
+"cccccccbcbbbbacdbbcccccbbbababccdccccccdccccbbacbbcccbbbcdccccbcbcbcbbccbbbdccbcbcccbcbaccdcccbccbbccccbbccbbcbbccacccccdccddbcd",
+"cccbbcbbcbcccbccbbccbbacbccbdcdccccbaccccbdccbcbbaccbbbddccdbbbcbcccbbbccccccbbbabbbbbcccccbccbbbcdccbbbdbbbcdbccbcbbcccbcccbcdd",
+"bdbccbbcbcbccbccbdcabbcccbbcbbbbcbcbbcbcbccbbbbabbcbcbcdccbbcbcbcbbbbccccccbbbbbbbbbcccccbcccbbbcccccccccbcbccccbbbccbccbcccbddd",
+"cbbbccdccbbbbcccccbbbbbbcbbbccccccbbcccccdbbabaabcbcbcccccbcbcacbcbcbcccccbbbcbcbbcccbccabcbcbcccbbcbbcbcbccccbbbbbbbbdbcccddbcb",
+"bcbbcdccbbbcccccbcbaccbcbbbcbcbcccbbccbcdcabbbacbcbcccccbcbcbbabbbcccccdcbbaccccbcccbcbbcbcbcbbbccbbabbbbcbcddbabbbbbbcbbdcccccb",
+"ccbbdcbbbbccccbdccbcccccbcdbcbbccbcbcdcddcbabbcbbbccccccdbcacbabbcbcbcccbccccccacbccbcdbccccbcbccbcbccbccddcbcbbbbcdcccbdccccbcb",
+"cccddcbcbaccccdcccbcbbbcbdcbcbcbbbbcccdccbabbbabbcbbdbbbccacbbbbbcbbdbcbccccccbbbccbdcccccccbcbcbbcccbdccccbcbabccdcccbccccbbcbb",
+"ccdcbcabbbbcccbcbbbacccbcbbbbbbccbcccbbcbbbcbbcbdcbcbccbcccbcbbbccccdcbcccbccbdbccccddcccbbccccbcccccdcccdbbbccbcbccccdcbcbdbccc",
+"cdbbcbbbbbcccbcbcbbcbbccbbbbbbbccbcbbbcbbbcbbbcccbcccccbccbbbbccbbcdcbcccccbcbbccdccccccbbbdccbcbccccccbddbbccabbcddccbbcccccccd",
+"cbbcbcbbbccdbccbbccbbdcbbbccccdcbdbccbccbcccccbbbcbcbbabccabbcbbbccbbcccccbbbcbbcbbcbccbbbdbccbcccddcbccccbbcbbbdcdcccccccdcbdcc",
+"cbbbcbbcbccbbcbbccbbcccbbccccdccccccbbcccccbcabcbcbbabbbbbbcbbbcbbbbbbcbbcbbbcbcbcbcccbbcdcbcccdccdccdccccbbcbbdccccbcbcdcdccccb",
+"bcbcbbcccbdcccbbcbcbbcbbccccbabcbbccddcccbbcbbcbdcbcbcbcbbcbbbbbbbccccccccbbccbbcbcbcccdcbbddccccbbdbbccccabccccbcccccbcbcddcccc",
+"bcbbbcbcbcccbbcccbbbbbbdbcccbcccbcbccbccbbccccbbcbccbbcccccbbcccbbcbbccbcdcccbccbcbbccbdbbddccbdbbcccccccbbbccccbccbcdcccccccbcb",
+"cbcbccccbbccccccdcccbccbbcccbbcccccccdcbcdcdbbcbccbbbbdbbbbbbbbcabccbcbcccabbabccbccccbbcbdccccbbccdbbcbbbbaccbbcbbccdbbbbdcbccb",
+"ccbbcccccdcccccdcbccbccccbcbbbcbdcccbccbcccccbbbbbcbccbbbababbcbcccbbcbdccbbcbccccbccabcccbbcbccbcccbcbbbbabccbbbcbccdbbccdccdbb",
+"bcbcbdbbcdbbccbcabccbbccbccbcbcccccbcccbccbbbbbbbcbcccbbabbccccbbcccccdcdbccbcccdbccacdccccccbbbcbbbcbbcccdbdccbcbccccbbccbcaabc",
+"bcbcccccddccccbbbcbbcdcccdbccbcdbcbcccbcdccbbbbccccccbbabbccccbbcbbdcccccccbccddcbccbcdccbccbbccbbccabccccbcdcccccccccbcbccbbcbc",
+"bbccdcdcccabccbbdbcbdcdcbbbbbdcccdcccbcbcbccccbcbbbcabbbbcbccbccbcccccccbcbcccdccccccccbbbccbcbcbbcbbcccbccdbbbbbcbbbbcbccabcccc"
+};
+
+#endif
+
+class ViewVariable {
+
+  private:
+
+  GraphWin *gwp;
+  window   *wp;
+
+  GRAPH<int,int> *gp;
+  array<node>    *ap;
+
+  double  window_width;
+  double  window_height;
+  string  window_label;
+
+  int     FontSize;
+
+  bool    ShowTexture;
+  
+  int     x_WindowPos;
+  int     y_WindowPos;
+
+  int     GridDistance;
+  int     TupelperLine;
+  double  DistY;
+  
+  list<string> ArgList;
+  list<string> AtrList;
+
+  void init_parameters();
+  void extract_node_color(list<string>&, array<color>&);
+  
+  public:
+
+  // constructor & destructor
+  //
+  ViewVariable(int x = 600, int y = 600, string label = "") : window_width(x), window_height(y), window_label(label)
+  { 
+    gp = new GRAPH<int,int>();
+    gwp = new GraphWin((*gp), x, y, label); 
+    ap = 0;
+    wp = 0;
+    
+    init_parameters(); 
+  }
+
+
+  ~ViewVariable() 
+  { 
+    if(!ap) delete ap;
+    delete gwp; 
+    delete gp;
+  } 
+  
+  // functions
+  //
+  void extract_frame_label(const string);
+  void open_with_timeout(int x = -1, int y = -1, int time = 1000);
+  void create_table(const list<string>, const list<string>);
+  void update_table(const list<string>);  
+  
+  // window standard - operations 
+  //
+  void display(int x = -1, int y = -1);         
+  void clear() { wp->clear(); } 
+  void close() { wp->close(); }   
+
+
+
+  // set - operations
+  //
+  void set_window_label(const string label) 
+  { 
+    gwp->set_frame_label(window_label = label);
+  }
+
+
+  void set_display_position(const int x, const int y)
+  {
+    x_WindowPos = x;
+    y_WindowPos = y;
+  }
+
+
+  void set_fontsize(const int size)
+  {
+    if(size < 7) return;
+    
+    FontSize = size;
+  }
+    
+  
+  void set_tupel_per_line(const int t)
+  {
+    if(t < 1) return;
+    
+    TupelperLine = t;
+  }
+    
+
+  void set_tupel_distance(const double d)
+  {
+    if(d < 0) return;
+    
+    DistY = d;
+  }
+
+
+  void set_texture(const bool status)
+  {
+    ShowTexture = status;
+  }
+
+
+  // get - operations
+  //
+  GraphWin* get_graphwindow_ptr() const { return gwp; }
+
+  int get_window_height() const { return wp->height(); }
+  
+  int get_window_width() const { return wp->width(); }
+
+  graph& get_graph() const { return gwp->get_graph(); }
+
+
+  // event - operations
+  //
+  int wait_of_mouse_event() const { return wp->read_mouse(); }
+  void wait_with_timeout(const int); 
+
+};
+
+
+#endif

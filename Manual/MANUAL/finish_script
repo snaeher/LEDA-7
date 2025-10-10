@@ -1,0 +1,26 @@
+#!/bin/bash
+
+cd MANUAL
+cp ../../noweb/icons/algsolbg.gif .
+cp ../../noweb/icons/LEDALogo_small.gif .
+cp ../../noweb/icons/*_motif*.gif .
+
+for file in *.html; do sed 's/WIDTH="44"//' $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed 's/HEIGHT="44"//' $file > schrott.html; mv schrott.html $file; done
+# fixing link errors to point
+for file in *.html; do sed "s/#generators/point.html#point/" $file > schrott.html; mv schrott.html $file; done
+# fixing navigation images
+for file in *.html; do sed "s/next.gif/next_motif.gif/g" $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed "s/up.gif/up_motif.gif/g" $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed "s/contents.gif/contents_motif.gif/g" $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed "s/index.gif/index_motif.gif/g" $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed "s/prev_g.gif/previous_motif_gr.gif/g" $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed "s/prev.gif/previous_motif.gif/g" $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed 's/WIDTH="37"\ HEIGHT="24"//' $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed 's/WIDTH="26"\ HEIGHT="24"//' $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed 's/WIDTH="63"\ HEIGHT="24"//' $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed 's/WIDTH="65"\ HEIGHT="24"//' $file > schrott.html; mv schrott.html $file; done
+for file in *.html; do sed 's/WIDTH="43"\ HEIGHT="24"//' $file > schrott.html; mv schrott.html $file; done
+#fixing navigation
+for file in *.html; do sed "s/Version 6.0 The LEDA/The LEDA User Manual/" $file > schrott.html; mv schrott.html $file; done
+

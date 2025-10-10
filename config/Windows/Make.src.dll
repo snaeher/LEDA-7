@@ -1,0 +1,24 @@
+
+INCL = $(LROOT)\incl
+
+o   = .obj
+
+.asm.obj:
+	$(ASM) -o $*.obj $*.asm
+
+.c.obj:
+	$(PLAIN_C) $(CFLAGS) $(WERR) -I$(INCL) -DLEDA_INSTALL -DLEDA_DLL $(DFLAGS) $*.c
+
+.cpp.obj:
+	$(CC) $(CFLAGS) $(WERR) -I$(INCL) -DLEDA_INSTALL -DLEDA_DLL $(DFLAGS) $*.cpp
+
+all: OBJS
+
+include Make.lst
+
+OBJS: $(OBJECTS)
+	@echo.
+
+clean:
+	del $(OBJECTS)
+

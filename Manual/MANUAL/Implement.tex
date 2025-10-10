@@ -1,0 +1,169 @@
+
+\chapter{Implementations}\label{Implementations}
+
+
+\section{User Implementations}\label{User Implementations}
+
+User-defined data structures can be used as actual implementation parameters provided 
+they fulfill certain requirements.
+
+\subsection{Dictionaries}\label{User Implementations Dictionaries}
+
+Any class {\it dic\_impl} that provides the following operations can be used as 
+actual implementation parameter for the 
+{\it \_dictionary}{\tt <} $K$,$I$,{\it dic\_impl}{\tt >} 
+and the {\it \_d\_array}{\tt <} $I$,$E$,{\it dic\_impl}{\tt >} 
+data types (cf. sections \htmlref{Dictionaries}{Dictionaries} and \htmlref{Dictionary Arrays}{Dictionary Arrays}).
+
+\begin{verbatim}
+
+class dic_impl {
+
+  virtual int  cmp(GenPtr, GenPtr) const = 0;
+  virtual int  int_type()          const = 0;
+  virtual void clear_key(GenPtr&)  const = 0;
+  virtual void clear_inf(GenPtr&)  const = 0;
+  virtual void copy_key(GenPtr&)   const = 0;
+  virtual void copy_inf(GenPtr&)   const = 0;
+
+public:
+
+typedef ... item;
+
+  dic_impl();
+  dic_impl(const dic_impl&);
+  virtual ~dic_impl();
+
+  dic_impl& operator=(const dic_impl&);
+
+  GenPtr key(dic_impl_item)  const;
+  GenPtr inf(dic_impl_item)  const;
+
+  dic_impl_item insert(GenPtr,GenPtr);
+  dic_impl_item lookup(GenPtr) const;
+  dic_impl_item first_item() const;
+  dic_impl_item next_item(dic_impl_item) const;
+
+  dic_impl_item item(void* p) const 
+  { return dic_impl_item(p); }
+
+  void change_inf(dic_impl_item,GenPtr);
+  void del_item(dic_impl_item);
+  void del(GenPtr);
+  void clear();
+
+  int size() const;
+};
+\end{verbatim}
+\newpage
+
+\subsection{Priority Queues}
+\label{User Implementations Priority Queues}
+
+Any class {\it prio\_impl} that provides the following operations can be used as 
+actual implementation parameter for the 
+{\it \_priority\_queue}{\tt <} $K$,$I$,{\it prio\_impl}{\tt >}
+data type (cf. section \htmlref{Priority Queues}{Priority Queues}).
+
+\begin{verbatim}
+
+class prio_impl $\{$ 
+
+  virtual int  cmp(GenPtr, GenPtr) const = 0;
+  virtual int  int_type()          const = 0;
+  virtual void clear_key(GenPtr&)  const = 0;
+  virtual void clear_inf(GenPtr&)  const = 0;
+  virtual void copy_key(GenPtr&)   const = 0;
+  virtual void copy_inf(GenPtr&)  const = 0;
+
+public:
+
+typedef ... item;
+
+  prio_impl();
+  prio_impl(int);
+  prio_impl(int,int);
+  prio_impl(const prio_impl&);
+  virtual ~prio_impl();
+
+  prio_impl& operator=(const prio_impl&);
+
+  prio_impl_item insert(GenPtr,GenPtr);
+  prio_impl_item find_min() \ const;
+  prio_impl_item first_item() const;
+  prio_impl_item next_item(prio_impl_item) const;
+
+  prio_impl_item item(void* p) const 
+  { return prio_impl_item(p); }
+ 
+  GenPtr key(prio_impl_item) const;
+  GenPtr inf(prio_impl_item) const;
+
+  void del_min();
+  void del_item(prio_impl_item);
+  void decrease_key(prio_impl_item,GenPtr);
+  void change_inf(prio_impl_item,GenPtr);
+  void clear();
+  
+  int  size()  const;
+};
+\end{verbatim}
+
+\newpage
+
+\subsection{Sorted Sequences}
+
+\label{User Implementations Sorted Sequences}
+
+Any class {\it seq\_impl} that provides the following operations can be used as 
+actual implementation parameter for the 
+{\it \_sortseq}{\tt <} $K$,$I$,{\it seq\_impl}{\tt >} data
+type (cf. section \htmlref{Sorted Sequences}{Sorted Sequences}).
+
+\begin{verbatim}
+
+class seq_impl  {
+
+  virtual int  cmp(GenPtr, GenPtr) const = 0;
+  virtual int  int_type()          const = 0;
+  virtual void clear_key(GenPtr&)  const = 0;
+  virtual void clear_inf(GenPtr&)  const = 0;
+  virtual void copy_key(GenPtr&)   const = 0;
+  virtual void copy_inf(GenPtr&)   const = 0;
+
+public:
+
+typedef ... item;
+
+  seq_impl();
+  seq_impl(const seq_impl&);
+  virtual ~seq_impl();
+
+  seq_impl& operator=(const seq_impl&);
+  seq_impl& conc(seq_impl&);
+ 
+  seq_impl_item insert(GenPtr,GenPtr);
+  seq_impl_item insert_at_item(seq_impl_item,GenPtr,GenPtr);
+  seq_impl_item lookup(GenPtr) const;
+  seq_impl_item locate(GenPtr) const;
+  seq_impl_item locate_pred(GenPtr) const;
+  seq_impl_item succ(seq_impl_item) const;
+  seq_impl_item pred(seq_impl_item) const;
+  seq_impl_item item(void* p) const 
+  { return seq_impl_item(p); }
+ 
+  GenPtr key(seq_impl_item) const;
+  GenPtr inf(seq_impl_item) const;
+ 
+  void del(GenPtr); 
+  void del_item(seq_impl_item); 
+  void change_inf(seq_impl_item,GenPtr);
+  void split_at_item(seq_impl_item,seq_impl&,seq_impl&);
+  void reverse_items(seq_impl_item,seq_impl_item); 
+  void clear();
+ 
+  int  size()  const;
+};
+\end{verbatim}
+
+

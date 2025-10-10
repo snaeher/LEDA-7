@@ -1,0 +1,5 @@
+Die Variable \tt\green2 j \rm\black wird auf eine Feldindex gesetzt, der der rechten Intervallbe-
+grenzung + 1 entspricht. 
+
+\tt\green2 j \rm\black ist ein temporärer rechter Zeiger.
+

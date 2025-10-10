@@ -1,0 +1,182 @@
+.text 
+.align 4
+.globl 	 _vecMulLoop_i386_old  
+
+_vecMulLoop_i386_old:
+	
+	 pushl	 %edi    
+	 pushl	 %esi    
+	 pushl	 %ebx    
+	 pushl	 %ebp    
+
+	 movl	 20(%esp),%edi     
+	 movl	 24(%esp),%esi     
+	 movl	 28(%esp),%ecx     
+	 movl	 32(%esp),%ebp     
+
+	 xorl	 %ebx,%ebx    
+         cmpl    %esi,%ecx
+         jbe     MULT_L0
+MULT_L1:
+	 movl	 (%esi),%eax    
+	 mull	 %ebp     
+	 addl	 %ebx,%eax    
+	 adcl	 $0,%edx    
+	 addl	 %eax,(%edi)   
+	 adcl	 $0,%edx    
+	 movl	 %edx,%ebx    
+
+         addl    $4,%esi
+         addl    $4,%edi
+         cmpl    %esi,%ecx
+	 ja      MULT_L1  
+	 movl	 %ebx,(%edi)   
+MULT_L0:
+	 movl	 %ebx,%eax    
+
+	 popl	 %ebp    
+	 popl	 %ebx    
+	 popl	 %esi    
+	 popl	 %edi    
+ 	 ret
+
+
+
+
+.globl 	 _vecMulLoopFirst_i386
+_vecMulLoopFirst_i386:
+	
+	 pushl	 %edi    
+	 pushl	 %esi    
+	 pushl	 %ebx    
+	 pushl	 %ebp    
+
+	 movl	 20(%esp),%edi  /* prod   */    
+	 movl	 24(%esp),%esi  /* a      */
+	 movl	 28(%esp),%ecx  /* a_stop */
+	 movl	 32(%esp),%ebp  /* B      */
+
+         movl    $0,%ebx
+
+L1:
+         cmpl    %esi,%ecx
+         jbe     L0
+
+	 movl	 (%esi),%eax    
+	 mull	 %ebp     
+	 addl	 %ebx,%eax    
+	 adcl	 $0,%edx    
+	 movl	 %eax,(%edi)   
+	 movl	 %edx,%ebx    
+
+         addl    $4,%esi
+         addl    $4,%edi
+         jmp     L1
+
+L0:
+	 movl	 %ebx,(%edi) 
+	 popl	 %ebp    
+	 popl	 %ebx    
+	 popl	 %esi    
+	 popl	 %edi    
+ 	 ret
+
+
+
+
+.globl 	 _vecMulLoop_i386
+_vecMulLoop_i386:
+	
+	 pushl	 %edi    
+	 pushl	 %esi    
+	 pushl	 %ebx    
+	 pushl	 %ebp    
+
+	 movl	 20(%esp),%edi  /* prod   */    
+	 movl	 24(%esp),%esi  /* a      */
+	 movl	 28(%esp),%ecx  /* a_stop */
+	 /* 	 32(%esp)          B      */
+
+         subl    $12,%ecx
+
+         movl    $0,%ebx
+         movl    $0,%ebp
+LL1:
+         cmpl    %esi,%ecx
+         jbe     LL0
+
+	 movl	 (%esi),%eax    
+	 mull    32(%esp) 
+         addl    %ebx,-4(%edi)
+         adcl    %eax,%ebp
+         movl    $0,%ebx
+         adcl    %edx,%ebx
+
+	 movl	 4(%esi),%eax    
+	 mull    32(%esp) 
+         addl    %ebp,(%edi)
+         adcl    %eax,%ebx
+         movl    $0,%ebp
+         adcl    %edx,%ebp
+
+	 movl	 8(%esi),%eax    
+	 mull    32(%esp)
+         addl    %ebx,4(%edi)
+         adcl    %eax,%ebp
+         movl    $0,%ebx
+         adcl    %edx,%ebx
+
+	 movl	 12(%esi),%eax    
+	 mull    32(%esp) 
+	 mull	 %ecx 
+         addl    %ebp,8(%edi)
+         adcl    %eax,%ebx
+         movl    $0,%ebp
+         adcl    %edx,%ebp
+
+         addl    $16,%esi
+         addl    $16,%edi
+         jmp     LL1
+LL0:
+         addl    %ebx,-4(%edi)
+         adcl    $0,%ebp
+         addl    $12,%ecx
+         addl    $12,28(%esp)
+LL2:
+         cmpl    %esi,%ecx
+         jbe     LL3
+	 movl	 (%esi),%eax    
+	 mull    32(%esp)
+	 addl	 %ebp,%eax    
+	 adcl	 $0,%edx    
+	 addl	 %eax,(%edi)   
+	 adcl	 $0,%edx    
+	 movl	 %edx,%ebp    
+         addl    $4,%esi
+         addl    $4,%edi
+         cmpl    %esi,%ecx
+	 jmp     LL2  
+LL3:
+	 movl	 %ebp,(%edi)   
+	 movl	 %ebp,%eax    
+	 popl	 %ebp    
+	 popl	 %ebx    
+	 popl	 %esi    
+	 popl	 %edi    
+ 	 ret
+
+
+
+.text
+.align 16
+.globl _digMul_i386
+_digMul_i386:
+	pushl %ebp
+	movl %esp,%ebp
+	movl 16(%ebp),%ecx /* ecx := high          */
+	movl 8(%ebp),%eax  /* eax := a             */
+	mull 12(%ebp)      /* edx:eax := a*b       */
+	movl %edx,(%ecx)   /* high = highword(a*b) */
+	movl %ebp,%esp
+	popl %ebp
+	ret

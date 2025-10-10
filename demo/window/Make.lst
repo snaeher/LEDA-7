@@ -1,0 +1,36 @@
+PROGS = \
+bgra$(e) \
+bitmap$(e) \
+bm_buttons$(e) \
+bouncing_leda$(e) \
+buffering1$(e) \
+callback$(e) \
+clip_pixrect$(e) \
+d3_leda$(e) \
+d3_window$(e) \
+dblclick$(e) \
+dclock$(e) \
+defcolor$(e) \
+draw$(e) \
+draw_points$(e) \
+event$(e) \
+font$(e) \
+get_mouse$(e) \
+greyscales$(e) \
+gw_sort_edges_demo$(e) \
+icon_demo$(e) \
+logo$(e) \
+logo1$(e) \
+logo_anim$(e) \
+menu_bar$(e) \
+panel_demo$(e) \
+pm_buttons$(e) \
+progress$(e) \
+put_pixrect$(e) \
+putback$(e) \
+read_mouse1$(e) \
+read_mouse2$(e) \
+tim$(e) \
+tooltip$(e) \
+two$(e) \
+two_windows$(e)

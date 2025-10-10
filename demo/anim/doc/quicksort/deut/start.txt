@@ -1,0 +1,5 @@
+\rm Die Funktion \tt quicksort \rm wird gestartet. Es wird der linke Zeiger l, fuer die linke 
+Begrenzung und der rechte Zeiger r, fuer die rechte Begrenzung uebergeben. 
+
+Damit ist das zu sortierende Intervall eingegrenzt. 
+

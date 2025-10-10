@@ -1,0 +1,35 @@
+#! /bin/sh
+if [ "$1" = "" ] 
+then
+  echo ""
+  echo "Usage is"
+  echo "          htmlweave foo[.lw] [noweave_options]"
+  echo ""
+  echo "Converts an Lweb file foo.lw into a LaTeX file foo.tex."
+  exit
+fi
+file=`basename $1 .lw`
+location=`dirname $1`
+name="$location/$file"
+
+if [ -f $name.lw ] 
+then
+  echo "Calling lw2nw on $name.lw ..."
+  echo ""
+    lw2nw $name.lw HTML > $name.nw
+  shift
+  echo "Calling noweave -delay on $name.nw $* ..."
+  echo ""
+    noweave -delay -latex+html "$@" $name.nw > $name.tmp
+    perl $LEDAROOT/Manual/cmd/htmlweave.pl $name.tmp BEFORE
+
+  echo "Treating empty lines in $name.tex ..."
+  echo ""
+    emptyline $name.tmp > $name.tex
+  rm -f $name.tmp $name.tmp.bak
+else
+  echo "Error: File $name.lw does not exist."
+  echo ""
+  exit
+fi
+

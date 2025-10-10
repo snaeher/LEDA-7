@@ -1,0 +1,7 @@
+Durch den \tt swap \rm ist möglicherweise die Heapeigenschaft verletzt wurden.
+
+Ein Aufruf der Funktion \tt heapify \rm stellt den Heap wieder her.
+
+Man beachte die Heapgröße wird vorher dekrementiert. 
+
+Alle grauen Schlüssel gehören nicht mehr zum Heap.

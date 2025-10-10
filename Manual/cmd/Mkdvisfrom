@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# check for perl and latex
+
+echo " "
+
+if perl $LEDAROOT/Manual/cmd/ext.pl; then
+   echo "perl  ok"
+else
+   echo Cannot execute perl.
+   echo " "
+   exit 1
+fi
+
+if noweave < /dev/null > /dev/null; then
+   echo "noweb ok"
+else
+   echo Cannot execute noweave.
+   echo " "
+   exit 1
+fi
+
+echo '\\documentclass{article}' > dummy.tex
+echo '\\begin{document} hw \\end{document}' >> dummy.tex
+echo '' >> dummy.tex
+if latex dummy.tex > /dev/null; then
+   echo "latex ok"
+   rm -rf dummy.*
+else
+   echo Cannot execute latex.
+   echo " "
+   exit 1
+fi
+
+
+source=$1
+
+echo " "
+echo Constructing dvi-files for xlman in `pwd`  ...
+echo " "
+
+if [ -x /usr/local/bin/grep ]; then
+  grep_cmd=/usr/local/bin/grep
+elif [ -x /usr/bin/grep ]; then
+  grep_cmd=/usr/bin/grep
+else
+  grep_cmd=grep
+fi
+
+for f in $source/*.h; do
+  if $grep_cmd -q Manpage $f; then
+    ln -s $f .
+  fi
+done
+
+for f in *.h; do
+  fbase=`basename $f .h`
+  fbase=`basename $fbase _decl`
+  perl $LEDAROOT/Manual/cmd/ext.pl Lman $f xdvi=no dvioutfile=$fbase.dvi 
+done
+
+rm -f *.h *.log
+

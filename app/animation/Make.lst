@@ -1,0 +1,8 @@
+PROGS = \
+binary_trees$(e) \
+dijkstra$(e) \
+five_coloring$(e) \
+preflow_push$(e) \
+quicksort$(e) \
+strong_components$(e) \
+voronoi_sweep$(e)

@@ -1,0 +1,7 @@
+OBJECTS = \
+_b_heap$(o) \
+_bin_heap$(o) \
+_f_heap$(o) \
+_k_heap$(o) \
+_m_heap$(o) \
+_r_heap$(o)

@@ -1,0 +1,45 @@
+\documentclass[12pt,a4paper]{book}
+%\usepackage{psfig,html,makeidx}
+\usepackage{html,makeidx,graphicx}
+
+\textwidth 15.4cm 
+\textheight 24 cm
+\topmargin -14mm       
+\evensidemargin 3mm 
+\oddsidemargin 3mm
+
+\input ../tex/MANUAL.pagesize
+\input ../tex/MANUAL.mac
+
+\parindent0em
+\setlength{\parskip}{1ex minus 0.9ex}
+\setcounter{chapter}{-1}
+
+\sloppy
+
+\newcommand{\ledaversion}{7.2}
+
+\input Title.tex
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\thispagestyle{empty}
+
+\ \\
+\newpage
+
+\pagenumbering{roman}
+
+\tableofcontents
+\newpage
+
+\vspace*{5cm}
+
+\input Preface.tex
+\input Basics.tex
+
+\end{document}

@@ -1,0 +1,442 @@
+#include <LEDA/sortseq.h>
+#include <LEDA/graph.h>
+
+#include <LEDA/p_queue.h>
+#include <LEDA/map.h>
+#include <LEDA/map2.h>
+#include <math.h>
+
+
+inline COORD ABS(const COORD& x) 
+{ if (x < 0) return -x; else return  x; }
+
+class cmp_segments : public leda_cmp_base<SEGMENT> {
+
+  POINT p_sweep;
+
+public:
+
+  cmp_segments(const POINT& p) : p_sweep(p) {}
+
+  void  set_position(const POINT& p) { p_sweep = p; }
+  POINT get_position()               { return p_sweep; }
+
+  int operator()(const SEGMENT& s1, const SEGMENT& s2) const
+  { 
+    // Precondition:
+    // p_sweep is identical to the left endpoint of either s1 or s2. 
+  
+    if (identical(s1,s2)) return 0;
+    
+    int s = 0;
+    
+    if ( identical(p_sweep,s1.source()) )
+      s = orientation(s2,p_sweep);
+    else
+      if ( identical(p_sweep,s2.source()) )
+         s = orientation(s1,p_sweep);
+      else 
+         error_handler(1,"compare error in sweep");
+  
+    if (s || s1.is_trivial() || s2.is_trivial()) return s;
+    
+    s = orientation(s2,s1.target());
+  
+    // overlapping segments will be ordered by their ID_numbers :
+  
+    return s ? s : (ID_Number(s1) - ID_Number(s2));
+  }
+  
+};
+
+
+  
+static void compute_intersection(sortseq<POINT,seq_item>& X_structure,
+				sortseq<SEGMENT,seq_item>& Y_structure, 
+				const map2<SEGMENT,SEGMENT,seq_item>& inter_dic,
+				seq_item sit0)
+{    
+  // Given an item |sit0| in the Y-structure compute the point of 
+  // intersection with its successor and (if existing) insert it into 
+  // the event queue and do all necessary updates.
+  
+  seq_item sit1     = Y_structure.succ(sit0);
+  SEGMENT  s0   = Y_structure.key(sit0);
+  SEGMENT  s1   = Y_structure.key(sit1);
+
+  // |s1| is the successor of |s0| in the Y-structure, hence,
+  // |s0| and |s1| intersect right or above of the sweep line
+  // iff |(s0.start(),s0.end(),s1.end()| is not a left turn and 
+  // |(s1.start(),s1.end(),s0.end()| is not a right turn.
+  // In this case we intersect the underlying lines
+ 
+  if ( orientation(s0,s1.target()) <= 0 && orientation(s1,s0.target()) >=0 )
+    { 
+      seq_item it = inter_dic.operator()(s0,s1);
+      //seq_item it = inter_dic(s0,s1);
+      if (it == nil)
+	{ POINT q;
+	  s0.intersection_of_lines(s1,q);
+	  it = X_structure.insert(q,sit0);
+	}
+      Y_structure.change_inf(sit0, it);
+    }
+}
+
+
+
+
+// Sort Edges ...
+
+class cmp_edges : public leda_cmp_base<edge> 
+{
+  GRAPH<POINT,SEGMENT>* gra_p;
+
+  public:
+
+  cmp_edges(GRAPH<POINT,SEGMENT>& G) { gra_p = &G; }
+
+  int operator()(const edge& e1, const edge& e2) const
+  { SEGMENT s1 = (*gra_p)[e1];
+    SEGMENT s2 = (*gra_p)[e2];
+    int c = cmp_slopes(s1,s2);
+    if (c == 0) c = compare(ID_Number(s1),ID_Number(s2));
+    return c;
+   }
+};
+
+
+static void construct_embedding(GRAPH<POINT,SEGMENT>& G)
+{  
+  list<edge> E = G.all_edges();
+
+  cmp_edges cmp(G);
+  E.sort(cmp);
+
+  edge e;
+  forall(e,E)
+  { edge r = G.new_edge(target(e),source(e),G[e]);
+    G.set_reversal(e,r);
+   }
+}
+
+
+void SWEEP_SEGMENTS(const list<SEGMENT>& S, GRAPH<POINT,SEGMENT>& G, bool embed)
+{   
+  POINT p_sweep;
+  cmp_segments cmp(p_sweep);
+
+  // we use two sorted sequences ...
+
+  sortseq<POINT,seq_item>     X_structure;
+  sortseq<SEGMENT, seq_item>  Y_structure(cmp);
+  
+  // three maps ...
+  
+  map<SEGMENT,SEGMENT>             original;
+  map<SEGMENT,node>                last_node(nil);
+  map2<SEGMENT,SEGMENT,seq_item>   inter_dic(nil);
+  
+  // a list
+  
+  list<SEGMENT> internal;
+  
+  // and a priority queue of segments ordered by their left endpoints
+  
+  p_queue<POINT,SEGMENT>      seg_queue;
+  
+  /* INITIALIZATION
+     - clear the output graph.
+     - compute an upper bound |Infinity| for the input coordinates 
+     - make copies of the input segments such that all segments are 
+     oriented from left to right or from bottom to top.
+     - insert all endpoints of the new segments into the X-structure
+     - exploit the fact that insert operations into the X-structure
+     leave previously inserted points unchanged to achieve that
+     any pair of endpoints $p$ and $q$ with |p == q| are identical
+     - use a map to associate with every segment its original
+     - for every created segment $(p,q)$ insert the pair $(p,(p,q))$ 
+     into priority queue |seg_queue|
+   */
+  
+  G.clear();
+  
+  COORD Infinity = 1;
+  
+  SEGMENT s;
+  forall(s,S) 
+    {
+      while ( ABS(s.xcoord1())>=Infinity || ABS(s.ycoord1())>=Infinity ||
+              ABS(s.xcoord2())>=Infinity || ABS(s.ycoord2())>=Infinity )
+        Infinity *= 2;
+      
+      seq_item it1 = X_structure.insert(s.source(), seq_item(nil));
+      seq_item it2 = X_structure.insert(s.target(), seq_item(nil));
+      
+      if (it1 == it2) continue;  // ignore zero-length segments
+      
+      POINT p = X_structure.key(it1);
+      POINT q = X_structure.key(it2);
+      
+      SEGMENT s1; 
+
+      if ( compare(p,q) < 0 ) 
+         s1 = SEGMENT(p,q);
+      else
+         s1 = SEGMENT(q,p);
+      
+      original[s1] = s; 
+      internal.append(s1);
+      seg_queue.insert(s1.source(),s1);
+    }
+  
+  // insert a lower and an upper sentinel segment to avoid special
+  // cases when traversing the Y-structure
+  
+  SEGMENT lower_sentinel(-Infinity, -Infinity, Infinity, -Infinity);
+  SEGMENT upper_sentinel(-Infinity,  Infinity, Infinity,  Infinity);
+  
+  // the sweep begins at the lower left corner
+  
+  p_sweep = lower_sentinel.source();
+  cmp.set_position(p_sweep);
+
+  Y_structure.insert(upper_sentinel,seq_item(nil));
+  Y_structure.insert(lower_sentinel,seq_item(nil));
+  
+  // insert a stopper into |seg_queue| and initialize |next_seg| with
+  // the first segment in  the queue
+  
+  POINT pstop(Infinity,Infinity);
+  seg_queue.insert(pstop,SEGMENT(pstop,pstop));
+  SEGMENT next_seg = seg_queue.inf(seg_queue.find_min());
+  
+  // Main Loop
+  
+  while ( !X_structure.empty() ) 
+    {     
+      // move |p_sweep| to next event point and insert a new node
+      // into the output graph G
+      
+      seq_item event = X_structure.min();
+      p_sweep = X_structure.key(event);
+      node v = G.new_node(p_sweep);
+
+      cmp.set_position(p_sweep);
+      
+      // If there is a non-nil item |sit| associated with |event|,
+      // |key(sit)| is either an ending or passing segment.
+      // We use |sit| as an entry point to compute the bundle of
+      // segments ending at or passing through |p_sweep|.
+      // In particular, we compute the first (sit_first)| and last
+      // (|sit_last|) item of this bundle and the successor (|sit_succ)|)
+      // and predecessor (|sit_pred|) items.
+      
+      seq_item sit = X_structure.inf(event);
+      
+      if (sit == nil)
+	{
+	  // here we do not know any segments ending or passing through 
+	  // |p_sweep|. However, |p_sweep| could come to lie on a segment 
+	  // inserted before. To check this we test the predessor of
+	  // the zero length segment |(p_sweep,p_sweep)| in the Y_structure.
+	  
+	  sit = Y_structure.lookup(SEGMENT(p_sweep,p_sweep));
+	}
+      
+      seq_item sit_succ  = nil;
+      seq_item sit_pred  = nil;  
+      seq_item sit_first = nil; 
+      
+      // A value of |NIL| for |sit_succ| and |sit_pred| after the 
+      // following computation indicates that there are no segments 
+      // ending at or passing through |p_sweep|
+      
+      if (sit != nil)    // key(sit) is an ending or passing segment
+	{ 
+	  // first walk up until |sit_succ|
+	  // |inf(sit)| points
+	  //  - to its successor item in the Y_structure iff the segment
+	  //    associated with this item overlaps the segment |key(sit)|
+	  //  - to an item in the X_structure that is associated with the next
+	  //    known event point related to segment |key(sit)| (may be |nil|)
+	  
+	  while ( Y_structure.inf(sit) == event || 
+		  Y_structure.inf(sit) == Y_structure.succ(sit) )
+	    sit = Y_structure.succ(sit);
+	  
+	  sit_succ = Y_structure.succ(sit);
+	  
+	  seq_item xit = Y_structure.inf(sit);
+	  if (xit) 
+	    { 
+	      SEGMENT s1 = Y_structure.key(sit);
+	      SEGMENT s2 = Y_structure.key(sit_succ);
+	      inter_dic(s1,s2) = xit;
+	    }
+	  
+	  // walk down until |sit_pred|, construct edges for all segments
+	  // in the bundle, assign information |nil| to continuing segments,
+	  // and delete ending segments from the Y_structure
+	  
+	  bool upperst;
+	  do 
+	    {
+	      upperst = false;
+	      s = Y_structure.key(sit);
+	      
+              // construct edges 
+              // if embed=false in the same direction as the original segment
+              // and from right to left otherwise
+
+	      if (!embed && s.source() == original[s].source())
+		G.new_edge( last_node[s], v, s);
+	      else            
+		G.new_edge( v, last_node[s], s );
+	      
+	      if ( identical(p_sweep,s.target()) )   //ending segment
+		{ 
+		  seq_item it = Y_structure.pred(sit);
+		  if ( Y_structure.inf(it) == sit )
+		    {
+		      upperst = true;
+		      Y_structure.change_inf(it, Y_structure.inf(sit));
+		    }
+		  Y_structure.del_item(sit);
+		  sit = it; 
+		}
+	      else  //passing segment
+		{ 
+		  if ( Y_structure.inf(sit) != Y_structure.succ(sit) )
+		    Y_structure.change_inf(sit, seq_item(nil));
+		  last_node[s] = v;
+		  sit = Y_structure.pred(sit); 
+		}
+	    } 
+	  while ( Y_structure.inf(sit) == event || upperst ||
+		  Y_structure.inf(sit) == Y_structure.succ(sit) );
+	  
+	  sit_pred = sit;
+	  sit = Y_structure.succ(sit_pred);  
+	  sit_first = sit;                   // first item of the bundle
+	  
+	  
+	  // reverse subsequences of overlapping segments  (if existing)
+	  
+	  while ( sit != sit_succ  && Y_structure.succ(sit) != sit_succ)
+	    {
+	      seq_item sub_first = sit;
+	      seq_item sub_last  = sub_first;
+	      
+	      while(  Y_structure.inf(sub_last) == Y_structure.succ(sub_last) )
+		sub_last = Y_structure.succ(sub_last);
+	      
+	      if( sub_last != sub_first )
+		Y_structure.reverse_items(sub_first, sub_last);
+	      
+	      sit = Y_structure.succ(sub_first);
+	    }
+	  
+	  // reverse the bundle as awhole
+
+	  if (Y_structure.succ(sit_pred) != sit_succ )
+	    Y_structure.reverse_items(Y_structure.succ(sit_pred),
+				      Y_structure.pred(sit_succ));
+	}      
+      
+      // insert all segments starting at |p_sweep|
+      
+      while ( identical(p_sweep,next_seg.source()) )
+	{
+	  // insert |next_seg| in the Y-structure and associate the
+	  // new item with its successor item if the corresponding segments
+	  // overlap
+	  
+	  seq_item s_sit = Y_structure.locate(next_seg);
+	  seq_item p_sit = Y_structure.pred(s_sit);
+	  
+	  s   = Y_structure.key(s_sit);
+	  
+	  if( !orientation(s, next_seg.start()) &&
+	      !orientation(s, next_seg.end() ) )
+	    sit = Y_structure.insert_at(s_sit, next_seg, s_sit);
+	  else 
+	    sit = Y_structure.insert_at(s_sit, next_seg, seq_item(nil));
+
+	  s = Y_structure.key(p_sit);
+	  
+	  // associate the predessor item with the new item if the 
+	  // corresponding segments overlap
+	  
+	  if( !orientation(s, next_seg.start()) &&
+	      !orientation(s, next_seg.end() ) )
+	    Y_structure.change_inf(p_sit, sit);
+	  
+	  X_structure.insert(next_seg.end(), sit);
+	  last_node[next_seg] = v;
+	  
+	  if ( sit_succ == nil )  
+	    { 
+	      // there are only starting segments, compute |sit_succ| 
+	      // and |sit_pred| using the first inserted segment
+	      sit_succ = Y_structure.succ(sit);
+	      sit_pred = Y_structure.pred(sit);
+	      sit_first = sit_succ;
+	    }
+	  
+	  // delete minimum and assign new minimum to |next_seg|
+	  
+	  seg_queue.del_min();
+	  next_seg = seg_queue.inf(seg_queue.find_min());
+	}
+      
+      // if |sit_pred| still has the value |nil|, there were no ending, 
+      // passing or starting segments, i.e., |p_sweep| is an isolated 
+      // point. In this case we are done, otherwise we  compute 
+      // possible intersections between new neighbors.
+      
+      if (sit_pred != nil) 
+	{ 
+	  // |sit_pred| is no longer adjacent to its former successor we 
+	  // change its intersection event to |NIL| 
+
+	 
+	  seq_item xit = Y_structure.inf(sit_pred);
+	  if ( xit ) 
+	    { 
+	      SEGMENT s1 = Y_structure.key(sit_pred);
+	      SEGMENT s2 = Y_structure.key(sit_first);
+	      inter_dic(s1,s2) = xit;
+	      Y_structure.change_inf(sit_pred, seq_item(nil));
+	    }
+	  
+	  // compute possible intersections between |sit_pred| and its
+	  // successor and |sit_succ| and its predecessor
+	  
+	  compute_intersection(X_structure, Y_structure, inter_dic, sit_pred);
+	  sit = Y_structure.pred(sit_succ);
+	  if (sit != sit_pred)
+	    compute_intersection(X_structure, Y_structure, inter_dic, sit);
+	} 
+      
+      // finally we delete the current event from the X-structure
+      X_structure.del_item(event);
+    }
+
+  if (embed) construct_embedding(G);
+  
+  edge e;
+  forall_edges(e, G) G[e] = original[G[e]];
+}
+
+
+
+void SWEEP_SEGMENTS(const list<SEGMENT>& S, list<POINT>& L)
+{ GRAPH<POINT,SEGMENT> G;
+  SWEEP_SEGMENTS(S,G,false);
+  L.clear();
+  node v;
+  forall_nodes(v,G)
+   if (G.degree(v) > 1) L.append(G[v]);
+}
+

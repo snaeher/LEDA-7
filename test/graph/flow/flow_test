@@ -1,0 +1,58 @@
+#!/bin/sh
+
+
+#if [ ! -f hi_pr ]; then
+# echo ""
+# echo "$0:"
+# echo "   This script compares LEDA's maxflow implementation (\"mf\")"
+# echo "   with the maxflow code of Cherkassky/Goldberg (\"hi_pr\")."
+# echo "   You first have to download and compile CG's hi_pr code."
+# echo "   You can find it at \"www.intertrust.com/star/goldberg/soft.html\""
+# echo "   (package: HIPR). You should also download package PRF that contains "
+# echo "   more preflow-push variants and the \"ak\" generator program."
+# echo "   Make \"hi_pr\" and \"ak\" and copy both to this directory."
+# echo ""
+# exit
+#fi
+
+#if [ ! -f mf ]; then
+# echo ""
+# echo "$0:"
+# echo "   Before running this script you have to do a \"make\" in this"
+# echo "   directory that will compile and link LEDA's maxflow program \"mf\"."
+# echo ""
+#fi
+
+
+if [ "$1" = "" ]; then
+  echo "usage: $0 gen  (gen = ak,cg1,cg2)"
+  exit
+fi
+
+gen="$1"
+params="$2 $3 $4"
+
+
+for n in 500 1000 1500 2000 2500 3000 3500 4000 4500 5000; do
+echo " "
+echo "$gen $n"
+
+$gen    $n $n > $gen.dimacs
+$gen -r $n $n > $gen.r.dimacs
+
+echo -n "CG (hi_pr) : "
+cat $gen.dimacs | hi_pr  | grep time | sed "s/c / /" | sed "s/  */ /g"
+
+echo -n "CG (hi_pr) : "
+cat $gen.r.dimacs | hi_pr  | grep time | sed "s/c / /" | sed "s/  */ /g"
+
+echo -n "LEDA (mfs) : "
+cat $gen.dimacs | ./mfs $params | grep time | sed "s/  */ /g"
+
+echo -n "LEDA (mfs) : "
+cat $gen.r.dimacs | ./mfs $params | grep time | sed "s/  */ /g"
+
+done
+
+echo " "
+

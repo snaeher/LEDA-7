@@ -1,0 +1,28 @@
+OBJECTS = \
+_gen_real_points$(o) \
+_real_point$(o) \
+_real_segment$(o) \
+_real_ray$(o) \
+_real_rectangle$(o) \
+_real_triangle$(o) \
+_real_line$(o) \
+_real_circle$(o) \
+_real_polygon$(o) \
+_real_gen_polygon$(o) \
+_real_transform$(o) \
+_real_point_set$(o) \
+_real_point_locator$(o) \
+_r_circle_point$(o) \
+_r_circle_segment$(o) \
+_r_circle_polygon$(o) \
+_r_circle_gen_polygon$(o)
+
+
+_real_polygon$(o)       : ../../../../src/geo/plane/generic/polygon.cpp
+_real_gen_polygon$(o)   : ../../../../src/geo/plane/generic/gen_polygon.cpp
+_real_transform$(o)     : ../../../../src/geo/plane/generic/transform.cpp
+_real_point_set$(o)     : ../../../../src/geo/plane/generic/POINT_SET.cpp
+_real_point_locator$(o) : ../../../../src/geo/plane/generic/POINT_LOCATOR.cpp
+_gen_real_points$(o)    : ../../../../src/geo/plane/generic/gen_points.cpp
+
+

@@ -1,0 +1,37 @@
+.text
+.p2align 4,,15
+
+.globl vecAdd
+vecAdd:
+	pushl	%ebp
+	xorl	%edx, %edx
+	movl	%esp, %ebp
+	pushl	%edi
+	pushl	%esi
+	pushl	%ebx
+	movl	8(%ebp), %edi   ; a
+	movl	16(%ebp), %esi  ; b
+	movl	20(%ebp), %ecx  ; b_used
+	movl	24(%ebp), %ebx  ; sum
+	cmpl	%ecx, %edx
+	jge	.L8
+	.p2align 4,,7
+.L6:
+	movd	(%esi,%edx,4), %mm1
+	movd	(%edi,%edx,4), %mm2
+	paddq	%mm2,%mm1
+
+	paddq	%mm1,%mm0
+	movd	%mm0, (%ebx,%edx,4)
+        psrlq   $32, %mm0
+
+	incl	%edx
+	cmpl	%ecx, %edx
+	jl	.L6
+.L8:
+	movl	%edx, %eax
+	popl	%ebx
+	popl	%esi
+	popl	%edi
+	popl	%ebp
+	ret

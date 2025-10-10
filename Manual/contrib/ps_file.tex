@@ -1,0 +1,625 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{amstex}             % AMS extra math features
+
+%\usepackage{umlaut}             % German umlauts
+%\input{a4}                      % Adjust text and margin sizes
+
+\renewcommand{\l}    {\textsc{Leda}}
+\newcommand  {\ps}   {\textsc{PostScript}}
+\newcommand  {\psf}  {\pr{ps\_file}}
+\newcommand  {\pr}[1]{\textbf{\texttt{#1}}}
+\newcommand  {\tab}  {\hspace*{4cm}}
+\newcommand  {\wi}   {12cm}
+\newcommand  {\dt}   {0.5cm}
+\newcommand  {\tp}[1]{\makebox[2.4cm][l]{\pr{#1}}\pr{F.}}
+
+\begin{document}
+\vspace*{0.5cm}
+\begin{center}
+\huge
+User Manual\\
+for the\\
+\l-to-\ps\\
+Converter\footnote{This work was financially supported by the Deutsche
+  Forschungsgemeinschaft (DFG), Proj.-Nr. No 88/14-1.}\\
+\vspace{1cm}
+\Large
+Thomas Wahl\\
+Lehrstuhl für Informatik I\\
+Universität Würzburg\\
+\today\\
+\end{center}
+
+\vspace{1.5cm}
+\tableofcontents
+
+\vfill
+\noindent
+This subdivision agrees with the one in Chapter 10 - Graphics - in the
+\l\ manual\footnote{The \l\ User Manual, Version R 3.3, by Stefan
+  Näher (University of Halle) and Christian Uhrig (Max Planck
+  Institute for Computer Science, Saarbrücken), Germany} (sections
+10.1 and 10.2)
+%
+\newpage
+%
+\part*{Introduction}
+\addcontentsline{toc}{part}{Introduction}
+%
+This manual describes a \l-to-\ps\ converter, which enables programmers
+using the graphics and windows facilities of the \l\ library to redirect
+graphical output, as points, lines, circles, polygons, and text
+representations, from the screen window into a simple \ps\ file. This
+file may then be interpreted by a \ps\ previewer, like
+\textsc{GhostView}, it may be printed or be processed otherwise
+like any \ps\ source.
+
+The converter is written in C++ and was compiled by the \textsc{Gnu} 2.7
+compiler. It not only converts, but also \textit{uses} features of the
+\l\ library; so the entire \l\ package should be available when using
+the converter.
+
+The converter consists of two files: an object file and a C++-header
+file. The latter should be placed in your file system where all \l\
+header files are located; e.g. in /usr/local/lib/g++-include/LEDA. It
+can then be included into a C++-program like any other \l\ header
+file, for example \pr{\#include <LEDA/ps\_file.h>}. --- The object
+file must be linked to the object source of your program, for instance,
+if you make a library archive libpsf.a from ps\_file.o, you can
+use the -l option with argument \pr{psf}:\\
+\pr{g++ \ldots -lpsf \ldots}.
+
+\vspace{\dt}
+The main emphasis while writing the converter was to force the user to
+make as few changes as possible when redirecting the output from the
+screen to a \ps\ file. In the current version, the user only has to
+change the name of the constructor (\pr{window} becomes \psf)
+and, if so desired, add some parameters. Further, the \pr{display}
+method has to be removed, as it is not needed (nothing is displayed,
+but written to a file). All other implementations, as the
+initialization (\pr{init}) and (almost) all drawing operations, are to
+be used in exactly the same way as one is used to in connection with
+the \pr{window} type. If the resulting \ps\ file is viewed, the output
+should exactly look like the one created by a \pr{window} on the
+screen. Exceptions to this rule are the \pr{clear} method (cf. 2.3.1)
+and some few operations that have not (yet) been implemented.
+
+There are, however, some enhancements to windows, which are in
+most cases due to sophisticated \ps\ features. Some of those
+enhancements are:
+%
+\begin{itemize}
+\item The output can be split into several pages and into several
+  files (cf. \pr{newpage} and \pr{newfile} in 2.3.1)
+\item The range of the coordinates (\emph{xmin}, \emph{xmax}, \emph{ymin})
+  can be changed at any time for one and the same \psf\ object
+  without clearing the output produced so far. This may be useful
+  along with the splitting option above (cf. \pr{init} in 2.3.1)
+\item The constructor accepts size specifications in cm for a box that
+  the output is to be placed into (cf. Creation in 2.2)
+\item When working with a non-color printer or display, one can assign
+  an arbitrary gray value to any color in which this color should be
+  displayed. Thus, important markings in glaring colors (on a color
+  display) can be drawn in, say, light gray values on a monochrome
+  screen or printer. (cf. Colors in section 1)
+\end{itemize}
+
+The header file contains a number of symbolic constants, some of which
+influence the behavior of the converter by means of numerical
+values. It might be desired to alter these values in adapting the
+package to local circumstances.
+
+\noindent
+Here the meaning of some of the constants:
+\begin{description}
+\item [\pr{VERSION}] the name of the \ps\ version that the converter
+  translates into. This string appears in the header of the \ps\ file
+  for reasons of conformity.
+\item [\pr{PIXEL}] According to the \ps\ Handbuch\footnote{POSTSCRIPT
+    HANDBUCH, 2. überarbeitete Auflage 1989, Addison-Wesley
+    (Deutschland) GmbH}, a typographical dot has a diameter of about
+  1/72 inches, therefore 2.54/72.0 -- the value of this constant --
+  represents the size of a dot in cm. This value is needed for scaling
+  purposes and should not be changed.
+\item [\pr{X\_SHIFT, Y\_SHIFT}] the number of pixels that the entire
+  picture is shifted from the lower left corner to place it somewhat
+  in the middle of the \ps\ window.
+\item [\pr{HEIGHT, WIDTH}] the default height and width in cm of the
+  box in which to place the output. These values apply if no height or
+  width is specified by the user in the constructor, and it
+  corresponds to the size of the drawing area on an A4-paper format.
+\item [\pr{SIZE}] the default coordinate range. As long as no
+  \pr{init} method is called for a \psf\ object, the triple
+  (\emph{xmin}, \emph{xmax}, \emph{ymin}) is assumed to be
+  (0,\pr{SIZE},0).
+\end{description}
+%
+\section{Colors (\pr{color})}
+%
+The data type \pr{color} can be used within the \psf\ class in the same
+way as in connection with the \pr{window} class, i.e., the \pr{color}
+constructor and all operations manipulating rgb-values of a color
+are available. Also, all drawing operations have an optional color
+argument for temporary switching the foreground color to a new value,
+restricted to the current drawing operation. As mentioned in the \l\
+manual (section 10.1 Colors), there are 16 predefined colors, which are
+available in \psf\ applications also.
+
+\vspace{\dt}
+According to the \l\ manual, when working with a monochrome display,
+all colors different from \pr{white} are represented as
+\pr{black}. This might not be the method of choice, especially when it
+is desired to make a print-out of the drawing, which is possible in
+connection with the \psf\ class.
+
+The \ps\ language offers a way to represent any color in gray
+values, i.e. a number between 0 and 1 that determines the share of
+white and black in the representation. This method was adopted for the
+\psf\ class such that, on monochrome displays, colors are
+automatically reduced to those gray values, but not just to black and
+white.
+
+Further, even on a color display, it might be desired to show
+only gray values instead of colors, for example when the user prepares
+a black-and-white print-out on a color display. For this purpose, it
+is possible to switch within one and the same \psf\ file object between
+color and gray value representation of the drawings. This is
+accomplished by the \pr{set\_output\_mode(output\_mode new\_mode)}
+function, which accepts \pr{colored\_mode} and \pr{gray\_mode} as
+arguments. (cf. Setting parameters in 2.3.2)
+
+\vspace{\dt}
+In some cases, however, the gray value chosen by the \ps\ language
+may not be the one prefered by the user. For example, red usually gets
+assigned a dark gray value, whereas green is represented in a light
+hue. That seems unreasonable if the user wants the red markings to
+show important features of the drawing.
+
+Therefore, one can associate such a gray value to a color oneself:\\
+The \pr{set\_gray\_value(color c, double d)} function takes as the
+first argument the color the gray value of which is to be
+re-assigned. The second argument is the gray value itself and ranges
+from 0 (black) through 1 (white).
+
+\vspace{\dt}
+\noindent
+\textbf{Implementation:}\\
+Gray values for colors are stored in a list of element type \pr{pair}, where
+\pr{pair} is a struct with a \pr{color} and a \pr{double} attribute
+for the gray value.
+%
+\section{\ps\ files (\psf)}
+%
+\subsection{Definition}
+%
+The date type \psf\ is a graphical input/output interface for the
+familiar \l\ drawing operations of two-dimensional geometry. Unlike
+the data type \pr{window}, the output produced by a \psf\ object is
+\emph{permanent}, i.e., it is not lost after exiting the C++-program as
+it is saved in an output file.
+
+\vspace{\dt}
+An instance of type \psf\ is (as far as the user takes notice of it)
+an ordinary ASCII file that contains the source code of the graphics
+output in the \ps\ description language. After running the
+C++-program, the file is created in the user's current working
+directory and can later be handled like any other \ps\ file, i.e., it
+may be viewed, printed etc.
+
+Of course, features like a panel section (as in \pr{window} type
+instances) don't make sense for a representation that is not supposed
+to be displayed on the screen and interactively worked with by the
+user. Therefore, only drawing operations are applicable to a \psf\
+instance.
+
+Determining the \emph{xmin}, \emph{xmax}, \emph{ymin}, and \emph{ymax}
+parameters follows the same philosophy as in the \l\ library, so see
+the \l\ manual and the \pr{init} operation in this manual.
+
+\vspace{\dt}
+\noindent
+A list of important (to the user) \psf\ parameters:
+%
+\begin{enumerate}
+\item The \emph{xmin}, \emph{xmax}, \emph{ymin}, and \emph{ymax}
+  parameters determine the coordinate range of the drawing area which
+  should be kept to by the user. These parameters can only be changed
+  using the \pr{init} method.
+\item The \emph{draw bounding box} parameter determines whether the
+  box that the output is placed into is supposed to be \emph{drawn} or
+  not. However, the bounding box will be \emph{defined} in any
+  case. (cf. \pr{HEIGHT} and \pr{WIDTH} symbolic constants in the
+  Introduction)
+\item The \emph{output mode} parameter determines whether colors or
+  gray values are to be used for drawing objects. (cf. Colors in
+  section 1)
+\item The \emph{grayvalue} array parameter contains gray values for up
+  to \pr{MAXDEFCOL} colors which are to be used if the \emph{output
+  mode} parameter is currently \pr{gray\_mode}. (cf. Colors in section 1)
+\item The \emph{foreground color} parameter defines the default color
+  of all drawing operations if no drawing color is specified in the
+  optional color argument.
+\item The \emph{linewidth} parameter (in ``units'' [see next])
+\item The \emph{unitlinewidth} parameter determines the width of a
+  line \emph{in cm} with \emph{linewidth} $\mbox{parameter}=1$. If the
+  current linewidth is 2 (units) and unitlinewidth is 0.5 (cm), all
+  lines are 1cm wide.
+\item The \emph{linestyle} parameter
+\item The \emph{nodewidth} parameter (in pixels)
+\item The \emph{crosswidth} parameter defines the width of a cross
+  \emph{in cm} representing a \emph{point}. (cf. \l\ manual,
+  \pr{draw\_point} operation)
+\item The \emph{arrowlength} parameter defines the length \emph{in cm}
+  of the two side branches of an arrowhead (\pr{draw\_arrow}
+  operation).
+\item The \emph{arrowangle} parameter defines the angle between the
+  two side branches of an arrowhead and the arrowline.
+\item The \emph{textfont} parameter defines the font to be used in all
+  text drawing operations.
+\item The \emph{fontsize} parameter defines the height of text
+  representations \emph{in cm}.
+\end{enumerate}
+Where no explanation is given, consult the \l\ manual.
+
+\vspace*{\dt}
+\noindent
+The following parameters of the \pr{window} type are \emph{not}
+available for the \psf\ data type:
+\begin{enumerate}
+\item The \emph{background color} parameter
+\item The \emph{gridwidth}        parameter
+\item The \emph{frame label}      parameter
+\item The \emph{show coordinates} parameter
+\item The \emph{flush output}     parameter
+\item The \emph{textmode}         parameter
+\item The \emph{drawing mode}     parameter
+\item The \emph{redraw function}  parameter
+\item The \emph{buttons per line} parameter
+\end{enumerate}
+The functions that are associated with these parameters either have to
+be implemented yet (e.g., \emph{textmode}), or they don't make sense
+in this particular application (e.g., \emph{flush output}). Whenever
+it is attempted to call a function that is not implemented, a warning
+is issued both on standard error output (screen) and in the \ps\ file
+that the output is written into.
+%
+\subsection{Creation}
+%
+\psf\ \pr{F(double w, double h=HEIGHT, string name="unnamed.ps")}\\
+\tab
+\parbox[t]{\wi}{creates a \psf\ object with a file of name \pr{name}
+  associated to it. Instead of \pr{string}, the type of \pr{name} may
+  also be \pr{char *}.
+
+  The picture represented by the \ps\ file will have physical size
+  \pr{w} $\times$ \pr{h} cm (not pixels!)}
+\\[\dt]
+\psf\ \pr{F(string name="unnamed.ps")}\\
+\tab
+\parbox[t]{\wi}{same as \psf\ \pr{F(WIDTH,HEIGHT,name)}}
+\\[\dt]
+Remember that the \pr{WIDTH} and \pr{HEIGHT} symbolic constants stand
+for A4 paper format (16.0 $\times$ 23.5 cm drawing area).
+
+All constructors initialize the coordinate range of \pr{F} to
+\emph{xmin} = 0, \emph{xmax} = 100, and \emph{ymin} = 0, where 100
+is the value of the \pr{SIZE} symbolic constant (see
+Introduction). The \emph{ymax} value depends on \pr{w} and \pr{h}.
+%
+\subsection{Operations}
+%
+\subsubsection{Initialization}
+%
+\pr{void} \pr{F.init(double x0, double x1, double y0)}\\
+\tab
+\parbox[t]{\wi}{sets \emph{xmin} = \pr{x0}, \emph{xmax} = \pr{x1}, \emph{ymin} =
+  \pr{y0}, and \emph{ymax} such that $\Delta y/\Delta x = h/w$. $w$ and $h$ are
+  width and height of the surrounding box. All \psf\ parameter values,
+  like foreground color, linewidth etc., survive after the \pr{init}
+  operation.}
+\\[\dt]
+\pr{void} \pr{F.clear()}\\
+\tab
+\parbox[t]{\wi}{differs slightly from \pr{window::clear()}:
+  Instead of clearing the file, it opens a new (empty) page,
+  whereas the output produced so far is maintained on previous
+  pages. All \psf\ parameter values survive at the new page also.
+  (\pr{window::clear()} also keeps all settings after clearing the
+  page.)
+
+  This behavior of \pr{clear} implies that -- unlike
+  \pr{window::clear()} -- a call of this method \emph{before} any
+  drawing operation has been carried out, i.e. immediately after
+  creating the \psf\ object, is \emph{not} necessary and not
+  reasonable either. The result would be an empty page at the
+  beginning of the \ps\ output.}
+\tab
+\parbox[t]{\wi}{Another difference to the corresponding \pr{window}
+  method is that it does not have an optional \pr{color} argument to
+  fill the background of the drawing section (it will always be
+  white).}
+\\[\dt]
+\pr{void} \pr{F.newpage()}\\
+\tab
+\parbox[t]{\wi}{same as \pr{F.clear()}}
+\\[\dt]
+\pr{void} \pr{F.newfile(double w, double h=HEIGHT, string
+  name="unnamed.ps")}\\
+\tab
+\parbox[t]{\wi}{associates a new \ps\ file with the current \psf\
+  object. If necessary (i.e., if the user did not call \pr{F.close()}
+  before), the old file is closed and written to the current working
+  directory. Essentially, this function behaves as if a new \psf\
+  object was created using a constructor. In particular, all parameter
+  values are reset to their default values (cf. 2.3.2).}
+\\[\dt]
+\pr{void} \pr{F.newfile(string name="unnamed.ps")}\\
+\tab
+\parbox[t]{\wi}{same as \pr{F.newfile(WIDTH,HEIGHT,name)}}
+\\[\dt]
+\pr{void} \pr{F.close()}\\
+\tab
+\parbox[t]{\wi}{closes the file after adding some trailing information
+  to it (number of output pages etc.). Calling this function is
+  optional (if necessary, it is called automatically at the end of the
+  lifetime of the variable~\pr{F}).}
+%
+\subsubsection{Setting parameters}
+%
+\tp{bool}\pr{set\_draw\_bb(bool flag)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{draw bounding box} parameter to
+  \pr{flag}. Possible values are \pr{true} and \pr{false}; default is
+  \pr{true}.
+
+  This method can be called anywhere \emph{before} the page is
+  \emph{finished} that the method first applies to, i.e. before the
+  next \pr{clear} (or \pr{newpage}) or \pr{close}.}
+\\[\dt]
+\tp{output\_mode}\pr{set\_output\_mode(output\_mode new\_mode)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{ouptput mode} parameter to
+  \pr{new\_mode}. Possible values are \pr{colored\_mode} and \pr{gray\_mode};
+  default is \pr{colored\_mode}.}
+\\[\dt]
+\tp{double}\pr{set\_gray\_value(color c, double d)}\\
+\tab
+\parbox[t]{\wi}{sets the gray value of the color \pr{c} to
+  \pr{d}. Possible values are: any color for \pr{c}, and a number in
+  the range from 0 (black) through 1 (white) for \pr{d}. Default
+  values are adopted from the \ps\ language. (See also Colors in
+  section 1.)}
+\\[\dt]
+\tp{color}\pr{set\_color(color c)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{foreground color} parameter to
+  \pr{c}. \pr{c} may be any color: either one of the 16 predefined
+  ones or a user defined color. Default is \pr{black}.}
+%\\[\dt]
+% Style manipulation!
+
+\pagebreak
+\noindent
+\tp{double}\pr{set\_line\_width(double pix)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{linewidth} parameter to \pr{pix}
+  units. Default is 1. The actual linewidth later visible in the
+  output depends on the \emph{unitlinewidth} parameter (see next).}
+\\[\dt]
+\tp{double}\pr{set\_unit\_line\_width(double cm)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{unitlinewidth} parameter to \pr{cm}
+  cm. Default is the value of the \pr{PIXEL} symbolic constant
+  (2.54cm/72), which is the width of a typographical dot. This
+  constant may be used to redefine this parameter value.
+
+  Arguments less than the value of PIXEL (like 0.01 [cm] or
+  $\mbox{\pr{PIXEL}}*0.5$) are also permitted.}
+\\[\dt]
+\tp{line\_style}\pr{set\_line\_style(line\_style s)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{linestyle} parameter to \pr{s}. Possible
+  values are \pr{solid}, \pr{dashed}, and \pr{dotted}. Defaults is
+  \pr{solid}.}
+\\[\dt]
+\tp{double}\pr{set\_node\_width(double pix)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{nodewidth} parameter to \pr{pix}
+  pixels. Default value is 20.}
+\\[\dt]
+\tp{double}\pr{set\_cross\_width(double cm)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{crosswidth} parameter to \pr{cm} cm.
+  Default is 0.2.}
+\\[\dt]
+\tp{double}\pr{set\_arrow\_length(double cm)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{arrowlength} parameter to \pr{cm} cm.
+  Default is 0.5.}
+\\[\dt]
+\tp{double}\pr{set\_arrow\_angle(double rad)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{arrowangle} parameter to \pr{rad} rad.
+  Default is $\pi/10$. The \pr{PI} symbolic constant can be used to
+  reset the arrow angle.}
+\\[\dt]
+\tp{string}\pr{set\_text\_font(string s)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{textfont} parameter to \pr{s}. Possible
+  values are names of fonts that are interpretable by
+  \ps\footnotemark. Default is \pr{"Helvetica"}, which is close to the
+  font used in windows.}
+\footnotetext{Such are: \pr{"Times-Roman"}, \pr{"Times-Italic"},
+\pr{"Times-Bold"}, \pr{"Times-BoldItalic"}, \pr{"Helveti\-ca"},
+\pr{"Helvetica-Oblique"}, \pr{"Helvetica-Bold"},
+\pr{"Helvetica-BoldOblique"}, \pr{"Courier"},
+\pr{"Courier\--Oblique"}, \pr{"Courier-Bold"},
+\pr{"Courier-BoldOblique"}, and \pr{"Symbol"}}
+\\[\dt]
+\tp{double}\pr{set\_font\_size(double cm)}\\
+\tab
+\parbox[t]{\wi}{sets the \emph{fontsize} parameter to \pr{cm} cm.
+  Default is 0.4. This value approximately corresponds to the
+  \emph{height} of the letter \pr{M} in the current font. Note that
+  fonts also become \emph{wider} when the fontsize is increased.}
+\\[\dt]
+All setting parameter operations return the previous value of the
+parameter.
+%
+\subsubsection{Reading parameters}
+%
+\tp{bool}\pr{get\_draw\_bb()}\\
+\tp{output\_mode}\pr{get\_output\_mode()}\\
+\tp{double}\pr{get\_gray\_value(color c)}\\
+\tab
+\parbox[t]{\wi}{gets the gray value that has been assigned to color
+  \pr{c} by the user. If none is assigned, -1 is returned.}\\
+\tp{color}\pr{get\_color()}\\
+\tp{double}\pr{get\_line\_width()}\\
+\tp{double}\pr{get\_unit\_line\_width()}\\
+\tp{line\_style}\pr{get\_line\_style()}\\
+\tp{double}\pr{get\_node\_width()}\\
+\tp{double}\pr{get\_cross\_width()}\\
+\tp{double}\pr{get\_arrow\_length()}\\
+\tp{double}\pr{get\_arrow\_angle()}\\
+\tp{string}\pr{get\_text\_font()}\\
+\tp{double}\pr{get\_font\_size()}\\[\dt]
+These functions return the value of the corresponding \psf\ parameter.
+%
+\subsubsection{Drawing Operations}
+%
+All drawing operations have an optional color argument at the end of
+the parameter list. If this argument is omitted, the current
+foreground color is used instead.
+
+\vspace{\dt}
+In the following, only a list of all available operations is given,
+but without explanations of what they draw. This can be obtained from
+the \l\ manual.
+%
+\subsubsection*{2.3.4.1 Drawing points}
+%
+\pr{void} \pr{F.draw\_point(double x, double y, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_point(point p, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_pixel(double x, double y, color c=fgcol)}\\
+\pr{void} \pr{F.draw pixel(point p, color c=fgcol)}
+%
+\subsubsection*{2.3.4.2 Drawing line segments}
+%
+\pr{void} \pr{F.draw\_segment(double x1, double y1, double x2, double y2,}\\
+  \tab\pr{color c=fgcol)}\\
+\pr{void} \pr{F.draw\_segment(point p, point q, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_segment(segment s, color c=fgcol)}
+%
+\subsubsection*{2.3.4.3 Drawing lines}
+%
+\pr{void} \pr{F.draw\_line(double x1, double y1, double x2, double  y2,}\\
+  \tab\pr{color c=fgcol)}\\
+\pr{void} \pr{F.draw\_line(point p, point q, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_line(segment s, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_line(line l, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_hline(double y, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_vline(double x, color c=fgcol)}
+%
+\subsubsection*{2.3.4.4 Drawing arrows}
+%
+\pr{void} \pr{F.draw\_arrow\_head(point p, double dir, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_arrow(double x1, double y1, double x2, double y2,}\\
+  \tab\pr{color c=fgcol)}\\
+\pr{void} \pr{F.draw\_arrow(point p, point q, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_arrow(segment s, color c=fgcol)}
+%
+\subsubsection*{2.3.4.5 Drawing circles}
+%
+\pr{void} \pr{F.draw\_circle(double x, double y, double r, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_circle(point p, double r, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_circle(circle C, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_ellipse(double x, double y, double r1, double r2,}\\
+  \tab\pr{color c=fgcol)}\\
+\pr{void} \pr{F.draw\_ellipse(point p, double r1, double r2, color c=fgcol)}
+%
+\subsubsection*{2.3.4.6 Drawing discs}
+%
+\pr{void} \pr{F.draw\_disc(double x, double y, double r, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_disc(point p, double r, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_disc(circle C, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_filled\_ellipse(double x, double y, double r1, double r2,}\\
+  \tab\pr{color c=fgcol)}\\
+\pr{void} \pr{F.draw\_filled\_ellipse(point p, double r1, double r2,}\\
+  \tab\pr{color c=fgcol)}
+%
+\subsubsection*{2.3.4.7 Drawing polygons}
+%
+\pr{void} \pr{F.draw\_polygon(list<point> lp, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_polygon(polygon P, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_filled\_polygon(list<point> lp, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_filled\_polygon(polygon P, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_rectangle(double x1, double y1, double x2, double y2,}\\
+  \tab\pr{color c=fgcol)}\\
+\pr{void} \pr{F.draw\_rectangle(point p, point q, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_box(double x1, double y1, double x2, double y2,}\\
+  \tab\pr{color c=fgcol)}\\
+\pr{void} \pr{F.draw\_box(point p, point q, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_triangle(point a, point b, point c, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_filled\_triangle(point a, point b, point c,}\\
+  \tab\pr{color c=fgcol)}
+%
+\subsubsection*{2.3.4.8 Drawing text}
+%
+\pr{void} \pr{F.draw\_text(double x, double y, string s, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_text(point p, string s, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_ctext(double x, double y, string s, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_ctext(point p, string s, color c=fgcol)}
+%
+\subsubsection*{2.3.4.9 Drawing nodes}
+%
+\pr{void} \pr{F.draw\_node(double x, double y, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_node(point p, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_filled\_node(double x, double y, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_filled\_node(point p, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_text\_node(double x, double y, string s, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_text\_node(point p, string s, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_int\_node(double x, double y, int i, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_int\_node(point p, int i, color c=fgcol)}
+%
+\subsubsection*{2.3.4.10 Drawing edges}
+%
+\pr{void} \pr{F.draw\_edge(double x1, double y1, double x2, double y2,}\\
+  \tab\pr{color c=fgcol)}\\
+\pr{void} \pr{F.draw\_edge(point p, point q, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_edge(segment s, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_edge\_arrow(double x1, double y1, double x2, double y2,}\\
+  \tab\pr{color c=fgcol)}\\
+\pr{void} \pr{F.draw\_edge\_arrow(point p, point q, color c=fgcol)}\\
+\pr{void} \pr{F.draw\_edge\_arrow(segment s, color c=fgcol)}
+
+\vspace{\dt}
+\emph{Not} (yet) implemented have been drawing operations for objects
+involving an \emph{arc} (like \pr{draw\_arc}, \pr{draw\_arc\_arrow},
+\pr{draw\_arc\_edge}), \emph{functions} (like \pr{plot\_xy}), and
+those involving \emph{messages}. Whenever it is attempted to call a
+function that is not implemented, a warning is issued both on standard
+error output (screen) and in the \ps\ file that the output is written into.
+%
+\subsection{Output operators}
+%
+For output of basic geometric objects, namely points, lines, segments,
+circles, and polygons, the \pr{<<} - operator can be used in the
+following way:
+
+\vspace{\dt}
+\noindent
+\makebox[5cm][l]{\pr{F << point p}}   like \pr{F.draw\_point(p)}\\
+\makebox[5cm][l]{\pr{F << segment s}} like \pr{F.draw\_segment(s)}\\
+\makebox[5cm][l]{\pr{F << line l}}    like \pr{F.draw\_line(l)}\\
+\makebox[5cm][l]{\pr{F << circle C}}  like \pr{F.draw\_circle(C)}\\
+\makebox[5cm][l]{\pr{F << polygon P}} like \pr{F.draw\_polygon(P)}
+
+\vspace{\dt}
+\noindent
+Note that there is no way to pass a color different from the current
+foreground color to a drawing operation employing the \pr{<<} -
+operator.
+%
+\end{document}

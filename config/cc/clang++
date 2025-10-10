@@ -1,0 +1,10 @@
+
+CC      = clang++$(VERS) -std=c++11 -Wall -Wno-unused
+PLAIN_C = clang$(VERS) -Wall
+CCLIB   = clang++$(VERS) -shared
+LD      = clang++$(VERS)
+
+PIC     = -fpic
+CFLAGS  = -O2
+WERR    = -Werror
+

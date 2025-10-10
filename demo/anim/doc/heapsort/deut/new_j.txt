@@ -1,0 +1,8 @@
+Die Variable \tt j \rm enthält den Feldindex des linken Sohnes. 
+
+\tt A[j] \rm ist nun der linke Sohn von \tt\red A[k] \rm\black . 
+
+Sofern es einen rechten Sohn von \tt\red A[k] \rm\black gibt, befindet dieser sich an 
+der Position \tt j+1 \rm .
+
+ \tt A[j+1] \rm ist der rechte Sohn von \tt\red A[k] \black\rm . 

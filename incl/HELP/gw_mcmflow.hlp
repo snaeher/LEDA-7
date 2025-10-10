@@ -1,0 +1,18 @@
+\bf\blue Min Cost Maxflow\rm\black
+
+This program computes and visualizes a maximum flow of 
+minimal cost in a grid graph. The source s is the lower
+left node and the sink t is the upper right node.
+
+Each edge has two sliders - a blue one for adjusting its
+capacity and a red one for adjusting its cost. You can 
+interactively edit the graph by adding or deleting nodes
+and edges and use the sliders for changing the capacities 
+and cost values of the edges. 
+
+After each edit operation a maximal flow with minimum total 
+cost is recomputed and displayed. The flow on each edge is 
+visualized by a corresponding line width used to draw the edge.
+
+
+

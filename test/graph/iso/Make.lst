@@ -1,0 +1,2 @@
+PROGS = \
+gw_isomorphism$(e) 

@@ -1,0 +1,14 @@
+PROGS = \
+convex_hull_time$(e) \
+delaunay_time$(e) \
+IC_versus_RIC_time$(e) \
+n_gon_time$(e) \
+point_set_time$(e) \
+rat_n_gon_time$(e) \
+rat_point_set_nearest_neighbor_time$(e) \
+rat_point_set_time$(e) \
+segment_intersection_time$(e) \
+sweep_time$(e) 
+
+
+

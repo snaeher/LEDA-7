@@ -1,0 +1,3 @@
+\rm Die Funktion \tt heapsort \rm wird gestartet. Es wird das Feld \tt A \rm und die Feld-
+größe \tt N \rm übergeben. 
+

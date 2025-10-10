@@ -1,0 +1,8 @@
+Durch den \tt swap \rm könnte nun die Heapeigenschaft erneut verletzt wurden
+sein. 
+
+Es muß nun der alte Vater erneut seine Position im Feld behaupten.
+
+Ein erneuter \tt while \rm - Schleifendurchlauf dies.
+
+\tt k \rm den Feldindex von \tt j \rm .

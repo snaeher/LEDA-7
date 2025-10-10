@@ -1,0 +1,5 @@
+The variable \tt\blue2 i\rm\black is set to index \tt l \rm of array \tt A\rm , that is, the left end of the considered interval.
+
+That means that \tt i \rm is a temporary left pointer.
+
+

@@ -1,0 +1,5 @@
+PROGS = \
+built_in_types_optimization$(e) \
+memmgr_test$(e) 
+#p_queue_test$(e)
+

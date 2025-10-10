@@ -1,0 +1,29 @@
+#! /bin/sh
+if [ "$1" = "" ]  
+then
+  echo ""
+  echo "Usage is"
+  echo "          lw2dvi foo[.lw]"
+  echo ""
+  echo "Converts an Lweb file foo.lw into a dvi file foo.dvi."
+  exit
+fi
+file=`basename $1 .lw`
+location=`dirname $1`
+name="$location/$file"
+if [ ! -f $name.lw ]
+then
+  echo "Error: File $name.lw does not exist."
+  echo ""
+  exit
+fi
+
+lweave $1
+
+echo "Calling latex..."
+echo ""
+latex $1.tex 
+
+rm $1.nw
+rm $1.tmp
+

@@ -1,0 +1,5 @@
+The variable \tt\green2 j\rm\black is set to index \tt r+1 \rm of array \tt A\rm , that is, one more than the right end of the 
+considered interval.
+
+That means that \tt j \rm is a temporary right pointer.
+

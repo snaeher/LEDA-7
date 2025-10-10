@@ -1,0 +1,33 @@
+.SUFFIXES: .asm .obj
+
+IPATH = $(LROOT)/incl
+o     = .obj
+
+.asm.obj:
+	$(ASM) $(AFLAGS) -o $*$(o) $*.asm
+
+.cpp.obj:
+	$(CC) $(CFLAGS) $(WERR) $(DFLAGS) -DLEDA_DLL -DLEDA_INSTALL -I$(IPATH) $*.cpp
+
+.c.obj:
+	$(PLAIN_C) $(CFLAGS) $(WERR) $(DFLAGS) -DLEDA_DLL -DLEDA_INSTALL -I$(IPATH) $*.c
+
+
+
+all: lib
+	@true
+
+include Make.lst
+
+lib: $(OBJECTS)
+	@$(MAKE) -C $(LROOT) shared
+
+obj: $(OBJECTS)
+	@true
+
+touch:
+	touch -c *.obj
+
+clean:
+	rm -f $(OBJECTS)
+

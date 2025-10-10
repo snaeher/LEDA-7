@@ -1,0 +1,61 @@
+
+OBJECTS = \
+_curve_sweep$(o) \
+_curve_sweep_traits$(o) \
+_real_minkowski$(o) \
+_real_annulus$(o) \
+_real_misc$(o) \
+_real_balaban$(o) \
+_real_mulmuley$(o) \
+_real_circles$(o) \
+_real_spanning_tree$(o) \
+_real_closest_pair$(o) \
+_real_subdivision_check$(o) \
+_real_constr_triang$(o) \
+_real_sweep_segments$(o) \
+_real_convex_hull$(o) \
+_real_sweep_segments_rb$(o) \
+_real_crust$(o) \
+_real_triangulation$(o) \
+_real_dc_delaunay$(o) \
+_real_triv_segments$(o) \
+_real_delaunay_check$(o) \
+_real_voronoi_check$(o) \
+_real_delaunay$(o) \
+_real_voronoi$(o) \
+_real_flip_delaunay$(o) \
+_real_width$(o) \
+_real_halfplane_inter$(o)
+
+
+_curve_sweep$(o): curve_sweep_templ.cpp
+
+_real_constr_triang$(o):     ../../../../src/geo/plane_alg/generic/constr_triang.cpp
+_real_convex_hull$(o):       ../../../../src/geo/plane_alg/generic/convex_hull.cpp
+_real_delaunay_check$(o):    ../../../../src/geo/plane_alg/generic/delaunay_check.cpp
+_real_flip_delaunay$(o):     ../../../../src/geo/plane_alg/generic/flip_delaunay.cpp
+_real_misc$(o):              ../../../../src/geo/plane_alg/generic/misc.cpp
+_real_subdivision_check$(o): ../../../../src/geo/plane_alg/generic/subdivision_check.cpp
+_real_sweep_segments$(o):    ../../../../src/geo/plane_alg/generic/sweep_segments.cpp
+_real_triangulation$(o):     ../../../../src/geo/plane_alg/generic/triangulation.cpp
+_real_voronoi_check$(o):     ../../../../src/geo/plane_alg/generic/voronoi_check.cpp
+
+_real_minkowski$(o):         ../generic/minkowski.cpp
+_real_annulus$(o):           ../generic/annulus.cpp
+_real_balaban$(o):           ../generic/balaban.cpp
+_real_mulmuley$(o):          ../generic/mulmuley.cpp
+_real_circles$(o):           ../generic/circles.cpp
+_real_spanning_tree$(o):     ../generic/spanning_tree.cpp
+_real_closest_pair$(o):      ../generic/closest_pair.cpp
+_real_sweep_segments_rb$(o): ../generic/sweep_segments_rb.cpp
+_real_crust$(o):             ../generic/crust.cpp
+_real_dc_delaunay$(o):       ../generic/dc_delaunay.cpp
+_real_triv_segments$(o):     ../generic/triv_segments.cpp
+_real_delaunay$(o):          ../generic/delaunay.cpp
+_real_voronoi$(o):           ../generic/voronoi.cpp
+_real_width$(o):             ../generic/width.cpp
+_real_halfplane_inter$(o):   ../generic/halfplane_inter.cpp
+
+
+
+

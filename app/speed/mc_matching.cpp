@@ -1,0 +1,219 @@
+#include <LEDA/graph/mc_matching.h>
+#include <LEDA/graph/mc_matching_gabow.h>
+
+
+using namespace leda;
+
+using std::cout;
+using std::endl;
+using std::flush;
+
+
+node complete(graph& G, int m)  
+{ 
+  // sqrt(2m) nodes and about m edges
+
+  int n = 2* (int) sqrt(m/2.0); 
+  array<node> A(n);
+  for (int i=0; i < n; i++) A[i] = G.new_node(); 
+
+  for (int i=0; i < n; i++) 
+    for (int j = i+1; j < n; j++) G.new_edge(A[i],A[j]);   
+
+  return A[0];
+}
+
+
+void chain(graph& G, int k, node z)
+{ 
+  // k new nodes and 2k - 1 edges 
+
+  array<node> A(k); 
+  for (int i=0; i < k; i++) A[i] = G.new_node();
+  G.new_edge(A[0],z);
+  
+  for (int i = 1; i < k-1; i++) 
+  { G.new_edge(A[i],A[i+1]);
+    G.new_edge(A[i],z);      
+   }
+
+  G.new_edge(A[0],A[1]);
+}
+
+
+void worst_case_gen(graph& G, int n, int m, int mode)
+{ 
+  // SHORT: mode == 0 
+  // LONG:  mode == 1 
+
+  // #nodes = sqrt(2m) + n*(mode+1) 
+  // #edges = m + 2n*(mode+1)
+
+  node z = complete(G,m);
+
+  int k = 4;
+
+  for (int j=0; j < n/8; j++) chain(G,2*k,z); 
+
+  if (mode == 1) {
+    for (int k = 5; k < sqrt(n); k++) chain(G,2*k,z);
+  }
+}
+
+
+void run_tests(int i, int gen, int n, int m)
+{
+  // we start with a fresh instance of the memory manager
+    std_memory.clear();
+
+
+    graph G;
+
+    switch (gen) {
+
+     case 1: random_graph(G,n,m);
+             break;
+
+     case 2: worst_case_gen(G,n,m,0);
+             break;
+
+     case 3: worst_case_gen(G,n,m,1);
+             break;
+    }
+
+    n = G.number_of_nodes();
+    m = G.number_of_edges();
+
+    cout << endl;
+    cout << string("%2d: |V| = %d  |E| = %d  d = %.1f",i,n,m,double(m)/n);
+    cout << endl;
+    
+   
+    double T = cpu_time();
+
+    cout << "    MAX_CARD_MATCHING_EDMONDS     " << flush;
+    node_array<int> OSC1(G);
+    list<edge> M1 = MAX_CARD_MATCHING_EDMONDS(G,OSC1,0);
+    cout << string("|M| = %5d   time: %5.2f sec ", M1.length(),
+                                                 cpu_time(T)) << endl;
+
+/*
+    cout << "    MAX_CARD_MATCHING_EDMONDS     " << flush;
+    M1 = MAX_CARD_MATCHING_EDMONDS(G,OSC1,1);
+    cout << string("|M| = %5d   time: %5.2f sec  heur=1", M1.length(),
+                                                 cpu_time(T)) << endl;
+
+
+    cout << "    MAX_CARD_MATCHING_KECECIOGLU  " << flush;
+    node_array<int> OSC2(G);
+    list<edge> M2 = MAX_CARD_MATCHING_KECECIOGLU(G,OSC2,0);
+    cout << string("|M| = %5d   time: %5.2f sec  heur=0", M2.length(),
+                                                 cpu_time(T)) << endl;
+
+    cout << "    MAX_CARD_MATCHING_KECECIOGLU  " << flush;
+    M2 = MAX_CARD_MATCHING_KECECIOGLU(G,OSC2,1);
+    cout << string("|M| = %5d   time: %5.2f sec  heur=1", M2.length(),
+                                                 cpu_time(T)) << endl;
+*/
+
+    cout << "    MAX_CARD_MATCHING_GABOW       " << flush;
+    G_card_matching P(G);
+    node_array<int> OSC3(G);
+    list<edge> M3 = MAX_CARD_MATCHING_GABOW(G,OSC3);
+    cout << string("|M| = %5d   time: %5.2f sec", M3.length(),
+                                                 cpu_time(T)) << endl;
+                                                           
+
+    //assert(M1.length() == M2.length());
+    assert(M1.length() == M3.length());
+   
+    assert(CHECK_MAX_CARD_MATCHING(G, M1, OSC1));
+    //assert(CHECK_MAX_CARD_MATCHING(G, M2, OSC2));
+    assert(CHECK_MAX_CARD_MATCHING(G, M3, OSC3));
+   
+}
+
+
+
+
+int main()
+{
+ //system("clear");
+
+ cout << endl;
+ cout << "\
+ We compare the efficiency of LEDA's Maximum Cardinality Matching\n\
+ algorithms for general graphs.\n\
+ \n\
+ MAX_CARD_MATCHING_EDMONDS (old)\n\
+ the original blossom-shrinking algorithm by Edmonds/Gabow\n\
+ \n\
+ MAX_CARD_MATCHING_GABOW (new)\n\
+ the algorithm by H.N. Gabow implemented by Ansaripour/Danaei/Mehlhorn\n\
+ (https://arxiv.org/abs/2409.14849)" << endl;
+
+/*
+ MAX_CARD_MATCHING_KECECIOGLU\n\
+ a variant of Edmonds/Gabow using an heuristic proposed by Kecelioglu\n\
+ \n\
+*/
+
+  cout << endl; 
+
+  cout << " Input graphs can be created by 3 different generators" << endl;
+  cout << " (see arxiv.org/abs/2409.14849 for details)" << endl;
+  cout << endl;
+  cout << " 1. random sparse graphs" << endl;
+  cout << endl;
+  cout << " 2. worst-case graphs with short chains" << endl; 
+  cout << "    expected running time is O(n) for GABOW and O(n^2) for EDMONDS.";
+  cout << endl;
+  cout << endl;
+  cout << " 3. worst-case graphs with long chains" << endl;
+  cout << "    expected running time is O(n^1.5) for GABOW and O(n^2) for EDMONDS.";
+  cout << endl;
+  cout << endl;
+
+  int gen = 0;
+  while (gen < 1 || gen > 3) gen = read_int(" choose generator (1/2/3) : " );
+  cout << endl;
+
+  switch (gen) {
+
+    case 1: cout << " Generator 1: random sparse graphs." << endl;
+            break;
+
+    case 2: cout << " Generator 2: worst-case with short chains." <<  endl;
+            break;
+
+    case 3: cout << " Generator 3: worst-case with long chains." << endl;
+            break;
+   }
+
+  cout << endl;
+
+
+  int N = read_int(" #iterations N =  "); 
+  cout << endl;
+
+  int density = (gen == 1) ? 2 : 4;
+
+//density = read_int(" density = ");
+
+  int delta = (gen == 1) ? 10000 : 5000;
+
+  for(int i = 1; i <= N; i++)  {
+    int n = i*delta;
+    int m = n*density;
+    run_tests(i,gen,n,m);
+  }
+
+  cout << endl;
+  cout << "FINISHED" << endl;
+  cout << endl;
+ 
+
+  return 0;
+
+}
+

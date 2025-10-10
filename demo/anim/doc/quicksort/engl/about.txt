@@ -1,0 +1,7 @@
+		\bf Animation of Quicksort Algorithm
+
+			\tt	 programmed by Oliver Zlotowski
+\tt Martin-Luther-University Halle/Wittenberg
+
+\tt\grey2 December 1998
+ 

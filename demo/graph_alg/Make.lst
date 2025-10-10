@@ -1,0 +1,15 @@
+PROGS = \
+gw_basic_graph_algorithms$(e) \
+gw_dfs$(e) \
+gw_dijkstra$(e) \
+gw_max_flow$(e) \
+gw_mc_matching$(e) \
+gw_mcb_matching$(e) \
+gw_min_cost_flow$(e) \
+gw_min_cut$(e) \
+gw_minimum_ratio_cycle$(e) \
+gw_minimum_spanning_tree$(e) \
+gw_mw_matching$(e) \
+gw_mwb_matching$(e) \
+gw_scc$(e) \
+gw_shortest_path$(e)

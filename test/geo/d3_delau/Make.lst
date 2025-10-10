@@ -1,0 +1,8 @@
+
+PROGS = d3_delau_demo$(e)
+
+OBJECTS = d3_complex$(o) d3_plane_triang$(o) d3_delau_alg$(o)
+
+#LFLAGS = -o d3_delau_demo$(e) $(OBJECTS)
+
+d3_delau_demo$(e): $(OBJECTS)

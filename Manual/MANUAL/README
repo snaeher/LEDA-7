@@ -1,0 +1,5 @@
+
+To create MANUAL.ps just type  "make".
+If it does not work on your system check/modify "Makefile".
+
+

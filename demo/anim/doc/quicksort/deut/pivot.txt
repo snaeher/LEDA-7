@@ -1,0 +1,5 @@
+Die Variable \tt\red v \rm\black dient zur Speicherung des zerlegenden Elements.
+
+Es wird auch als Pivot- oder Vergleichselement bezeichnet.
+
+

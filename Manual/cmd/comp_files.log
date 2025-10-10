@@ -1,0 +1,2322 @@
+
+Only in /LEDA/SRC/Manual/cmd: .latex2html-init
+Only in .: HTMLLdoc
+diff ./HTMLdoc /LEDA/SRC/Manual/cmd/HTMLdoc
+37a38
+> 
+diff ./HTMLman /LEDA/SRC/Manual/cmd/HTMLman
+9a10
+> 
+Only in /LEDA/SRC/Manual/cmd: Lps
+diff ./Mkdvi /LEDA/SRC/Manual/cmd/Mkdvi
+85a86
+> 
+Only in .: comp_files.log
+diff ./emptyline.pl /LEDA/SRC/Manual/cmd/emptyline.pl
+1c1
+< #line 6267 "ext.nw"
+---
+> #line 5804 "ext.nw"
+diff ./ext.pl /LEDA/SRC/Manual/cmd/ext.pl
+1c1
+< #line 1150 "ext.nw"
+---
+> #line 1096 "ext.nw"
+3c3
+< #line 2407 "ext.nw"
+---
+> #line 2329 "ext.nw"
+10c10
+< #line 1151 "ext.nw"
+---
+> #line 1097 "ext.nw"
+12c12
+< #line 1166 "ext.nw"
+---
+> #line 1112 "ext.nw"
+37a38,40
+> $includefile = "no";
+> $includeprefix = "LEDA";
+>   # an include statement startw with LEDA/
+56c59
+<   # $nextwarning was not just set to no
+---
+>   # $nextwarning was not just set to no.
+58,60c61
+<   # we start with no options
+< $xcomments = "no";
+<   # we don't show comments starting with X
+---
+>   # we start with no options.
+62,68d62
+< $includefile = "no";
+< $includeprefix = "LEDA";
+<   # an include statement starts with LEDA/
+< $LEDAROOT = "LEDAROOT";
+< $LEDAROOT = $ENV{"$LEDAROOT"};
+< @invisible_words = ('__exportC', '__exportF', '__exportD', '__typename');
+< 
+80c74
+< #line 1152 "ext.nw"
+---
+> #line 1098 "ext.nw"
+82c76
+< #line 1237 "ext.nw"
+---
+> #line 1177 "ext.nw"
+93c87
+< #line 1153 "ext.nw"
+---
+> #line 1099 "ext.nw"
+95,96c89,90
+< #line 1279 "ext.nw"
+< extout::info("$mode version 3.1");
+---
+> #line 1219 "ext.nw"
+> extout::info("$mode version 3.0");
+106c100,101
+< $MANFILES = "$LEDAROOT/incl/$includeprefix:$LEDAROOT/incl/$includeprefix/generic";
+---
+> $LEDAROOT = $ENV{"LEDAROOT"};
+> $MANFILES = "$LEDAROOT/incl/LEDA:$LEDAROOT/incl/LEDA/generic";
+174c169
+< #line 1154 "ext.nw"
+---
+> #line 1100 "ext.nw"
+176c171
+< #line 1379 "ext.nw"
+---
+> #line 1320 "ext.nw"
+184c179
+< #line 1408 "ext.nw"
+---
+> #line 1349 "ext.nw"
+198c193
+<     while ($_ && !(/\/\*\{\\(M|X)/ || /^\s*$/)) {
+---
+>     while ($_ && !(/\/\*\{\\M/ || /^\s*$/)) {
+216c211
+< if (! (/\/\*\{\\(M|X)/) ) { 
+---
+> if (! (/\/\*\{\\M/)) { 
+219a215
+> @invisible_words = ('__exportC' , '__exportF' , '__exportD', '__typename');
+226c222
+< #line 1386 "ext.nw"
+---
+> #line 1327 "ext.nw"
+230c226
+< #line 1461 "ext.nw"
+---
+> #line 1400 "ext.nw"
+263,265d258
+< if ( $xcomments eq "yes" ) { $command =~ s/^X//; } # transform Xcommand into command
+< if ( $xcomments eq "no" && $command =~ /^X/ ) 
+< { goto build_code_unit; }  # start new code unit.
+272c265
+< #line 1389 "ext.nw"
+---
+> #line 1330 "ext.nw"
+276c269
+< #line 1518 "ext.nw"
+---
+> #line 1454 "ext.nw"
+282c275
+< #line 1569 "ext.nw"
+---
+> #line 1502 "ext.nw"
+286c279
+<   if ( !($mode =~ /man/) ) { 
+---
+>   if ($print_title eq "no") { 
+303c296
+< if ($nextwarning eq "no") { $justset = "yes"; }
+---
+> if ($nextwarning eq "no") {$justset = "yes";}
+306c299
+< #line 1522 "ext.nw"
+---
+> #line 1458 "ext.nw"
+312c305
+< #line 1602 "ext.nw"
+---
+> #line 1535 "ext.nw"
+322c315
+< #line 1526 "ext.nw"
+---
+> #line 1462 "ext.nw"
+328c321
+< #line 1619 "ext.nw"
+---
+> #line 1552 "ext.nw"
+371c364
+< #line 1530 "ext.nw"
+---
+> #line 1466 "ext.nw"
+376d368
+<       $command eq 'generalization' ||
+380,381d371
+<       $command eq 'virtual' ||
+<       $command eq 'purevirtual' ||
+386c376
+< #line 1682 "ext.nw"
+---
+> #line 1614 "ext.nw"
+400,401c390
+< elsif ($command eq "operations" || $command eq "virtual" || 
+<        $command eq "purevirtual" ) {
+---
+> elsif ($command eq "operations") {
+411,417d399
+< elsif ($command eq "generalization") {
+<   # Mcomment is a list of classes which generalize the current class
+<   @params = split('#',$Mcomment);  # split at '#'
+<   $Mcomment = MODE::generalization(@params);
+< }
+< $command =~s/purevirtual/Pure Virtual Operations/;
+< $command =~s/virtual/Virtual Operations/;
+429c411
+< #line 1543 "ext.nw"
+---
+> #line 1476 "ext.nw"
+435c417
+< #line 1731 "ext.nw"
+---
+> #line 1655 "ext.nw"
+442c424
+< #line 1547 "ext.nw"
+---
+> #line 1480 "ext.nw"
+447c429
+< #line 1756 "ext.nw"
+---
+> #line 1680 "ext.nw"
+472c454
+< #line 1837 "ext.nw"
+---
+> #line 1761 "ext.nw"
+516c498
+< #line 1886 "ext.nw"
+---
+> #line 1810 "ext.nw"
+528c510
+< $template = $2 if ($code_unit =~ s/(^|\W+)template *<([ ,\w]*)>/$1/ ); 
+---
+> $template = $2 if ($code_unit =~ s/(^|\W+)(template *<([ ,\w]*)>)/$1/ ); 
+537,538c519,520
+< #line 1925 "ext.nw"
+<   $conversion = ($code_unit =~ /operator\s.+?\s*\(\s*\)/); 
+---
+> #line 1849 "ext.nw"
+>   $conversion = ($code_unit =~ /operator\s*\w+\s*\(\s*\)/); 
+573c555
+< #line 1979 "ext.nw"
+---
+> #line 1903 "ext.nw"
+600c582
+< #line 1960 "ext.nw"
+---
+> #line 1884 "ext.nw"
+603c585
+< #line 2014 "ext.nw"
+---
+> #line 1938 "ext.nw"
+610c592
+< #line 2029 "ext.nw"
+---
+> #line 1953 "ext.nw"
+645c627
+< #line 2371 "ext.nw"
+---
+> #line 2295 "ext.nw"
+655,659c637,639
+<   foreach $i (0 .. $#enumvals) {
+<     $enumvals[$i] =~ s/(.*?)=.*/$1/;
+<     MODE::index_entry($enumvals[$i],"local"); 
+<   }
+<   MODE::print_enum($type,join(", ",@enumvals),$Mcomment);
+---
+>   foreach my $enumv (@enumvals) 
+>   { MODE::index_entry($enumv, "local"); }
+>   MODE::print_enum($type,$enumconsts,$Mcomment);
+662c642
+< #line 2062 "ext.nw"
+---
+> #line 1986 "ext.nw"
+668c648
+< #line 2338 "ext.nw"
+---
+> #line 2262 "ext.nw"
+682c662
+< #line 2066 "ext.nw"
+---
+> #line 1990 "ext.nw"
+688c668
+< #line 2352 "ext.nw"
+---
+> #line 2276 "ext.nw"
+703c683
+< #line 2070 "ext.nw"
+---
+> #line 1994 "ext.nw"
+709c689
+< #line 2390 "ext.nw"
+---
+> #line 2312 "ext.nw"
+724c704
+< #line 2074 "ext.nw"
+---
+> #line 1998 "ext.nw"
+730c710
+< #line 2131 "ext.nw"
+---
+> #line 2055 "ext.nw"
+733c713
+<                  "and not to operators,...");
+---
+> 	         "and not to operators,...");
+739c719
+<                        "$Mvar\.",$fname,$par_list); 
+---
+> 		       "$Mvar\.",$fname,$par_list); 
+742c722
+< #line 2078 "ext.nw"
+---
+> #line 2002 "ext.nw"
+748c728
+< #line 2143 "ext.nw"
+---
+> #line 2067 "ext.nw"
+751c731
+<                   "and not to operators,... ");
+---
+> 	          "and not to operators,... ");
+759c739
+< #line 2082 "ext.nw"
+---
+> #line 2006 "ext.nw"
+765c745
+< #line 2156 "ext.nw"
+---
+> #line 2080 "ext.nw"
+781c761
+< #line 2086 "ext.nw"
+---
+> #line 2010 "ext.nw"
+787c767
+< #line 2175 "ext.nw"
+---
+> #line 2099 "ext.nw"
+802c782
+< #line 2090 "ext.nw"
+---
+> #line 2014 "ext.nw"
+808c788
+< #line 2191 "ext.nw"
+---
+> #line 2115 "ext.nw"
+818c798
+< #line 2094 "ext.nw"
+---
+> #line 2018 "ext.nw"
+824c804
+< #line 2201 "ext.nw"
+---
+> #line 2125 "ext.nw"
+834c814
+< #line 2098 "ext.nw"
+---
+> #line 2022 "ext.nw"
+840c820
+< #line 2314 "ext.nw"
+---
+> #line 2238 "ext.nw"
+843c823
+<                  "and not to operators,...");
+---
+> 	         "and not to operators,...");
+859c839
+< #line 2102 "ext.nw"
+---
+> #line 2026 "ext.nw"
+865c845
+< #line 2214 "ext.nw"
+---
+> #line 2138 "ext.nw"
+889c869
+< #line 2106 "ext.nw"
+---
+> #line 2030 "ext.nw"
+895c875
+< #line 2242 "ext.nw"
+---
+> #line 2166 "ext.nw"
+921c901
+< #line 2110 "ext.nw"
+---
+> #line 2034 "ext.nw"
+927c907
+< #line 2269 "ext.nw"
+---
+> #line 2193 "ext.nw"
+937c917
+< #line 2114 "ext.nw"
+---
+> #line 2038 "ext.nw"
+943c923
+< #line 2281 "ext.nw"
+---
+> #line 2205 "ext.nw"
+952c932
+< #line 2118 "ext.nw"
+---
+> #line 2042 "ext.nw"
+958c938
+< #line 2291 "ext.nw"
+---
+> #line 2215 "ext.nw"
+967c947
+< #line 2122 "ext.nw"
+---
+> #line 2046 "ext.nw"
+973c953
+< #line 2301 "ext.nw"
+---
+> #line 2225 "ext.nw"
+981c961
+< #line 2126 "ext.nw"
+---
+> #line 2050 "ext.nw"
+987c967
+< #line 1551 "ext.nw"
+---
+> #line 1484 "ext.nw"
+992c972
+< #line 1392 "ext.nw"
+---
+> #line 1333 "ext.nw"
+997c977
+< #line 1155 "ext.nw"
+---
+> #line 1101 "ext.nw"
+diff ./extCdoc.pm /LEDA/SRC/Manual/cmd/extCdoc.pm
+1c1
+< #line 4553 "ext.nw"
+---
+> #line 4369 "ext.nw"
+7c7
+< #line 2899 "ext.nw"
+---
+> #line 2812 "ext.nw"
+15d14
+<   *MODE::generalization =   *generalization;
+27c26
+< #line 4558 "ext.nw"
+---
+> #line 4374 "ext.nw"
+29c28
+< #line 2921 "ext.nw"
+---
+> #line 2833 "ext.nw"
+77d75
+<   *LEDAROOT =       *main::LEDAROOT;
+79,80c77
+< 
+< #line 4559 "ext.nw"
+---
+> #line 4375 "ext.nw"
+83c80
+< #line 4785 "ext.nw"
+---
+> #line 4570 "ext.nw"
+96c93
+<         { eval "\$main::$1 = \$2"; } 
+---
+> 	{ eval "\$main::$1 = \$2"; } 
+112c109
+< #line 4570 "ext.nw"
+---
+> #line 4386 "ext.nw"
+117c114
+< #line 4576 "ext.nw"
+---
+> #line 4392 "ext.nw"
+146,176d142
+< 
+< sub generalization {
+<   @params = @_;
+<   my $gennum = 4*($#params+2);
+<   my $width = length($Mname); 
+<   foreach $i (0 .. $#params) {
+<     $width = length($params[$i]) if ( length($params[$i]) > $width );
+<   }
+<   $width += 20;
+<   local $generalization = "\\setlength{\\unitlength}{1ex}\n";
+<   $generalization .= "\\adjustclassframe{$width}{$gennum}\n";
+<   $generalization .= "\\begin{picture}(60,$gennum)\n";
+<   foreach $i (0 .. ($#params-1) ) {
+<     my $superclass = $params[$i];
+<     my $genmode;
+<     if ( $superclass =~ /(.*)\^$/ )
+<     { $superclass = $1; $genmode = "\\genarrow{2}\\indentframe"; }
+<     else
+<     { $genmode = "\\genarrow{4}";}
+<     $superclass = convert_C($superclass);
+<     $generalization .= "\\classframe{$superclass}$genmode\n"; 
+<   }
+<   $superclass = $params[$#params];
+<   $generalization .= "\\classframe{".convert_C($superclass).
+<                      "}\\genarrow{2}\\indentframe\n"; 
+<   $generalization .= "\\classframe{".convert_C($Mname)."}\n";
+<   $generalization .= "\\end{picture}\n";
+<   return $generalization;
+< }
+< 
+< 
+191c157
+<   $template = "template \<$template\>\n" if ($template);
+---
+>   $template .= " " if ($template);
+212c178
+<   $template = "template \<$template\>\n" if ($template);
+---
+>   $template .= " " if ($template);
+225c191
+<   $template = "template \<$template\>\n" if ($template);
+---
+>   $template .= " " if ($template);
+252c218
+< #line 4713 "ext.nw"
+---
+> #line 4498 "ext.nw"
+265c231
+<               " from $INPUT...");
+---
+> 	      " from $INPUT...");
+302c268
+< #line 4763 "ext.nw"
+---
+> #line 4548 "ext.nw"
+321c287
+< #line 4565 "ext.nw"
+---
+> #line 4381 "ext.nw"
+diff ./extFman.pm /LEDA/SRC/Manual/cmd/extFman.pm
+1c1
+< #line 4378 "ext.nw"
+---
+> #line 4208 "ext.nw"
+6c6
+< #line 2899 "ext.nw"
+---
+> #line 2812 "ext.nw"
+14d13
+<   *MODE::generalization =   *generalization;
+26c25
+< #line 4382 "ext.nw"
+---
+> #line 4212 "ext.nw"
+28c27
+< #line 2921 "ext.nw"
+---
+> #line 2833 "ext.nw"
+76d74
+<   *LEDAROOT =       *main::LEDAROOT;
+78,79c76
+< 
+< #line 4383 "ext.nw"
+---
+> #line 4213 "ext.nw"
+82c79
+< #line 4392 "ext.nw"
+---
+> #line 4222 "ext.nw"
+103,117d99
+< sub generalization {
+<   @params = @_;
+<   my $generalization;
+<   my $prefix;
+<   foreach $i (0 .. ($#params) ) {
+<     my $superclass = $prefix . $params[$i];
+<     if ( $superclass =~ s/\^$// ) { $prefix = " <-- "; }
+<     else { $prefix = ""; }
+<     $generalization .= "$superclass\n\n"; 
+<   }
+<   $generalization .= " <-- $Mtype\n";
+<   return $generalization;
+< }
+< 
+< 
+137c119
+<   $template = "template <$template>\n" if ($template);
+---
+>   $template .= "\n" if ($template);
+155c137
+<   $template = "template <$template>\n" if ($template);
+---
+>   $template .= "\n" if ($template);
+163c145
+<   $template = "template <$template>\n" if ($template);
+---
+>   $template .= "\n" if ($template);
+183a166
+>   my @enumvals = split(',',$enumconsts);
+185c168
+<   extout::unit("$signature \{ ".$enumconsts." \}");
+---
+>   extout::unit("$signature \{ ".join(", ",@enumvals)." \}");
+191c174
+< #line 4385 "ext.nw"
+---
+> #line 4215 "ext.nw"
+193c176
+< #line 4504 "ext.nw"
+---
+> #line 4320 "ext.nw"
+206c189
+< #line 4518 "ext.nw"
+---
+> #line 4334 "ext.nw"
+241c224
+< #line 4388 "ext.nw"
+---
+> #line 4218 "ext.nw"
+diff ./extHTML.pm /LEDA/SRC/Manual/cmd/extHTML.pm
+1c1
+< #line 3617 "ext.nw"
+---
+> #line 3493 "ext.nw"
+7c7
+< #line 2899 "ext.nw"
+---
+> #line 2812 "ext.nw"
+15d14
+<   *MODE::generalization =   *generalization;
+27c26
+< #line 3622 "ext.nw"
+---
+> #line 3498 "ext.nw"
+29c28
+< #line 2921 "ext.nw"
+---
+> #line 2833 "ext.nw"
+77d75
+<   *LEDAROOT =       *main::LEDAROOT;
+80,81c78
+< 
+< #line 3624 "ext.nw"
+---
+> #line 3500 "ext.nw"
+85c82
+< #line 4785 "ext.nw"
+---
+> #line 4573 "ext.nw"
+98c95
+<         { eval "\$main::$1 = \$2"; } 
+---
+> 	{ eval "\$main::$1 = \$2"; } 
+114c111
+< #line 3644 "ext.nw"
+---
+> #line 3520 "ext.nw"
+120c117
+<     $preambletext .= "\\input $LEDAROOT/Manual/tex/MANUAL.mac\n\n";
+---
+>     $preambletext .= "\\input ".$ENV{"LEDAROOT"}."/Manual/tex/MANUAL.mac\n\n";
+131c128
+<                "\\label\{$title\}\n\\label\{$Mtype\}");
+---
+> 	       "\\label\{$title\}\n\\label\{$Mtype\}");
+145,185d141
+< sub generalization {
+<   @params = @_;
+<   my $gennum = 4*($#params+2);
+<   my $width = length($Mname); 
+<   foreach $i (0 .. $#params) {
+<     $width = length($params[$i]) if ( length($params[$i]) > $width );
+<   }
+<   $width += 20;
+<   local $generalization = "\\begin{makeimage}\n\\setlength{\\unitlength}{1ex}\n";
+<   $generalization .= "\\adjustclassframe{$width}{$gennum}\n";
+<   $generalization .= "\\begin{picture}(60,$gennum)\n";
+<   foreach $i (0 .. ($#params-1) ) {
+<     my $superclass = $params[$i];
+<     my $genmode;
+<     if ( $superclass =~ /(.*)\^$/ )
+<     { $superclass = $1; $genmode = "\\genarrow{2}\\indentframe"; }
+<     else
+<     { $genmode = "\\genarrow{4}";}
+<     $superclass = convert_code($superclass);
+<     $generalization .= "\\classframe{$superclass}$genmode\n"; 
+<   }
+<   $superclass = $params[$#params];
+<   $generalization .= "\\classframe{".convert_code($superclass).
+<                      "}\\genarrow{2}\\indentframe\n"; 
+<   $generalization .= "\\classframe{".convert_code($Mname)."}\n";
+<   $generalization .= "\\end{picture}\n";
+<   $generalization .= "\\end{makeimage}\n";
+<   return $generalization;
+< }
+< 
+< sub convert_code { 
+<   local($Ctext) = @_;
+<   $Ctext =~ s/(\w+)/\\textbf{$1}/g;
+<   $Ctext =~ s/_/\\nspaceunderscore\\_/g;
+<   $Ctext =~ s/</\\Ltemplateless/g;
+<   $Ctext =~ s/>/\\Ltemplategreater/g;
+<   $Ctext =~ s/ /\\ /g;
+<   $Ctext =~ s/::/\\DP /g;
+<   return $Ctext;
+< }
+< 
+215,217c171,172
+<   my $templatearg = insert_URLs_and_quote($template);  
+<   $templatearg = 'template $<$'.$templatearg.'$>$';
+<   print_table_row(multicol(3,$templatearg)) if ( $template );
+---
+>   my $templateline = insert_URLs_and_quote($template);  
+>   print_table_row(multicol(3,$templateline));
+235c190
+< #line 3775 "ext.nw"
+---
+> #line 3609 "ext.nw"
+246,248c201,202
+<   my $templatearg = insert_URLs_and_quote($template);  
+<   $templatearg = 'template $<$'.$templatearg.'$>$';
+<   print_table_row(multicol(3,$templatearg)) if ( $template );
+---
+>   my $templateline = insert_URLs_and_quote($template);  
+>   print_table_row(multicol(3,$templateline));
+260c214
+<   my $shortsig = ( length($signature) <= 50 );
+---
+>   my $shortsig = ( length($signature) <= 25 );
+264,266c218,219
+<   my $templatearg = insert_URLs_and_quote($template); 
+<   $templatearg = 'template $<$'.$templatearg.'$>$';
+<   print_table_row(multicol(2,$templatearg)) if ( $template );
+---
+>   my $templateline = insert_URLs_and_quote($template);  
+>   print_table_row(multicol(2,$templateline));
+278c231
+<   my $shortsig = ( length($signature) <= 50 );
+---
+>   my $shortsig = ( length($signature) <= 25 );
+293c246
+<   my $shortsig = ( length($signature) <= 50 );
+---
+>   my $shortsig = ( length($signature) <= 25 );
+306a260
+>   my @enumvals = split(',',$enumconsts);
+367c321
+<               " from $INPUT...");
+---
+> 	      " from $INPUT...");
+404c358
+< #line 3952 "ext.nw"
+---
+> #line 3785 "ext.nw"
+435c389
+< #line 3985 "ext.nw"
+---
+> #line 3818 "ext.nw"
+458c412
+< #line 4313 "ext.nw"
+---
+> #line 4146 "ext.nw"
+521c475
+< #line 4013 "ext.nw"
+---
+> #line 3846 "ext.nw"
+527c481
+<          \&extbasic::convert_T);
+---
+> 	 \&extbasic::convert_T);
+533c487
+< #line 4027 "ext.nw"
+---
+> #line 3860 "ext.nw"
+578c532
+< #line 4163 "ext.nw"
+---
+> #line 3996 "ext.nw"
+596c550
+< #line 4183 "ext.nw"
+---
+> #line 4016 "ext.nw"
+606,607c560,561
+<                              . $bk . $between . $ek 
+<                              .'\end{makeimage}}';
+---
+> 	                     . $bk . $between . $ek 
+> 			     .'\end{makeimage}}';
+614c568
+< #line 4203 "ext.nw"
+---
+> #line 4036 "ext.nw"
+624,625c578,579
+<          "\\begin{makeimage}\n\$" . $between . "\$\n\\end{makeimage}" .
+<          '}';
+---
+> 	 "\\begin{makeimage}\n\$" . $between . "\$\n\\end{makeimage}" .
+> 	 '}';
+635,636c589,590
+<          "\\begin{makeimage}\n\$" . $between . "\$\n\\end{makeimage}" .
+<          '}';
+---
+> 	 "\\begin{makeimage}\n\$" . $between . "\$\n\\end{makeimage}" .
+> 	 '}';
+643c597
+< #line 4233 "ext.nw"
+---
+> #line 4066 "ext.nw"
+654c608
+< #line 4079 "ext.nw"
+---
+> #line 3912 "ext.nw"
+691c645
+< #line 4125 "ext.nw"
+---
+> #line 3958 "ext.nw"
+706c660
+< #line 4144 "ext.nw"
+---
+> #line 3977 "ext.nw"
+717c671
+< #line 4246 "ext.nw"
+---
+> #line 4079 "ext.nw"
+782c736
+< #line 3632 "ext.nw"
+---
+> #line 3508 "ext.nw"
+diff ./extLdoc.pm /LEDA/SRC/Manual/cmd/extLdoc.pm
+1c1
+< #line 2973 "ext.nw"
+---
+> #line 2883 "ext.nw"
+6c6
+< #line 2899 "ext.nw"
+---
+> #line 2812 "ext.nw"
+14d13
+<   *MODE::generalization =   *generalization;
+26c25
+< #line 2977 "ext.nw"
+---
+> #line 2887 "ext.nw"
+28c27
+< #line 2921 "ext.nw"
+---
+> #line 2833 "ext.nw"
+76d74
+<   *LEDAROOT =       *main::LEDAROOT;
+78,79c76
+< 
+< #line 2978 "ext.nw"
+---
+> #line 2888 "ext.nw"
+82c79
+< #line 4785 "ext.nw"
+---
+> #line 4575 "ext.nw"
+95c92
+<         { eval "\$main::$1 = \$2"; } 
+---
+> 	{ eval "\$main::$1 = \$2"; } 
+111c108
+< #line 3000 "ext.nw"
+---
+> #line 2910 "ext.nw"
+116,117c113,114
+<     $preambletext .= "\\input $LEDAROOT/Manual/tex/MANUAL.pagesize\n";
+<     $preambletext .= "\\input $LEDAROOT/Manual/tex/MANUAL.mac\n\n";
+---
+>     $preambletext .= "\\input ".$ENV{"LEDAROOT"}."/Manual/tex/MANUAL.pagesize\n";
+>     $preambletext .= "\\input ".$ENV{"LEDAROOT"}."/Manual/tex/MANUAL.mac\n\n";
+134,135c131,132
+<     extout::unit("\\$section$star\{$title ( $Mtype1 )\}\n".
+<                  "\\label\{$title\}\n\\label\{$Mtype\}");
+---
+>     extout::unit("\\$section$star\{$title \( $Mtype1 )}\n".
+> 		 "\\label\{$title\}\n\\label\{$Mtype\}");
+139c136
+< #line 3030 "ext.nw"
+---
+> #line 2940 "ext.nw"
+167c164
+< #line 3061 "ext.nw"
+---
+> #line 2971 "ext.nw"
+172,173c169,170
+<                  "\\setlength{\\callwidth}{@_[1]}".
+<                  "\\computewidths");
+---
+> 		 "\\setlength{\\callwidth}{@_[1]}".
+> 		 "\\computewidths");
+176c173
+<                  "\\computewidths");
+---
+> 		 "\\computewidths");
+180c177
+< #line 3076 "ext.nw"
+---
+> #line 2986 "ext.nw"
+187,219c184
+< #line 3086 "ext.nw"
+< sub generalization {
+<   @params = @_;
+<   my $gennum = 4*($#params+2);
+<   my $width = length($Mname); 
+<   foreach $i (0 .. $#params) {
+<     $width = length($params[$i]) if ( length($params[$i]) > $width );
+<   }
+<   $width += 20;
+<   local $generalization = "\\setlength{\\unitlength}{1ex}\n";
+<   $generalization .= "\\adjustclassframe{$width}{$gennum}\n";
+<   $generalization .= "\\begin{picture}(60,$gennum)\n";
+<   foreach $i (0 .. ($#params-1) ) {
+<     my $superclass = $params[$i];
+<     my $genmode;
+<     if ( $superclass =~ /(.*)\^$/ )
+<     { $superclass = $1; $genmode = "\\genarrow{2}\\indentframe"; }
+<     else
+<     { $genmode = "\\genarrow{4}";}
+<     $superclass = convert_M($superclass);
+<     $generalization .= "\\classframe{$superclass}$genmode\n"; 
+<   }
+<   $superclass = $params[$#params];
+<   $generalization .= "\\classframe{".convert_M($superclass).
+<                      "}\\genarrow{2}\\indentframe\n"; 
+<   $generalization .= "\\classframe{".convert_M($Mname)."}\n";
+<   $generalization .= "\\end{picture}\n";
+<   return $generalization;
+< }
+< 
+< 
+< 
+< #line 3121 "ext.nw"
+---
+> #line 2996 "ext.nw"
+222c187
+<   $header = "\\mansection\{" . ucfirst($command) . "\}";
+---
+>   $header = "\\mansection\{ " . ucfirst($command) . "\}";
+225c190
+<   { $semantics .= "\n".convert_M($includeline); $includeline=""; }
+---
+>   { $semantics .= "\n".&convert_M($includeline); $includeline=""; }
+230c195
+< #line 3133 "ext.nw"
+---
+> #line 3008 "ext.nw"
+238,240c203,205
+<   my $templatearg = '['.convert_M($template).']' if ($template);
+<   extout::unit("\\create$templatearg\{$type\}\{$var\}".
+<                "\{$args}\n\{$semantics\}"); 
+---
+>   my $output = "\\create\{$type\}\{$var\}\{$args}\n\{$semantics\}";
+>   $output = convert_M($template)."\\\\".$output if ($template);
+>   extout::unit($output);
+252c217
+< #line 3189 "ext.nw"
+---
+> #line 3064 "ext.nw"
+266c231,232
+<   my $templatearg = '['.convert_M($template).']' if ($template);
+---
+>   my $templateline = convert_M($template)."\\\\\n" if ($template);
+> 
+269c235
+<           $signature . " and will not produce an entry.");
+---
+> 	  $signature . " and will not produce an entry.");
+275,278c241,244
+<              $command =~ /^staticl?/ || $command =~ /^conversion?/) )
+<       { extout::warning("wrong case for print_function"); }
+<     extout::unit("\\function$templatearg\{$type\}\n".
+<                  "\{$funcname\}\n{$paralist\}\n\{$semantics\}");
+---
+> 	     $command =~ /^staticl?/ || $command =~ /^conversion?/) )
+>       { extout::warning("wrong case for print_function");}
+>     extout::unit($templateline.
+>       "\\function\{$type\}\n\{$funcname\}\n{$paralist\}\n\{$semantics\}");
+280,281c246,247
+<     extout::unit("\\operator$templatearg\{$type\}\n".
+<                  "\{$signature\}\n\{$semantics\}"); 
+---
+>     extout::unit($templateline.
+>       "\\operator\{$type\}\n\{$signature\}\n\{$semantics\}"); 
+285c251
+< #line 3227 "ext.nw"
+---
+> #line 3103 "ext.nw"
+291,293c257,258
+<   $templatearg = '['.convert_M($template).']' if ($template); 
+<   extout::unit("\\typemember$templatearg\{$signature\}\n".
+<                "\{$semantics\}"); 
+---
+>   $template = convert_M($template) . "\\\\\n" if ($template); 
+>   extout::unit("$template\\typemember\{$signature\}\n\{$semantics\}");
+314a280
+>   my @enumvals = split(',',$enumconsts);
+322c288
+< #line 3267 "ext.nw"
+---
+> #line 3143 "ext.nw"
+379c345
+<               " from $INPUT...");
+---
+> 	      " from $INPUT...");
+430c396
+< #line 3387 "ext.nw"
+---
+> #line 3265 "ext.nw"
+435c401
+<           \&extbasic::convert_T); 
+---
+> 	  \&extbasic::convert_T); 
+438c404
+< #line 3402 "ext.nw"
+---
+> #line 3280 "ext.nw"
+459c425
+<            "might cause trouble with cweave\n$word\n\n");
+---
+> 	   "might cause trouble with cweave\n$word\n\n");
+470c436
+< #line 3393 "ext.nw"
+---
+> #line 3271 "ext.nw"
+477c443
+< #line 3489 "ext.nw"
+---
+> #line 3367 "ext.nw"
+579c545
+< #line 3593 "ext.nw"
+---
+> #line 3471 "ext.nw"
+601c567
+< #line 2984 "ext.nw"
+---
+> #line 2894 "ext.nw"
+diff ./ext_ldel /LEDA/SRC/Manual/cmd/ext_ldel
+1c1,2
+< #!/bin/sh -f
+---
+> #line 5293 "ext.nw"
+> #!/bin/sh 
+Only in /LEDA/SRC/Manual/cmd: ext_ldel.pl
+diff ./extbasic.pm /LEDA/SRC/Manual/cmd/extbasic.pm
+1c1
+< #line 2670 "ext.nw"
+---
+> #line 2583 "ext.nw"
+12c12
+< #line 2692 "ext.nw"
+---
+> #line 2605 "ext.nw"
+21c21
+<                    "occurrence of Mvar. Did you mean \\Mvar?"); }
+---
+> 		   "occurrence of Mvar. Did you mean \\Mvar?"); }
+24c24
+<                    "occurrence of Mtype. Did you mean \\Mtype?"); }
+---
+> 		   "occurrence of Mtype. Did you mean \\Mtype?"); }
+27c27
+<                   "occurrence of Mname. Did you mean \\Mname?"); }
+---
+> 		  "occurrence of Mname. Did you mean \\Mname?"); }
+31c31
+< #line 2713 "ext.nw"
+---
+> #line 2626 "ext.nw"
+58c58
+< #line 2747 "ext.nw"
+---
+> #line 2660 "ext.nw"
+67c67
+< #line 2762 "ext.nw"
+---
+> #line 2675 "ext.nw"
+150c150
+< #line 2847 "ext.nw"
+---
+> #line 2760 "ext.nw"
+193c193
+< #line 2684 "ext.nw"
+---
+> #line 2597 "ext.nw"
+diff ./exthelp.pm /LEDA/SRC/Manual/cmd/exthelp.pm
+1c1
+< #line 2506 "ext.nw"
+---
+> #line 2428 "ext.nw"
+5,9d4
+< # we glue local variables to the main scope
+< sub import {
+<   *LEDAROOT = *main::LEDAROOT;
+< }
+< 
+85,86d79
+<    /*{\\Mgeneralization C1#C2#...#Ck}*/
+< 
+97,99c90
+<    /*{\\Mvirtual [W1] [W2]}*/          
+<    /*{\\Mpurevirtual [W1] [W2]}*/          
+<        /*{\\Mop semantic_description }*/        
+---
+>        /*{\\Mop semantic_description }*/ 	
+137c128
+<   system("cat $LEDAROOT/Manual/MANUAL/DocTools.tex");
+---
+>   system("cat \$LEDAROOT/Manual/MANUAL/DocTools.tex");
+144,145c135,136
+<   print OUTPUT "\\input $LEDAROOT/Manual/tex/MANUAL.pagesize\n\n";
+<   print OUTPUT "\\input $LEDAROOT/Manual/tex/MANUAL.mac\n\n"; 
+---
+>   print OUTPUT "\\input " . $ENV{"LEDAROOT"} . "/Manual/tex/MANUAL.pagesize\n\n";
+>   print OUTPUT "\\input " . $ENV{"LEDAROOT"} . "/Manual/tex/MANUAL.mac\n\n"; 
+148c139
+<   system("cat $LEDAROOT/Manual/MANUAL/DocTools.tex  >> $outfile");
+---
+>   system("cat \$LEDAROOT/Manual/MANUAL/DocTools.tex  >> $outfile");
+diff ./extout.pm /LEDA/SRC/Manual/cmd/extout.pm
+1c1
+< #line 2424 "ext.nw"
+---
+> #line 2346 "ext.nw"
+Only in /LEDA/SRC/Manual/cmd: htmlweave
+Only in /LEDA/SRC/Manual/cmd: htmlweave.pl
+diff ./ldel /LEDA/SRC/Manual/cmd/ldel
+1c1,2
+< #!/bin/sh -f
+---
+> #line 5289 "ext.nw"
+> #!/bin/sh 
+diff ./ldel.pl /LEDA/SRC/Manual/cmd/ldel.pl
+1c1
+< #line 5756 "ext.nw"
+---
+> #line 5298 "ext.nw"
+9d8
+< @kill_stuff;
+48c47
+<     if ( /\/\*\{\\(M|X)/ || /\/\*\{LDEL/ ) {
+---
+>     if ( / *\/\*\{\\M/ || / *\/\*\{\\X/) {
+54,56c53,55
+<       if ( /Mtext/ || /Manpage/ || /Mdefinition/ || /Mgeneralization/ || 
+<            /Mtypes/ || /Moperations/ ||/Mimplementation/ || /Mcreation/ || 
+<            /Moptions/ || /Msubst/ || /Mexample/ || 
+---
+>       if ( /Mtext/ || /Manpage/ || /Mdefinition/ || /Mtypes/ || 
+>            /Moperations/ ||/Mimplementation/ || /Mcreation/ || 
+> 	   /Moptions/ || /Msubst/ || /Mexample/ || 
+60,62d58
+<       if ( s/\/\*\{LDEL (.*)\}\*\/// )
+<       { push @kill_stuff, $1; }
+< 
+65c61
+<         $Manpageline = $_;
+---
+> 	$Manpageline = $_;
+67c63
+<         while ($_ && (! ( /\}\*\// ) ) ) {
+---
+> 	while ($_ && (! ( /\}\*\// ) ) ) {
+69c65
+<           chop $Manpageline;
+---
+> 	  chop $Manpageline;
+77c73
+<         $_ = $Manpageline; 
+---
+> 	$_ = $Manpageline; 
+79c75
+<       s/(\}\*\/)/ $1/;    # insert space before end of comment
+---
+> 
+131d126
+<     foreach my $REGEXP (@kill_stuff) { s/$REGEXP//g; }
+133c128
+< } # end while
+---
+>   }
+diff ./lw2dvi /LEDA/SRC/Manual/cmd/lw2dvi
+28c28
+< rm $1.tmp
+---
+> rm $1.temp
+diff ./lw2nw.pl /LEDA/SRC/Manual/cmd/lw2nw.pl
+1c1
+< #line 6114 "ext.nw"
+---
+> #line 5651 "ext.nw"
+Only in /LEDA/SRC/Manual/cmd: runascii
+Only in /LEDA/SRC/Manual/cmd: runascii.bat
+Only in /LEDA/SRC/Manual/cmd: rundemo
+Only in /LEDA/SRC/Manual/cmd: xlman
+Only in /LEDA/SRC/Manual/cmd: xlman.bat
+
+Only in /LEDA/SRC/Manual/cmd: .latex2html-init
+Only in .: HTMLLdoc
+diff ./HTMLdoc /LEDA/SRC/Manual/cmd/HTMLdoc
+37a38
+> 
+diff ./HTMLman /LEDA/SRC/Manual/cmd/HTMLman
+9a10
+> 
+Only in /LEDA/SRC/Manual/cmd: Lps
+diff ./Mkdvi /LEDA/SRC/Manual/cmd/Mkdvi
+85a86
+> 
+Only in .: comp_files.log
+diff ./emptyline.pl /LEDA/SRC/Manual/cmd/emptyline.pl
+1c1
+< #line 6267 "ext.nw"
+---
+> #line 5804 "ext.nw"
+diff ./ext.pl /LEDA/SRC/Manual/cmd/ext.pl
+1c1
+< #line 1150 "ext.nw"
+---
+> #line 1096 "ext.nw"
+3c3
+< #line 2407 "ext.nw"
+---
+> #line 2329 "ext.nw"
+10c10
+< #line 1151 "ext.nw"
+---
+> #line 1097 "ext.nw"
+12c12
+< #line 1166 "ext.nw"
+---
+> #line 1112 "ext.nw"
+37a38,40
+> $includefile = "no";
+> $includeprefix = "LEDA";
+>   # an include statement startw with LEDA/
+56c59
+<   # $nextwarning was not just set to no
+---
+>   # $nextwarning was not just set to no.
+58,60c61
+<   # we start with no options
+< $xcomments = "no";
+<   # we don't show comments starting with X
+---
+>   # we start with no options.
+62,68d62
+< $includefile = "no";
+< $includeprefix = "LEDA";
+<   # an include statement starts with LEDA/
+< $LEDAROOT = "LEDAROOT";
+< $LEDAROOT = $ENV{"$LEDAROOT"};
+< @invisible_words = ('__exportC', '__exportF', '__exportD', '__typename');
+< 
+80c74
+< #line 1152 "ext.nw"
+---
+> #line 1098 "ext.nw"
+82c76
+< #line 1237 "ext.nw"
+---
+> #line 1177 "ext.nw"
+93c87
+< #line 1153 "ext.nw"
+---
+> #line 1099 "ext.nw"
+95,96c89,90
+< #line 1279 "ext.nw"
+< extout::info("$mode version 3.1");
+---
+> #line 1219 "ext.nw"
+> extout::info("$mode version 3.0");
+106c100,101
+< $MANFILES = "$LEDAROOT/incl/$includeprefix:$LEDAROOT/incl/$includeprefix/generic";
+---
+> $LEDAROOT = $ENV{"LEDAROOT"};
+> $MANFILES = "$LEDAROOT/incl/LEDA:$LEDAROOT/incl/LEDA/generic";
+174c169
+< #line 1154 "ext.nw"
+---
+> #line 1100 "ext.nw"
+176c171
+< #line 1379 "ext.nw"
+---
+> #line 1320 "ext.nw"
+184c179
+< #line 1408 "ext.nw"
+---
+> #line 1349 "ext.nw"
+198c193
+<     while ($_ && !(/\/\*\{\\(M|X)/ || /^\s*$/)) {
+---
+>     while ($_ && !(/\/\*\{\\M/ || /^\s*$/)) {
+216c211
+< if (! (/\/\*\{\\(M|X)/) ) { 
+---
+> if (! (/\/\*\{\\M/)) { 
+219a215
+> @invisible_words = ('__exportC' , '__exportF' , '__exportD', '__typename');
+226c222
+< #line 1386 "ext.nw"
+---
+> #line 1327 "ext.nw"
+230c226
+< #line 1461 "ext.nw"
+---
+> #line 1400 "ext.nw"
+263,265d258
+< if ( $xcomments eq "yes" ) { $command =~ s/^X//; } # transform Xcommand into command
+< if ( $xcomments eq "no" && $command =~ /^X/ ) 
+< { goto build_code_unit; }  # start new code unit.
+272c265
+< #line 1389 "ext.nw"
+---
+> #line 1330 "ext.nw"
+276c269
+< #line 1518 "ext.nw"
+---
+> #line 1454 "ext.nw"
+282c275
+< #line 1569 "ext.nw"
+---
+> #line 1502 "ext.nw"
+286c279
+<   if ( !($mode =~ /man/) ) { 
+---
+>   if ($print_title eq "no") { 
+303c296
+< if ($nextwarning eq "no") { $justset = "yes"; }
+---
+> if ($nextwarning eq "no") {$justset = "yes";}
+306c299
+< #line 1522 "ext.nw"
+---
+> #line 1458 "ext.nw"
+312c305
+< #line 1602 "ext.nw"
+---
+> #line 1535 "ext.nw"
+322c315
+< #line 1526 "ext.nw"
+---
+> #line 1462 "ext.nw"
+328c321
+< #line 1619 "ext.nw"
+---
+> #line 1552 "ext.nw"
+371c364
+< #line 1530 "ext.nw"
+---
+> #line 1466 "ext.nw"
+376d368
+<       $command eq 'generalization' ||
+380,381d371
+<       $command eq 'virtual' ||
+<       $command eq 'purevirtual' ||
+386c376
+< #line 1682 "ext.nw"
+---
+> #line 1614 "ext.nw"
+400,401c390
+< elsif ($command eq "operations" || $command eq "virtual" || 
+<        $command eq "purevirtual" ) {
+---
+> elsif ($command eq "operations") {
+411,417d399
+< elsif ($command eq "generalization") {
+<   # Mcomment is a list of classes which generalize the current class
+<   @params = split('#',$Mcomment);  # split at '#'
+<   $Mcomment = MODE::generalization(@params);
+< }
+< $command =~s/purevirtual/Pure Virtual Operations/;
+< $command =~s/virtual/Virtual Operations/;
+429c411
+< #line 1543 "ext.nw"
+---
+> #line 1476 "ext.nw"
+435c417
+< #line 1731 "ext.nw"
+---
+> #line 1655 "ext.nw"
+442c424
+< #line 1547 "ext.nw"
+---
+> #line 1480 "ext.nw"
+447c429
+< #line 1756 "ext.nw"
+---
+> #line 1680 "ext.nw"
+472c454
+< #line 1837 "ext.nw"
+---
+> #line 1761 "ext.nw"
+516c498
+< #line 1886 "ext.nw"
+---
+> #line 1810 "ext.nw"
+528c510
+< $template = $2 if ($code_unit =~ s/(^|\W+)template *<([ ,\w]*)>/$1/ ); 
+---
+> $template = $2 if ($code_unit =~ s/(^|\W+)(template *<([ ,\w]*)>)/$1/ ); 
+537,538c519,520
+< #line 1925 "ext.nw"
+<   $conversion = ($code_unit =~ /operator\s.+?\s*\(\s*\)/); 
+---
+> #line 1849 "ext.nw"
+>   $conversion = ($code_unit =~ /operator\s*\w+\s*\(\s*\)/); 
+573c555
+< #line 1979 "ext.nw"
+---
+> #line 1903 "ext.nw"
+600c582
+< #line 1960 "ext.nw"
+---
+> #line 1884 "ext.nw"
+603c585
+< #line 2014 "ext.nw"
+---
+> #line 1938 "ext.nw"
+610c592
+< #line 2029 "ext.nw"
+---
+> #line 1953 "ext.nw"
+645c627
+< #line 2371 "ext.nw"
+---
+> #line 2295 "ext.nw"
+655,659c637,639
+<   foreach $i (0 .. $#enumvals) {
+<     $enumvals[$i] =~ s/(.*?)=.*/$1/;
+<     MODE::index_entry($enumvals[$i],"local"); 
+<   }
+<   MODE::print_enum($type,join(", ",@enumvals),$Mcomment);
+---
+>   foreach my $enumv (@enumvals) 
+>   { MODE::index_entry($enumv, "local"); }
+>   MODE::print_enum($type,$enumconsts,$Mcomment);
+662c642
+< #line 2062 "ext.nw"
+---
+> #line 1986 "ext.nw"
+668c648
+< #line 2338 "ext.nw"
+---
+> #line 2262 "ext.nw"
+682c662
+< #line 2066 "ext.nw"
+---
+> #line 1990 "ext.nw"
+688c668
+< #line 2352 "ext.nw"
+---
+> #line 2276 "ext.nw"
+703c683
+< #line 2070 "ext.nw"
+---
+> #line 1994 "ext.nw"
+709c689
+< #line 2390 "ext.nw"
+---
+> #line 2312 "ext.nw"
+724c704
+< #line 2074 "ext.nw"
+---
+> #line 1998 "ext.nw"
+730c710
+< #line 2131 "ext.nw"
+---
+> #line 2055 "ext.nw"
+733c713
+<                  "and not to operators,...");
+---
+> 	         "and not to operators,...");
+739c719
+<                        "$Mvar\.",$fname,$par_list); 
+---
+> 		       "$Mvar\.",$fname,$par_list); 
+742c722
+< #line 2078 "ext.nw"
+---
+> #line 2002 "ext.nw"
+748c728
+< #line 2143 "ext.nw"
+---
+> #line 2067 "ext.nw"
+751c731
+<                   "and not to operators,... ");
+---
+> 	          "and not to operators,... ");
+759c739
+< #line 2082 "ext.nw"
+---
+> #line 2006 "ext.nw"
+765c745
+< #line 2156 "ext.nw"
+---
+> #line 2080 "ext.nw"
+781c761
+< #line 2086 "ext.nw"
+---
+> #line 2010 "ext.nw"
+787c767
+< #line 2175 "ext.nw"
+---
+> #line 2099 "ext.nw"
+802c782
+< #line 2090 "ext.nw"
+---
+> #line 2014 "ext.nw"
+808c788
+< #line 2191 "ext.nw"
+---
+> #line 2115 "ext.nw"
+818c798
+< #line 2094 "ext.nw"
+---
+> #line 2018 "ext.nw"
+824c804
+< #line 2201 "ext.nw"
+---
+> #line 2125 "ext.nw"
+834c814
+< #line 2098 "ext.nw"
+---
+> #line 2022 "ext.nw"
+840c820
+< #line 2314 "ext.nw"
+---
+> #line 2238 "ext.nw"
+843c823
+<                  "and not to operators,...");
+---
+> 	         "and not to operators,...");
+859c839
+< #line 2102 "ext.nw"
+---
+> #line 2026 "ext.nw"
+865c845
+< #line 2214 "ext.nw"
+---
+> #line 2138 "ext.nw"
+889c869
+< #line 2106 "ext.nw"
+---
+> #line 2030 "ext.nw"
+895c875
+< #line 2242 "ext.nw"
+---
+> #line 2166 "ext.nw"
+921c901
+< #line 2110 "ext.nw"
+---
+> #line 2034 "ext.nw"
+927c907
+< #line 2269 "ext.nw"
+---
+> #line 2193 "ext.nw"
+937c917
+< #line 2114 "ext.nw"
+---
+> #line 2038 "ext.nw"
+943c923
+< #line 2281 "ext.nw"
+---
+> #line 2205 "ext.nw"
+952c932
+< #line 2118 "ext.nw"
+---
+> #line 2042 "ext.nw"
+958c938
+< #line 2291 "ext.nw"
+---
+> #line 2215 "ext.nw"
+967c947
+< #line 2122 "ext.nw"
+---
+> #line 2046 "ext.nw"
+973c953
+< #line 2301 "ext.nw"
+---
+> #line 2225 "ext.nw"
+981c961
+< #line 2126 "ext.nw"
+---
+> #line 2050 "ext.nw"
+987c967
+< #line 1551 "ext.nw"
+---
+> #line 1484 "ext.nw"
+992c972
+< #line 1392 "ext.nw"
+---
+> #line 1333 "ext.nw"
+997c977
+< #line 1155 "ext.nw"
+---
+> #line 1101 "ext.nw"
+diff ./extCdoc.pm /LEDA/SRC/Manual/cmd/extCdoc.pm
+1c1
+< #line 4553 "ext.nw"
+---
+> #line 4369 "ext.nw"
+7c7
+< #line 2899 "ext.nw"
+---
+> #line 2812 "ext.nw"
+15d14
+<   *MODE::generalization =   *generalization;
+27c26
+< #line 4558 "ext.nw"
+---
+> #line 4374 "ext.nw"
+29c28
+< #line 2921 "ext.nw"
+---
+> #line 2833 "ext.nw"
+77d75
+<   *LEDAROOT =       *main::LEDAROOT;
+79,80c77
+< 
+< #line 4559 "ext.nw"
+---
+> #line 4375 "ext.nw"
+83c80
+< #line 4785 "ext.nw"
+---
+> #line 4570 "ext.nw"
+96c93
+<         { eval "\$main::$1 = \$2"; } 
+---
+> 	{ eval "\$main::$1 = \$2"; } 
+112c109
+< #line 4570 "ext.nw"
+---
+> #line 4386 "ext.nw"
+117c114
+< #line 4576 "ext.nw"
+---
+> #line 4392 "ext.nw"
+146,176d142
+< 
+< sub generalization {
+<   @params = @_;
+<   my $gennum = 4*($#params+2);
+<   my $width = length($Mname); 
+<   foreach $i (0 .. $#params) {
+<     $width = length($params[$i]) if ( length($params[$i]) > $width );
+<   }
+<   $width += 20;
+<   local $generalization = "\\setlength{\\unitlength}{1ex}\n";
+<   $generalization .= "\\adjustclassframe{$width}{$gennum}\n";
+<   $generalization .= "\\begin{picture}(60,$gennum)\n";
+<   foreach $i (0 .. ($#params-1) ) {
+<     my $superclass = $params[$i];
+<     my $genmode;
+<     if ( $superclass =~ /(.*)\^$/ )
+<     { $superclass = $1; $genmode = "\\genarrow{2}\\indentframe"; }
+<     else
+<     { $genmode = "\\genarrow{4}";}
+<     $superclass = convert_C($superclass);
+<     $generalization .= "\\classframe{$superclass}$genmode\n"; 
+<   }
+<   $superclass = $params[$#params];
+<   $generalization .= "\\classframe{".convert_C($superclass).
+<                      "}\\genarrow{2}\\indentframe\n"; 
+<   $generalization .= "\\classframe{".convert_C($Mname)."}\n";
+<   $generalization .= "\\end{picture}\n";
+<   return $generalization;
+< }
+< 
+< 
+191c157
+<   $template = "template \<$template\>\n" if ($template);
+---
+>   $template .= " " if ($template);
+212c178
+<   $template = "template \<$template\>\n" if ($template);
+---
+>   $template .= " " if ($template);
+225c191
+<   $template = "template \<$template\>\n" if ($template);
+---
+>   $template .= " " if ($template);
+252c218
+< #line 4713 "ext.nw"
+---
+> #line 4498 "ext.nw"
+265c231
+<               " from $INPUT...");
+---
+> 	      " from $INPUT...");
+302c268
+< #line 4763 "ext.nw"
+---
+> #line 4548 "ext.nw"
+321c287
+< #line 4565 "ext.nw"
+---
+> #line 4381 "ext.nw"
+diff ./extFman.pm /LEDA/SRC/Manual/cmd/extFman.pm
+1c1
+< #line 4378 "ext.nw"
+---
+> #line 4208 "ext.nw"
+6c6
+< #line 2899 "ext.nw"
+---
+> #line 2812 "ext.nw"
+14d13
+<   *MODE::generalization =   *generalization;
+26c25
+< #line 4382 "ext.nw"
+---
+> #line 4212 "ext.nw"
+28c27
+< #line 2921 "ext.nw"
+---
+> #line 2833 "ext.nw"
+76d74
+<   *LEDAROOT =       *main::LEDAROOT;
+78,79c76
+< 
+< #line 4383 "ext.nw"
+---
+> #line 4213 "ext.nw"
+82c79
+< #line 4392 "ext.nw"
+---
+> #line 4222 "ext.nw"
+103,117d99
+< sub generalization {
+<   @params = @_;
+<   my $generalization;
+<   my $prefix;
+<   foreach $i (0 .. ($#params) ) {
+<     my $superclass = $prefix . $params[$i];
+<     if ( $superclass =~ s/\^$// ) { $prefix = " <-- "; }
+<     else { $prefix = ""; }
+<     $generalization .= "$superclass\n\n"; 
+<   }
+<   $generalization .= " <-- $Mtype\n";
+<   return $generalization;
+< }
+< 
+< 
+137c119
+<   $template = "template <$template>\n" if ($template);
+---
+>   $template .= "\n" if ($template);
+155c137
+<   $template = "template <$template>\n" if ($template);
+---
+>   $template .= "\n" if ($template);
+163c145
+<   $template = "template <$template>\n" if ($template);
+---
+>   $template .= "\n" if ($template);
+183a166
+>   my @enumvals = split(',',$enumconsts);
+185c168
+<   extout::unit("$signature \{ ".$enumconsts." \}");
+---
+>   extout::unit("$signature \{ ".join(", ",@enumvals)." \}");
+191c174
+< #line 4385 "ext.nw"
+---
+> #line 4215 "ext.nw"
+193c176
+< #line 4504 "ext.nw"
+---
+> #line 4320 "ext.nw"
+206c189
+< #line 4518 "ext.nw"
+---
+> #line 4334 "ext.nw"
+241c224
+< #line 4388 "ext.nw"
+---
+> #line 4218 "ext.nw"
+diff ./extHTML.pm /LEDA/SRC/Manual/cmd/extHTML.pm
+1c1
+< #line 3617 "ext.nw"
+---
+> #line 3493 "ext.nw"
+7c7
+< #line 2899 "ext.nw"
+---
+> #line 2812 "ext.nw"
+15d14
+<   *MODE::generalization =   *generalization;
+27c26
+< #line 3622 "ext.nw"
+---
+> #line 3498 "ext.nw"
+29c28
+< #line 2921 "ext.nw"
+---
+> #line 2833 "ext.nw"
+77d75
+<   *LEDAROOT =       *main::LEDAROOT;
+80,81c78
+< 
+< #line 3624 "ext.nw"
+---
+> #line 3500 "ext.nw"
+85c82
+< #line 4785 "ext.nw"
+---
+> #line 4573 "ext.nw"
+98c95
+<         { eval "\$main::$1 = \$2"; } 
+---
+> 	{ eval "\$main::$1 = \$2"; } 
+114c111
+< #line 3644 "ext.nw"
+---
+> #line 3520 "ext.nw"
+120c117
+<     $preambletext .= "\\input $LEDAROOT/Manual/tex/MANUAL.mac\n\n";
+---
+>     $preambletext .= "\\input ".$ENV{"LEDAROOT"}."/Manual/tex/MANUAL.mac\n\n";
+131c128
+<                "\\label\{$title\}\n\\label\{$Mtype\}");
+---
+> 	       "\\label\{$title\}\n\\label\{$Mtype\}");
+145,185d141
+< sub generalization {
+<   @params = @_;
+<   my $gennum = 4*($#params+2);
+<   my $width = length($Mname); 
+<   foreach $i (0 .. $#params) {
+<     $width = length($params[$i]) if ( length($params[$i]) > $width );
+<   }
+<   $width += 20;
+<   local $generalization = "\\begin{makeimage}\n\\setlength{\\unitlength}{1ex}\n";
+<   $generalization .= "\\adjustclassframe{$width}{$gennum}\n";
+<   $generalization .= "\\begin{picture}(60,$gennum)\n";
+<   foreach $i (0 .. ($#params-1) ) {
+<     my $superclass = $params[$i];
+<     my $genmode;
+<     if ( $superclass =~ /(.*)\^$/ )
+<     { $superclass = $1; $genmode = "\\genarrow{2}\\indentframe"; }
+<     else
+<     { $genmode = "\\genarrow{4}";}
+<     $superclass = convert_code($superclass);
+<     $generalization .= "\\classframe{$superclass}$genmode\n"; 
+<   }
+<   $superclass = $params[$#params];
+<   $generalization .= "\\classframe{".convert_code($superclass).
+<                      "}\\genarrow{2}\\indentframe\n"; 
+<   $generalization .= "\\classframe{".convert_code($Mname)."}\n";
+<   $generalization .= "\\end{picture}\n";
+<   $generalization .= "\\end{makeimage}\n";
+<   return $generalization;
+< }
+< 
+< sub convert_code { 
+<   local($Ctext) = @_;
+<   $Ctext =~ s/(\w+)/\\textbf{$1}/g;
+<   $Ctext =~ s/_/\\nspaceunderscore\\_/g;
+<   $Ctext =~ s/</\\Ltemplateless/g;
+<   $Ctext =~ s/>/\\Ltemplategreater/g;
+<   $Ctext =~ s/ /\\ /g;
+<   $Ctext =~ s/::/\\DP /g;
+<   return $Ctext;
+< }
+< 
+215,217c171,172
+<   my $templatearg = insert_URLs_and_quote($template);  
+<   $templatearg = 'template $<$'.$templatearg.'$>$';
+<   print_table_row(multicol(3,$templatearg)) if ( $template );
+---
+>   my $templateline = insert_URLs_and_quote($template);  
+>   print_table_row(multicol(3,$templateline));
+235c190
+< #line 3775 "ext.nw"
+---
+> #line 3609 "ext.nw"
+246,248c201,202
+<   my $templatearg = insert_URLs_and_quote($template);  
+<   $templatearg = 'template $<$'.$templatearg.'$>$';
+<   print_table_row(multicol(3,$templatearg)) if ( $template );
+---
+>   my $templateline = insert_URLs_and_quote($template);  
+>   print_table_row(multicol(3,$templateline));
+260c214
+<   my $shortsig = ( length($signature) <= 50 );
+---
+>   my $shortsig = ( length($signature) <= 25 );
+264,266c218,219
+<   my $templatearg = insert_URLs_and_quote($template); 
+<   $templatearg = 'template $<$'.$templatearg.'$>$';
+<   print_table_row(multicol(2,$templatearg)) if ( $template );
+---
+>   my $templateline = insert_URLs_and_quote($template);  
+>   print_table_row(multicol(2,$templateline));
+278c231
+<   my $shortsig = ( length($signature) <= 50 );
+---
+>   my $shortsig = ( length($signature) <= 25 );
+293c246
+<   my $shortsig = ( length($signature) <= 50 );
+---
+>   my $shortsig = ( length($signature) <= 25 );
+306a260
+>   my @enumvals = split(',',$enumconsts);
+367c321
+<               " from $INPUT...");
+---
+> 	      " from $INPUT...");
+404c358
+< #line 3952 "ext.nw"
+---
+> #line 3785 "ext.nw"
+435c389
+< #line 3985 "ext.nw"
+---
+> #line 3818 "ext.nw"
+458c412
+< #line 4313 "ext.nw"
+---
+> #line 4146 "ext.nw"
+521c475
+< #line 4013 "ext.nw"
+---
+> #line 3846 "ext.nw"
+527c481
+<          \&extbasic::convert_T);
+---
+> 	 \&extbasic::convert_T);
+533c487
+< #line 4027 "ext.nw"
+---
+> #line 3860 "ext.nw"
+578c532
+< #line 4163 "ext.nw"
+---
+> #line 3996 "ext.nw"
+596c550
+< #line 4183 "ext.nw"
+---
+> #line 4016 "ext.nw"
+606,607c560,561
+<                              . $bk . $between . $ek 
+<                              .'\end{makeimage}}';
+---
+> 	                     . $bk . $between . $ek 
+> 			     .'\end{makeimage}}';
+614c568
+< #line 4203 "ext.nw"
+---
+> #line 4036 "ext.nw"
+624,625c578,579
+<          "\\begin{makeimage}\n\$" . $between . "\$\n\\end{makeimage}" .
+<          '}';
+---
+> 	 "\\begin{makeimage}\n\$" . $between . "\$\n\\end{makeimage}" .
+> 	 '}';
+635,636c589,590
+<          "\\begin{makeimage}\n\$" . $between . "\$\n\\end{makeimage}" .
+<          '}';
+---
+> 	 "\\begin{makeimage}\n\$" . $between . "\$\n\\end{makeimage}" .
+> 	 '}';
+643c597
+< #line 4233 "ext.nw"
+---
+> #line 4066 "ext.nw"
+654c608
+< #line 4079 "ext.nw"
+---
+> #line 3912 "ext.nw"
+691c645
+< #line 4125 "ext.nw"
+---
+> #line 3958 "ext.nw"
+706c660
+< #line 4144 "ext.nw"
+---
+> #line 3977 "ext.nw"
+717c671
+< #line 4246 "ext.nw"
+---
+> #line 4079 "ext.nw"
+782c736
+< #line 3632 "ext.nw"
+---
+> #line 3508 "ext.nw"
+diff ./extLdoc.pm /LEDA/SRC/Manual/cmd/extLdoc.pm
+1c1
+< #line 2973 "ext.nw"
+---
+> #line 2883 "ext.nw"
+6c6
+< #line 2899 "ext.nw"
+---
+> #line 2812 "ext.nw"
+14d13
+<   *MODE::generalization =   *generalization;
+26c25
+< #line 2977 "ext.nw"
+---
+> #line 2887 "ext.nw"
+28c27
+< #line 2921 "ext.nw"
+---
+> #line 2833 "ext.nw"
+76d74
+<   *LEDAROOT =       *main::LEDAROOT;
+78,79c76
+< 
+< #line 2978 "ext.nw"
+---
+> #line 2888 "ext.nw"
+82c79
+< #line 4785 "ext.nw"
+---
+> #line 4575 "ext.nw"
+95c92
+<         { eval "\$main::$1 = \$2"; } 
+---
+> 	{ eval "\$main::$1 = \$2"; } 
+111c108
+< #line 3000 "ext.nw"
+---
+> #line 2910 "ext.nw"
+116,117c113,114
+<     $preambletext .= "\\input $LEDAROOT/Manual/tex/MANUAL.pagesize\n";
+<     $preambletext .= "\\input $LEDAROOT/Manual/tex/MANUAL.mac\n\n";
+---
+>     $preambletext .= "\\input ".$ENV{"LEDAROOT"}."/Manual/tex/MANUAL.pagesize\n";
+>     $preambletext .= "\\input ".$ENV{"LEDAROOT"}."/Manual/tex/MANUAL.mac\n\n";
+134,135c131,132
+<     extout::unit("\\$section$star\{$title ( $Mtype1 )\}\n".
+<                  "\\label\{$title\}\n\\label\{$Mtype\}");
+---
+>     extout::unit("\\$section$star\{$title \( $Mtype1 )}\n".
+> 		 "\\label\{$title\}\n\\label\{$Mtype\}");
+139c136
+< #line 3030 "ext.nw"
+---
+> #line 2940 "ext.nw"
+167c164
+< #line 3061 "ext.nw"
+---
+> #line 2971 "ext.nw"
+172,173c169,170
+<                  "\\setlength{\\callwidth}{@_[1]}".
+<                  "\\computewidths");
+---
+> 		 "\\setlength{\\callwidth}{@_[1]}".
+> 		 "\\computewidths");
+176c173
+<                  "\\computewidths");
+---
+> 		 "\\computewidths");
+180c177
+< #line 3076 "ext.nw"
+---
+> #line 2986 "ext.nw"
+187,219c184
+< #line 3086 "ext.nw"
+< sub generalization {
+<   @params = @_;
+<   my $gennum = 4*($#params+2);
+<   my $width = length($Mname); 
+<   foreach $i (0 .. $#params) {
+<     $width = length($params[$i]) if ( length($params[$i]) > $width );
+<   }
+<   $width += 20;
+<   local $generalization = "\\setlength{\\unitlength}{1ex}\n";
+<   $generalization .= "\\adjustclassframe{$width}{$gennum}\n";
+<   $generalization .= "\\begin{picture}(60,$gennum)\n";
+<   foreach $i (0 .. ($#params-1) ) {
+<     my $superclass = $params[$i];
+<     my $genmode;
+<     if ( $superclass =~ /(.*)\^$/ )
+<     { $superclass = $1; $genmode = "\\genarrow{2}\\indentframe"; }
+<     else
+<     { $genmode = "\\genarrow{4}";}
+<     $superclass = convert_M($superclass);
+<     $generalization .= "\\classframe{$superclass}$genmode\n"; 
+<   }
+<   $superclass = $params[$#params];
+<   $generalization .= "\\classframe{".convert_M($superclass).
+<                      "}\\genarrow{2}\\indentframe\n"; 
+<   $generalization .= "\\classframe{".convert_M($Mname)."}\n";
+<   $generalization .= "\\end{picture}\n";
+<   return $generalization;
+< }
+< 
+< 
+< 
+< #line 3121 "ext.nw"
+---
+> #line 2996 "ext.nw"
+222c187
+<   $header = "\\mansection\{" . ucfirst($command) . "\}";
+---
+>   $header = "\\mansection\{ " . ucfirst($command) . "\}";
+225c190
+<   { $semantics .= "\n".convert_M($includeline); $includeline=""; }
+---
+>   { $semantics .= "\n".&convert_M($includeline); $includeline=""; }
+230c195
+< #line 3133 "ext.nw"
+---
+> #line 3008 "ext.nw"
+238,240c203,205
+<   my $templatearg = '['.convert_M($template).']' if ($template);
+<   extout::unit("\\create$templatearg\{$type\}\{$var\}".
+<                "\{$args}\n\{$semantics\}"); 
+---
+>   my $output = "\\create\{$type\}\{$var\}\{$args}\n\{$semantics\}";
+>   $output = convert_M($template)."\\\\".$output if ($template);
+>   extout::unit($output);
+252c217
+< #line 3189 "ext.nw"
+---
+> #line 3064 "ext.nw"
+266c231,232
+<   my $templatearg = '['.convert_M($template).']' if ($template);
+---
+>   my $templateline = convert_M($template)."\\\\\n" if ($template);
+> 
+269c235
+<           $signature . " and will not produce an entry.");
+---
+> 	  $signature . " and will not produce an entry.");
+275,278c241,244
+<              $command =~ /^staticl?/ || $command =~ /^conversion?/) )
+<       { extout::warning("wrong case for print_function"); }
+<     extout::unit("\\function$templatearg\{$type\}\n".
+<                  "\{$funcname\}\n{$paralist\}\n\{$semantics\}");
+---
+> 	     $command =~ /^staticl?/ || $command =~ /^conversion?/) )
+>       { extout::warning("wrong case for print_function");}
+>     extout::unit($templateline.
+>       "\\function\{$type\}\n\{$funcname\}\n{$paralist\}\n\{$semantics\}");
+280,281c246,247
+<     extout::unit("\\operator$templatearg\{$type\}\n".
+<                  "\{$signature\}\n\{$semantics\}"); 
+---
+>     extout::unit($templateline.
+>       "\\operator\{$type\}\n\{$signature\}\n\{$semantics\}"); 
+285c251
+< #line 3227 "ext.nw"
+---
+> #line 3103 "ext.nw"
+291,293c257,258
+<   $templatearg = '['.convert_M($template).']' if ($template); 
+<   extout::unit("\\typemember$templatearg\{$signature\}\n".
+<                "\{$semantics\}"); 
+---
+>   $template = convert_M($template) . "\\\\\n" if ($template); 
+>   extout::unit("$template\\typemember\{$signature\}\n\{$semantics\}");
+314a280
+>   my @enumvals = split(',',$enumconsts);
+322c288
+< #line 3267 "ext.nw"
+---
+> #line 3143 "ext.nw"
+379c345
+<               " from $INPUT...");
+---
+> 	      " from $INPUT...");
+430c396
+< #line 3387 "ext.nw"
+---
+> #line 3265 "ext.nw"
+435c401
+<           \&extbasic::convert_T); 
+---
+> 	  \&extbasic::convert_T); 
+438c404
+< #line 3402 "ext.nw"
+---
+> #line 3280 "ext.nw"
+459c425
+<            "might cause trouble with cweave\n$word\n\n");
+---
+> 	   "might cause trouble with cweave\n$word\n\n");
+470c436
+< #line 3393 "ext.nw"
+---
+> #line 3271 "ext.nw"
+477c443
+< #line 3489 "ext.nw"
+---
+> #line 3367 "ext.nw"
+579c545
+< #line 3593 "ext.nw"
+---
+> #line 3471 "ext.nw"
+601c567
+< #line 2984 "ext.nw"
+---
+> #line 2894 "ext.nw"
+diff ./ext_ldel /LEDA/SRC/Manual/cmd/ext_ldel
+1c1,2
+< #!/bin/sh -f
+---
+> #line 5293 "ext.nw"
+> #!/bin/sh 
+Only in /LEDA/SRC/Manual/cmd: ext_ldel.pl
+diff ./extbasic.pm /LEDA/SRC/Manual/cmd/extbasic.pm
+1c1
+< #line 2670 "ext.nw"
+---
+> #line 2583 "ext.nw"
+12c12
+< #line 2692 "ext.nw"
+---
+> #line 2605 "ext.nw"
+21c21
+<                    "occurrence of Mvar. Did you mean \\Mvar?"); }
+---
+> 		   "occurrence of Mvar. Did you mean \\Mvar?"); }
+24c24
+<                    "occurrence of Mtype. Did you mean \\Mtype?"); }
+---
+> 		   "occurrence of Mtype. Did you mean \\Mtype?"); }
+27c27
+<                   "occurrence of Mname. Did you mean \\Mname?"); }
+---
+> 		  "occurrence of Mname. Did you mean \\Mname?"); }
+31c31
+< #line 2713 "ext.nw"
+---
+> #line 2626 "ext.nw"
+58c58
+< #line 2747 "ext.nw"
+---
+> #line 2660 "ext.nw"
+67c67
+< #line 2762 "ext.nw"
+---
+> #line 2675 "ext.nw"
+150c150
+< #line 2847 "ext.nw"
+---
+> #line 2760 "ext.nw"
+193c193
+< #line 2684 "ext.nw"
+---
+> #line 2597 "ext.nw"
+diff ./exthelp.pm /LEDA/SRC/Manual/cmd/exthelp.pm
+1c1
+< #line 2506 "ext.nw"
+---
+> #line 2428 "ext.nw"
+5,9d4
+< # we glue local variables to the main scope
+< sub import {
+<   *LEDAROOT = *main::LEDAROOT;
+< }
+< 
+85,86d79
+<    /*{\\Mgeneralization C1#C2#...#Ck}*/
+< 
+97,99c90
+<    /*{\\Mvirtual [W1] [W2]}*/          
+<    /*{\\Mpurevirtual [W1] [W2]}*/          
+<        /*{\\Mop semantic_description }*/        
+---
+>        /*{\\Mop semantic_description }*/ 	
+137c128
+<   system("cat $LEDAROOT/Manual/MANUAL/DocTools.tex");
+---
+>   system("cat \$LEDAROOT/Manual/MANUAL/DocTools.tex");
+144,145c135,136
+<   print OUTPUT "\\input $LEDAROOT/Manual/tex/MANUAL.pagesize\n\n";
+<   print OUTPUT "\\input $LEDAROOT/Manual/tex/MANUAL.mac\n\n"; 
+---
+>   print OUTPUT "\\input " . $ENV{"LEDAROOT"} . "/Manual/tex/MANUAL.pagesize\n\n";
+>   print OUTPUT "\\input " . $ENV{"LEDAROOT"} . "/Manual/tex/MANUAL.mac\n\n"; 
+148c139
+<   system("cat $LEDAROOT/Manual/MANUAL/DocTools.tex  >> $outfile");
+---
+>   system("cat \$LEDAROOT/Manual/MANUAL/DocTools.tex  >> $outfile");
+diff ./extout.pm /LEDA/SRC/Manual/cmd/extout.pm
+1c1
+< #line 2424 "ext.nw"
+---
+> #line 2346 "ext.nw"
+Only in /LEDA/SRC/Manual/cmd: htmlweave
+Only in /LEDA/SRC/Manual/cmd: htmlweave.pl
+diff ./ldel /LEDA/SRC/Manual/cmd/ldel
+1c1,2
+< #!/bin/sh -f
+---
+> #line 5289 "ext.nw"
+> #!/bin/sh 
+diff ./ldel.pl /LEDA/SRC/Manual/cmd/ldel.pl
+1c1
+< #line 5756 "ext.nw"
+---
+> #line 5298 "ext.nw"
+9d8
+< @kill_stuff;
+48c47
+<     if ( /\/\*\{\\(M|X)/ || /\/\*\{LDEL/ ) {
+---
+>     if ( / *\/\*\{\\M/ || / *\/\*\{\\X/) {
+54,56c53,55
+<       if ( /Mtext/ || /Manpage/ || /Mdefinition/ || /Mgeneralization/ || 
+<            /Mtypes/ || /Moperations/ ||/Mimplementation/ || /Mcreation/ || 
+<            /Moptions/ || /Msubst/ || /Mexample/ || 
+---
+>       if ( /Mtext/ || /Manpage/ || /Mdefinition/ || /Mtypes/ || 
+>            /Moperations/ ||/Mimplementation/ || /Mcreation/ || 
+> 	   /Moptions/ || /Msubst/ || /Mexample/ || 
+60,62d58
+<       if ( s/\/\*\{LDEL (.*)\}\*\/// )
+<       { push @kill_stuff, $1; }
+< 
+65c61
+<         $Manpageline = $_;
+---
+> 	$Manpageline = $_;
+67c63
+<         while ($_ && (! ( /\}\*\// ) ) ) {
+---
+> 	while ($_ && (! ( /\}\*\// ) ) ) {
+69c65
+<           chop $Manpageline;
+---
+> 	  chop $Manpageline;
+77c73
+<         $_ = $Manpageline; 
+---
+> 	$_ = $Manpageline; 
+79c75
+<       s/(\}\*\/)/ $1/;    # insert space before end of comment
+---
+> 
+131d126
+<     foreach my $REGEXP (@kill_stuff) { s/$REGEXP//g; }
+133c128
+< } # end while
+---
+>   }
+diff ./lw2dvi /LEDA/SRC/Manual/cmd/lw2dvi
+28c28
+< rm $1.tmp
+---
+> rm $1.temp
+diff ./lw2nw.pl /LEDA/SRC/Manual/cmd/lw2nw.pl
+1c1
+< #line 6114 "ext.nw"
+---
+> #line 5651 "ext.nw"
+Only in /LEDA/SRC/Manual/cmd: runascii
+Only in /LEDA/SRC/Manual/cmd: runascii.bat
+Only in /LEDA/SRC/Manual/cmd: rundemo
+Only in /LEDA/SRC/Manual/cmd: xlman
+Only in /LEDA/SRC/Manual/cmd: xlman.bat

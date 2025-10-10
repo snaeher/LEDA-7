@@ -1,0 +1,10 @@
+OBJECTS = \
+_geo_rep$(o) \
+_integer_matrix$(o) \
+_integer_vector$(o) \
+_matrix$(o) \
+_rat_vector$(o) \
+_real_vector$(o) \
+_real_matrix$(o) \
+_vector$(o)
+

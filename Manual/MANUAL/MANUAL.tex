@@ -1,0 +1,89 @@
+\documentclass[12pt,a4paper]{book}
+%\usepackage{html,makeidx,epsfig}
+\usepackage{html,makeidx,graphicx}
+
+\textwidth 15.4cm 
+\textheight 24 cm
+\topmargin -14mm       
+\evensidemargin 3mm 
+\oddsidemargin 3mm
+
+\input MANUAL.pagesize
+\input MANUAL.mac
+\makeindex
+
+\parindent0em
+\setlength{\parskip}{1ex minus 0.9ex}
+%\setcounter{chapter}{-1}
+%das sorgt für Verwirrungen bei latex2html
+
+\sloppy
+
+\newcommand{\ledaversion}{7.2}
+
+\newcommand{\SKIP}{1}{}
+
+
+\input Title.tex
+
+\date{}
+
+\begin{document}
+\makeatletter
+%\renewcommand{\l@section}{\@dottedtocline{2}{1.5em}{2.5em}}
+% das sorgt für Verwirrungen bei latex2html
+\makeatother
+
+\maketitle
+
+
+\thispagestyle{empty}
+
+\ \\
+\newpage
+
+\pagenumbering{roman}
+
+\tableofcontents
+
+%\vspace*{2cm}
+%{\large  Acknowledgement}\\
+%Many people contributed to this new version of LEDA. Their names are listed 
+%in the {\em Acknowledgements} file in the LEDA root directory.
+%The authors want to thank all of them for their bug reports, helpful 
+%suggestions and valuable comments.\\
+
+
+\newpage
+
+%\input License.tex
+
+\pagenumbering{arabic}
+
+\input Preface.tex
+\input Basics.tex
+\input modules.tex
+\input SimpleTypes.tex
+%\input AlignmentTypes.tex
+\input NumberTypes.tex
+\input BasicTypes.tex
+\input Dictionaries.tex
+\input PrioQueues.tex
+%\input Compression.tex
+%\input Cryptography.tex
+\input GraphTypes.tex
+\input GraphAlgs.tex
+\input GraphIter.tex
+\input GeoBasic.tex
+\input GeoAdvanced.tex
+\input D3GeoBasic.tex
+\input Graphics.tex
+\input Implement.tex
+\appendix
+\input TechnicalInfo.tex
+\input rules.tex
+\input References.tex
+
+\printindex
+
+\end{document}

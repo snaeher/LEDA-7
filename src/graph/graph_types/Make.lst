@@ -1,0 +1,23 @@
+
+OBJECTS =\
+_dimacs_graph$(o) \
+_dimacs_graph0$(o) \
+_graph$(o) \
+_g_dimacs$(o) \
+_g_event$(o) \
+_g_generate$(o) \
+_g_gmlio$(o) \
+_g_inout$(o) \
+_g_map$(o) \
+_g_misc$(o) \
+_g_objects$(o) \
+_g_obj_list$(o) \
+_g_random$(o) \
+_g_sort$(o) \
+_gml_graph$(o) \
+_gml_parser$(o) \
+_planar_map$(o) \
+_pq_tree$(o) \
+_series_parallel$(o)
+
+

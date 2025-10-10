@@ -1,0 +1,7 @@
+PROGS = \
+gw_caterpillar$(e) \
+gw_caterpillar1$(e) \
+gw_ortho$(e) \
+gw_spring$(e) \
+gw_tutte$(e) \
+gw_visrep$(e)

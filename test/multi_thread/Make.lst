@@ -1,0 +1,8 @@
+PROGS = \
+cqueue$(e) \
+cstack$(e) \
+mergesort$(e) \
+msort2$(e) \
+msort4$(e) \
+quicksort$(e)
+

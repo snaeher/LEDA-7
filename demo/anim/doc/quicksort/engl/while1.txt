@@ -1,0 +1,5 @@
+In the first inner \tt while-\rm loop the left pointer \tt\blue2 i \rm\black moves to the right as long as the
+keys \tt A[i] \rm are smaller than \tt\red v \rm\black .
+
+In case \tt\red v \rm\black is the largest element in the interval, the loop is finished if the right
+boundary of the interval is reached by \tt\blue2 i.

@@ -1,0 +1,4 @@
+Das Feld ist nun aufsteigend sortiert. 
+
+Im Fenster \tt <Status der Variablen> \rm kann die Anzahl der Vertauschungen 
+\tt swaps \rm und die Anzahl der Vergleiche \tt compares \rm abgelesen werden.

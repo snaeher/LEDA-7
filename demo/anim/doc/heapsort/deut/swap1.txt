@@ -1,0 +1,2 @@
+Da der Vater \red\tt A[k] \black\rm kleiner als sein größter Sohn ist, und damit die Heap- 
+eigenschaft verletzt wird, mußen die Feldpositionen getauscht werden.

@@ -1,0 +1,5 @@
+Die zweite innere \tt while \rm - Schleife lässt den rechten Zeiger \tt\green2 j \rm\black nach links 
+laufen, solange die Schluessel \tt A[j] \rm grösser sind als \tt\red v \rm\black .
+
+
+

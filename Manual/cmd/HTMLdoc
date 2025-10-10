@@ -1,0 +1,37 @@
+#!/bin/sh
+
+if [ ! -f HTMLdoc-latex2html.cfg ]; then
+  notangle -R.latex2html-init $LEDAROOT/Manual/noweb/ext.nw \
+    > HTMLdoc-latex2html.cfg
+fi
+
+if [ "$1" = "" ]; then
+    echo "usage:"
+    echo "       HTMLdoc file[.lw]"
+    echo "       produce a HTML manual page from a header file"
+    echo "       allows adaptations in file HTMLdoc-lates2html-init.cfg"
+    exit
+else
+  base=`basename $1 .lw`
+  if [ -d $base ]; then rm -rf $base; fi
+fi
+
+perl -S -I$LEDAROOT/Manual/cmd ext.pl HTMLdoc "$@"
+shift
+
+latex2html -init_file HTMLdoc-latex2html.cfg $base.tex 
+  # we require version > 98.1
+perl -S correct_xlinks.pl $base 
+rm -rf $base/*.html.bak
+  # this script repairs some ill sitting crossrefs created by
+  # l2h when distributing the HTML output over various files
+
+echo You can change the settings for latex2html by editing the file
+echo 
+echo "  HTMLdoc-latex2html.cfg"
+echo
+
+here=`pwd`;
+netscape -raise -remote "openURL($here/$base/$base.html)"
+  # we use netscape version > 4.0
+

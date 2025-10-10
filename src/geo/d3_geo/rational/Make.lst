@@ -1,0 +1,19 @@
+OBJECTS = \
+d3_delaunay$(o) \
+_d3_rat_point$(o) \
+_d3_rat_point1$(o) \
+_d3_rat_segment$(o) \
+_d3_rat_ray$(o) \
+_d3_rat_line$(o) \
+_d3_rat_plane$(o) \
+_d3_rat_simplex$(o) \
+_d3_rat_sphere$(o) \
+_d3_rat_triangle$(o) \
+_d3_dc_hull$(o) \
+_d3_flip_hull$(o) \
+_gen_d3_rat_points$(o) \
+_r_d3_hull$(o)
+
+
+_r_d3_hull$(o) : ../generic/d3_hull.cpp
+

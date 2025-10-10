@@ -1,0 +1,74 @@
+/*******************************************************************************
++
++  LEDA 6.4  
++
++
++  _x_basic.c
++
++
++  Copyright (c) 1995-2012
++  by Algorithmic Solutions Software GmbH
++  All rights reserved.
++ 
+*******************************************************************************/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define B0    { }
+#define B1(T) { return (T)0; }
+
+#include <LEDA/graphics/x_basic.h>
+
+
+LEDA_BEGIN_NAMESPACE
+
+static char* msg = "\
+The LEDA-R source code release does not include GUI support for win32 \
+systems. Please contact the Algorithmic Solutions Software GmbH for \
+information on how to obtain a release including full graphics support \
+for your platform.\n\n\
+Algorithmic Solutions\n\
+Schuetzenstrasse 3-5\n\
+66123 Saarbruecken\n\
+Germany\n\
+email:leda@algorithimic-solutions.com\n\
+fax: +49 681 77012646\n\n";
+
+LEDA_END_NAMESPACE
+
+#if defined(__win32__)
+
+#if defined(__GNUC__)
+#include <wingnuc.h>
+#endif
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <commdlg.h>
+
+LEDA_BEGIN_NAMESPACE
+
+
+void x_open_display(void)  
+{ MessageBox(NULL,msg,"LEDA Research Version", MB_OK | MB_ICONINFORMATION);
+  exit(1);
+ }
+ 
+LEDA_END_NAMESPACE 
+
+#else
+
+LEDA_BEGIN_NAMESPACE
+
+void x_open_display(void)  
+{ printf("\n");
+  printf(msg);
+  exit(1);
+ }
+ 
+LEDA_END_NAMESPACE 
+
+#endif
+

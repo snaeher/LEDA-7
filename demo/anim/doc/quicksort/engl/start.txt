@@ -1,0 +1,4 @@
+\rm The function \tt quicksort \rm is started. The arguments are the left pointer \tt l,\rm for the left boundary, and the right pointer \tt r, \rm for the right boundary.
+
+This specifies the interval that is to be sorted.
+

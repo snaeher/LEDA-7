@@ -1,0 +1,6 @@
+Die Variable \tt k \rm enthält die Position des Vaters im Feld, so daß nun für \tt\red A[k] \rm\black die 
+Heapeigenschaft überprüft werden kann.
+
+\bf Bemerkung (Heapeigenschaft)
+Alle Nachfahren des Vaters (der Wurzel) sind kleiner als der Vater (die Wurzel)
+im Baum.

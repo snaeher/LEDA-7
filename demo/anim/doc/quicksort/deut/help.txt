@@ -1,0 +1,20 @@
+Die folgende Animation demonstiert die Arbeitsweise von Quicksort. 
+
+Im Animationsfenster wird ein Feld dargestellt, das von Quicksort sortiert 
+wird. 
+
+Das Fenster \tt <Quellcode> \rm zeigt den Algorithmus. Jeder Schritt im 
+Algorithmus wird durch die farbliche Hervorhebung der aktuellen Code-
+zeile unterstützt.
+
+Der Button \tt <Gehe zu> \rm erlaubt die Animation bis zu einer gewünschten
+Programmzeile automatisch auszuführen. 
+
+Die Geschwindigkeit der Animation kann mit Hilfe des Button \tt <Verzögerung>
+\rm eingestellt werden.
+
+Im Fenster\tt <Status der Variablen>\rm kann die aktuelle Belegung der 
+Variablen verfolgt werden. 
+
+Die Animation kann zu jedem Zeit im Einzelschrittmodus durch drücken des 
+\\tt <Abbruch> \\rm Buttons beendet werden. 

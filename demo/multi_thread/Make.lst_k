@@ -1,0 +1,3 @@
+PROGS = \
+quicksort$(e) \
+sync_test$(e)

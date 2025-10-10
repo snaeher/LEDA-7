@@ -1,0 +1,21 @@
+
+PROGS = \
+bala_test$(e) \
+clos_test$(e) \
+delau_speed$(e) \
+delau_test$(e) \
+except_test$(e) \
+gen_polygon_test$(e) \
+hull_speed$(e) \
+hull_test$(e) \
+point_location$(e) \
+point_loc$(e) \
+point_loc_float$(e) \
+point_loc_constr$(e) \
+qhull1$(e) \
+qs_point$(e) \
+segint_test$(e) \
+sweep_test$(e) \
+sort_test$(e) \
+voro_test$(e)
+

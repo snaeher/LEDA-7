@@ -1,0 +1,26 @@
+OBJECTS = \
+_assert$(o) \
+_date$(o) \
+_error$(o) \
+_eval$(o) \
+_file$(o) \
+_http$(o) \
+_leda$(o) \
+_memory_manager$(o) \
+_memory_std$(o) \
+_memory_mt$(o) \
+_memory_sys$(o) \
+_misc$(o) \
+_multi_thread$(o) \
+_param_handler$(o) \
+_socket$(o) \
+_sysinf$(o) \
+_time$(o) \
+_thread$(o) \
+_thread_pool$(o) \
+_version$(o) \
+_websocket$(o)
+
+#_tls_socket$(o)
+
+

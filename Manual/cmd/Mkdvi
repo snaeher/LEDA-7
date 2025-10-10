@@ -1,0 +1,102 @@
+#!/bin/sh
+# this script must be called in $LEDAROOT/Manual/MANUAL
+
+cd ../..
+
+if [ ! -d Manual/MANUAL ]; then
+  echo ""
+  echo "Mkdvi must be called from \$LEDAROOT/Manual/MANUAL"
+  exit 0
+fi;
+
+lroot=`pwd`
+
+LEDAROOT=$lroot
+export LEDAROOT
+
+echo LEDAROOT = $LEDAROOT
+
+# check for perl and latex
+
+echo " "
+
+touch t.pl
+
+if perl t.pl; then
+   rm t.pl
+#  echo using `which perl`
+   echo perl: ok.
+else
+   rm t.pl
+   echo perl: cannot execute.
+   echo " "
+   exit 0
+fi
+
+
+source=$lroot/incl/LEDA
+dvidir=$lroot/Manual/DVI
+
+rm -r -f $dvidir
+mkdir $dvidir
+cd $dvidir
+
+cp $lroot/Manual/MANUAL/intro.tex   ./Introduction.tex
+cp $lroot/Manual/MANUAL/logo.ps     .
+cp $lroot/Manual/MANUAL/logo.pdf    .
+cp $lroot/Manual/MANUAL/Title.tex   .
+cp $lroot/Manual/MANUAL/Preface.tex .
+cp $lroot/Manual/MANUAL/Basics.tex  .
+cp $lroot/Manual/MANUAL/html.sty    .
+
+
+
+if latex -interaction=batchmode Introduction.tex > /dev/null; then
+   echo using `which latex`
+else
+   echo "Cannot execute latex Introduction.tex"
+   echo " "
+   exit 0
+fi
+
+
+#if latex -interaction=batchmode Introduction.tex; then
+#touch t.tex
+#else
+#echo " "
+#echo "Latex: Error in Introduction.tex (see logfile for details)"
+#fi
+
+
+echo " "
+echo Updating DVI-files in `pwd`  ...
+echo " "
+
+
+if [ -x /usr/bin/test ]; then
+  tcmd=/usr/bin/test
+elif [ -x /bin/test ]; then
+  tcmd=/bin/test
+else
+  tcmd=test
+fi
+
+
+for f in $source/*/*.h $source/*/*/*.h; do
+ dvi=`pwd`/`basename $f .h`.dvi
+ if grep Manpage $f > /dev/null; then
+   if $tcmd ! $dvi -nt $f; then
+     echo $dvi
+     if perl -S -I../cmd ../cmd/ext.pl Lman $f xdvi=no dvioutfile=$dvi > mkdvi.log 2>&1
+     then mkdiv_ok=1
+     else cat mkdvi.log
+     fi
+   fi
+ fi
+done
+
+rm -f *.log
+
+cd ..
+
+

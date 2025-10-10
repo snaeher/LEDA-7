@@ -1,0 +1,91 @@
+\chapter{Preface} \label{Preface}
+
+One of the major differences between combinatorial computing and other areas of
+computing such as statistics, numerical analysis and linear programming is the
+use of complex data types.  Whilst the built-in types, such as integers, reals,
+vectors, and matrices, usually suffice in the other areas, combinatorial
+computing relies heavily on types like stacks, queues, dictionaries, sequences,
+sorted sequences, priority queues, graphs, points, segments, $\ldots$ In the
+fall of 1988, we started a project (called {\bf LEDA} for Library of Efficient
+Data types and Algorithms) to build a small, but growing library of data types
+and algorithms in a form which allows them to be used by non-experts. We hope
+that the system will narrow the gap between algorithms research, teaching, and
+implementation. The main features of LEDA are:
+
+\begin{enumerate}
+\item 
+    LEDA provides a sizable collection of data types and algorithms in a form 
+    which allows them to be used by non-experts. This
+    collection includes most of the data types and algorithms described in the 
+    text books of the area. 
+
+\item 
+    LEDA gives a precise and readable specification for each of the data types 
+    and algorithms mentioned above.  The specifications are short (typically, 
+    not more than a page), general (so as to allow several implementations), 
+    and abstract (so as to hide all details of the implementation). 
+
+\item
+    For many efficient data structures access by position is important. In 
+    LEDA, we use an item concept to cast positions into an abstract form. We 
+    mention that most of the specifications given in the LEDA manual use this 
+    concept, i.e., the concept is adequate for the description of many data 
+    types. 
+
+\item
+    LEDA contains efficient implementations for each of the data types, e.g., 
+    Fibonacci heaps for priority queues, skip lists and dynamic perfect 
+    hashing for dictionaries, ...
+
+
+\item
+    LEDA contains a comfortable data type graph. It offers the standard 
+    iterations such as ``for all nodes v of a graph G do'' or ``for all 
+    neighbors w of v do'', it allows to add and delete vertices and edges 
+    and it offers arrays and matrices indexed by nodes and edges,...  
+    The data type graph allows to write programs for graph problems in a 
+    form close to the typical text book presentation.
+
+
+\item 
+    LEDA is implemented by a \CC{} class library. It can be used with almost
+    any \CC{} compiler that supports templates. 
+
+
+\item
+    LEDA is available from Algorithmic Solutions Software GmbH. See 
+    \htmladdnormallink{\texttt{http://www.algorithmic-solutions.com}}{http://www.algorithmic-solutions.com}. 
+
+\end{enumerate}
+
+This manual contains the specifications of all data types and algorithms 
+currently available in LEDA. Users should be familiar with the \CC{}
+programming language (see \cite{S91} or \cite{Li89}).  
+
+The manual is structured as follows: In Chapter 
+\htmlref{Basics}{Basics}, which is a
+prerequisite for all other chapters, we discuss the basic concepts and
+notations used in LEDA. New users of LEDA should carefully read Section
+\htmlref{User Defined Parameter Types}{User Defined Parameter Types} to avoid problems when plugging in self
+defined parameter types. If you want to get information about the LEDA
+documentation scheme please read Section \htmlref{DocTools}{DocTools}. 
+For technical
+information concerning the installation and usage of LEDA 
+users should refer to Chapter
+\htmlref{TechnicalInformation}{TechnicalInformation}. There is also a section describing 
+namespaces and the interaction with other software
+libraries (Section \htmlref{NameSpace}{NameSpace}).  The other chapters define the data types and algorithms available
+in LEDA and give examples of their use. These chapters can be consulted
+independently from one another.
+
+More information about LEDA can be found on the LEDA web page:\\
+\htmladdnormallink{\texttt{http://www.algorithmic-solutions.com/leda/}}{http://www.algorithmic-solutions.com/leda}
+
+Finally there's a tool called \verb|xlman| which allows online help and
+demonstration on all unix platforms having a \LaTeX{} package installed.
+
+\bigskip
+{\large\bf New in Version \ledaversion}
+
+Please read the CHANGES and FIXES files in the LEDA root directory for more 
+information.

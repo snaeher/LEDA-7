@@ -1,0 +1,186 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[german]{babel}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+\setlength{\oddsidemargin}{-0.5cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textwidth}{17cm}
+\setlength{\textheight}{25cm}
+\setlength{\headsep}{1cm}
+\setlength{\topmargin}{-1.5cm}
+\setlength{\parindent}{0cm}
+
+\begin{document}
+
+\theoremstyle{plain}  \newtheorem{satz*}{Satz}[]
+
+\section*{Heapsort}
+
+Ein binärer Heap ist eine Datenstruktur, die Datensätze in einem Feld speichert und garantiert,
+daß jeder Schlüssel garantiert größer ist, als Schlüssel auf zwei bestimmten anderen Positionen.
+Jeder dieser Schlüssel ist wiederum größer als zwei weitere Schlüssel usw.\\
+Diese Ordnung läßt sich sehr leicht mit Hilfe eines binären Baumes veranschaulichen. Von jedem Knoten
+führen Kanten zu zwei Knoten, von denen bekannt ist, daß sie kleiner sind. Diese Eigenschaft des 
+Baumes wird als Heapeigenschaft bezeichnet. Abb. 1 zeigt einen Heap in Baumansicht.
+
+\begin{figure}[h]
+\begin{center}
+\epsfig{file = tree, height = 5cm, width = 15cm}
+\vspace*{-0.5cm}
+\caption{Baumansicht}
+\end{center}
+\end{figure}
+
+Ein so entstandener Baum ist balanciert und vollständig. Weiterhin folgt aus der Heapeigenschaft
+unmittelbar, daß der größte Schlüssel die Wurzel des Baumes ist. Die zugehörige Feldansicht des Heaps aus
+Abb. 1 zeigt Abb. 2.
+
+\begin{figure}[h]
+\begin{center}
+\epsfig{file = array, height = 5cm, width = 15cm}
+\vspace*{-0.5cm}
+\caption{Feldansicht}
+\end{center}
+\end{figure}
+
+Es ist nun sehr einfach von einem Knoten zu seinem Vorgänger und zu seinem Nachfolger zu gelangen.
+Der Vorgänger des Knotens auf Position {\tt j} befindet sich Postition $ \frac{\text{\tt j}}{\lfloor 2 \rfloor}$, und
+die beiden Nachfolger des Knotens auf Position {\tt j} befinden sich auf den Positionen {\tt $2$j} und 
+{\tt $2$j$+ 1$}.\\
+
+Zusammenfassend ist ein Heap ein als Feld dargestellter vollständiger binärer Baum, in dem jeder Knoten
+der Heapeigenschaft genügt. Insbesondere befindet sich der größte Schlüssel stets auf der ersten
+Position im Feld.\\
+ 
+Um in der Lage zu sein, einen Heap aufzubauen, ist es zunächst erforderlich, eine Operation {\tt insert} zu
+definieren, die einen neuen Schlüssel zu einem Heap hinzufügt. Diese Operation vergrößert den Heap um eins, so daß
+die Heapgröße {\tt N} inkrementiert werden muß. Anschließend wird der Schlüssel an der Position {\tt A[N]}
+abgespeichert. Das Hintzufügen eines neuen Schlüssels kann zu einer Verletzung der Heapeigenschaft führen 
+(der neue Knoten ist größer als sein Vorgänger). Die Verletzung kann durch Vertauschen der beiden Knoten 
+beseitigt werden. Dieser Austausch kann erneut eine Verletzung der Heapeigenschaft hervorrufen, die auf
+die gleiche Weise behoben werden kann. So kann der neue Knoten schlimmstenfalls von der Blattebene bis 
+zur Wurzel steigen. \\
+
+Das beschriebene Verfahren wird als Top-Down-Methode bezeichnet. Für $n$ {\tt insert}-Operatitionen folgt dann
+die Laufzeit $T(n)$
+\begin{align*}
+T(n) &= \sum_{i=1}^{n} \lfloor \log i \rfloor 
+\intertext{dies läßt sich abschätzen mit}
+\sum_{i=0}^{\lfloor \log n \rfloor} 2^i \cdot i &\leq T(n) \leq \sum_{i=0}^{\lceil \log n \rceil} 2^i \cdot i 
+\intertext{mit Induktion über $n$ wird gezeigt, daß}
+\sum_{i=0}^k 2^i \cdot i &= (k-1) \cdot 2^{k+1} + 2
+\intertext{und damit}
+T(n) &= \Theta(n \log n)
+\intertext{ist.}
+\end{align*}
+
+\begin{proof}
+\mbox{}\\
+Zu zeigen ist
+\begin{align*}
+\sum_{i=0}^k 2^i \cdot i = (k-1) \cdot 2^{k+1} + 2\\
+\end{align*}
+
+{\em Induktionsanfang}
+\begin{align*}
+2^0 \cdot 0 &= (0-1) \cdot 2^{0+1} + 2\\
+0 &= 0\\
+\end{align*}
+
+{\em Induktionsschritt} 
+\begin{align*}
+\sum_{i=0}^{k+1} 2^i \cdot i &= 2^{k+1} \cdot (k+1) + \sum_{i=0}^{k} \cdot 2^i \cdot i\\
+\intertext{mit der Induktionsvorraussetzung folgt}
+&= 2^{k+1} \cdot (k+1) + 2^{k+1}\cdot (k-1) + 2\\
+&= 2^{k+1} \cdot 2k + 2\\
+&= 2^{k+2} \cdot k + 2\\
+&= ((k+1) - 1) \cdot 2^{(k+1)-1} + 2
+\end{align*}
+\end{proof}
+\mbox{}\\
+Der Heapaufbau mit der Top-Down-Methode hat die Komplexität $\Theta(n \log n)$. \\
+
+Die Operation {\tt remove} the largest (Entfernen des größten Elementes) erfordert fast das gleiche 
+Verfahren. Da der Heap nach der Operation ein Element weniger enthält, muß die Heapgröße {\tt N} um 
+eins dekrementiert werden. Zuvor jedoch wird der Knoten an Position 1 mit dem Knoten an Position N
+vertauscht. Bei dem Austausch kann die Heapeigenschaft verletzt werden, so daß nun durch
+Heruntersinken des Knotens an Position 1 der Heap wiederhergestellt werden muß. \\
+Das Verfahren wird als Bottom-Up-Methode bezeichnet. Die Laufzeit für $n$ {\tt remove}-Operationen 
+$T(n)$ 
+\begin{align*}
+T(n) &\leq \sum_{i=1}^{\lfloor \log n \rfloor} 2^{\lfloor \log n \rfloor - i} \cdot 2 \cdot i\\
+&\leq 2 \cdot n \cdot \sum_{i=1}^{\lceil \log n\rceil} \frac{i}{2^i} \\
+&\leq 2 \cdot n \cdot \sum_{i=1}^\infty \frac{i}{2^i} \\\\
+&= 2 \cdot n \cdot \frac{\frac{1}{2}}{\left(1 - \frac{1}{2}\right)^2}\\
+&= 4n
+\intertext{und damit}
+T(n) &= {\cal O}(n)\\
+\end{align*}
+da auf dem Niveau $\lfloor\log n \rfloor - i$ nur $2^{\lfloor \log n \rfloor - i}$ Knoten sein können.
+Somit kann ein Knoten auf diesem Niveau höchstens $i$ Niveaus im Baum heruntersinken.\\
+
+Der Heapabbau mit der Bottom-Up-Methode hat die Komplexität ${\cal O}(n)$.\\\\
+
+
+Auf Basis der vorangestellten Operationen kann eine elegante und effiziente Sortiermethode definiert werden.
+Dieses Verfahren wird Heapsort genannt und sortiert garantiert $n$ Elemente ohne zusätzlichen Speicherplatz
+in $n \log n$ Schritten.\\ [-1ex]
+
+Die Idee besteht darin, einen Heap aufzubauen, der die zu sortierenden Schlüssel enthält. Anschließend werden 
+die Schlüssel in der richtigen Reihenfolge wieder entfernt und die Folge ist aufsteigend sortiert. Der Algorithmus 
+hat folgende Gestalt:
+
+\begin{verbatim}
+void heapify(int A[], int k, int N)
+{
+  while(2*k <= N) 
+  {	
+    int j = 2*k;
+    if(j < N && A[j] < A[j+1]) j++;
+    if(A[k] >= A[j]) break;
+    swap(k, j);
+    k = j;
+  }
+}	
+
+void heapsort(int A[], int N)
+{
+  for(int i= N/2; i >= 1; i--)
+    heapify(A, i, N);
+  while(N > 1) 
+  {		
+    swap(A, N, 1);
+    heapify(A, 1, --N); 
+  }	
+}	
+\end{verbatim}
+
+Eine effiziente Methode den Heap zu erzeugen erhält man, wenn man ihn rückwärts durchläuft und kleine
+Heaps von unten her erzeugt. Bei dieser Methode wird jede Position im Feld als Wurzel eines kleinen
+Heaps betrachtet und es wird die Tatsache ausgenutzt, daß {\tt heapify} für kleine Heaps ebenso korrekt 
+arbeitet, wie für den großen Heap. Die Funktion {\tt heapify} arbeitet nach der Bottom-Up-Methode, d.h.
+von der Wurzel an fallen die Schlüssel im Heap solange die Heapeigenschaft verletzt ist.\\[-2ex]
+
+Durch das Rückwärtsdurchlaufen des Heaps, ist jeder Knoten die Wurzel eines Heaps, für den die Heapeigenschaft
+hergestellt ist, außer vielleicht für die Wurzel selbst.\\[-2ex]
+
+Es ist nicht erforderlich Heaps der Größe 1 zu betrachten, daher beginnt das Durchlaufen bereits auf halben Wege
+rückwärts durch das Feld.\\[-1ex]
+
+Die Gesamtlaufzeit $T(n)$ von Heapsort für das Sortieren von $n$ Schlüssel setzt sich zusammen aus dem Heapaufbau
+$T_1(n)$ und dem Heapabbau $T_2(n)$, so daß gilt:
+
+\begin{align*}
+T(n) &= T_1(n) + T_2(n) \\
+&= {\cal O}(n) + \sum_{i=1}^n 2 \cdot \lfloor \log i \rfloor\\
+&= {\cal O}(n) + \Theta(n \log n )\\
+&= \Theta(n \log n )
+\end{align*}
+
+
+\end{document}

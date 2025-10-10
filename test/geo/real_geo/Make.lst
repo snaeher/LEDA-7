@@ -1,0 +1,4 @@
+PROGS = \
+rpoly_test$(e) \
+sweep_tests$(e)
+

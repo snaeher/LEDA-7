@@ -1,0 +1,15 @@
+\bf\blue An Animation of Fortune's Sweep Line Algorithm\rm\black
+
+This demo program visualizes the construction of the\bf Voronoi Diagram\rm
+or\bf Delaunay Triangulation\rm of a set of points by Steven Fortune's 
+sweep line algorithm. 
+\\
+You can input points with the mouse, load them from a file or generate
+them by using one of the generators of GeoWin (see Edit->Generate).
+\\
+After the generation of the input set press the 'done' button to start the 
+sweep. A vertical green line will appear (the sweep line). Drag this line 
+over the scene to construct the Voronoi Diagram. During the sweep an 
+animated view of the 'Shoreline' will be displayed. 
+Press 'done' to finish the construction.
+

@@ -1,0 +1,15 @@
+#!/bin/sh -f
+
+LD_LIBRARY_PATH=../..:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+
+xx=y
+
+while [ $xx = y ]; do
+$*
+echo ""
+printf "Run this demo again ? (y/n): "
+read xx
+echo ""
+done
+

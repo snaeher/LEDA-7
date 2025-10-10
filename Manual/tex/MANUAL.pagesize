@@ -1,0 +1,22 @@
+%the following settings are adequate for European size a4 paper
+\if@twoside
+\textwidth 16cm  
+\textheight 24 cm  
+\topmargin -14mm    
+\evensidemargin -5mm 
+\oddsidemargin 3mm
+\else
+\textwidth 16cm  
+\textheight 24 cm  
+\topmargin -14mm    
+\evensidemargin 3mm 
+\oddsidemargin 3mm
+\fi
+%the following settings are adequate for US legal size paper
+%\textwidth 16cm  
+%\textheight 24 cm  
+%\topmargin -14mm    
+%\evensidemargin 3mm 
+%\oddsidemargin 3mm
+\sloppy 
+

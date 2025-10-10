@@ -1,0 +1,5 @@
+PROGS = \
+ortho_embedding$(e) \
+gw_ortho$(e) \
+gw_tam3$(e) \
+gw_tamassia$(e)

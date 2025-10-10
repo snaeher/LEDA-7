@@ -1,0 +1,3 @@
+#!/bin/sh -f
+perl -S -I$LEDAROOT/Manual/cmd ldel.pl "$@"
+

@@ -1,0 +1,5 @@
+Die Zerlegungs-Schleife ist als unendliche Schleife implementiert, mit einem
+aus ihr herausfuehrenden \tt break,\rm wenn sich die Zeiger treffen.
+
+Dieses Verfahren ist ein typisches Beispiel fuer die Nuetzlichkeit von \tt break.
+

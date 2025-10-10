@@ -1,0 +1,9 @@
+
+CC      = icc$(VERS) -w1 -Kc++ 
+PLAIN_C = icc$(VERS) -w1
+CCLIB   = icc$(VERS) -shared
+LD      = icc$(VERS)
+
+PIC     = -KPIC
+CFLAGS  = -O2
+

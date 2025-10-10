@@ -1,0 +1,5 @@
+In the second inner \tt while-\rm loop the right pointer \tt\green2 j \rm\black moves to the left as long as the
+keys \tt A[j] \rm are greater than \tt\red v \rm\black .
+
+
+

@@ -1,0 +1,523 @@
+/*******************************************************************************
++
++  LEDA 7.2  
++
++
++  gw_scc_anim.c
++
++
++  Copyright (c) 1995-2025
++  by Algorithmic Solutions Software GmbH
++  All rights reserved.
++ 
+*******************************************************************************/
+
+
+
+#include <LEDA/graph/graph.h>
+#include <LEDA/graphics/graphwin.h>
+#include <LEDA/core/b_stack.h>
+#include <LEDA/system/file.h>
+
+using namespace leda;
+
+
+static void scc_dfs(const graph& G, node v, node_array<int>& compnum,
+                                            b_stack<node>& unfinished,
+                                            b_stack<int>& roots,
+                                            int& count1, int& count2 )
+{ int cv = --count1;
+  compnum[v] = cv;
+  unfinished.push(v);
+  roots.push(cv);
+
+  edge e;
+  forall_out_edges(e,v)
+  { node w =G.target(e);
+    int cw = compnum[w];
+    if (cw == -1)
+      scc_dfs(G,w,compnum,unfinished,roots,count1,count2);
+    else
+      if (cw < -1)
+         while (roots.top() < cw)  roots.pop();
+   }
+
+  if (roots.top() == cv)
+  { node u;
+    do { u = unfinished.pop(); // u is a node of the scc with root v
+         compnum[u] = count2;
+        } while (v != u);
+    roots.pop();
+    count2++;
+   }
+}
+
+
+int STRONG_COMPONENTS(const graph& G, node_array<int>& compnum)
+{
+  int n = G.number_of_nodes();
+
+  b_stack<int>  roots(n);
+  b_stack<node> unfinished(n);
+
+  int count1 = -1;
+  int count2 = 0;
+
+  node v;
+  forall_nodes(v,G) compnum[v] = -1;
+
+  forall_nodes(v,G)
+    if (compnum[v] == -1)
+       scc_dfs(G,v,compnum,unfinished,roots,count1,count2);
+
+  return count2;
+}
+
+static int  small_width = 70;
+static int  large_width = 75;
+static int  large_height= 60;
+static int  font_size   = 25;
+
+static int  color_shift = 2;
+static bool step = true;
+
+
+void display_scc(GraphWin& gw)
+{ graph& G = gw.get_graph();
+
+  if (G.empty()) return;
+
+  node_array<int> comp_num(G);
+  STRONG_COMPONENTS(G,comp_num);
+  bool f = gw.set_flush(false);
+  node v;
+  forall_nodes(v,G) 
+  { gw.set_color(v,color::get((color_shift + comp_num[v] % 16)));  
+    gw.set_user_label(v,string("%d",comp_num[v]));
+    gw.set_label_type(v,user_label);
+  }
+  gw.redraw();
+  gw.set_flush(f);
+}
+
+void new_edge_handler(GraphWin& gw, edge)  { display_scc(gw); }
+void new_node_handler(GraphWin& gw, node)  { display_scc(gw); }
+ 
+
+void message(GraphWin& gw, string msg)
+{ msg += "\\5 \\bf\\blue press done \\black"; 
+  if (step && !gw.wait(msg)) step = false;
+}
+
+
+static window* state_win_ptr;
+
+static void state_redraw(window* wp) { wp->flush_buffer(); }
+
+
+void state_info(GraphWin& gw, const list<node>& unfinished, 
+                              const list<node>& roots,
+                              const node_array<int>& dfsnum, node cur_v)
+{ 
+  window& W = gw.get_window();
+
+  window& state_win = *state_win_ptr;
+
+  if (!state_win.is_open())
+  { int xpos = W.xpos() - 760;
+    int ypos = W.ypos() + 100;
+    if (xpos < 10) xpos = 10; 
+    state_win.set_bg_color(grey1);
+    state_win.display(xpos,ypos);
+    state_win.start_buffering();
+   }
+
+  state_win.clear();
+
+  state_win.set_text_font();
+
+  double d = 1.5*state_win.text_height("H");
+
+  if (window::display_type() == "xx") d *= 1.1;
+
+  double x0 = state_win.text_width("Unfinished") + d;
+  double y1 = state_win.ymax() - 1.50*d;
+  double y2 = state_win.ymax() - 2.75*d;
+
+  state_win.set_bold_font();
+  state_win.draw_text(d/2,y1+0.85*d, "Unfinished");
+  state_win.draw_text(d/2,y2+0.85*d, "Roots");
+
+  state_win.set_text_font();
+
+  list_item r_it = roots.first();
+
+  double x = x0;
+
+  list_item u_it;
+  forall_items(u_it, unfinished)
+  { node v = unfinished[u_it];
+    color col = gw.get_color(v);
+    int   dn  = dfsnum[v];
+
+    state_win.draw_box(x,y1,x+d,y1+d,col);
+    state_win.draw_rectangle(x,y1,x+d,y1+d,black);
+    state_win.draw_ctext(x+d/2,y1+d/2,string("%d",dn),gw.text_color(col));
+
+    if ( v == roots[r_it] )
+    { state_win.draw_box(x,y2,x+d,y2+d,col);
+      state_win.draw_rectangle(x,y2,x+d,y2+d,black);
+      state_win.draw_ctext(x+d/2,y2+d/2,string("%d",dn),gw.text_color(col));
+      r_it = roots.succ(r_it);
+     }
+    else
+      state_win.draw_box(x+1,y2,x+d,y2+d,white);
+      
+    x += d;
+   }
+
+  if (x > x0)
+  { state_win.draw_rectangle(x0,y1,x,y1+d,black);
+    state_win.draw_rectangle(x0,y2,x,y2+d,black);
+   }
+
+  state_win.flush_buffer();
+}
+
+
+
+
+void SCC_DFS(GraphWin& gw, node v, node_array<int>& dfsnum,
+                                   node_array<int>& comp_num, 
+                                   list<node>& unfinished,
+                                   list<node>& roots, 
+                                   int& dfscount, 
+                                   int& comp_count, 
+                                   const node_array<point>& perm_pos)
+{ 
+  const graph& G = gw.get_graph();
+
+  gw.select(v);
+  
+  dfsnum[v] = dfscount++;
+  unfinished.push(v); 
+  roots.push(v); 
+  
+  color clr = color::get((color_shift + roots.size()) % 16);
+  gw.set_color(v,clr);
+  
+  gw.set_user_label(v,string("%d",dfsnum[v]));
+  
+  gw.set_shape(v,rectangle_node); 
+  gw.set_width(v,large_width);
+  gw.set_height(v,large_height);
+   
+  string msg;
+  msg += "A new node has been reached.\\n ";
+  msg += "It got the dfs-number ";
+  msg += string("%d ",dfsnum[v]);
+  msg += "and it is the new current node. ";
+  msg += "It is the root of a new tentative component";
+  
+  state_info(gw,unfinished,roots,dfsnum,v);
+  message(gw,msg);
+  
+  
+  node w; edge e;
+  forall_adj_edges(e,v)
+  { w = G.target(e);
+  
+    gw.set_width(e,3);
+    gw.set_color(e,red); 
+    gw.set_style(e,solid_edge);
+  
+    string msg = "I am exploring the red edge.\\n ";
+  
+    if (dfsnum[w] == - 1)  
+    { msg += "It's a tree edge and I am making a recursive call."; 
+      message(gw,msg);
+      state_info(gw,unfinished,roots,dfsnum,v);
+  
+      gw.deselect(v);
+      gw.set_color(e,blue); 
+      gw.set_width(e,3);
+             
+      SCC_DFS(gw,w,dfsnum,comp_num,unfinished,roots,dfscount,comp_count,
+                                                             perm_pos); 
+      gw.set_width(e,2);
+      gw.set_color(e,black);
+      gw.select(v);
+  
+      state_info(gw,unfinished,roots,dfsnum,0);
+  
+      message(gw,"I returned from a recursive call. The node with number " 
+                  + string("%d ",dfsnum[v]) + " got reactivated");
+    }
+    else 
+    if (comp_num[w] == - 1) 
+    { msg += "It's a non-tree edge into a tentative component. This edge may \
+              merge several components into one. More precisely: all \
+              components whose root is larger than " + string("%d ",dfsnum[w]);
+      msg += "cease to exist and are merged into the component containing the \
+              node with dfs-number " + string("%d. ",dfsnum[w]);
+      msg += "Algorithmically, this amounts to removing all roots larger \
+              than " + string("%d ",dfsnum[w]);
+      msg += "from the stack of roots. I do so one by one. Removal of a node \
+              from the stack of roots turns its shape from rectangular to \
+              circular.";
+    
+    message(gw,msg);
+    state_info(gw,unfinished,roots,dfsnum,v);
+    
+    while (dfsnum[roots.head()] > dfsnum[w])
+    { node z = roots.pop();
+    
+      gw.set_shape(z,circle_node);  
+      gw.set_width(z,small_width);
+      gw.set_height(z,small_width);
+    
+      state_info(gw,unfinished,roots,dfsnum,v);
+      leda_wait(0.25);  
+    }
+  
+    node z = roots.head();
+  
+    node u;
+    forall(u,unfinished) {
+      if (dfsnum[u] >= dfsnum[z] ) gw.set_color(u,gw.get_color(z));
+    }
+  
+    state_info(gw,unfinished,roots,dfsnum,0);
+    message(gw,string("Now all roots are removed and the newly formed\
+                     component has been recolored. The current node\
+                     is still: %d.", dfsnum[v]));
+  
+  
+     gw.set_color(e,black); 
+   }
+   else 
+   { msg += "It's a non-tree edge into a permanent component. I do nothing.";
+     message(gw,msg);
+     state_info(gw,unfinished,roots,dfsnum,v);
+     gw.set_color(e,black); 
+     } 
+  }
+  
+  if (v == roots.head())
+  { 
+    string msg = "Node " + string("%d",dfsnum[v]) + " has been completed.";
+    msg += "It is a root and hence we have identified a permanent component. ";
+    msg += "The permanent component consists of all nodes  in unfinished whose ";
+    msg += "dfs-number is at least as large as " + string("%d",dfsnum[v]) + ".";
+    msg += "\\n I move all nodes in the component to the left and indicate ";
+    msg += "their dfs-number and their component number.";
+    
+    state_info(gw,unfinished,roots,dfsnum,0);
+    message(gw,msg);
+    
+    do { w = unfinished.pop(); 
+         if (v == w) roots.pop();
+    
+         comp_num[w] = comp_count;
+    
+         gw.set_shape(w,rectangle_node);
+         gw.set_width(w,large_width);
+         gw.set_height(w,large_height);
+    
+         //gw.set_color(w,color::get(color_shift + comp_count % 16));
+         gw.set_color(w,gw.get_color(v));
+    
+         gw.set_user_label(w,string("%d|%d",dfsnum[w],comp_num[w]));
+         state_info(gw,unfinished,roots,dfsnum,0);
+         gw.set_position(w,perm_pos[w]);
+    } while ( w != v); 
+    
+    comp_count++; 
+  }
+  
+  gw.deselect(v);
+  
+}
+
+
+int STRONG_COMPONENTS(const graph& G, node_array<int>& comp_num, 
+                GraphWin& gw, const node_array<point>& perm_pos)
+{ list<node> unfinished; 
+  list<node> roots; 
+  node_array<int> dfsnum(G,-1); 
+  node v; 
+  forall_nodes(v,G) comp_num[v] = -1; 
+  int dfscount = 0;
+  int comp_count = 0;
+  forall_nodes(v,G)
+  if (dfsnum[v] == -1) 
+  { SCC_DFS(gw,v,dfsnum,comp_num,unfinished,roots,dfscount,comp_count,perm_pos);
+    message(gw,"This was a return from an outermost call\
+                I am looking for an unreached node and \
+                and start a new search.");
+   }
+
+  return comp_count;
+}
+
+
+
+int main()
+{
+  string program_title = "SCC Animation";
+
+  // start in "Graphs" sub-directory if it exists
+  if (is_directory("Graphs")) set_directory("Graphs");
+
+  GraphWin gw(program_title);
+  
+  graph&  G = gw.get_graph();
+  window& W = gw.get_window();
+  
+  gw.set_graphname("scc");
+  gw.set_directed(true);
+  
+  gw.set_init_graph_handler(display_scc);    
+  gw.set_del_edge_handler(display_scc);
+  gw.set_del_node_handler(display_scc);
+  gw.set_new_node_handler(new_node_handler);
+  gw.set_new_edge_handler(new_edge_handler);
+  
+  gw.add_help_text("gw_scc_anim1");
+  gw.add_help_text("gw_scc_anim2");
+  gw.add_help_text("gw_scc_anim3");
+  gw.add_help_text("gw_scc_anim4");
+  
+  gw.display();
+  
+  gw.set_node_shape(circle_node);
+  gw.set_node_width(small_width);
+  gw.set_node_height(small_width);
+
+  gw.set_node_label_font(roman_font,38);
+  
+  int h_menu = gw.get_menu("Help");
+  
+/*
+  if (h_menu != -1)
+  { gw.add_simple_call(about_scc_anim1,       "About SCC: phase 1", h_menu);
+    gw.add_simple_call(about_scc_anim2,       "About SCC: phase 2", h_menu);
+    gw.add_simple_call(about_scc_anim_core, "About SCC: core",  h_menu);
+    gw.add_simple_call(about_scc_anim_data_structures, 
+                                       "About SCC: data structures",h_menu);
+   }
+   about_scc_anim1(gw);
+*/
+  
+  gw.display_help_text("gw_scc_anim1");
+
+  
+  while (G.empty())
+  { gw.message("\\blue Construct or load a graph and press done.");
+    leda_wait(1.75);
+    gw.message("");
+    if (!gw.edit()) return 0;
+    if (G.empty()) {
+        panel P;
+        P.text_item("\\bf\\blue " + program_title);
+        P.text_item("");
+        P.text_item("No input graph defined.");
+        P.button("continue",0);
+        P.button("exit",1);
+        if (gw.open_panel(P) == 1) return 0;
+     }
+   }
+      
+    
+  
+  gw.set_flush(true);
+  gw.disable_calls();
+  
+  state_win_ptr = new window(750,175,"State Of The Algorithm");
+  state_win_ptr->set_redraw(state_redraw);
+  
+  //about_scc_anim2(gw);
+  
+  gw.display_help_text("gw_scc_anim2");
+  
+  //gw.remove_bends();
+  
+  node_array<point> perm_pos(G);
+
+  double d = W.pix_to_real(50);
+  
+  double xmin = gw.get_xmin() + d;
+  double xmax = gw.get_xmax() - d;
+  double ymin = gw.get_ymin() + d;
+  double ymax = gw.get_ymax() - d;
+  
+  double dx = xmax - xmin;
+  double dy = ymax - ymin;
+  
+  gw.place_into_box(xmin+dx/2,ymin,xmax,ymax-dy/5);
+  
+  gw.set_flush(false);
+  
+  node v; 
+  forall_nodes(v,G) 
+  { gw.set_color(v,white);
+    gw.set_label_type(v,user_label); 
+    gw.set_user_label(v,"");
+  
+    gw.set_shape(v,circle_node);
+    gw.set_width(v,small_width);
+    gw.set_height(v,small_width);
+  
+    double xcoord = gw.get_position(v).xcoord();
+    double ycoord = gw.get_position(v).ycoord();
+    perm_pos[v] = point(xcoord-dx/2,ycoord);
+  }
+  
+  edge e;
+  forall_edges(e,G) gw.set_style(e,dashed_edge);
+  
+  gw.redraw();
+  gw.set_flush(true);
+  
+  message(gw,"I use a split design for the window.\\n\
+              \\blue Tentative \\black components are shown in the right half\
+              of the screen and \\blue permanent \\black components are shown\
+              in the left half. Right now nothing is permanent and therefore\
+              I moved the graph to the right.");
+  
+  node_array<int> comp_num(G);
+  
+  STRONG_COMPONENTS(G,comp_num,gw,perm_pos);
+  
+  // close state window
+  state_win_ptr->close();
+  delete state_win_ptr;
+
+  gw.set_flush(false);
+  forall_nodes(v,G) {
+     gw.set_shape(v,circle_node);
+     gw.set_width(v,small_width);
+     gw.set_height(v,small_width);
+     gw.set_user_label(v,string("%d",comp_num[v]));
+   }
+
+  forall_edges(e,G) {
+    gw.set_width(e,2);
+    gw.set_color(e,black);
+  }
+
+  gw.redraw();
+  gw.set_flush(true);
+  
+  gw.message("\\bf Wasn\'t this a nice demo ?");
+  leda_wait(1);
+  gw.message("");
+  
+  gw.fill_window();
+  
+  gw.enable_calls();
+  gw.edit();
+  
+  return 0;
+}
+

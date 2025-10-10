@@ -1,0 +1,40 @@
+.SUFFIXES: .asm
+
+INCL = $(LROOT)/incl
+SLIB  = $(LROOT)/lib$L.a
+o     = .o
+
+
+.c.s:
+	$(CC) $(CFLAGS) $(DFLAGS) -DLEDA_INSTALL -I$(INCL) -S $*.c
+
+.c.o:
+	$(PLAIN_C) $(CFLAGS) $(DFLAGS) -DLEDA_INSTALL -I$(INCL) -c $*.c
+
+.cpp.o:
+	$(CC) $(CFLAGS) $(DFLAGS) -DLEDA_INSTALL -I$(INCL) -c $*.cpp
+
+.asm.o:
+	$(ASM) $(AFLAGS) $*.asm -o $*.o
+
+all: $(SLIB)
+	@true
+
+
+include Make.lst
+
+$(SLIB): $(OBJECTS)
+	ar cr $(SLIB) $?
+	ranlib $(SLIB) > /dev/null
+	sleep 1
+
+
+obj: $(OBJECTS)
+
+touch:
+	touch -c *.o
+	ar cr $(SLIB) *.o
+
+clean:
+	rm -f $(OBJECTS)
+

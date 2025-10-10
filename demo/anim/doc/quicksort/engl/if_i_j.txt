@@ -1,0 +1,5 @@
+In this line it is checked, whether the pointers \tt\blue2 i\rm\black and \tt\green2 j\rm\black have met. In this case the splitting 
+loop \tt for(;;)\rm is left.
+
+
+

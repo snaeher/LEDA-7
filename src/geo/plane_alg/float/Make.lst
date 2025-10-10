@@ -1,0 +1,55 @@
+
+OBJECTS = \
+_f_annulus$(o) \
+_f_balaban$(o) \
+_f_closest_pair$(o) \
+_f_circles$(o) \
+_f_constr_triang$(o) \
+_f_convex_hull$(o) \
+_f_crust$(o) \
+_f_dc_delaunay$(o) \
+_f_delaunay$(o) \
+_f_delaunay_check$(o) \
+_f_flip_delaunay$(o) \
+_f_halfplane_inter$(o) \
+_f_minkowski$(o) \
+_f_misc$(o) \
+_f_mulmuley$(o) \
+_f_spanning_tree$(o) \
+_f_sweep_segments$(o) \
+_f_sweep_segments_rb$(o) \
+_f_triv_segments$(o) \
+_f_voronoi$(o) \
+_f_voronoi_check$(o) \
+_f_voro_old$(o) \
+_f_width$(o) \
+_f_subdivision_check$(o) \
+_f_triangulation$(o)
+
+
+_f_constr_triang$(o):     ../generic/constr_triang.cpp
+_f_convex_hull$(o):       ../generic/convex_hull.cpp
+_f_flip_delaunay$(o):     ../generic/flip_delaunay.cpp
+_f_misc$(o):              ../generic/misc.cpp
+_f_sweep_segments$(o):    ../generic/sweep_segments.cpp
+_f_delaunay_check$(o):    ../generic/delaunay_check.cpp
+_f_subdivision_check$(o): ../generic/subdivision_check.cpp
+_f_triangulation$(o):     ../generic/triangulation.cpp
+_f_voronoi_check$(o):     ../generic/voronoi_check.cpp
+
+_f_halfplane_inter$(o): ../generic/halfplane_inter.cpp
+_f_annulus$(o):         ../generic/annulus.cpp
+_f_crust$(o):           ../generic/crust.cpp
+_f_circles$(o):         ../generic/circles.cpp
+_f_spanning_tree$(o):   ../generic/spanning_tree.cpp
+_f_closest_pair$(o):    ../generic/closest_pair.cpp
+_f_balaban$(o):         ../generic/balaban.cpp
+_f_delaunay$(o):        ../generic/delaunay.cpp
+_f_dc_delaunay$(o):     ../generic/dc_delaunay.cpp
+_f_minkowski$(o):       ../generic/minkowski.cpp
+_f_mulmuley$(o):        ../generic/mulmuley.cpp
+_f_sweep_segments_rb$(o): ../generic/sweep_segments_rb.cpp
+_f_triv_segments$(o):   ../generic/triv_segments.cpp
+_f_voronoi$(o):         ../generic/voronoi.cpp
+_f_width$(o):           ../generic/width.cpp
+

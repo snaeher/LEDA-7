@@ -1,0 +1,4 @@
+OBJECTS = \
+_numerical_analysis$(o) \
+_truncate$(o)
+

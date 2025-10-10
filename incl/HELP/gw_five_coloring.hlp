@@ -1,0 +1,18 @@
+\bf\blue Five Coloring\rm\black
+
+This program shows an animation of the \bf Five Coloring Algorithm
+\rm for planar graphs. This algorithm uses the fact that every
+planar graph has either a node with degree 4 or a node with 
+degree 5 such that at least two of its neighbors are independent.
+
+The algorithm removes such a node v from the graph and computes
+recursively a 5-coloring of the smaller graph such that all
+neighbors of v are using at most 4 colors. Then v and its incident
+edges can be inserted back to the graph and colored since all 
+neighbors are using at most 4 of the available 5 colors.
+
+Start by constructing, loading, or generating a planar graph. 
+Then you can iterate through the steps of the algorithm
+by pressing the 'done' button repeatedly.
+
+

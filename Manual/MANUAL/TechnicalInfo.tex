@@ -1,0 +1,782 @@
+\chapter{Technical Information} 
+\label{TechnicalInformation}
+
+This chapter provides information about installation and usage of LEDA, 
+the interaction with other software packages, and an overview
+of all currently supported system platforms. 
+
+\section{LEDA Library and Packages} 
+\label{Libraries}
+
+The implementations of most LEDA data types and algorithms are precompiled and
+contained in one library libleda that can be linked with \CC\ application programs. 
+
+LEDA is available either as source code package or as object code package for 
+the platforms listed in Section \htmlref{Platforms}{Platforms}. 
+Information on how to obtain LEDA can be found at
+\htmlref{http://www.algorithmic-solutions.com/index.php/products/leda-for-c}{http://www.algorithmic-solutions.com/index.php/products/leda-for-c}
+
+Sections \htmlref{Source Contents}{Source Contents} ff. describe how to compile the LEDA libraries
+in the source code package for Unix (including Linux and CygWin) 
+and Microsoft Windows. Section 
+\htmlref{http://www.algorithmic-solutions.info/leda\_manual/Object\_Code\_on.html}{UnixObjectCodePackage} and Section 
+\htmlref{http://www.algorithmic-solutions.info/leda\_manual/DLL\_s\_MS\_Visual.html}{WinObjectCodePackage} 
+describe the installation and usage of the object code packages for Unix
+and Windows, respectively.
+
+\section{Contents of a LEDA Source Code Package}
+\label{Source Contents}
+
+The main directory of the GUI source code package should contain at 
+least the following files and subdirectories:
+
+\begin{center}
+\begin{tabular}{ll}
+Readme.txt               & Readme File\\
+CHANGES  (please read !) & most recent changes\\
+FIXES                    & bug fixes since last release\\
+license.txt              & license text\\
+lconfig                  & configuration command for unix\\
+lconfig.bat              & configuration command for windows\\
+Makefile                 & make script\\
+confdir/                 & configuration directory\\
+incl/                    & include directory\\
+src/                     & source files compiled into the LEDA Free Edition\\
+src1/					 & other source files\\
+test/                    & example and test programs\\
+demo/                    & demo programs\\
+\end{tabular}
+\end{center}
+
+\section{Source Code on UNIX Platforms}
+\subsection*{Source Code Configuration on UNIX}
+
+Important remark: When compiling the sources on Unix- or Linuxsystems the development packages
+for X11 and Xft should be installed. On Ubuntu, for instance, you should call\\
+\ \\
+sudo apt-get install libx11-dev\\
+sudo apt-get install libxft-dev\\
+\ \\
+\begin{enumerate}
+
+\item Go to the LEDA main directory.
+
+\item Type: \texttt{lconfig <cc>  [static | shared]}\\
+\ \\
+where \texttt{<cc>} is the name (or command) of your \CC\ compiler
+and the optional second parameter defines the kind of libraries
+to be generated. Please note that as far as Unix systems go, we currently
+only support several Linux distributions. LEDA might work on other Unix systems, too - it
+was originally developed, for instance, on SunOS - but there is no guarantee for that.\\
+\ \\
+Examples: \texttt{lconfig CC}, \texttt{lconfig g++}, \texttt{lconfig 
+sunpro shared}\\
+\ \\
+\texttt{lconfig} without arguments prints a list of known compilers.\\
+If your compiler is not in the list you might have to
+edit the \texttt{<LEDA/sys/unix.h>} header file.
+\end{enumerate}
+
+\subsection*{LEDA Compilation on UNIX}
+
+Type \texttt{make} for building the object code library
+libleda.a   (libleda.so if shared libraries are used). The make command will
+also have another library created named libGeoW.a; it only deals with the data type GeoWin.
+There is no shared version of the this library available.
+
+Now follow the instructions given in  Section \htmlref{UnixObjectCodePackage}{UnixObjectCodePackage}.
+
+\section{Source Code on Windows with MS Visual \CC}
+\subsection*{Source Code Configuration for MS Visual \CC}
+\begin{enumerate}
+\item Setting the Environment Variables for Visual \CC:\\
+The compiler \texttt{CL.EXE} and the linker \texttt{LINK.EXE} require that 
+the environment variables \texttt{PATH, INCLUDE}, and \texttt{LIB} have been 
+set properly.\\
+Therefore, when compiling LEDA, simply open the proper command prompt that comes
+with the Visual Studio. The environment variables are then set as required. Just 
+start the x86 (when compiling for a 32 bit platform) or
+the x64 (when compiling for a 64 bit platform) Native Tools Command Prompt.
+\item Go to the LEDA main directory.
+\item Type: \texttt{lconfig [msc | msc-mt | msc-mt | msc64-mt | msc-mt-15 | msc64-mt-15 ] [dll] [ md | mt | mdd | mtd ]}
+\end{enumerate}
+        
+{\bf Remark:} When using MS Visual \CC to compile LEDA you have to choose msc for
+32 bit single-threaded compilation, msc-mt for 32 bit multi-threaded compilation, msc64
+for 64 bit single-threaded compilation, and msc64-mt for 64 bit multi-threaded compilation.
+When using MS Visual Studio 2015 or later Visual Studio versions, you should use msc-mt-15
+and msc64-mt-15 respectively.
+When building an application with LEDA and MS Visual Studio \CC 
+the LEDA library you use depends on the Microsoft C 
+runtime library you intend to link with. Your application code and LEDA both must be
+linked to the same Microsoft C runtime library; otherwise serious linker or runtime 
+errors may occur. The Microsoft C runtime libraries are related to the compiler 
+options as follows
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+           C Runtime Library         &   Option\\ \hline
+
+           LIBCMT.LIB                 &  -MT\\
+           LIBCMTD.LIB                &  -MTd\\
+           MSVCRT.LIB                 &  -MD\\
+           MSVCRTD.LIB                &  -MDd\\
+\hline
+\end{tabular}
+\end{center}
+
+           In order to get the suitable Libs or DLL please choose the 
+           corresponding option in the call of \texttt{lconfig}.
+
+\subsection*{LEDA Compilation with MS Visual \CC}
+
+       Type \texttt{make\_lib} for building the object code libraries 
+\begin{center}
+\begin{tabular}{lll}
+       static: & libleda.lib&   LEDA library without GeoWin\\
+               & libGeoW.lib&   GeoWin library\\
+&&\\
+      dynamic: & leda.dll, leda.lib&\\
+&libgeow.lib&
+\end{tabular}
+\end{center}
+{\bf Remarks:} The current LEDA package supports only the dynamic version; therefore setting dll
+in the lconfig call is mandatory at the moment. GeoWin is currently not available as a DLL
+and will always be build as a static library.
+
+\medskip
+Now follow the instructions given in the corresponding section for the 
+Windows object code package (Section \htmlref{WinObjectCodePackage}{WinObjectCodePackage} ff.).
+
+
+\section{Usage of Header Files}\label{Header Files}
+LEDA data types and algorithms can be used in any \CC\ program as described 
+in this manual (for the general layout of a manual page please see Chapter
+\htmlref{LEDA Manual Page}{LEDA Manual Page}). The specifications (class declarations) are contained
+in header files. To use a specific data type its header file has to be 
+included into the program. In general the header file for data type xyz is 
+\texttt{<LEDA/group/xyz.h>}. The correct choice for group and xyz is specified on the 
+type's manual page.
+
+\section{Object Code on UNIX}
+\label{UnixObjectCodePackage}
+
+
+\subsection*{Files and Directories}
+To compile and link your programs with LEDA, the LEDA main directory should
+contain at least the following files and subdirectories:
+\begin{center}
+\begin{tabular}{ll}
+Readme.txt               & Readme File\\
+Install/unix.txt & txt--version of this section\\
+incl/ & the LEDA include directory\\
+libleda.a (libleda.so) & the LEDA library
+\end{tabular}
+\end{center}
+
+  The static library has the extension \texttt{.a}.  
+  If a shared library is provided it has extension \texttt{.so}.
+
+\subsection*{Preparations}
+Unpacking the LEDA distribution file 
+\texttt{LEDA-<ver>-<sys>-<cc>.tar.gz}
+will create the LEDA root directory 
+"\texttt{LEDA-<ver>-<sys>-<cc>}". You
+might want to rename it or move it to some different place. Let 
+\texttt{<LEDA>} denote
+the final complete path name of the LEDA root directory.
+
+To install and use the Unix object code of LEDA you have to modify your 
+environment as follows:
+\begin{itemize}
+   \item
+       Set the environment variable \texttt{LEDAROOT} to the LEDA root 
+       directory:
+
+\begin{center}
+\begin{tabular}{ll}
+       csh/tcsh:  & \texttt{setenv LEDAROOT <LEDA>}\\
+&\\
+       sh/bash: &   \texttt{LEDAROOT=<LEDA>}\\
+                 &  \texttt{export LEDAROOT}
+\end{tabular}
+\end{center}
+
+  \item  Shared Library:   (for solaris, linux, irix, osf1)\\
+       If you planning to use the shared library include 
+       \texttt{\$LEDAROOT} into 
+       the \texttt{LD\_LIBRARY\_PATH} search path.
+
+  \item Make sure that the development packages for
+		X11 and Xft have been installed. On Ubuntu, for instance, you should have called\\
+		sudo apt-get install libx11-dev\\
+		sudo apt-get install libxft-dev\\
+\end{itemize}
+
+\subsection*{Compiling and Linking Application Programs}
+\begin{enumerate}
+\item  Use the -I compiler flag to tell the compiler where to find the LEDA 
+      header files.
+\begin{verbatim}
+      CC (g++) -I$LEDAROOT/incl -c file.cpp
+\end{verbatim}
+
+\item Use the -L compiler flag to tell the compiler where to find the 
+      library.
+\begin{verbatim}
+      CC (g++)  -L$LEDAROOT file.o -lleda -lX11 -lXft -lm
+\end{verbatim}
+
+      When using graphics on Solaris systems you might have to link with the 
+      system socket library and the network services library as well:
+\begin{verbatim}
+      CC (g++)  ... -lleda -lX11 -lXft -lsocket -lnsl -lm
+\end{verbatim}
+{\bf Remark:} The libraries must be given in the above order. 
+
+
+\item Compile and link simultaneously with
+\begin{verbatim}
+      CC (g++)  -I$LEDAROOT/incl -L$LEDAROOT file.c  -lleda -lX11 -lXft -lm
+\end{verbatim}
+\end{enumerate}
+
+   When using the multi-threaded version of LEDA you also have to set the flags 
+   \texttt{LEDA\_MULTI\_THREAD} and pthread during compilation 
+   (\texttt{-DLEDA\_MULTI\_THREAD} -pthread) and you have to additionally link against
+   the pthread library (-pthread).
+   You may want to ask your system administrator to install the header files 
+   and libraries in the system's default directories.
+   Then you no longer have to specify header and library search paths on the 
+   compiler command line.
+
+
+\subsection*{Example programs and demos}
+   The source code of all example and demo programs can be found in 
+   \$LEDAROOT/test and \$LEDAROOT/demo. Goto \$LEDAROOT/test or 
+   \$LEDAROOT/demo and type \texttt{make} to compile and link all test or demo 
+   programs, respectively.
+
+            
+\noindent
+{\bf Important Remark:} When using g++ version 4.x.x with optimization level 2 (-O2) or
+higher, you should always compile your sources setting the following flag:
+\smallskip\noindent
+-fno-strict-aliasing
+                                                    
+
+\section{Static Libraries for MS Visual \CC\ .NET} 
+This section describes the installation and usage of static libraries of
+LEDA with Microsoft Visual \CC\ .NET.
+
+\medskip
+{\bf Remark:} The current LEDA package is delivered with dynamic libraries. So this section
+is only relevant to you if you created static libraries from the source code.
+
+\subsection*{Preparations}
+   To install LEDA you only need to execute the LEDA distribution
+   file \texttt{LEDA-<ver>-<package>-win32-<compiler>.exe}.
+   During setup you can choose the name of the LEDA root directory and the 
+parts of LEDA you want to install.
+\
+
+   Then you have to set the environment variable \texttt{LEDAROOT}. On MS Windows 10
+   this can be done as follows:
+
+\
+\begin{description}
+\item[MS Windows 10:]\
+\begin{enumerate}
+\item Open the Start Search, type in “env”, and choose “Edit the system 
+environment variables”. A window titled "System Properties" should open.
+\item  Click the button "Environment variables..." in the lower right corner of the
+"System Properties" window. A new window opens that allows to add/change/delete the user
+variables for your account as well as the system variables, provided you have admin
+rights. If not, change the environment variables of your account. 
+
+             Add a new user variable \texttt{LEDAROOT} with value \texttt{<LEDA>}.
+\end{enumerate}
+\end{description}
+
+In case you are working on a different version of MS Windows, please consult the
+documentation of your version in order to learn how to perform the corresponding steps.
+You might have to restart your computer for the changes to take effect.
+
+\subsection*{Files and Directories}
+To compile and link your programs with LEDA, the LEDA main directory should
+contain the following files and subdirectories:
+\begin{center}
+\begin{tabular}{ll}
+Readme.txt               & Readme File\\
+incl$\backslash$ & the LEDA include directory\\
+\end{tabular}
+\end{center}
+and at least one of the following library sets
+\begin{itemize}
+\item \texttt{
+   libleda\_md.lib,
+   libgeow\_md.lib}
+\item \texttt{
+   libleda\_mdd.lib,
+   libgeow\_mdd.lib}
+\item \texttt{
+   libleda\_mt.lib,
+   libgeow\_mt.lib}
+\item \texttt{
+   libleda\_mtd.lib,
+   libgeow\_mtd.lib}
+\end{itemize}
+
+\subsection*{Compiling and Linking in Microsoft Visual \CC\ .NET}
+	We now explain how to proceed in order to compile and link an application program
+	using LEDA with MS Visual Studio 2017. If you are using a different version of
+	MS Visual Studio, please read and understand the guidelines below and consult the
+	documentation of your version of the Studio in order to learn how to perform the
+	corresponding steps.
+
+\begin{description}
+\item[(1)] In the "File" menu of Visual \CC\ .NET click on "New-->Project".
+\item[(2)] Choose "Visual C++" as \texttt{project type} and choose "Empty Project".
+\item[(3)] Enter a project name, choose a directory for the project, and click "OK".
+\item[(4)] After clicking "OK" you have an empty project space. Choose, for instance,
+"Debug" and "x64" (or "x86" in case you are working on a 32-bit system) in the
+corresponding pick lists.
+\\
+\item[If you already have a source file \texttt{prog.cpp}:]
+\item[(5)] Activate the file browser and add \texttt{prog.cpp} to the main
+ folder  of your project
+\item[(6)] In the \texttt{Solution Explorer} of your project click on 
+"Source Files" with the right mouse button, then click on 
+"Add--> Add Existing Item" with the left mouse button
+\item[(7)] Double click on \texttt{prog.cpp}
+\\
+\item[If you want to enter a new source file:] 
+\item[(5')] In the \texttt{Solution Explorer} of your project click on 
+"Source Files" with the right mouse button, then click on 
+"Add--> Add New Item" with the left mouse button.
+\item[(6')] Choose "C++ File" in \texttt{Templates}, enter a name, 
+and click "Add".
+\item[(7')] Enter your code.
+\\
+\item[(8)] In the \texttt{Solution Explorer} right click on your project
+and left click on "Properties"
+\item[(9)] Click on  "C/\CC" and "Code Generation" and choose 
+the "Run Time Library" (=compiler flag) you want to use.
+
+ If you chose "Debug" in step 4, the default value is now "/MDd", alternatives are
+      "/MD", "/MT", and "/MTd". 
+      Notice that you have to use the LEDA libraries that correspond to the 
+      chosen flag, e.g., with option "/MDd" you must use 
+      \texttt{libleda\_mdd.lib} and \texttt{libgeow\_mdd.lib}.
+      Using another set of libraries with "/MDd" could lead to serious 
+      linker errors.
+\item[(10)] Click on "Linker" and "Command Line" and add the name of the 
+LEDA libraries you want to
+       use in "Additional Options" as follows.
+       We use \texttt{<opt>} to indicate the compiler option chosen in 
+Step (9) 
+       (e.g., \texttt{<opt>} is \texttt{mdd} for "/MDd").
+\begin{itemize}   
+          \item \texttt{libleda\_$<$opt$>$.lib}  \\
+            for programs using data types of LEDA but not GeoWin.
+    
+          \item \texttt{libgeow\_$<$opt$>$.lib libleda\_$<$opt$>$.lib}\\
+            for programs using GeoWin
+\end{itemize}                
+
+\item[(11)] Click on "V\CC\ Directories" of the "Properties" window.
+\item[(12)] Choose "Include Files" and add the 
+       directory \texttt{$<$LEDA$>$$\backslash$incl} containing the LEDA 
+include files 
+       (Click on the line starting with "Include Files", then click on "Edit..." in
+	   the pick list at the right end of that line. Push the "New line" button and then enter 
+       \texttt{$<$LEDA$>$$\backslash$incl}, or click on the small grey 
+       rectangle on the right and
+       choose the correct directory.) Alternatively you can click C/\CC--> General in the 
+	   Configuration Properties and then edit the line "Additional Include Directories".
+\item[(13)] Choose "Library Directories" and add the 
+       directory \texttt{$<$LEDA$>$} containing the LEDA libraries.
+\item[(14)] Click "OK" to leave the "Properties".
+\item[(15)] In the "Build" menu click on \texttt{"<Build Project>"} or 
+\texttt{"Rebuild <Project>"} to compile your program.
+\item[(16)] In order to execute your program, click the green play button in the tool bar.
+\end{description}
+
+   Remark: If your \CC\ source code files has extension .c, you need to add 
+            the option "/TP" in "Project Options" (similar to Step (9)), 
+            otherwise you will get a number of compiler errors. 
+(Click on  "C/\CC" and "Command Line". Add \texttt{/TP} in 
+"Additional Options" and click "Apply".)
+
+To add LEDA to an existing Project in Microsoft Visual \CC\ .NET, start the 
+Microsoft Visual Studio with your project and follow Steps (8)--(14) above.
+
+\subsection*{Compiling and Linking Application Programs in a DOS-Box}
+\ \\
+\begin{description}
+\item[(a) Setting the Environment Variables for Visual \CC:]
+\ \\
+The compiler \texttt{CL.EXE} and the linker \texttt{LINK.EXE} require 
+that the environment variables \texttt{PATH, INCLUDE}, and \texttt{LIB} have 
+been set properly. This can easily be ensured by using the command prompts that are
+installed on your computer with your Visual Studio installation.\\
+          
+      To compile programs together with LEDA, the environment 
+      variables \texttt{PATH}, \texttt{LIB}, and \texttt{INCLUDE} must additionally contain the 
+      corresponding LEDA directories. We now explain how to do that with MS Windows 10.
+	  If you are using a different version of MS Windows, please read and understand the
+	  guidelines below and consult the documentation of your operating system in order to
+	  learn how to perform the corresponding steps.
+ 
+\item[(b) Setting Environment Variables for LEDA:]
+\
+\begin{description}
+\item[MS Windows 10:]\
+\begin{enumerate}
+\item Open the Start Search, type in “env”, and choose “Edit the system 
+environment variables”. A window titled "System Properties" should open.\\
+\ \\
+\item  Click the button "Environment variables..." in the lower right corner of the
+"System Properties" window. A new window opens that allows to add/change/delete the user
+variables for your account as well as the system variables, provided you have admin
+rights. If not, change the environment variables of your account. 
+
+             If a user variable \texttt{PATH}, \texttt{LIB}, or
+\texttt{INCLUDE} already exists, extend the current value as follows:
+
+\begin{itemize}
+             \item extend \texttt{PATH} by \texttt{<LEDA>}
+             \item extend \texttt{INCLUDE} by \texttt{<LEDA>$\backslash$incl}
+             \item extend \texttt{LIB} by \texttt{<LEDA>}
+\end{itemize}
+
+             Otherwise add a new user variable \texttt{PATH, INCLUDE}, or
+\texttt{LIB} with value \texttt{<LEDA>}, respectively 
+\texttt{<LEDA>$\backslash$incl}.
+\end{enumerate}
+\end{description}
+
+      You might have to restart your computer for the changes to take effect.
+
+\item[(c) Compiling and Linking Application Programs:]
+\ \\
+    
+	  After setting the environment variables, you can use the LEDA libraries 
+as 
+      follows to compile and link programs.
+
+      Programs that do not use GeoWin:
+\begin{verbatim}
+cl <option> prog.cpp libleda.lib
+\end{verbatim}
+
+      Programs using GeoWin:
+\begin{verbatim}
+cl <option> prog.cpp libGeoW.lib libleda.lib 
+\end{verbatim} 
+
+Possible values for \texttt{<option>} are "-MD", 
+"-MDd", "-MT", and "-MTd". You have to use the LEDA libraries that 
+correspond to the chosen \texttt{<option>}, e.g., with option "-MD" you 
+must use \texttt{libleda\_md.lib}.
+      Using another set of libraries with "-MD" could lead to serious 
+      linker errors.
+
+
+\end{description}
+
+\subsection*{Example programs and demos}
+   The source code of all example and demo programs can be found in 
+   the directory \texttt{<LEDA>$\backslash$test} and 
+   \texttt{<LEDA>$\backslash$demo}. 
+   Goto \texttt{<LEDA>} and type
+   \texttt{make\_test} or \texttt{make\_demo} to compile and link all test or 
+   demo programs, respectively. 
+
+\section{DLL's for MS Visual \CC\ .NET} 
+This section describes the installation and usage of
+LEDA Dynamic Link Libraries (DLL's) with Microsoft Visual \CC\ .NET.
+
+
+\subsection*{Preparations}
+
+   To install LEDA you only need to execute the LEDA distribution
+   file \texttt{LEDA-<ver>-<package>-win32-<compiler>.exe}.
+   During setup you can  choose the name of the LEDA root directory and the 
+parts of LEDA you want to install.
+ 
+
+   Then you have to set the environment variable \texttt{LEDAROOT}. On MS Windows 10
+   this can be done as follows:
+
+\
+\begin{description}
+\item[MS Windows 10:]\
+\begin{enumerate}
+\item Open the Start Search, type in “env”, and choose “Edit the system 
+environment variables”. A window titled "System Properties" should open.\\
+\ \\
+\item  Click the button "Environment variables..." in the lower right corner of the
+"System Properties" window. A new window opens that allows to add/change/delete the user
+variables for your account as well as the system variables, provided you have admin
+rights. If not, change the environment variables of your account. 
+
+             Add a new user variable \texttt{LEDAROOT} with value \texttt{<LEDA>}.
+\end{enumerate}
+\end{description}
+
+In case you are working on a different version of MS Windows, please consult the
+documentation of your version in order to learn how to perform the corresponding steps.
+You might have to restart your computer for the changes to take effect.
+
+
+\subsection*{Files and Directories}
+To compile and link your programs with LEDA, the LEDA main directory should
+contain the following files and subdirectories:
+\begin{center}
+\begin{tabular}{ll}
+Readme.txt               & Readme File\\
+incl$\backslash$ & the LEDA include directory\\
+\end{tabular}
+\end{center}
+and at least one of the following dll/library sets
+\begin{itemize}
+\item \texttt{
+   leda\_md.dll,
+   leda\_md.lib,
+   libGeoW\_md.lib}
+\item \texttt{
+   leda\_mdd.dll,
+   leda\_mdd.lib,
+   libGeoW\_mdd.lib}
+\item \texttt{
+   leda\_mt.dll,
+   leda\_mt.lib,
+   libGeoW\_mt.lib}
+\item \texttt{
+   leda\_mtd.dll,
+   leda\_mtd.lib,
+   libGeoW\_mtd.lib}
+\end{itemize}
+
+{\bf Note:} A DLL of GeoWin is currently not available.
+                                 
+\subsection*{Compiling and Linking in Microsoft Visual \CC\ .NET}
+\ \\
+	We now explain how to proceed in order to compile and link an application program
+	using LEDA with MS Visual Studio 2017. If you are using a different version of
+	MS Visual Studio, please read and understand the guidelines below and consult the
+	documentation of your version of the Studio in order to learn how to perform the
+	corresponding steps.
+
+\begin{description}
+\item[(1)] In the "File" menu of Visual \CC\ .NET click on "New-->Project".
+\item[(2)] Choose "Visual C++" as \texttt{project type} and choose "Empty Project".
+\item[(3)] Enter a project name, choose a directory for the project, and click "OK".
+\item[(4)] After clicking "OK" you have an empty project space. Choose, for instance,
+"Debug" and "x64" (or "x86" in case you are working on a 32-bit system) in the
+corresponding pick lists.
+\\
+\item[If you already have a source file \texttt{prog.cpp}:]
+\item[(5)] Activate the file browser and add \texttt{prog.cpp} to the main
+ folder  of your project
+\item[(6)] In the \texttt{Solution Explorer} of your project click on 
+"Source Files" with the right mouse button, then click on 
+"Add--> Add Existing Item" with the left mouse button
+\item[(7)] Double click on \texttt{prog.cpp}
+\\
+\item[If you want to enter a new source file:] 
+\item[(5')] In the \texttt{Solution Explorer} of your project click on 
+"Source Files" with the right mouse button, then click on 
+"Add--> Add New Item" with the left mouse button.
+\item[(6')] Choose "C++ File" in \texttt{Templates}, enter a name, 
+and click "Add".
+\item[(7')] Enter your code.
+\\
+\item[(8)] In the \texttt{Solution Explorer} right click on your project
+and left click on "Properties"
+\item[(9a)] Click on  "C/\CC" and "Code Generation" and choose 
+the "Run Time Library" (=compiler flag) you want to use.
+
+ If you chose "Debug" in step 4, the default value is now "/MDd", alternatives are
+      "/MD", "/MT", and "/MTd". 
+      Notice that you have to use the LEDA libraries that correspond to the 
+      chosen flag, e.g., with option "/MDd" you must use 
+      \texttt{libleda\_mdd.lib} and \texttt{libgeow\_mdd.lib}.
+      Using another set of libraries with "/MDd" could lead to serious 
+      linker errors.
+\item[(9b)] Click on  "C/\CC" and "Preprocessor" and add
+\texttt{/D "LEDA\_DLL"} in "Preprocessor Definitions".
+\item[(10)] Click on "Linker" and "Command Line" and add the name of the 
+LEDA libraries you want to
+       use in "Additional Options" as follows.
+       We use \texttt{<opt>} to indicate the compiler option chosen in 
+Step (9) 
+       (e.g., \texttt{<opt>} is \texttt{mdd} for "/MDd").
+\begin{itemize}   
+          \item \texttt{leda\_$<$opt$>$.lib}  \\
+            for programs that do not use GeoWin
+
+          \item \texttt{libGeoW\_$<$opt$>$.lib leda\_$<$opt$>$.lib}\\
+            for programs using GeoWin 
+\end{itemize}
+      Alternatively, you can include \texttt{<LEDA/msc/autolink\_dll.h>} in
+      your program and the correct LEDA libraries are linked to
+      your program automatically. If GeoWin is used you need to
+      add \texttt{"\_LINK\_GeoW"}
+ to the "Preprocessor definitions" in Step (9).                        
+\item[(11)] Click on "V\CC\ Directories" of the "Properties" window.
+\item[(12)] Choose "Include Files" and add the 
+       directory \texttt{$<$LEDA$>$$\backslash$incl} containing the LEDA 
+include files 
+       (Click on the line starting with "Include Files", then click on "Edit..." in
+	   the pick list at the right end of that line. Push the "New line" button and then enter 
+       \texttt{$<$LEDA$>$$\backslash$incl}, or click on the small grey 
+       rectangle on the right and
+       choose the correct directory.) Alternatively you can click C/\CC--> General in the 
+	   Configuration Properties and then edit the line "Additional Include Directories".
+\item[(13)] Choose "Library Directories" and add the 
+       directory \texttt{$<$LEDA$>$} containing the LEDA libraries.
+\item[(14)] Click "OK" to leave the "Properties" 
+\item[(15)] In the "Build" menu click on \texttt{"<Build Project>"} or 
+\texttt{"Rebuild <Project>"} to compile your program.
+\item[(16)] To execute the program "prog.exe" Windows needs to have 
+\texttt{leda\_<opt>.dll} in its search path for DLL's. Therefore, you need
+to do one of the following.
+\begin{itemize}
+\item Copy \texttt{leda\_<opt>.dll} to the \texttt{bin$\backslash$} 
+subdirectory of your compiler or the directory containing "prog.exe".
+\item Alternatively, you can set the environment variable \texttt{PATH}
+to the directory containing \texttt{leda\_<opt>.dll} as described below.
+\end{itemize}
+\item[(17)] In order to execute your program, click the green play button in the tool bar.
+\end{description}
+
+   Remark: If your \CC\ source code files has extension .c, you need to add 
+            the option "/TP" in "Project Options" (similar to Step (9)), 
+            otherwise you will get a number of compiler errors. 
+(Click on  "C/\CC" and "Command Line". Add \texttt{/TP} in 
+"Additional Options" and click "Apply".)
+
+ If you chose "Debug" for your project type, the default value is "/MDd", 
+ alternatives are "/MD", "/MT", and "/MTd". 
+      Notice that you have to use the LEDA libraries that correspond to the 
+      chosen flag, e.g., with option "/MDd" you must use 
+      \texttt{leda\_mdd.lib} and \texttt{libGeoW\_mdd.lib}.
+      Using another set of libraries with "/MDd" could lead to serious 
+      linker errors.
+
+
+To add LEDA to an existing Project in Microsoft Visual \CC\ .NET, start the 
+Microsoft Visual Studio with your project and follow Steps (8)--(14) above.
+
+
+\subsection*{Compiling and Linking Application Programs in a DOS-Box}
+\begin{description}
+\item[(a) Setting the Environment Variables for Visual \CC\ .NET:]
+\ \\
+The compiler \texttt{CL.EXE} and the linker \texttt{LINK.EXE} require 
+that the environment variables \texttt{PATH, INCLUDE}, and \texttt{LIB} have 
+been set properly. This can easily be ensured by using the command prompts that are
+installed on your computer with your Visual Studio installation.\\
+  
+      To compile programs together with LEDA, the environment 
+      variables \texttt{PATH}, \texttt{LIB}, and \texttt{INCLUDE} must additionally contain the 
+      corresponding LEDA directories. We now explain how to do that with MS Windows 10.
+	  If you are using a different version of MS Windows, please read and understand the
+	  guidelines below and consult the documentation of your operating system in order to
+	  learn how to perform the corresponding steps.
+ 
+\item[(b) Setting Environment Variables for LEDA:]
+\
+\begin{description}
+\item[MS Windows 10:]\
+\begin{enumerate}
+\item Open the Start Search, type in “env”, and choose “Edit the system 
+environment variables”. A window titled "System Properties" should open.\\
+\ \\
+\item  Click the button "Environment variables..." in the lower right corner of the
+"System Properties" window. A new window opens that allows to add/change/delete the user
+variables for your account as well as the system variables, provided you have admin
+rights. If not, change the environment variables of your account. 
+
+             If a user variable \texttt{PATH}, \texttt{LIB}, or
+\texttt{INCLUDE} already exists, extend the current value as follows:
+
+\begin{itemize}
+             \item extend \texttt{PATH} by \texttt{<LEDA>}
+             \item extend \texttt{INCLUDE} by \texttt{<LEDA>$\backslash$incl}
+             \item extend \texttt{LIB} by \texttt{<LEDA>}
+\end{itemize}
+
+             Otherwise add a new user variable \texttt{PATH, INCLUDE}, or
+\texttt{LIB} with value \texttt{<LEDA>}, respectively 
+\texttt{<LEDA>$\backslash$incl}.
+\end{enumerate}
+\end{description}
+
+      You might have to restart your computer for the changes to take effect.
+
+
+\item[(c) Compiling and Linking Application Programs:]
+\ \\
+After setting the environment variables, you can use the LEDA libraries 
+as follows to compile and link programs.
+
+      Programs that do not use GeoWin:
+\begin{verbatim}
+      cl <option> -DLEDA_DLL prog.cpp <libleda.lib>
+\end{verbatim}
+      Programs using GeoWin:
+\begin{verbatim}
+      cl <option> -DLEDA_DLL prog.cpp <libGeoW.lib> <libleda.lib>
+\end{verbatim}
+ Possible values for \texttt{<option>} are "-MD", 
+"-MDd", "-MT", and "-MTd". You have to use the LEDA libraries that 
+correspond to the chosen \texttt{<option>}, e.g., with option "-MD" you 
+must use \texttt{leda\_md.lib} and \texttt{libGeoW\_md.lib}.
+      Using another set of libraries with "-MD" could lead to serious 
+      linker errors.
+
+\end{description}
+
+\subsection*{Example programs and demos}
+   The source code of all example and demo programs can be found in 
+   the directory \texttt{<LEDA>$\backslash$test} and 
+   \texttt{<LEDA>$\backslash$demo}. 
+   Goto \texttt{<LEDA>} and type
+   \texttt{make\_test} or \texttt{make\_demo} to compile and link all test 
+   or demo programs, respectively. 
+
+
+\section{Namespaces and Interaction with other Libraries} 
+\label{NameSpace}
+
+If users want to use other software packages like
+STL together with LEDA in one project avoiding naming conflicts
+is an issue. 
+
+LEDA defines all names (types, functions,
+constants, ...) in the \texttt{namespace leda}. 
+This makes the former macro--based prefixing scheme obsolete. 
+Note, however, that the prefixed names
+leda\_... still can be used for backward compatibility. Application
+programs have to use namespace leda globally (by saying \texttt{"using
+namespace leda;"}) or must prefix every LEDA symbol with 
+\texttt{"leda::"}.
+
+The second issue of interaction concerns the data type \texttt{bool}
+which is part of the new \CC{} standard. However not all compilers
+currently support a bool type.  LEDA offers \texttt{bool} either 
+compiler provided or defined within LEDA if the compiler lacks 
+the support. Some STL packages follow a similar scheme. To solve the
+existance conflict of two different bool type definitions we suggest
+to use LEDA's bool as STL is a pure template library only provided
+by header files and its defined bool type can be easily replaced. 
+
+
+\section{Platforms} \label{Platforms}
+
+Please visit our web pages for information about the supported platforms.
+

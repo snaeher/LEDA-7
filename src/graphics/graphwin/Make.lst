@@ -1,0 +1,32 @@
+
+OBJECTS = \
+_ged$(o) \
+_graphwin$(o) \
+agd_client$(o) \
+draw$(o) \
+embed$(o) \
+edit$(o) \
+get_set$(o) \
+gml_gwgraph$(o) \
+graph_observer$(o) \
+graph_undo$(o) \
+graphwin_undo$(o) \
+gravis_client$(o) \
+gw_algorithm$(o) \
+gw_embed$(o) \
+gw_observ$(o) \
+gw_test$(o) \
+gw_zoom$(o) \
+help$(o) \
+init$(o) \
+io$(o) \
+locate$(o) \
+menu$(o) \
+misc$(o) \
+ps$(o) \
+setup$(o) \
+svg$(o) \
+undo$(o) \
+version$(o) \
+zoom$(o)
+

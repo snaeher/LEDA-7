@@ -1,0 +1,121 @@
+\chapter{Basic Data Types for Two-Dimensional Geometry}
+\label{Basic Data Types for Two-Dimensional Geometry}
+
+LEDA provides a collection of simple data types for computational geometry,
+such as points, vectors, directions, hyperplanes, segments, rays, lines, affine
+transformations, circles, polygons, and operations connecting these types.
+
+The computational geometry kernel has evolved over time. The first kernel
+(types {\it point}, {\it line}, \ldots) was restricted to two-dimensional
+geometry and used floating point arithmetic as the underlying arithmetic. We
+found it very difficult to implement reliable geometric algorithms based on
+this kernel. See the chapter on computational geometry of \cite{LEDAbook} for
+some examples of the danger of floating point arithmetic in geometric
+computations. Starting with version 3.2 we therefore also provided a kernel
+based on exact rational arithmetic (types
+{\it rat\_point}, {\it rat\_segment} \ldots). 
+(This kernel is still restricted to two dimensions.)\\
+From version 4.5 on we offer a two-dimensional kernel based on the type 
+{\it real}, which also guarantees exact results. The corresponding data types
+are named {\it real\_point}, {\it real\_segment}, \ldots
+
+
+All two-dimensional object types defined in this section support the following
+operations:
+
+
+{\bf Equality and Identity Tests}\\
+
+\begin{tabular}{lll}
+{\it bool} & identical({\it object} $p$, {\it object} $q$) & Test for identity.\\
+{\it bool} & $p == q$ & Test for equality.\\
+{\it bool} & $p != q$ & Test for inequality.
+\end{tabular}
+
+
+{\bf I/O Operators}\\
+
+\begin{tabular}{lll}
+{\it ostream}\& & {\it ostream}\& $O$\ $<<$\ {\it object} $x$ & 
+writes the object $x$ to output stream $O$.\\
+{\it istream}\& & {\it istream}\& $I$\ $>>$\ {\it object}\& $x$ & 
+reads an object from input stream $I$ into variable $x$.
+\end{tabular}
+
+\newpage
+\input extract/point.tex
+\newpage
+\input extract/segment.tex
+\newpage
+\input extract/ray.tex
+\newpage
+\input extract/line.tex
+\newpage
+\input extract/circle.tex
+\newpage
+
+\input extract/POLYGON.tex
+\newpage
+\input extract/GEN_POLYGON.tex
+\newpage
+\input extract/triangle.tex
+\newpage
+\input extract/rectangle.tex
+\newpage
+
+
+\newpage
+\input extract/rat_point
+\newpage
+\input extract/rat_segment
+\newpage
+\input extract/rat_ray.tex
+\newpage
+\input extract/rat_line
+\newpage
+\input extract/rat_circle
+\newpage
+%\input extract/rat_polygon
+%\newpage
+\input extract/rat_triangle.tex
+\newpage
+\input extract/rat_rectangle.tex
+\newpage
+
+\newpage
+\input extract/real_point
+\newpage
+\input extract/real_segment
+\newpage
+\input extract/real_ray.tex
+\newpage
+\input extract/real_line
+\newpage
+\input extract/real_circle
+\newpage
+\input extract/real_triangle.tex
+\newpage
+\input extract/real_rectangle.tex
+\newpage
+
+\input extract/float_geo_alg.tex
+\newpage
+
+\input extract/TRANSFORM.tex
+\newpage
+\input extract/RANDOM_POINT.tex
+\newpage
+
+\input extract/r_circle_point.tex
+\newpage
+\input extract/r_circle_segment.tex
+\newpage
+\input extract/r_circle_polygon.tex
+\newpage
+\input extract/r_circle_gen_polygon.tex
+\newpage
+
+\newpage
+\input extract/wkb_io.tex
+\newpage
+

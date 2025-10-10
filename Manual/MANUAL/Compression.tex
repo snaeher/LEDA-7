@@ -1,0 +1,190 @@
+
+\chapter {Lossless Compression} \label{Compression}
+
+Before we go into the details of the classes belonging to this module we want
+to give an overview of the different components and how they interact.
+We start with an example. Suppose you want to write a string to a compressed 
+file named ``foo'' and read it back from the file. 
+Then you can use the following program:
+\begin{verbatim}
+#include <LEDA/basics/string.h>
+#include <LEDA/coding/compress.h> // contains all compression classes
+
+using namespace leda;
+
+typedef HuffmanCoder Coder;
+
+int main()
+{
+  string str = "Hello World";
+
+  encoding_ofstream<Coder> out("foo");
+  out << str << "\n";
+  out.close();
+  if (out.fail()) std::cout << "error writing foo" << "\n";
+
+  decoding_ifstream<Coder> in("foo");
+  str.read_line(in);
+  in.close();
+  if (in.fail()) std::cout << "error reading foo" << "\n";
+
+  std::cout << "decoded string: " << str << "\n";
+
+  return 0;
+}
+\end{verbatim}
+
+In the example above we used the classes $\mathit{encoding\_ofstream}$ and 
+$\mathit{decoding\_ifstream}$ with LEDA datatypes only. 
+We want to emphasize that they work together with user-defined types as well.
+All operations and operators ({\tt <<} and {\tt >>}) defined for \CC{} streams 
+can be applied to them, too.
+
+Assume that you want to send the file ``foo'' to a friend over the internet and
+you want to make sure that its contents do not get corrupted. Then you can
+easily add a checksum to your file. All you have to do is to replace the coder
+in the {\tt typedef}-statement by {\tt CoderPipe2<MD5SumCoder, HuffmanCoder>}.
+The class $\mathit{CoderPipe2}$ combines the two LEDA coders
+$\mathit{MD5SumCoder}$ (the checksummer) and $\mathit{HuffmanCoder}$ into a 
+single coder. 
+If the pipe is used for encoding, then the $\mathit{MD5SumCoder}$ is used
+first and the $\mathit{HuffmanCoder}$ is applied to its output. In decoding
+mode the situation is reversed.\\
+The standard behaviour of a checksummer like $\mathit{MD5SumCoder}$ is as 
+follows: In encoding mode it reads the input stream and computes a checksum;
+the output data basically consists of the input data with the checksum
+appended. 
+In decoding mode the checksum is stripped from the input data and verified.
+If the input is corrupted the failure flag of the coder is set to signal 
+this.
+
+Suppose further that your friend has received the encoded file ``foo'' and
+wants to decode it but he does not know which combination of coders you have
+used for encoding. This is not a problem because LEDA provides a class called
+$\mathit{AutoDecoder}$ which can be used to decode any stream that has been
+encoded by LEDA. The complete code for this extended example is depicted below:
+
+\begin{verbatim}
+#include <LEDA/basics/string.h>
+#include <LEDA/coding/compress.h>
+
+using namespace leda;
+
+typedef CoderPipe2<MD5SumCoder, HuffmanCoder> Coder;
+
+int main()
+{
+  string str = "Hello World";
+
+  // your code ...
+  encoding_ofstream<Coder> out("foo");
+  out << str << "\n";
+  out.close();
+  if (out.fail()) std::cout << "error writing foo" << "\n";
+
+  // your friend's code ...
+  autodecoding_ifstream in("foo"); 
+            // autodecoding_ifstream = decoding_istream<AutoDecoder>
+  str.read_line(in);
+  in.finish(); // read till the end before closing (-> verify checksum)
+  if (in.fail()) std::cout << "decoding error, foo corrupted" << "\n";
+  std::cout << "decoded string: " << str << "\n";
+
+  return 0;
+}
+\end{verbatim}
+
+This example shows how easy it is to add compression to existing applications:
+You include the header ``{\tt LEDA/coding/compress.h}'', which makes all 
+classes in the compression module available.
+Then you simply replace every occurrence of $\mathit{ofstream}$ by
+$\mathit{encoding\_ofstream}\Ltemplateless\mathit{Coder}\Ltemplategreater$ and
+every occurence of $\mathit{ifstream}$ by $\mathit{autodecoding\_ifstream}$.
+
+Of course, you can also use the LEDA coders in file mode. This means you can 
+encode a file ``foo'' into a file ``bar'' and decode ``bar'' again. The example
+below shows how. 
+We also demonstrate a nice feature of the $\mathit{AutoDecoder}$: If you query
+a description \emph{after} the decoding the object tells you which combination
+has been used for encoding the input.
+
+\begin{verbatim}
+#include <LEDA/coding/compress.h>
+
+using namespace leda;
+
+typedef CoderPipe2<MD5SumCoder, HuffmanCoder> Coder;
+
+int main()
+{
+  Coder coder("foo", "bar");
+  coder.encode();
+  if (coder.fail()) std::cout << "error encoding foo" << "\n";
+
+  AutoDecoder auto("bar", "foo");
+  auto.decode();
+  if (auto.fail()) std::cout << "error decoding bar" << "\n";
+
+  std::cout << "Decoding info: " << auto.get_description() << "\n";
+
+  return 0;
+}
+\end{verbatim}
+
+More examples can be found in {\tt \$LEDAROOT/test/compression}. 
+There we show in particular how the user can build a LEDA compliant 
+coder which integrates seamlessly with the $\mathit{AutoDecoder}$.
+
+\bigskip
+
+Below we give a few suggestions about when to use which coder:
+\begin{itemize}
+\item maximum compression needed, speed and memory usage not so important:\\
+use the $\mathit{PPMIICoder}$.
+\item high compression needed, main memory $<$ 2MB, speed less relevant:\\
+use a coder from the BWT-family:\\
+$\mathit{CoderPipe4\Ltemplateless BWTCoder,MTF2Coder,RLE0Coder,A0Coder\Ltemplategreater}$
+$\mathit{CoderPipe3\Ltemplateless BWTCoder,MTFCoder,A0Coder\Ltemplategreater}$.
+\item maximum speed and good compression needed:\\
+use the $\mathit{DeflateCoder}$.
+\end{itemize}
+
+\clearpage
+
+% standalone coders, compression
+\input extract/arithmetic_coding.tex
+\newpage
+\input extract/PPMII.tex
+\newpage
+\input extract/deflate.tex
+\newpage
+\input extract/dict_coder.tex
+\newpage
+\input extract/huffman.tex
+\newpage
+\input extract/RLE.tex
+\newpage
+
+% standalone coders, preprocessor
+\input extract/BWT.tex
+\newpage
+\input extract/MTF.tex
+\newpage
+\input extract/MTF2.tex
+\newpage
+\input extract/RLE0.tex
+\newpage
+
+% standalone coders, checksummer
+\input extract/checksum.tex
+\newpage
+
+% uitilities
+\input extract/coder_util.tex
+\newpage
+\input extract/auto_decoder.tex
+\newpage
+\input extract/block_coder.tex
+\newpage
+\input extract/memory_streambuf.tex
+\newpage

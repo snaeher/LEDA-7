@@ -1,0 +1,16 @@
+
+PROGS = \
+ac_dense$(e) \
+amo$(e) \
+cg1$(e) \
+cg2$(e) \
+ffs$(e) \
+ran$(e) \
+max_flow$(e) \
+mcf_cap_scaling$(e) \
+mcf_cost_scaling$(e) \
+mf_rand$(e) \
+sp0$(e) \
+spg$(e) \
+sps$(e) 
+

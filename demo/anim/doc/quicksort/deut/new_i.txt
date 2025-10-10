@@ -1,0 +1,5 @@
+Die Variable \tt\blue2 i \rm\black wird auf den Feldindex der linken Intervallbegrenzung gesetzt. 
+
+Damit ist \tt\blue2 i \rm\black ein linker temporärer Zeiger.
+
+

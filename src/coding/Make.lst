@@ -1,0 +1,9 @@
+OBJECTS = \
+_base64$(o) \
+_jpeg$(o) \
+_png$(o) \
+_sha$(o) \
+_zlib$(o) \
+_zstream$(o)
+
+

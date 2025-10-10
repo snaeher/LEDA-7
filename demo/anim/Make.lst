@@ -1,0 +1,12 @@
+PROGS = \
+del_observer$(e) \
+dijkstra_anim$(e) \
+preflow_push_anim$(e) \
+gw_bintree$(e) \
+gw_five_color_anim$(e) \
+gw_heapsort_anim$(e) \
+gw_quicksort$(e) \
+gw_quicksort_anim$(e) \
+gw_scc_anim$(e) \
+quicksort_anim$(e)
+

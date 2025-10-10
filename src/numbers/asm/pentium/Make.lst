@@ -1,0 +1,8 @@
+
+OBJECTS = \
+add$(o) \
+sub$(o) \
+mul$(o) \
+div$(o) \
+fpu$(o)
+

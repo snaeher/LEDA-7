@@ -1,0 +1,5 @@
+The last condition that must be satisfied by another exchange is:
+
+	c) the pivot element is at its final position in the array.
+
+

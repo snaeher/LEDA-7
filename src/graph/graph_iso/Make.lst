@@ -1,0 +1,3 @@
+OBJECTS = \
+_vf2_best$(o) \
+_vf2_better$(o) 

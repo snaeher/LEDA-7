@@ -1,0 +1,7 @@
+The array is now sorted in non-decreasing order.
+
+In the window \tt <State of the Variables> \rm the number of \tt swaps \rm and \tt compares
+\rm can be seen.
+
+\bf Remark
+Try other sequences and compare the results.

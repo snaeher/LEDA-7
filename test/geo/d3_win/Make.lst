@@ -1,0 +1,6 @@
+
+PROGS = \
+d3win_test$(e) \
+d3win_test3$(e) \
+d3win_test4$(e) \
+d3win_test_graph$(e)

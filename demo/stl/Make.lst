@@ -1,0 +1,7 @@
+
+PROGS = \
+stl_vs_leda_list$(e) \
+stl_vs_leda_map$(e) \
+stl_vs_leda_sort$(e) \
+stl_vs_leda_sort_int$(e)
+

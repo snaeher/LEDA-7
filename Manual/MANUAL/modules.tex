@@ -1,0 +1,49 @@
+\chapter{Modules} \label{modules}
+
+During the last years, LEDA's main include directory has grown
+to more than 400 include files. As a result, the include directory
+was simply too complex so that new features were hard to identify. We therefore
+introduced modules to better organize LEDA's include structure.
+Starting from version 5.0 LEDA consists of the several modules:
+\begin{itemize}
+\item {\em core} (LEDA/incl/core/)\\
+Module core stores all basic data types (array, list, set, partition, etc.),
+all dictionary types (dictionary, d\_array, h\_array sortseq, etc.), all
+priority queues, and basic algorithms like sorting. 
+
+\item {\em numbers} (LEDA/incl/numbers/)\\
+Module numbers stores all LEDA number types (integer, real, rational, bigfloat, polynomial, etc.)
+as well as data types related to linear algebra (vector, matrix, etc.) and all additional
+data types and functions related to numerical computation (fpu, numerical analysis, etc.)
+
+\item {\em graph} (LEDA/incl/graph/)\\
+Module graph stores all graph data types, all types related to graphs and all graph algorithms.
+
+\item {\em geo} (LEDA/incl/geo/)\\
+Module geo stores all geometric data types and all geometric algorithms.
+
+\item {\em graphics} (LEDA/incl/graphics/)\\
+Module graphics stores all include files and data types related to our graphical user 
+interfaces, i.e. window, graphwin and geowin. 
+
+\item {\em coding} (LEDA/incl/coding/)\\
+Module codings contains all data types and algorithms relating to compression and 
+cryptography.
+
+\item {\em system} (LEDA/incl/system/)\\
+Module system contains all data types that offer system-related functionality like
+date, time, stream, error handling and memory management.
+
+\item {\em internal} (LEDA/incl/internal/)\\
+Module internal contains include files that are needed for LEDA's maintenance or for people who
+want to implement extension packages.
+
+\item {\em beta} (LEDA/incl/beta/)\\
+Module beta contains data types that are not fully tested.
+
+\item {\em exp} (LEDA/incl/exp/)\\
+Module exp contains data types that are experimental. Most of these data types can be used
+as implementation parameters for the data types dictionary, priority queues, d\_array, and
+sortseq. Starting with LEDA version 6.5, experimental data types are no longer available
+in pre-compiled object code packages.
+\end{itemize}

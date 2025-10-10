@@ -1,0 +1,2212 @@
+/*******************************************************************************
++
++  LEDA 7.2  
++
++
++  d3_complex.c
++
++
++  Copyright (c) 1995-2025
++  by Algorithmic Solutions Software GmbH
++  All rights reserved.
++ 
+*******************************************************************************/
+
+
+#include <LEDA/system/basic.h>
+#include <LEDA/system/assert.h>
+
+//using namespace leda;
+
+#include "d3_complex.h"
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::ostream;
+using std::istream;
+
+LEDA_BEGIN_NAMESPACE
+
+int compare(const sc_vertex& v1, const sc_vertex& v2)
+{
+	return int((char*)v2 - (char*)v1);
+}
+
+
+rational r_det(rational a11,rational a12,rational a13,
+               rational a21,rational a22,rational a23,
+               rational a31,rational a32,rational a33)
+{
+ return a11*a22*a33+a12*a23*a31+a13*a21*a32 -
+        a13*a22*a31-a11*a23*a32-a12*a21*a33;
+}
+
+d3_rat_point intersect(rat_vector n1,rat_vector n2,rat_vector n3,
+                                     rational D1,rational D2,rational D3)
+{
+ rational A1=n1.xcoord(); 
+ rational B1=n1.ycoord(); 
+ rational C1=n1.zcoord();
+ rational A2=n2.xcoord(); 
+ rational B2=n2.ycoord(); 
+ rational C2=n2.zcoord();
+ rational A3=n3.xcoord(); 
+ rational B3=n3.ycoord(); 
+ rational C3=n3.zcoord();
+
+ rational det= r_det(A1,B1,C1,A2,B2,C2,A3,B3,C3);
+ rational xdet=r_det(D1,B1,C1,D2,B2,C2,D3,B3,C3);
+ rational ydet=r_det(A1,D1,C1,A2,D2,C2,A3,D3,C3);
+ rational zdet=r_det(A1,B1,D1,A2,B2,D2,A3,B3,D3);
+
+ if (det==0) error_handler(1,"intersec: determinant==0 .");
+
+ rational xw=-xdet/det; 
+ rational yw=-ydet/det; 
+ rational zw=-zdet/det;
+
+ return d3_rat_point(xw.normalize(),yw.normalize(),zw.normalize());
+}
+ 
+
+ D3_vertex::D3_vertex(d3_rat_point w,d3_simpl_complex* c)
+ {
+  stor=w;
+  com_of=c;
+  my=NULL;
+  helper=NULL;
+ }
+
+ D3_vertex::D3_vertex(){
+  my=NULL; helper=NULL;
+ }
+
+ D3_vertex::D3_vertex(const D3_vertex& S)
+ {
+  stor=S.stor;
+  com_of=S.com_of;
+  it=S.it;
+  my=S.my;
+  helper=S.helper;
+ } 
+
+
+ list<sc_simplex> Simplex::all_neighbours() const 
+ {
+  list<sc_simplex> all;
+  if (abc != NULL) all.append(abc);
+  if (abd != NULL) all.append(abd);
+  if (acd != NULL) all.append(acd);
+  if (bcd != NULL) all.append(bcd);
+  return all;
+ }
+
+ list<sc_simplex> d3_simpl_complex::all_neighbours(sc_simplex sim) const
+ {
+  return sim->all_neighbours();
+ }
+ 
+ Simplex::Simplex(sc_vertex Ap,sc_vertex Bp,sc_vertex Cp)
+ {
+  HULL_TR=true; 
+  a=Ap; 
+  b=Bp; 
+  c=Cp; 
+  d=NULL;  
+  Marker=-1; 
+  helper=NULL;
+  abc=NULL; 
+  abd=NULL; 
+  acd=NULL; 
+  bcd=NULL;
+  name="";
+  Ap->my=this; 
+  Bp->my=this; 
+  Cp->my=this;
+  abcdia=false; 
+  abddia=false; 
+  acddia=false; 
+  bcddia=false;
+ }
+
+ Simplex::Simplex(sc_vertex Ap,sc_vertex Bp,sc_vertex Cp,sc_vertex Dp)
+ {
+  HULL_TR=false; 
+  a=Ap; 
+  b=Bp; 
+  c=Cp; 
+  d=Dp; 
+  Marker=-1; 
+  helper=NULL;
+  abc=NULL; 
+  abd=NULL; 
+  acd=NULL; 
+  bcd=NULL;  
+  name="";
+  Ap->my=this; 
+  Bp->my=this; 
+  Cp->my=this; 
+  Dp->my=this;
+  abcdia=false; 
+  abddia=false; 
+  acddia=false; 
+  bcddia=false;
+ }
+
+ Simplex::Simplex(const Simplex& S)
+ {
+  HULL_TR=S.HULL_TR;
+  a=S.a;
+  b=S.b;
+  c=S.c;
+  d=S.d;
+  abd=S.abd;
+  bcd=S.bcd;
+  acd=S.acd;
+  abc=S.abc;
+  name=S.name;
+  helper=S.helper;
+  Marker=S.Marker;
+  abcdia=S.abcdia;
+  abddia=S.abddia; 
+  acddia=S.acddia; 
+  bcddia=S.bcddia;
+ }
+
+ void Simplex::init(sc_simplex s1,sc_simplex s2,sc_simplex s3,sc_simplex s4)
+ {
+  abd=s1; 
+  bcd=s2; 
+  acd=s3; 
+  abc=s4;
+ }
+
+ void Simplex::init(sc_simplex s1,sc_simplex s2,sc_simplex s3)
+ {
+  abd=s1; 
+  bcd=s2; 
+  acd=s3;
+  helper=NULL;
+ }
+
+ void Simplex::update(sc_simplex old, sc_simplex neu)
+ {
+  if (old==abd) { abd=neu; return; }
+  if (old==bcd) { bcd=neu; return; }
+  if (old==acd) { acd=neu; return; }
+  if (old==abc) { abc=neu; return; }  
+ }
+
+ void Simplex::change(sc_vertex k1,sc_vertex k2,sc_vertex k3,sc_vertex k4)
+ {
+  a=k1; 
+  b=k2; 
+  c=k3; 
+  d=k4;
+  a->my=this; 
+  b->my=this; 
+  c->my=this; 
+  d->my=this;
+ }
+
+ void Simplex::change(sc_vertex k1,sc_vertex k2,sc_vertex k3)
+ {
+  a=k1; 
+  b=k2; 
+  c=k3;
+  a->my=this; 
+  b->my=this; 
+  c->my=this;
+ }
+
+ void Simplex::clear_links()
+ {
+  abc=NULL; 
+  abd=NULL; 
+  acd=NULL; 
+  bcd=NULL;
+ }
+
+ sc_vertex Simplex::find_other(sc_vertex p1,sc_vertex p2,sc_vertex p3)
+ {
+  if (p1!=a && p2!=a && p3!=a) return a;
+  if (p1!=b && p2!=b && p3!=b) return b;
+  if (p1!=c && p2!=c && p3!=c) return c;
+  if (! HULL_TR && p1!=d && p2!=d && p3!=d) return d;
+  return NULL;
+ }
+
+ int Simplex::index(sc_vertex p)
+ {
+  if (p==a) return 1;
+  if (p==b) return 2;
+  if (p==c) return 3;
+  if (p==d) return 4;
+  return 0;
+ }
+
+ sc_vertex Simplex::vertex(int i)
+ {
+   switch(i) {
+   case 1: return a;
+   case 2: return b;
+   case 3: return c;
+   case 4: return d;
+   }
+   return NULL;
+ }
+
+ void Simplex::set_link(sc_simplex S2,int i)
+ // change link to a neighbour...
+ {
+   switch(i){
+   case 1: /*a*/ bcd=S2; break;   
+   case 2: /*b*/ acd=S2; break;
+   case 3: /*c*/ abd=S2; break;
+   case 4: /*d*/ abc=S2; break;
+   }
+ }
+
+ bool Simplex::in_simplex(d3_rat_point p)
+ {
+   if (HULL_TR) 
+    return in_sim(a->stor,b->stor,c->stor,p);
+   else
+    return contained_in_simplex(a->stor,b->stor,c->stor,d->stor,p);
+ }
+
+ bool Simplex::insphere(d3_rat_point p)
+ {
+   if (HULL_TR) return false;
+   else return inside_sphere(a->stor,b->stor,c->stor,d->stor,p);
+ }
+
+ int Simplex::control_vert(sc_vertex v1,sc_vertex v2,sc_vertex v3)
+ {
+   //  3 vertices element { a,b,c,d } ?
+
+  int i1=index(v1); 
+  int i2=index(v2); 
+  int i3=index(v3);
+
+  if (i1==0 || i2==0 || i3==0) return 0;
+  // zurueckgeben, ob abc,abd,acd,bcd
+  if (i1!=4 && i2!=4 && i3!=4) return 1; //abc
+  if (i1!=3 && i2!=3 && i3!=3) return 2; //abd 
+  if (i1!=2 && i2!=2 && i3!=2) return 3; //acd
+  return 4; //bcd
+ }
+
+ int Simplex::control_vert(sc_vertex v1,sc_vertex v2)
+ {
+  int i1=index(v1); 
+  int i2=index(v2); 
+  if (i1==0 || i2==0) return 0;
+  if (i1!=3 && i2!=3) return 2; //ab
+  if (i1!=2 && i2!=2) return 3; //ac
+  if (i1!=1 && i1!=1) return 4; //bc 
+  return 0;
+ }
+
+ int Simplex::link_new(sc_simplex ot)
+ {
+  if (ot==NULL) return 0;
+
+  sc_vertex v1=NULL; 
+  sc_vertex v2=NULL; 
+  sc_vertex v3=NULL;
+
+  int w=0;
+  
+  if (! HULL_TR) {
+   if (ot->abc==NULL){ 
+     v1=ot->a; 
+     v2=ot->b; 
+     v3=ot->c;
+     w=control_vert(v1,v2,v3); 
+     if (w !=0) ot->abc=this;
+   }
+   if (ot->abd==NULL && w==0){ 
+     v1=ot->a; 
+     v2=ot->b; 
+     v3=ot->d;
+     w=control_vert(v1,v2,v3); 
+     if (w !=0) ot->abd=this; 
+   }
+   if (ot->acd==NULL && w==0){ 
+     v1=ot->a; 
+     v2=ot->c; 
+     v3=ot->d;
+     w=control_vert(v1,v2,v3); 
+     if (w !=0) ot->acd=this;
+   }
+   if (ot->bcd==NULL && w==0){ 
+     v1=ot->b; 
+     v2=ot->c; 
+     v3=ot->d;
+     w=control_vert(v1,v2,v3); 
+     if (w !=0) ot->bcd=this;
+   } 
+  }
+  else { //abc-Verweis braucht nicht beachtet werden
+   if (ot->abd==NULL && w==0){ 
+     v1=ot->a; 
+     v2=ot->b; 
+     w=control_vert(v1,v2); 
+     if (w !=0) ot->abd=this; 
+   }
+   if (ot->acd==NULL && w==0){ 
+     v1=ot->a; 
+     v2=ot->c; 
+     w=control_vert(v1,v2); 
+     if (w !=0) ot->acd=this; 
+   }
+   if (ot->bcd==NULL && w==0){ 
+     v1=ot->b; 
+     v2=ot->c;
+     w=control_vert(v1,v2); 
+     if (w !=0) ot->bcd=this; 
+   } 
+  }
+
+  switch(w){
+  case 1: abc=ot; break;
+  case 2: abd=ot; break;
+  case 3: acd=ot; break;
+  case 4: bcd=ot; break;
+  }
+  
+  if (w>0 && w<5) return w; else return 0;
+ }
+ 
+ d3_rat_point Simplex::circle_midpoint()
+ // for hulltriangles
+ {
+  d3_rat_point pneu;
+  d3_rat_point m1,m2;
+  d3_rat_plane pl1(a->stor,b->stor,c->stor);
+  d3_rat_point h=c->stor + pl1.normal();
+  d3_rat_plane plh(a->stor,b->stor,h); 
+  d3_rat_plane plh2(b->stor,c->stor,h);
+  
+  m1=midpoint(a->stor,b->stor);
+  m2=midpoint(b->stor,c->stor);
+ 
+  rat_vector r1=pl1.normal();
+  rat_vector r2=plh.normal();
+  rat_vector r3=plh2.normal();
+  d3_rat_plane pl2(m1,m1+r1,m1+r2),pl3(m2,m2+r1,m2+r3);
+
+  rat_vector n1,n2,n3;
+  n1=pl1.normal(); n2=pl2.normal(); n3=pl3.normal();
+
+  rational D1,D2,D3;
+  D1=-(n1*m1.to_vector()); D2=-(n2*m1.to_vector()); D3=-(n3*m2.to_vector());
+
+  //jetzt Schnittpunkt der 3 Ebenen ermitteln 
+  pneu=intersect(n1,n2,n3,D1,D2,D3);
+  return pneu;   
+ }
+
+ d3_rat_point Simplex::sphere_midpoint()
+ {
+  d3_rat_point pneu;
+  d3_rat_point m1,m2,m3;
+  d3_rat_plane pl1(a->stor,b->stor,d->stor),pl2(a->stor,c->stor,d->stor);
+  d3_rat_plane pl3(a->stor,b->stor,c->stor);
+
+  m1=midpoint(a->stor,b->stor);
+  m2=midpoint(a->stor,c->stor);
+  m3=midpoint(a->stor,d->stor);
+
+  rat_vector r1,r2,r3;
+  r1=pl1.normal(); r2=pl2.normal(); r3=pl3.normal();
+  
+  d3_rat_plane sr1(m1,m1+r1,m1+r3),sr2(m2,m2+r2,m2+r3),sr3(m3,m3+r1,m3+r2);
+  rat_vector n1,n2,n3;
+  n1=sr1.normal(); n2=sr2.normal(); n3=sr3.normal();
+
+  rational D1,D2,D3;
+  D1=-(n1*m1.to_vector()); D2=-(n2*m2.to_vector()); D3=-(n3*m3.to_vector());
+
+  pneu=intersect(n1,n2,n3,D1,D2,D3);
+  return pneu;
+ }
+
+ rational Simplex::vol()
+ // simplex volume
+ {
+  if (HULL_TR) return 0; //HULLTRIANGLE is flat
+
+  return volume(a->stor,b->stor,c->stor,d->stor);
+ }
+
+
+ Simpl_Triang::Simpl_Triang()
+ {
+  S1=NULL; S2=NULL;
+  A=NULL; B=NULL; C=NULL;
+ }
+
+ Simpl_Triang::Simpl_Triang(sc_simplex sim1,sc_simplex sim2,sc_vertex Ap,sc_vertex Bp,sc_vertex Cp)
+ {
+  S1=sim1; S2=sim2; A=Ap; B=Bp; C=Cp;
+ }
+ Simpl_Triang::Simpl_Triang(const Simpl_Triang& S)
+ {
+  S1=S.S1; S2=S.S2; A=S.A; B=S.B; C=S.C;
+ }
+
+
+  void d3_simpl_complex::reset_flip_counters(){
+   flk30=0; flk31=0; flk32=0; flk33=0; flk34=0; flk35=0;
+   flk1=0; flk10=0; flk11=0; flk12=0;
+  }
+
+  void d3_simpl_complex::output_flip_counters(){
+   cout << "Flips:\n";
+   cout << "------\n";
+   cout << "configuration 30/31/32/33/34/35:" << flk30 << " " << flk31 << " " << flk32 << " " << flk33 << " " 
+        << flk34 << " " << flk35 << "\n";
+   cout << "configuraton 1/10/11/12:" << flk1 << " " << flk10 << " " << flk11 << " " << flk12 << "\n";
+  }
+
+  d3_simpl_complex::d3_simpl_complex()
+  {
+    hull_last=NULL;
+    reset_flip_counters();
+  }
+
+  d3_simpl_complex::~d3_simpl_complex()
+  {
+   sc_simplex z;
+   forall(z,Sil) delete z;
+   sc_vertex d;
+   forall(d,Vert) delete d;
+  }
+
+  list<d3_rat_point> d3_simpl_complex::points()
+  {
+    list<d3_rat_point> L;
+    sc_vertex v;
+
+    forall(v,Vert) L.append(pos(v));
+
+    return L;
+  }
+  
+  void d3_simpl_complex::clear()
+  {
+    hull_last=NULL;
+    sc_simplex z;
+    forall(z,Sil) delete z;
+    sc_vertex d;
+    forall(d,Vert) delete d;
+    Sil.clear();
+    Vert.clear();
+    reset_flip_counters();
+  }
+
+  void d3_simpl_complex::reset_markers()
+  {
+    sc_simplex akt;
+
+    forall(akt,Sil) akt->Marker=-1;
+  }
+
+  sc_simplex d3_simpl_complex::get_simplex(sc_vertex v)
+  {
+    if (v->com_of != this) return NULL;
+    return v->my;
+  }
+
+  sc_simplex d3_simpl_complex::opposite_simplex(sc_simplex S,int i)
+  {
+    if (S->com_of != this) return NULL; 
+    if (i==1) return S->bcd;      
+    if (i==2) return S->acd;
+    if (i==3) return S->abd;
+    if (i==4) return S->abc;
+    return NULL;
+  }
+
+  sc_simplex d3_simpl_complex::opposite_simplex(sc_simplex S,sc_vertex v)
+  {
+   int i= S->index(v);
+   if (i==0) return NULL;
+   return opposite_simplex(S,i);
+  }
+
+  sc_vertex d3_simpl_complex::opposite_vertex(sc_simplex S,int i)
+  {
+   sc_simplex nb;
+   sc_vertex v = 0;
+   nb=opposite_simplex(S,i);
+   if (nb==NULL) return NULL;
+   else {
+     switch(i) {
+     case 1: v=nb->find_other(S->b,S->c,S->d);
+             break;
+     case 2: v=nb->find_other(S->a,S->c,S->d);
+             break;
+     case 3: v=nb->find_other(S->a,S->b,S->d);
+             break;
+     case 4: v=nb->find_other(S->a,S->b,S->c);
+             break;
+     }
+     return v;
+   }   
+  }
+
+  sc_vertex d3_simpl_complex::opposite_vertex(sc_simplex S,sc_vertex v)
+  {
+   int i= S->index(v);
+   return (i==0) ? NULL : opposite_vertex(S,i);
+  }
+
+  sc_vertex d3_simpl_complex::add_vertex(d3_rat_point p)
+  {
+    sc_vertex z= new D3_vertex(p,this);
+    z->it=Vert.append(z);
+    return z;
+  }
+
+  sc_simplex d3_simpl_complex::add_simplex(sc_vertex a,sc_vertex b,sc_vertex c)
+  { 
+   if (a->com_of != this || b->com_of != this || c->com_of != this) return NULL;
+   sc_simplex S= new Simplex(a,b,c); 
+   S->com_of=this;
+   S->it=Sil.append(S);
+   hull_last=S;
+
+   return S;      
+  }
+
+  sc_simplex d3_simpl_complex::add_simplex(sc_vertex a,sc_vertex b,sc_vertex c,sc_vertex d)
+  { 
+    if (a->com_of != this || b->com_of != this || 
+        c->com_of != this || d->com_of != this) return NULL;   
+
+    sc_simplex S= new Simplex(a,b,c,d);
+    S->com_of=this;
+    S->it = Sil.append(S);
+
+    return S; 
+  }
+
+  sc_simplex d3_simpl_complex::search_simplex(d3_rat_point p) 
+  {
+   //should be improved ( "walk through" method or special data str.)
+   sc_simplex akt;
+   
+   forall(akt,Sil){
+     if (akt->in_simplex(p)) return akt;
+   }
+
+   return NULL;
+  }
+
+  sc_simplex d3_simpl_complex::search_simplex(sc_vertex v)
+  {
+   d3_rat_point p= v->stor;
+   if (v->com_of != this) return NULL; // vertex has to be in the complex...
+   return search_simplex(p);
+  }
+
+  sc_simplex d3_simpl_complex::wtsearch_simplex(d3_rat_point p)
+  {
+   if (Sil.empty()) return NULL; // no simplices in the complex...
+
+   sc_simplex akt=Sil.head();
+
+   do {
+    if (akt->in_simplex(p)) return akt;
+    else {
+    // *akt verbessern...
+    }
+   } while (akt!=NULL);
+
+   return akt;
+  }
+
+  sc_simplex d3_simpl_complex::wtsearch_simplex(sc_vertex v)
+  {
+   d3_rat_point p= v->stor;
+   if (v->com_of != this) return NULL;
+   return wtsearch_simplex(p);   
+  }
+
+  int d3_simpl_complex::remove_simplex(sc_simplex SR)
+  {
+    if (SR->com_of != this) return 0; 
+ 
+    //if (SR==hull_last) cout << "Achtung! hull_last wird entfernt!\n";
+
+    sc_simplex S1,S2,S3,S4;
+    S1=SR->abc; S2=SR->abd; S3=SR->acd; S4=SR->bcd;
+
+    if (S1 != NULL) S1->update(SR,NULL);
+    if (S2 != NULL) S2->update(SR,NULL);
+    if (S3 != NULL) S3->update(SR,NULL);
+    if (S4 != NULL) S4->update(SR,NULL);
+    
+    // change vertex-links...
+    if (SR->a->my == SR){ 
+       if (SR->abc !=NULL) SR->a->my=SR->abc;
+       else {
+         if (SR->abd !=NULL) SR->a->my=SR->abd;
+         else SR->a->my=SR->acd;
+       }
+    }
+    if (SR->b->my == SR){ 
+       if (SR->abc !=NULL) SR->b->my=SR->abc;
+       else {
+         if (SR->abd !=NULL) SR->b->my=SR->abd;
+         else SR->b->my=SR->bcd;
+       }
+    }
+    if (SR->c->my == SR){ 
+       if (SR->abc !=NULL) SR->c->my=SR->abc;
+       else {
+         if (SR->acd !=NULL) SR->c->my=SR->acd;
+         else SR->c->my=SR->bcd;
+       }  
+    }
+    if (! SR->HULL_TR){
+     if (SR->d->my == SR){ 
+       if (SR->abd !=NULL) SR->d->my=SR->abd;
+       else {
+         if (SR->acd !=NULL) SR->d->my=SR->acd;
+         else SR->d->my=SR->bcd;
+       }      
+     }
+    }
+      
+    list_item i;
+    i= SR->it;
+    SR->com_of=NULL; delete SR;
+    (Sil).del_item(i);
+    
+    return 1;
+  }
+
+  bool d3_simpl_complex::flippable(sc_simplex S1, sc_vertex v)
+  {
+    sc_vertex v2 = opposite_vertex(S1,v); 
+
+    if (v2==NULL) return false;
+    
+    d3_rat_point Ap= S1->a->stor;
+    d3_rat_point Bp= S1->b->stor;
+    d3_rat_point Cp= S1->c->stor;
+    d3_rat_point Ep= v2->stor;
+
+    if (!S1->HULL_TR){
+     d3_rat_point Dp= S1->d->stor;
+     return inside_sphere(Ap,Bp,Cp,Dp,Ep);
+    }
+    else { // Hulltr.
+     if (coplanar(Ap,Bp,Cp,Ep)){
+        return test_inside(Ap,Bp,Cp,Ep);
+     }
+    }
+    return false;
+  }
+
+  bool d3_simpl_complex::flippable(sc_simplex S1, sc_simplex S2,Simpl_Triang& Tr)
+  // is common triangle flippable ?
+  {
+    int wert=common_triangle(S1,S2,Tr);
+    if (wert==0) return false; //no common tr.
+
+    sc_vertex v2= S2->find_other(Tr.A,Tr.B,Tr.C); 
+    if (v2==NULL) return false;
+
+    d3_rat_point Ap= S1->a->stor;
+    d3_rat_point Bp= S1->b->stor;
+    d3_rat_point Cp= S1->c->stor;
+    d3_rat_point Ep= v2->stor;
+
+    if (! S1->HULL_TR){
+     d3_rat_point Dp= S1->d->stor;
+     return inside_sphere(Ap,Bp,Cp,Dp,Ep);
+    }
+    else { // Hulltr.
+     if (coplanar(Ap,Bp,Cp,Ep)){
+        return test_inside(Ap,Bp,Cp,Ep);
+     }
+    }
+    return false;
+  }
+
+  void d3_simpl_complex::init_dia(bool w)
+  {
+   sc_simplex akt;
+   forall(akt,Sil){
+    akt->abcdia=w;akt->abddia=w;akt->acddia=w;akt->bcddia=w;
+   }
+  }
+
+  int  d3_simpl_complex::set_dia_nondia()
+  // set non-diagramedge - informationsd
+  {
+    sc_simplex akt,other;
+    d3_rat_point Ap,Bp,Cp,Dp,op;
+    sc_vertex v;
+    int ND_SETS=0;
+    
+    forall(akt,Sil){
+      if (! akt->HULL_TR){
+        Ap= akt->a->stor; 
+        Bp= akt->b->stor; 
+        Cp= akt->c->stor; 
+        Dp= akt->d->stor;
+        other=akt->abc;
+        if (other != NULL && !other->HULL_TR){
+          v=other->find_other(akt->a,akt->b,akt->c); op=v->stor;
+          if (on_sphere(Ap,Bp,Cp,Dp,op)) { akt->abcdia=false; ND_SETS++;}
+        }
+        other=akt->abd;
+        if (other != NULL && !other->HULL_TR){
+          v=other->find_other(akt->a,akt->b,akt->d); op=v->stor;
+          if (on_sphere(Ap,Bp,Cp,Dp,op)) { akt->abddia=false; ND_SETS++;} 
+        }
+        other=akt->acd;
+        if (other != NULL && !other->HULL_TR){
+          v=other->find_other(akt->a,akt->c,akt->d); op=v->stor;
+          if (on_sphere(Ap,Bp,Cp,Dp,op)) { akt->acddia=false; ND_SETS++;}
+        }
+        other=akt->bcd;         
+        if (other != NULL && !other->HULL_TR){
+          v=other->find_other(akt->b,akt->c,akt->d); op=v->stor;
+          if (on_sphere(Ap,Bp,Cp,Dp,op)) { akt->bcddia=false; ND_SETS++;}
+        }   
+      }
+    }
+    return ND_SETS;
+    
+  }
+
+  bool d3_simpl_complex::local_delaunay(sc_simplex S1)
+  // is  simplex S1 "local delaunay" ?
+  {
+    bool wert;
+    wert=flippable(S1,S1->a);
+    if (wert) return false;
+    wert=flippable(S1,S1->b);
+    if (wert) return false;
+    wert=flippable(S1,S1->c);
+    if (wert) return false;
+    wert=flippable(S1,S1->d);
+    if (wert) return false;  
+
+    return true;  
+  }
+
+  bool d3_simpl_complex::global_delaunay(sc_simplex fst)
+  {
+    sc_vertex ac;
+    bool flag=true;
+             
+    forall(ac,Vert){
+     if (fst->insphere(ac->stor)) flag=false;
+    }
+
+    return flag;    
+  }
+
+  int d3_simpl_complex::get_link_index(sc_simplex S1,sc_simplex S2)
+  {
+    if (S1->com_of != this || S2->com_of !=this) return -1;
+    if (S1 == S2) return -2;
+
+    if (S1->abc==S2) return 1;
+    if (S1->abd==S2) return 2;
+    if (S1->acd==S2) return 3;
+    if (S1->bcd==S2) return 4;
+
+    return 0;
+  }
+  
+  sc_simplex d3_simpl_complex::set_link(sc_simplex S1,int i,sc_simplex S2,int j)
+  {
+    if (S1->com_of != this) return NULL;
+    if (S2->com_of != this) return NULL; 
+    if ( i>4 || i<1 || j>4 || j<1) return NULL;
+    S1->set_link(S2,i);
+    S2->set_link(S1,j);
+
+    return S1;
+  }
+
+  sc_simplex d3_simpl_complex::set_link(sc_simplex S1,sc_simplex S2, sc_vertex v1, sc_vertex v2, sc_vertex v3)
+  // (*v1),(*v2),(*v3) the common vertices...
+  {
+    sc_vertex os1,os2;
+
+    os1= S1->find_other(v1,v2,v3);
+    os2= S2->find_other(v1,v2,v3);
+    int i,j;
+
+    if (os1 !=NULL) i= S1->index(os1); else i=4; //abc
+    if (os2 !=NULL) j= S2->index(os2); else j=4; //abc
+
+    return set_link(S1,i,S2,j);
+  }
+
+  sc_simplex d3_simpl_complex::set_link(sc_simplex S1,sc_vertex i,sc_simplex S2,sc_vertex j)
+  {
+    int i2,j2;
+    if (i !=NULL) i2= S1->index(i); else i2=4; 
+    if (j !=NULL) j2= S2->index(j); else j2=4; 
+    if (i2==0 || j2==0) return NULL;
+    
+    return set_link(S1,i2,S2,j2);
+     
+  }  
+
+  bool d3_simpl_complex::check_vert_sim_links()
+  {
+   sc_vertex v;
+   sc_simplex akt;
+   forall(v,Vert){
+     if (v->my == NULL) return false;
+     akt= v->my;
+     if (akt->index(v) == 0 || akt->com_of != this) return false;
+   }
+   return true;
+  }
+
+  int d3_simpl_complex::check_delaunay()
+  {
+   //  all simplices local delaunay ?
+   sc_simplex akt;
+   bool tf; 
+   //bool haupt=true;
+   int counter=0;
+
+   forall(akt,Sil){
+    tf=local_delaunay(akt);
+    if (tf==false) { /*haupt=false;*/ counter++; }
+   }
+
+   return counter;
+  }
+
+  int join_or_link(GRAPH<d3_rat_sphere,int>& Gout,node n1,node n2)
+  {
+   d3_rat_sphere s1,s2;
+   s1=Gout[n1];
+   s2=Gout[n2];
+
+   Gout.new_edge(n1,n2); return 0; 
+  }
+
+  int join(GRAPH<d3_rat_point,int>& Gout,node n1,node n2)
+  {
+   d3_rat_point s1,s2;
+   s1=Gout[n1]; s2=Gout[n2];
+
+   if (n1==n2) return 0;
+    
+   if (s1==s2){
+     Gout.merge_nodes(n1,n2);
+     return 1;
+   }
+   else return 0;
+  }
+  
+
+  bool d3_simpl_complex::compute_voronoi(GRAPH<d3_rat_sphere,int>& Gout)
+  {
+    int bz= check_delaunay();
+    if (bz>0) return false;
+
+    Gout.clear();
+    sc_simplex akt;
+    d3_rat_sphere *neu;
+    d3_rat_point ap,bp,cp,dp;
+    node nn;
+    int w;
+
+    forall(akt,Sil){
+      ap= akt->a->stor; 
+      bp= akt->b->stor;
+      cp= akt->c->stor;
+
+      if (akt->HULL_TR){ 
+       neu= new d3_rat_sphere(ap,bp,cp,cp);
+      }
+      else {
+       dp= akt->d->stor;
+       neu= new d3_rat_sphere(ap,bp,cp,dp);
+      }
+
+      nn=Gout.new_node(*neu); 
+      akt->helper= (void*)nn;
+    }
+
+    node n,n2;
+    sc_simplex s1;
+
+    forall(akt,Sil){
+      n= (node)(akt->helper);
+      s1= akt->abc;
+      if (s1 != NULL) { n2=(node)(s1->helper);
+                        w=join_or_link(Gout,n,n2);
+                        if (w==1) { s1->helper= (void*)(n); } // merge...
+                       }
+      s1= akt->abd;
+      if (s1 != NULL) { n2=(node)(s1->helper);
+                        w=join_or_link(Gout,n,n2);
+                        if (w==1) { s1->helper= (void*)(n); } // merge...
+                       }
+      s1= akt->acd;
+      if (s1 != NULL) { n2=(node)(s1->helper);
+                        w=join_or_link(Gout,n,n2);
+                        if (w==1) { s1->helper= (void*)(n); } // merge...
+                       }
+      s1= akt->bcd;
+      if (s1 != NULL) { n2=(node)(s1->helper); 
+                        w=join_or_link(Gout,n,n2); 
+                        if (w==1) { s1->helper= (void*)(n); } // merge...
+                       }
+    }
+
+    return true;
+  }
+
+  bool d3_simpl_complex::get_incident_simplices(sc_vertex v,list<sc_simplex>& ret)
+  {
+   if (v->com_of != this) { return false; }
+   if (v->my == NULL) { return false; } 
+
+   sc_simplex start= v->my;
+   sc_simplex akt;
+   sc_simplex l1,l2,l3,l4;
+   reset_markers();
+   start->Marker=100;
+   stack<sc_simplex> CAND;
+   CAND.push(start);
+
+   while (! CAND.empty()){
+     akt=CAND.pop();
+     ret.append(akt);
+     l1=akt->abc; l2=akt->abd; l3=akt->acd; l4=akt->bcd;
+     if (l1 != NULL && (l1->Marker ==-1) && (l1->index(v)!=0)) { CAND.push(l1); l1->Marker=100; }
+     if (l2 != NULL && (l2->Marker ==-1) && (l2->index(v)!=0)) { CAND.push(l2); l2->Marker=100; }
+     if (l3 != NULL && (l3->Marker ==-1) && (l3->index(v)!=0)) { CAND.push(l3); l3->Marker=100; }
+     if (l4 != NULL && (l4->Marker ==-1) && (l4->index(v)!=0)) { CAND.push(l4); l4->Marker=100; }
+   }   
+
+   return true;
+  }
+
+  bool d3_simpl_complex::get_incident_points(sc_vertex v,list<d3_rat_point>& dl)
+  {
+   list<sc_simplex> si;
+   sc_simplex akt;
+   d3_rat_point pneu;
+
+   bool rw=get_incident_simplices(v,si);
+   if (! rw) return false;
+
+   forall(akt,si){
+      if (akt->HULL_TR) pneu= akt->circle_midpoint();
+      else pneu= akt->sphere_midpoint();
+      
+      dl.append(pneu);
+   }
+   return true;
+  }
+
+  void d3_simpl_complex::kill_vlists()
+  {
+    sc_vertex v;
+    void* zeig;
+    forall(v,Vert){
+        zeig=v->helper; if (zeig!=NULL) delete ((list<d3_rat_point>*)(zeig));
+    }
+  }
+
+  bool d3_simpl_complex::make_vlists()
+  {
+    int bz= check_delaunay();
+
+    assert(bz == 0);
+
+    list<d3_rat_point>* aktli;
+    sc_vertex v;
+    forall(v,Vert){
+      aktli= new list<d3_rat_point>;
+      v->helper= (void*) aktli;
+    }
+
+    sc_simplex akt;
+
+    d3_rat_point pneu;
+    d3_rat_point phelp1,phelp2;
+    rat_vector rv;
+
+    void * zeig;
+
+    forall(akt,Sil){
+      if (akt->HULL_TR){ 
+       pneu= akt->circle_midpoint();
+       /*
+       //compute here some kind of "ray"
+       sc_simplex nb=akt->abc;
+       if (nb==NULL) pneu= akt->circle_midpoint();
+       else {
+        phelp1= nb->sphere_midpoint();
+        phelp2= akt->circle_midpoint();
+        rv=(phelp2-phelp1);
+        rv=rational(10.0)*rv;
+        pneu=phelp1+rv;
+       }
+       */
+      }
+      else {
+       pneu= akt->sphere_midpoint();
+      }
+      if (akt->HULL_TR){
+        zeig=akt->a->helper; ((list<d3_rat_point>*)zeig)->append(pneu);
+        zeig=akt->b->helper; ((list<d3_rat_point>*)zeig)->append(pneu);
+        zeig=akt->c->helper; ((list<d3_rat_point>*)zeig)->append(pneu);
+      }
+      else {
+        zeig=akt->a->helper; ((list<d3_rat_point>*)zeig)->append(pneu);
+        zeig=akt->b->helper; ((list<d3_rat_point>*)zeig)->append(pneu);
+        zeig=akt->c->helper; ((list<d3_rat_point>*)zeig)->append(pneu);
+        zeig=akt->d->helper; ((list<d3_rat_point>*)zeig)->append(pneu);
+      }
+      
+    }  
+    // show only closed voronoi cells...
+    forall(akt,Sil){
+      if (akt->HULL_TR){
+        zeig=akt->a->helper; ((list<d3_rat_point>*)zeig)->clear();
+        zeig=akt->b->helper; ((list<d3_rat_point>*)zeig)->clear();
+        zeig=akt->c->helper; ((list<d3_rat_point>*)zeig)->clear();
+      }
+    }
+    
+    return true;
+  }
+
+  bool d3_simpl_complex::compute_voronoi(GRAPH<d3_rat_point,int>& Gout,bool hflag) 
+  {
+    int bz= check_delaunay();
+    if (bz>0) return false; 
+
+    // compute VD ...
+    Gout.clear();
+    sc_simplex akt;
+
+    d3_rat_point pneu;
+    node neu;
+
+    forall(akt,Sil){
+     if (! akt->HULL_TR || hflag) {
+      if (akt->HULL_TR){ // no voronoi nodes...
+       pneu= akt->circle_midpoint();
+       assert(coplanar(pneu,akt->a->stor,akt->b->stor,akt->c->stor));
+      }
+      else { // voronoi nodes ...
+       pneu= akt->sphere_midpoint();
+      }
+
+      neu=Gout.new_node(pneu);
+      akt->helper= (void*)neu;
+     }
+    }
+
+    node n,n2;
+    sc_simplex s1;
+    int w;
+    edge e1,e2;
+
+    forall(akt,Sil){
+     if (! akt->HULL_TR || hflag) {
+       n= (node)(akt->helper);
+       s1= akt->abc;
+       if ((s1 != NULL ) && (! s1->HULL_TR || hflag))
+       { n2= (node)(s1->helper); e1=Gout.new_edge(n,n2); e2=Gout.new_edge(n2,n); Gout.set_reversal(e1,e2); }
+       s1= akt->abd;
+       if ((s1 != NULL ) && (! s1->HULL_TR || hflag)) 
+       { n2= (node)(s1->helper); e1=Gout.new_edge(n,n2); e2=Gout.new_edge(n2,n); Gout.set_reversal(e1,e2); }
+       s1= akt->acd;
+       if ((s1 != NULL ) && (! s1->HULL_TR || hflag)) 
+       { n2= (node)(s1->helper); e1=Gout.new_edge(n,n2); e2=Gout.new_edge(n2,n); Gout.set_reversal(e1,e2); }
+       s1= akt->bcd;
+       if ((s1 != NULL ) && (! s1->HULL_TR || hflag)) 
+       { n2= (node)(s1->helper); e1=Gout.new_edge(n,n2); e2=Gout.new_edge(n2,n); Gout.set_reversal(e1,e2); }
+     }
+    }
+   
+    // try to merge nodes...
+    sc_simplex akt2;
+    forall(akt,Sil){
+     if (! akt->HULL_TR || hflag) {
+      n= (node)(akt->helper);
+      s1= akt->abc;
+      if ((s1 != NULL) && (! s1->HULL_TR || hflag)) 
+                      { n2= (node)(s1->helper); 
+                        w=join(Gout,n,n2);
+                        if (w==1) { s1->helper= (void*)(n);
+			forall(akt2,Sil) { 
+                          if ((node)akt2->helper==n2) 
+                              akt2->helper=(void*)n; 
+                         }
+                        } // merge...
+                      }
+      s1= akt->abd;
+      if ((s1 != NULL) && (! s1->HULL_TR || hflag)) 
+                      { n2= (node)(s1->helper);
+                        w=join(Gout,n,n2);
+                        if (w==1) { s1->helper= (void*)(n);
+                        forall(akt2,Sil) { 
+                          if ((node)akt2->helper==n2) 
+                             akt2->helper=(void*)n; 
+                         }
+                        } // merge...
+                      }
+      s1= akt->acd;
+      if ((s1 != NULL) && (! s1->HULL_TR || hflag)) 
+                      { n2= (node)(s1->helper);
+                        w=join(Gout,n,n2);
+                        if (w==1) { s1->helper= (void*)(n); 
+                        forall(akt2,Sil) { 
+                          if ((node)akt2->helper==n2) 
+                             akt2->helper=(void*)n; 
+                         }
+                        } // merge...
+                       }
+      s1= akt->bcd;
+      if ((s1 != NULL) && (! s1->HULL_TR || hflag)) 
+                      { n2= (node)(s1->helper); 
+                        w=join(Gout,n,n2);
+                        if (w==1) { s1->helper= (void*)(n);
+                        forall(akt2,Sil) { 
+                           if ((node)akt2->helper==n2) 
+                              akt2->helper=(void*)n; 
+                         }
+                        } // merge...
+                       }
+     }
+    }
+ 
+    return true;
+  }
+
+  void d3_simpl_complex::compute_graph(sc_simplex sakt,
+                                       GRAPH<d3_rat_point,int>& Gout)
+  {
+   // computes a GRAPH Gout  containing (*sakt) and its neighbours
+
+   d3_rat_point a,b,c,d;
+
+   Gout.clear();
+
+   list<sc_simplex> me_and_nb;
+   me_and_nb.push(sakt);
+   if (sakt->abc != NULL) me_and_nb.push(sakt->abc);
+   if (sakt->abd != NULL) me_and_nb.push(sakt->abd);
+   if (sakt->acd != NULL) me_and_nb.push(sakt->acd);
+   if (sakt->bcd != NULL) me_and_nb.push(sakt->bcd);
+
+   sc_simplex S;
+   forall(S,me_and_nb){
+    a=S->a->stor; 
+    b=S->b->stor; 
+    c=S->c->stor; 
+    if (!S->HULL_TR) d=S->d->stor;
+
+    node o1=Gout.new_node(a); 
+    node o2=Gout.new_node(b); 
+    node o3=Gout.new_node(c);
+    node o4 = 0;
+    if (!S->HULL_TR) o4=Gout.new_node(d);
+
+    edge e1=Gout.new_edge(o1,o2); 
+    edge e2=Gout.new_edge(o2,o1); 
+    Gout.set_reversal(e1,e2);
+
+    e1=Gout.new_edge(o1,o3); 
+    e2=Gout.new_edge(o3,o1); 
+    Gout.set_reversal(e1,e2);
+
+    if (!S->HULL_TR){
+     e1=Gout.new_edge(o1,o4); 
+     e2=Gout.new_edge(o4,o1); 
+     Gout.set_reversal(e1,e2);
+    }
+
+    e1=Gout.new_edge(o2,o3); 
+    e2=Gout.new_edge(o3,o2); 
+    Gout.set_reversal(e1,e2);
+
+    if (!S->HULL_TR){
+     e1=Gout.new_edge(o2,o4); 
+     e2=Gout.new_edge(o4,o2); 
+     Gout.set_reversal(e1,e2);
+     e1=Gout.new_edge(o3,o4); 
+     e2=Gout.new_edge(o4,o3); 
+     Gout.set_reversal(e1,e2);
+    }
+   }   
+  }
+
+  void d3_simpl_complex::compute_surface_graph(GRAPH<d3_rat_point,int>& Gout)
+  //  computes a GRAPH Gout only containing the HullTriangles of the complex
+  {
+   Gout.clear();
+
+   sc_simplex S;
+   forall(S,Sil){
+
+     if (!S->HULL_TR) continue;
+
+     d3_rat_point a=S->a->stor;
+     d3_rat_point b=S->b->stor;
+     d3_rat_point c=S->c->stor;
+
+     node o1=Gout.new_node(a); 
+     node o2=Gout.new_node(b); 
+     node o3=Gout.new_node(c);
+
+     edge e1=Gout.new_edge(o1,o2); 
+     edge e2=Gout.new_edge(o2,o1); 
+     Gout.set_reversal(e1,e2);
+
+     e1=Gout.new_edge(o1,o3); 
+     e2=Gout.new_edge(o3,o1); 
+     Gout.set_reversal(e1,e2);
+
+     e1=Gout.new_edge(o2,o3); 
+     e2=Gout.new_edge(o3,o2); 
+     Gout.set_reversal(e1,e2);
+   } 
+
+  }
+
+
+  void d3_simpl_complex::compute_graph(GRAPH<d3_rat_point,int>& Gout)
+  {
+   node o1,o2,o3,o4=0;
+   edge e1,e2;
+   sc_simplex S;
+   d3_rat_point a,b,c,d;
+   Gout.clear();
+
+   forall(S,Sil){
+    a=S->a->stor; 
+    b=S->b->stor; 
+    c=S->c->stor;
+    if (! S->HULL_TR) d=S->d->stor;
+
+    o1=Gout.new_node(a); 
+    o2=Gout.new_node(b); 
+    o3=Gout.new_node(c);
+    if (! S->HULL_TR) o4=Gout.new_node(d);
+
+    e1=Gout.new_edge(o1,o2); 
+    e2=Gout.new_edge(o2,o1); 
+    Gout.set_reversal(e1,e2);
+    e1=Gout.new_edge(o1,o3); 
+    e2=Gout.new_edge(o3,o1); 
+    Gout.set_reversal(e1,e2);
+    if (! S->HULL_TR){
+     e1=Gout.new_edge(o1,o4); 
+     e2=Gout.new_edge(o4,o1); 
+     Gout.set_reversal(e1,e2);
+    }
+    e1=Gout.new_edge(o2,o3); 
+    e2=Gout.new_edge(o3,o2); 
+    Gout.set_reversal(e1,e2);
+
+    if (! S->HULL_TR){
+     e1=Gout.new_edge(o2,o4); 
+     e2=Gout.new_edge(o4,o2); 
+     Gout.set_reversal(e1,e2);
+
+     e1=Gout.new_edge(o3,o4); 
+     e2=Gout.new_edge(o4,o3); 
+     Gout.set_reversal(e1,e2);
+    }
+   } 
+  }
+
+  void d3_simpl_complex::compute_graph(GRAPH<d3_rat_point,int>& Gout,
+                                       set<sc_vertex>& DS,list<edge>& erg)
+  {
+    // fuer d3-window einen ausgabefaehigen Graphen erstellen...
+    // Verbindungen zwischen vertices im set als edge-liste zurück, 
+    // um Farbmark. zu ermöglichen
+   node o1,o2,o3,o4=0;
+   edge e1,e2;
+   sc_simplex S;
+   d3_rat_point a,b,c,d;
+   bool aw,bw,cw,dw=false;
+   Gout.clear();
+
+   forall(S,Sil){
+    a=S->a->stor; 
+    b=S->b->stor; 
+    c=S->c->stor;
+    aw= DS.member(S->a); 
+    bw= DS.member(S->b); 
+    cw= DS.member(S->c);
+
+    if (! S->HULL_TR) { d=S->d->stor; dw= DS.member(S->d); }
+
+    o1=Gout.new_node(a); 
+    o2=Gout.new_node(b); 
+    o3=Gout.new_node(c);
+    if (! S->HULL_TR) o4=Gout.new_node(d);
+
+    e1=Gout.new_edge(o1,o2); 
+    e2=Gout.new_edge(o2,o1); 
+    Gout.set_reversal(e1,e2);
+    if (aw && bw) { erg.append(e1); erg.append(e2); }
+
+    e1=Gout.new_edge(o1,o3); 
+    e2=Gout.new_edge(o3,o1); 
+    Gout.set_reversal(e1,e2);
+    if (aw && cw) { erg.append(e1); erg.append(e2); }
+
+    if (! S->HULL_TR){
+     e1=Gout.new_edge(o1,o4); 
+     e2=Gout.new_edge(o4,o1); 
+     Gout.set_reversal(e1,e2);
+     if (aw && dw) { erg.append(e1); erg.append(e2); }
+    }
+    e1=Gout.new_edge(o2,o3); 
+    e2=Gout.new_edge(o3,o2); 
+    Gout.set_reversal(e1,e2);
+    if (bw && cw) { erg.append(e1); erg.append(e2); }
+    if (! S->HULL_TR){
+     e1=Gout.new_edge(o2,o4); 
+     e2=Gout.new_edge(o4,o2); 
+     Gout.set_reversal(e1,e2);
+     if (bw && dw) { erg.append(e1); erg.append(e2); }
+     e1=Gout.new_edge(o3,o4); 
+     e2=Gout.new_edge(o4,o3); 
+     Gout.set_reversal(e1,e2);
+     if (cw && dw) { erg.append(e1); erg.append(e2); }
+    }
+   }
+  }
+
+
+bool in_sim(const d3_rat_point& p1,const d3_rat_point& p2,
+            const d3_rat_point& p3,const d3_rat_point& cand)
+{
+ array<d3_rat_point> AT(3);
+ AT[0]=p1; AT[1]=p2; AT[2]=p3;
+ return contained_in_simplex(AT,cand);
+}
+
+int d3_simpl_complex::common_triangle(sc_simplex S1, sc_simplex S2, Simpl_Triang& T)
+// attention! neighbour settings have to be correct for this function!
+{
+ int wert=get_link_index(S1,S2);
+ if (wert==0) return 0;
+ T.S1=S1;
+ T.S2=S2;
+
+ switch(wert){
+ case 1:
+  T.A=S1->a; T.B=S1->b; T.C=S1->c;
+  break;
+ case 2:
+  if (S1->HULL_TR && S2->HULL_TR){
+    T.A=S1->a; T.B=S1->b; T.C=S1->b;
+  }
+  else {
+    T.A=S1->a; T.B=S1->b; T.C=S1->d;
+  }
+  break;
+ case 3:
+  if (S1->HULL_TR && S2->HULL_TR){
+    T.A=S1->a; T.B=S1->c; T.C=S1->c;
+  }
+  else {
+    T.A=S1->a; T.B=S1->c; T.C=S1->d;
+  }
+  break;
+ case 4:
+  if (S1->HULL_TR && S2->HULL_TR){
+    T.A=S1->b; T.B=S1->c; T.C=S1->c;
+  }
+  else {
+    T.A=S1->b; T.B=S1->c; T.C=S1->d;
+  }
+  break;
+ }
+ 
+ return wert;
+}
+
+int d3_simpl_complex::configuration(sc_simplex S1, sc_simplex S2, Simpl_Triang& T)
+// see B. Joe (construction of 3d Delaunay triangulations using local transformations)
+// for desription of configurations
+{
+ sc_vertex v1_other,v2_other;
+ d3_rat_point ap,bp,cp,dp,ep;
+
+ ap = T.A->stor; 
+ bp = T.B->stor; 
+ cp = T.C->stor;
+
+ v1_other= S1->find_other(T.A,T.B,T.C);
+ if (v1_other==NULL) return 0;
+ dp= v1_other->stor;
+ v2_other= S2->find_other(T.A,T.B,T.C);
+ if (v2_other==NULL) return 0;
+ ep= v2_other->stor;
+
+ int o1=orientation(ap,bp,dp,ep);
+ int o2=orientation(cp,ap,dp,ep);
+ int o3=orientation(bp,cp,dp,ep);
+
+ sc_vertex f1,f2;
+ sc_simplex sim1,sim2;
+
+ if (o1==0 || o2==0 || o3==0){ // configuration 3 or 4 or 5
+   if (o1==0){
+     if (collinear(dp,ap,ep) || collinear(dp,bp,ep)) return 4; //  conf. 4
+     if (in_sim(dp,ep,bp,ap) || in_sim(dp,ep,ap,bp)) return 5; //  conf. 5
+     
+     f1=opposite_vertex(S1,T.C);
+     f2=opposite_vertex(S2,T.C);
+
+     // configuration 3
+     if (f1==NULL && f2==NULL) return 30;
+     if (f1==f2) return 31;
+   }
+   if (o2==0){
+     if (collinear(dp,ap,ep) || collinear(dp,cp,ep)) return 4; // conf. 4
+     if (in_sim(cp,dp,ep,ap) || in_sim(ap,dp,ep,cp)) return 5; // conf. 5
+
+     f1=opposite_vertex(S1,T.B);
+     f2=opposite_vertex(S2,T.B);
+
+     // configuration 3
+     if (f1==NULL && f2==NULL) return 32;
+     if (f1==f2) return 33;
+   }
+   if (o3==0){
+     if (collinear(dp,bp,ep) || collinear(dp,cp,ep)) return 4; // conf. 4
+     if (in_sim(bp,dp,ep,cp) || in_sim(dp,ep,cp,bp)) return 5; // conf. 5
+
+     f1=opposite_vertex(S1,T.A);
+     f2=opposite_vertex(S2,T.A);
+
+     // configuration 3
+     if (f1==NULL && f2==NULL) return 34;
+     if (f1==f2) return 35;
+   }   
+   return 0;
+   
+ }
+ else { // configuration 1 or 2
+  bool cs1=false,cs2=false,cs3=false;
+  contained_in_simplex(bp,cp,dp,ep,ap);  
+  if (!cs1) cs2=contained_in_simplex(ap,cp,dp,ep,bp);
+  if (!cs1 && !cs2) cs3=contained_in_simplex(ap,bp,dp,ep,cp);   
+
+  if (cs1 || cs2 || cs3) return 2; // configuration 2
+  // configuration 1
+
+  d3_rat_point mi= midpoint(midpoint(ap,bp),cp);
+  int omi=orientation(ap,bp,dp,mi);
+
+  if (o1==o2 && o2==o3) return 1; //abcde convex...
+ 
+  if (o1!=omi){
+   sim1= opposite_simplex(S1,T.C);
+   sim2= opposite_simplex(S2,T.C);
+   if ((sim1==sim2) && (sim1 !=NULL)) return 10; 
+  }
+  if (o2!=omi){
+   sim1= opposite_simplex(S1,T.B);
+   sim2= opposite_simplex(S2,T.B);
+   if ((sim1==sim2) && (sim1 !=NULL)) return 11; 
+  }
+  if (o3!=omi){
+   sim1= opposite_simplex(S1,T.A);
+   sim2= opposite_simplex(S2,T.A);
+   if ((sim1==sim2) && (sim1 !=NULL)) return 12; 
+  }
+
+  return 0;                   // configuration 1, but not transformable...
+ }
+
+}
+
+void d3_simpl_complex::link_save(sc_simplex SI, sc_simplex pt1, sc_simplex pt2, list<sc_simplex>& L)
+{
+ sc_simplex akt;
+ list<sc_simplex> nb= SI->all_neighbours();
+ forall(akt,nb){
+  if (akt!=pt1 && akt!=pt2) L.append(akt);
+  akt->update(SI,NULL);
+ }
+}
+
+void d3_simpl_complex::link_korr(sc_simplex SI, list<sc_simplex>& L,list<Simpl_Triang>& TRL)
+{
+  sc_simplex akt;
+  Simpl_Triang atl;
+
+  int fl;
+  if (SI->HULL_TR){
+    forall(akt,L) if (akt->HULL_TR) SI->link_new(akt);
+  }
+  else {
+    forall(akt,L) {
+      fl=SI->link_new(akt);
+      if (fl!=0) {
+        atl.S1=SI;
+        atl.S2=akt;
+        switch(fl){ 
+	case 1: atl.A=SI->a; atl.B=SI->b; atl.C=SI->c; break; //abc
+	case 2: atl.A=SI->a; atl.B=SI->b; atl.C=SI->d; break; //abd
+	case 3: atl.A=SI->a; atl.B=SI->c; atl.C=SI->d; break; //acd
+	case 4: atl.A=SI->b; atl.B=SI->c; atl.C=SI->d; break; //bcd
+        }
+        TRL.append(atl);
+      }
+    }
+  }
+}
+
+void d3_simpl_complex::link_korr(sc_simplex SI, list<sc_simplex>& L,queue<Simpl_Triang>& TQ,sc_vertex PV)
+// correct links after a flip of SI
+{
+  sc_simplex akt;
+  Simpl_Triang atl;
+
+  int fl;
+  if (SI->HULL_TR){
+    forall(akt,L) if (akt->HULL_TR) SI->link_new(akt);
+  }
+  else {
+    forall(akt,L) {
+      fl=SI->link_new(akt);
+      if (fl!=0) {
+        atl.S1=SI;
+        atl.S2=akt;
+        switch(fl){
+	case 1: atl.A=SI->a; atl.B=SI->b; atl.C=SI->c; break; //abc
+	case 2: atl.A=SI->a; atl.B=SI->b; atl.C=SI->d; break; //abd
+	case 3: atl.A=SI->a; atl.B=SI->c; atl.C=SI->d; break; //acd
+	case 4: atl.A=SI->b; atl.B=SI->c; atl.C=SI->d; break; //bcd
+        }
+        if (atl.A !=PV && atl.B !=PV && atl.C !=PV) TQ.append(atl);
+      }
+    }
+  }
+}
+
+void d3_simpl_complex::flip_konf3(sc_simplex S1, sc_simplex S2,
+                                  d3_simpl_complex* Cl,int konf,
+                                  Simpl_Triang& T,queue<Simpl_Triang>& TQ,
+                                  sc_vertex PV)
+{ 
+  list<sc_simplex> SN;
+  list<sc_simplex> PSN; 
+
+  sc_simplex Ps1=0, Ps2=0; 
+
+  sc_vertex av,bv,cv,dv,ev; 
+
+  sc_vertex fv; //for configs 31/33/35
+  av=T.A; bv=T.B; cv=T.C;
+  dv= S1->find_other(T.A,T.B,T.C); ev= S2->find_other(T.A,T.B,T.C);
+
+  switch (konf) {
+    case 30:
+     Ps1=Cl->opposite_simplex(S1,T.C); Ps2=Cl->opposite_simplex(S2,T.C); break;
+    case 31:
+     Ps1=Cl->opposite_simplex(S1,T.C); Ps2=Cl->opposite_simplex(S2,T.C); break;
+    case 32:
+     Ps1=Cl->opposite_simplex(S1,T.B); Ps2=Cl->opposite_simplex(S2,T.B); break;
+    case 33:
+     Ps1=Cl->opposite_simplex(S1,T.B); Ps2=Cl->opposite_simplex(S2,T.B); break;
+    case 34:
+     Ps1=Cl->opposite_simplex(S1,T.A); Ps2=Cl->opposite_simplex(S2,T.A); break;
+    case 35:
+     Ps1=Cl->opposite_simplex(S1,T.A); Ps2=Cl->opposite_simplex(S2,T.A); break;
+  }
+
+  // save old links
+  link_save(S1,S2,Ps1,SN); link_save(S2,S1,Ps2,SN);
+  if (Ps1 != NULL) link_save(Ps1,Ps2,S1,PSN);
+  if (Ps2 != NULL) link_save(Ps2,Ps1,S2,PSN);
+  
+  if (konf==30 || konf==32 || konf==34){
+
+    S1->clear_links(); S2->clear_links();
+    if (Ps1 !=NULL) Ps1->clear_links(); 
+    if (Ps2 !=NULL) Ps2->clear_links();
+
+    switch (konf){
+    case 30:
+     Cl->flk30++;
+     S1->change(av,cv,dv,ev);
+     S2->change(bv,cv,dv,ev);
+     Cl->set_link(S1,S2,cv,dv,ev);
+     if (Ps1 !=NULL) Ps1->change(av,dv,ev);
+     if (Ps2 !=NULL) Ps2->change(bv,dv,ev);
+     if (Ps1 !=NULL && Ps2!=NULL)  Cl->set_link(Ps1,Ps2,dv,dv,ev); 
+
+     if (Ps1 !=NULL) Cl->set_link(S1,Ps1,av,dv,ev); 
+     if (Ps2 !=NULL) Cl->set_link(S2,Ps2,bv,dv,ev); 
+     break;
+    case 32: 
+     Cl->flk32++;
+     S1->change(av,bv,dv,ev);
+     S2->change(cv,bv,dv,ev);
+     Cl->set_link(S1,S2,bv,dv,ev);
+     if (Ps1 !=NULL) Ps1->change(av,dv,ev);
+     if (Ps2 !=NULL) Ps2->change(cv,dv,ev);
+     if (Ps1 !=NULL && Ps2!=NULL) Cl->set_link(Ps1,Ps2,dv,dv,ev);
+
+     if (Ps1 !=NULL) Cl->set_link(S1,Ps1,av,dv,ev);
+     if (Ps2 !=NULL) Cl->set_link(S2,Ps2,cv,dv,ev);
+     break;
+    case 34: 
+     Cl->flk34++;
+     S1->change(bv,av,dv,ev);
+     S2->change(cv,av,dv,ev);
+     Cl->set_link(S1,S2,av,dv,ev);
+     if (Ps1 !=NULL) Ps1->change(bv,dv,ev);
+     if (Ps2 !=NULL) Ps2->change(cv,dv,ev);
+     if (Ps1 !=NULL && Ps2 !=NULL) Cl->set_link(Ps1,Ps2,dv,dv,ev); 
+
+     if (Ps1 !=NULL) Cl->set_link(S1,Ps1,bv,dv,ev);
+     if (Ps2 !=NULL) Cl->set_link(S2,Ps2,cv,dv,ev);
+     break;
+    }
+  }
+  else { // konf==31/33/35
+
+    switch (konf){
+    case 31: 
+     Cl->flk31++;
+     fv=Cl->opposite_vertex(S1,T.C);
+     S1->clear_links(); S2->clear_links(); 
+     if (Ps1 !=NULL) Ps1->clear_links(); 
+     if (Ps2 !=NULL) Ps2->clear_links();
+     S1->change(av,cv,dv,ev);
+     S2->change(bv,cv,dv,ev);
+     Cl->set_link(S1,S2,cv,dv,ev);
+     if (Ps1 !=NULL) Ps1->change(av,fv,dv,ev);
+     if (Ps2 !=NULL) Ps2->change(bv,fv,dv,ev);
+     if (Ps1 !=NULL && Ps2!=NULL) Cl->set_link(Ps1,Ps2,fv,dv,ev);
+
+     if (Ps1 !=NULL) Cl->set_link(S1,Ps1,av,dv,ev);
+     if (Ps2 !=NULL) Cl->set_link(S2,Ps2,bv,dv,ev);
+     break;
+    case 33:
+     Cl->flk33++;
+     fv=Cl->opposite_vertex(S1,T.B);
+     S1->clear_links(); S2->clear_links(); 
+     if (Ps1 !=NULL) Ps1->clear_links();
+     if (Ps2 !=NULL) Ps2->clear_links();
+     S1->change(av,bv,dv,ev);
+     S2->change(cv,bv,dv,ev);
+     Cl->set_link(S1,S2,bv,dv,ev);
+     if (Ps1 !=NULL) Ps1->change(av,fv,dv,ev);
+     if (Ps2 !=NULL) Ps2->change(cv,fv,dv,ev);
+     if (Ps1 !=NULL && Ps2!=NULL) Cl->set_link(Ps1,Ps2,fv,dv,ev);
+     if (Ps1 !=NULL) Cl->set_link(S1,Ps1,av,dv,ev);
+     if (Ps2 !=NULL) Cl->set_link(S2,Ps2,cv,dv,ev);
+     break;
+    case 35: 
+     Cl->flk35++;
+     fv=Cl->opposite_vertex(S1,T.A);
+     S1->clear_links(); S2->clear_links(); 
+     if (Ps1 !=NULL) Ps1->clear_links();
+     if (Ps2 !=NULL) Ps2->clear_links();
+     S1->change(bv,av,dv,ev);
+     S2->change(cv,av,dv,ev);
+     Cl->set_link(S1,S2,av,dv,ev);
+     if (Ps1 !=NULL) Ps1->change(bv,fv,dv,ev);
+     if (Ps2 !=NULL) Ps2->change(cv,fv,dv,ev);
+     if (Ps1 !=NULL && Ps2 !=NULL) Cl->set_link(Ps1,Ps2,fv,dv,ev); 
+     if (Ps1 !=NULL) Cl->set_link(S1,Ps1,bv,dv,ev);
+     if (Ps2 !=NULL) Cl->set_link(S2,Ps2,cv,dv,ev);
+     break;
+    }
+  }
+
+  // correction of links
+  link_korr(S1,SN,TQ,PV); link_korr(S2,SN,TQ,PV);
+  if (Ps1 !=NULL) link_korr(Ps1,PSN,TQ,PV);
+  if (Ps2 !=NULL) link_korr(Ps2,PSN,TQ,PV);
+}
+
+
+void d3_simpl_complex::flip_konf1(sc_simplex S1, sc_simplex S2,d3_simpl_complex* Cl,int konf,Simpl_Triang& T,queue<Simpl_Triang>& TQ,sc_vertex PV)
+// put boundaries into TL
+{
+  list<sc_simplex> SN;
+
+  sc_simplex S3; 
+
+  sc_vertex av,bv,cv,dv,ev;
+  av=T.A; bv=T.B; cv=T.C; // 3 common D3_vertices...
+  dv= S1->find_other(T.A,T.B,T.C); ev= S2->find_other(T.A,T.B,T.C);
+
+  if (konf==1){ // 1 new simplex!!
+   // save old links
+   link_save(S1,S2,S2,SN); link_save(S2,S1,S1,SN);
+   Cl->flk1++;
+   S1->change(bv,av,dv,ev); S2->change(cv,av,dv,ev);
+   S1->clear_links(); S2->clear_links();
+   S3=Cl->add_simplex(bv,cv,dv,ev);
+   S1->bcd=S2; S2->bcd=S1; 
+   S1->acd=S3; S3->acd=S1; 
+   S2->acd=S3; S3->bcd=S2; 
+   
+   link_korr(S1,SN,TQ,PV); link_korr(S2,SN,TQ,PV); link_korr(S3,SN,TQ,PV);
+  }
+  else { // remove 1 simplex
+    switch(konf){
+    case 10:
+     Cl->flk10++;
+     S3=Cl->opposite_simplex(S1,T.C);
+     link_save(S1,S2,S3,SN); link_save(S2,S1,S3,SN); link_save(S3,S1,S2,SN);
+     Cl->remove_simplex(S3);
+     S1->clear_links(); S2->clear_links();
+     S1->change(cv,bv,dv,ev); S2->change(cv,av,dv,ev);  
+     S1->acd=S2; S2->acd=S1; 
+     break;
+    case 11:
+     Cl->flk11++;
+     S3=Cl->opposite_simplex(S1,T.B);
+     link_save(S1,S2,S3,SN); link_save(S2,S1,S3,SN); link_save(S3,S1,S2,SN); 
+     Cl->remove_simplex(S3);
+     S1->clear_links(); S2->clear_links();
+     S1->change(bv,av,dv,ev); S2->change(bv,cv,dv,ev);
+     S1->acd=S2; S2->acd=S1; 
+     break;
+    case 12:
+     Cl->flk12++;
+     S3=Cl->opposite_simplex(S1,T.A);
+     link_save(S1,S2,S3,SN); link_save(S2,S1,S3,SN); link_save(S3,S1,S2,SN);  
+     Cl->remove_simplex(S3);
+     S1->clear_links(); S2->clear_links();
+     S1->change(av,bv,dv,ev); S2->change(av,cv,dv,ev);
+     S1->acd=S2; S2->acd=S1; 
+     break;
+    }
+    link_korr(S1,SN,TQ,PV); link_korr(S2,SN,TQ,PV);
+  }
+}
+
+int d3_simpl_complex::d2_test_convex(sc_vertex a,sc_vertex b,sc_vertex c,sc_vertex d)
+//  returns 1, if the 4 points stored by 4 D3-vertices, that lie in a plane (!), form a convex quadrangle.
+
+{
+ d3_rat_point ap,bp,cp,dp;
+ int o1,o2,o3,o4;
+ ap=a->stor; bp=b->stor;cp=c->stor; dp=d->stor;
+
+ o1=orientation_xy(ap,bp,cp);o2=orientation_xy(bp,cp,dp);
+ o3=orientation_xy(cp,dp,ap);o4=orientation_xy(dp,ap,bp);
+
+ if (o1==0 && o2==0 && o3==0 && o4==0){ 
+  o1=orientation_xz(ap,bp,cp);o2=orientation_xz(bp,cp,dp);
+  o3=orientation_xz(cp,dp,ap);o4=orientation_xz(dp,ap,bp);
+  if (o1==0 && o2==0 && o3==0 && o4==0){
+    o1=orientation_yz(ap,bp,cp);o2=orientation_yz(bp,cp,dp);
+    o3=orientation_yz(cp,dp,ap);o4=orientation_yz(dp,ap,bp);
+  }
+ }
+
+ if (o1==o2 && o3==o4 && o2==o3) {
+  if (o1 !=0) return 1;
+  else {
+    o1=orientation_xz(ap,bp,cp);o2=orientation_xz(bp,cp,dp);
+    o3=orientation_xz(cp,dp,ap);o4=orientation_xz(dp,ap,bp);    
+    if (o1==o2 && o3==o4 && o2==o3) {
+     if (o1 !=0) return 1;    
+    }
+    else {
+     o1=orientation_yz(ap,bp,cp);o2=orientation_yz(bp,cp,dp);
+     o3=orientation_yz(cp,dp,ap);o4=orientation_yz(dp,ap,bp);
+     if (o1==o2 && o3==o4 && o2==o3 && o1!=0) return 1;         
+    }
+  }
+ }
+
+ return 0;
+}
+
+int d3_simpl_complex::flip(sc_simplex S1, sc_simplex S2,Simpl_Triang& T)
+{
+ int wert=1;
+
+ if (S1->com_of != this || S2->com_of != this) return -1; 
+
+ if (S1->HULL_TR && S2->HULL_TR){ // 2 Hulltriangles...
+  list<Simpl_Triang> TRL;
+
+  list<sc_simplex> LS;
+
+  sc_vertex av,bv,dv,ev;
+  av=T.A; bv=T.B; 
+  dv= S1->find_other(T.A,T.B,T.B); ev= S2->find_other(T.A,T.B,T.B);
+
+  int cv=d2_test_convex(dv,av,ev,bv); // d2-flip possible ?
+  if (cv==0) return 0; 
+
+  link_save(S1,S2,S2,LS);link_save(S2,S1,S1,LS);
+  S1->clear_links(); 
+  S2->clear_links();
+  S1->change(av,dv,ev); 
+  S2->change(bv,dv,ev);
+  
+  set_link(S1,av,S2,bv);
+  link_korr(S1,LS,TRL); link_korr(S2,LS,TRL);
+
+  return wert;
+    
+ }
+
+ else {
+  queue<Simpl_Triang> TQ;
+  sc_vertex PV=NULL;
+
+  int konf= configuration(S1,S2,T);
+
+  if ( (konf==1) || (konf>9 && konf<13) || (konf>29 && konf<36) ){
+   if ( (konf==1)|| (konf>9 && konf<13) ) flip_konf1(S1,S2,this,konf,T,TQ,PV);
+   else flip_konf3(S1,S2,this,konf,T,TQ,PV);
+  }
+  return konf;
+ }
+
+}
+
+int d3_simpl_complex::flip(sc_simplex S1, sc_simplex S2,
+                           queue<Simpl_Triang>& TQ, Simpl_Triang& T,
+                                                    sc_vertex PV)
+{
+  if (S1->HULL_TR && S2->HULL_TR) return flip(S1,S2,T);    
+
+  int conf = configuration(S1,S2,T);
+
+  if (conf==1 || (conf>9 && conf<13)) 
+     flip_konf1(S1,S2,this,conf,T,TQ,PV);
+
+  if (conf>29 && conf<36) 
+     flip_konf3(S1,S2,this,conf,T,TQ,PV);
+
+  return conf;
+
+}
+
+void d3_simpl_complex::input_complex()
+{
+ int NV,NSI,NN;
+ int i;
+ rational xw,yw,zw;
+ int nb1,nb2,nb3,nb4;
+
+ clear(); 
+
+ cout << "Number of Vertices :"; cin >> NV;
+ cout << "Number of Simplices:"; cin >> NSI;
+ cout << "Number of Neighboursettings :"; cin >> NN;
+
+ d3_rat_point* P = new d3_rat_point[NV];
+ sc_vertex*    V = new sc_vertex[NV];
+ sc_simplex*   S = new sc_simplex[NSI];
+
+ for (i=0;i<NV;i++) {
+  cout << i << ". point:\n";
+  cout << " "; cin >> xw;
+  cout << " "; cin >> yw;
+  cout << " "; cin >> zw;
+   
+  P[i]=d3_rat_point(xw,yw,zw);
+  V[i]=add_vertex(P[i]); 
+ } 
+
+ for (i=0;i<NSI;i++) { 
+  cout << i << ". simplex:\n";
+  cout << " 1. vertex:"; cin >> nb1;
+  if (nb1 >= NV) { cout << "false input!\n"; nb1=0; }
+  cout << " 2. vertex:"; cin >> nb2;
+  if (nb2 >= NV) { cout << "false input!\n"; nb2=0; }
+  cout << " 3. vertex:"; cin >> nb3;
+  if (nb3 >= NV) { cout << "false input!\n"; nb3=0; }
+  cout << " 4. vertex:"; cin >> nb4; 
+  if (nb4 >= NV) { cout << "false input!\n"; nb4=0; }
+
+  if (nb4 != -1) S[i]=add_simplex(V[nb1],V[nb2],V[nb3],V[nb4]);
+  else S[i]=add_simplex(V[nb1],V[nb2],V[nb3]);
+ }
+ 
+ sc_vertex u1,u2;
+
+ for (i=0;i<NN;i++) {
+  cout << i << ". link:\n";
+  cout << " 1. simplex:"; cin >> nb1;
+  cout << " 1. vertex :"; cin >> nb2;
+  cout << " 2. simplex:"; cin >> nb3;
+  cout << " 2. vertex :"; cin >> nb4;  
+  if (nb2 !=-1) u1=V[nb2]; else u1=NULL;
+  if (nb4 !=-1) u2=V[nb4]; else u2=NULL; 
+  set_link(S[nb1],u1,S[nb3],u2);
+ }
+
+ delete P; delete V; delete S;
+}
+
+sc_simplex d3_simpl_complex::insert_vertex(sc_simplex S,sc_vertex v)
+{
+ return triang_simplex(S,v);
+}
+
+sc_simplex d3_simpl_complex::triang_simplex(sc_simplex,sc_vertex, int)
+{
+ return 0;
+}
+
+sc_simplex d3_simpl_complex::triang_simplex(sc_simplex S,sc_vertex v)
+// v inside S; triangulate new...
+{
+ if (v->com_of != this || S->com_of != this) return NULL;
+
+ d3_rat_point p= v->stor;
+ sc_simplex sn1,sn2,sn3;
+ d3_rat_point A,B,C,D;
+ sc_vertex va,vb,vc,vd;
+ list<sc_simplex> Sn;
+
+ if ( ! S->in_simplex(p)) return NULL; 
+
+ if (S->HULL_TR){ 
+  if (S->abc==NULL){ 
+    va= S->a; 
+    vb=S->b; 
+    vc=S->c; 
+    A= va->stor; 
+    B= vb->stor; 
+    C= vc->stor; 
+
+    if (p==A || p==B || p==C) return NULL;
+
+    link_save(S,NULL,NULL,Sn);
+
+    S->clear_links();
+    sn1=add_simplex(va,vb,v); 
+    sn2=add_simplex(va,vc,v); 
+    S->change(vb,vc,v);  
+    set_link(sn1,vb,sn2,vc); 
+    set_link(sn1,va,S,vc); 
+    set_link(sn2,va,S,vb); 
+    list<Simpl_Triang> TRL;
+    link_korr(sn1,Sn,TRL); 
+    link_korr(sn2,Sn,TRL); 
+    link_korr(S,Sn,TRL);  
+
+    return S;  
+  }
+  else {
+   sc_simplex S_other=S->abc;
+   
+   return triang_simplex(S_other,v); 
+  }
+ }
+ else {
+  va=S->a; 
+  vb=S->b; 
+  vc=S->c; 
+  vd=S->d;
+  A = va->stor; 
+  B = vb->stor; 
+  C = vc->stor; 
+  D = vd->stor; 
+
+  if (p==A || p==B || p==C || p==D) return NULL;
+
+
+  link_save(S,NULL,NULL,Sn);
+
+  //new simplex
+  S->clear_links();
+  sn1 = add_simplex(va,vb,vc,v); 
+  sn2 = add_simplex(va,vb,vd,v);
+  sn3 = add_simplex(va,vc,vd,v);
+  S->change(vb,vc,vd,v);
+
+  //set new links...
+  set_link(sn1,vc,sn2,vd); 
+  set_link(sn1,vb,sn3,vd);
+  set_link(sn1,va,S,vd);
+  set_link(sn2,vb,sn3,vc); 
+  set_link(sn2,va,S,vc);
+  set_link(sn3,va,S,vb); 
+  list<Simpl_Triang> Trl;
+  link_korr(sn1,Sn,Trl); 
+  link_korr(sn2,Sn,Trl); 
+  link_korr(sn3,Sn,Trl); 
+  link_korr(S,Sn,Trl);  
+
+  return sn1;
+ }
+
+}
+
+sc_simplex d3_simpl_complex::triang_simplex(sc_simplex S,d3_rat_point p)
+{
+ sc_vertex v= add_vertex(p);
+ return triang_simplex(S,v);
+}
+
+bool d3_simpl_complex::all_delaunay_check()
+{
+ sc_simplex  fst;
+ sc_vertex ac;
+ bool flag=true;
+             
+ forall(fst,Sil) {
+  forall(ac,Vert){
+    if (fst->insphere(ac->stor))  flag=false;
+  }
+ }
+
+ return flag;
+}
+
+bool d3_simpl_complex::delaunay_check(int w)
+{
+ int st;
+ if (w==1) { st=check_delaunay(); if (st==0) return true; else return false; }
+ else return all_delaunay_check();
+}
+
+int d3_simpl_complex::check(int output,ostream& ost)
+// output information about the simplex complex, perform some tests...
+// output==0 ... no output
+// output==1 ... only errors and number of vertices/simplices
+// output >1 ... like 1 but output all vertices/simplices too
+{
+ if (output>0) ost << "check:" << Sil.size() << " simplices; " << Vert.size() << " vertices!\n";
+ sc_vertex aktual;
+ sc_simplex S,S2;
+
+ // Simplices und Vertices ausgeben...
+ if (output>1){
+
+  ost << "vertices:\n";
+  ost << "---------\n";
+  forall(aktual,Vert){
+   ost << *aktual << "\n";
+  }
+  ost << "simplices:\n";
+  ost << "----------\n";
+  forall(S,Sil){
+   ost << *S;
+  }
+ }
+
+ // check links ...
+
+ list<sc_simplex> an;
+ int wert;
+ int rueck=0;
+ Simpl_Triang Tr;
+ //int tw;
+ int nbsets=0;
+ sc_simplex s1,s2,s3,s4;
+ int sizahl=0;
+ int htrzahl=0;
+
+ forall(S,Sil){
+   sizahl++;
+   if ( S->HULL_TR){
+     htrzahl++;
+     s1= S->abd; s2= S->acd; s3= S->bcd; s4= S->abc;
+     if (s1 !=NULL) {
+       if (! s1->HULL_TR) { rueck=1; if (output>0) ost << "CHECKER --- error abd ---\n"; }
+     }
+     if (s2 !=NULL) {
+       if (! s2->HULL_TR) { rueck=1; if (output>0) ost << "CHECKER --- error acd ---\n"; } 
+     }
+     if (s3 !=NULL) {
+       if (! s3->HULL_TR) { rueck=1; if (output>0) ost << "CHECKER --- error bcd ---\n"; }
+     }
+     if (s4 !=NULL) {
+       if ( s4->HULL_TR)  { rueck=1; if (output>0) ost << "CHECKER --- error abc ---\n"; }
+     }
+   }
+   // checks for non-hulltrs. ("real" simplices)
+   else {
+     if (coplanar(S->a->stor,S->b->stor,S->c->stor,S->d->stor)) {
+       rueck=1;
+       if (output>0) ost << "Problem - simplex flat!\n";
+     }
+     if ( S->d == NULL) {
+       rueck=1;
+       if (output>0) ost << "Problem - d-pointer is NULL for a non-hulltr.!\n";
+     }
+   }
+
+   an=S->all_neighbours();
+   nbsets=nbsets+an.size();
+
+   forall(S2,an){
+     if (S2==S) { 
+      rueck=1;
+      if (output>0) ost << "The neighbour is the simplex himself!\n";
+     }
+     wert=get_link_index(S2,S);
+     if (wert < 1) { 
+       if (output>0) ost << "CHECKER --- a neighbour link is not reversal!\n";
+       rueck=1;
+     }
+     else {
+       //tw=common_triangle(S, S2, Tr); 
+       wert=S2->control_vert(Tr.A,Tr.B,Tr.C);    
+       if (wert==0){
+          if (output>0) 
+          ost << "CHECKER --- false neighbourhood between simplices " 
+               <<  S->name << "/" << S2->name << " " << Tr <<  " !\n";
+          rueck=1; 
+       }
+     }
+   }   
+ }
+
+ if (output>0) 
+  cout << nbsets << " neighbour-links ( " << (int)(nbsets/2) << " pairs).\n";
+
+ if (Sil.size() != sizahl) { 
+   if (output>0) 
+       cout << "error - number of simplices. Sil.size:" 
+            << Sil.size() << " sizahl:" << sizahl << "\n";
+   rueck=1;
+ }
+ 
+ if (output>0) cout << htrzahl << " hulltriangles!\n";
+
+ return rueck;
+}
+
+bool test_inside(d3_rat_point a,d3_rat_point b,d3_rat_point c,d3_rat_point other)
+{
+ d3_rat_point d=point_on_positive_side(a,b,c);
+ bool w=inside_sphere(a,b,c,d,other);
+ return w;
+}
+
+LEDA_END_NAMESPACE

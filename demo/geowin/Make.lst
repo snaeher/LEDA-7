@@ -1,0 +1,25 @@
+PROGS = \
+delaunay_sweep$(e) \
+geowin$(e) \
+geowin_bezier$(e) \
+geowin_circles$(e) \
+geowin_constr_tr$(e) \
+geowin_conv_comp$(e) \
+geowin_d3hull$(e) \
+geowin_dual$(e) \
+geowin_flip_delaunay$(e) \
+geowin_genpoly$(e) \
+geowin_halfplane_inter$(e) \
+geowin_max_triang$(e) \
+geowin_mink$(e) \
+geowin_motion$(e) \
+geowin_pointset$(e) \
+geowin_poly_choice$(e) \
+geowin_poly_triang$(e) \
+geowin_triang$(e) \
+geowin_triang_poly$(e) \
+geowin_triang_gen_poly$(e) \
+geowin_voro$(e) \
+geowin_voro_circ$(e) \
+geowin_voro_poly$(e) \
+geowin_voro_seg$(e)

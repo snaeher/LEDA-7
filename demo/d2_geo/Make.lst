@@ -1,0 +1,19 @@
+PROGS = \
+buffering_demo$(e) \
+crust_demo$(e) \
+delaunay_demo$(e) \
+dxf_io_demo$(e) \
+intersect_segments$(e) \
+intersect_circle_segments$(e) \
+jordan_demo$(e) \
+label_map$(e) \
+label_map1$(e) \
+polygon_demo$(e) \
+polygon_holes$(e) \
+polygon_logo$(e) \
+point_set_demo$(e) \
+r_circle_buffer_demo$(e) \
+r_circle_polygon_demo$(e) \
+regional_decomp_demo$(e) \
+triangulation_demo$(e) \
+voronoi_demo$(e)

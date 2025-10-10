@@ -1,0 +1,9 @@
+compiler = msc
+
+CC      = cl -nologo -W3 -c -TP
+PLAIN_C = cl -nologo -W3 -c -TC
+LD      = cl -nologo -MT
+
+CFLAGS  = -EHsc -Ox -MT -DLEDA_MULTI_THREAD
+WERR    = -WX
+

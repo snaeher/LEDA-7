@@ -1,0 +1,20 @@
+PROGS = \
+ws_client$(e) \
+ws_server$(e) \
+samsung$(e) \
+wget$(e) \
+agd_client1$(e) \
+time_server$(e) \
+tclient$(e) \
+tls_socket$(e) \
+c_client$(e) \
+mf_server$(e)\
+mf_client$(e)
+
+#cc$(e) \
+#LedaInputStream.class\
+#LedaOutputStream.class\
+#LedaSocket.class\
+#Mf_client.class
+
+

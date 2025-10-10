@@ -1,0 +1,13 @@
+PROGS = \
+bouncing_leda$(e) \
+define_color$(e) \
+draw$(e) \
+font_viewer$(e) \
+hilbert$(e) \
+logo1$(e) \
+logo_anim$(e) \
+panel_demo$(e) \
+sierpinski$(e) \
+terminal$(e) \
+tim$(e) \
+gw_many$(e)

@@ -1,0 +1,114 @@
+*********************************************************************
+*                                                                   *
+*                              LEDA 7.0                             *
+*                                                                   *
+*                      SOURCE CODE INSTALLATION                     *
+*                                                                   *
+*********************************************************************
+
+
+0. Contents of File
+-------------------
+
+I.   Directory Overview
+II.  Configuration on Unix
+III. LEDA Compilation on Unix
+IV.  Configuration for MS Visual C++ 
+V.   LEDA Compilation with MS Visual C++
+
+
+I. DIRECTORY OVERVIEW:
+----------------------
+
+   The LEDA main directory should contain the following files and 
+   subdirectories: 
+
+   Readme.txt                overview of LEDA documentation
+   CHANGES                   most recent changes
+   FIXES                     bug fixes since last release
+   Install/                  installation and usage of LEDA
+   license.txt               license text
+   lconfig                   configuration command for unix
+   lconfig.bat               configuration command for MS Windows
+   Makefile                  main make script
+   config/                   configuration directory
+   incl/                     include directory
+   src/                      source code files 
+   demo/                     demo programs
+   test/                     test programs
+
+
+II. CONFIGURATION FOR UNIX 
+--------------------------
+
+1. Dependencies
+   The following packages must be installed:
+   libX11-dev
+   libxft-dev
+   yasm
+
+2. Go to the LEDA main directory
+
+3. Type: lconfig <cc>  [static | shared]
+
+    where <cc> is the name (or command) of your C++ compiler
+    and the optional second parameter defines the kind of 
+    libraries to be generated (static or shared). 
+
+    Examples: lconfig g++, lconfig g++ shared
+     
+    lconfig without arguments prints a list of known compilers.
+    If your compiler is not in the list you might have to
+    edit the <LEDA/sys/unix.h> header file.
+    
+    If you're installing on a windows machine, please read the 
+    following sections.
+
+
+III. Compilation on UNIX 
+-----------------------------
+
+Type make for building the object code library
+libleda.a and libleda.so (if the shared library is used) 
+
+Now follow the instructions given in File Install/unix.txt. 
+
+
+
+IV. Configuration for MS Visual C++ under Windows
+-------------------------------------------------
+
+1. Dependencies
+   The yasm-assembler (yasm.exe) must be installed
+   (see http://sourceforge.net/projects/yasm)
+
+2. Setting the Environment Variables for Visual C++: 
+   The compiler CL.EXE and the linker LINK.EXE require that the 
+   environment variables PATH, INCLUDE, and LIB have been set properly. 
+   When Visual C++ was installed, setup created a batch file, 
+   VCVARS32.BAT or VSVARS32.BAT containing the commands to modify 
+   PATH, LIB, and INCLUDE. Run VCVARS32.BAT (VSVARS32.BAT) before you 
+   compile LEDA as follows. 
+   (a) At the command prompt, change to the \bin subdirectory of your 
+   Visual C++ installation 
+   ( ,e.g., c:\programs\microsoft visual studio\vc98\bin). 
+   (b) Type VCVARS32 (VSVARS32). 
+   
+3. Add the the location of the yasm assembler to your PATH variable
+
+4. Go to the LEDA main directory (at the command prompt used above). 
+
+5. Type: lconfig msc [dll] [mt] 
+
+
+
+V. Compilation with MS Visual C++ 
+---------------------------------------
+
+Type "build lib" for building the object code libraries 
+
+static:  leda.lib
+dynamic: leda.lib and leda.dll
+
+
+

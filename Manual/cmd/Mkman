@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# this script must be called in $LEDAROOT/Manual/MANUAL
+
+cd ../..
+
+if [ ! -d Manual/MANUAL ]; then
+  echo ""
+  echo "Mkman must be called from \$LEDAROOT/Manual/MANUAL"
+  exit 0
+fi;
+
+lroot=`pwd`
+
+LEDAROOT=$lroot
+export LEDAROOT
+
+PATH=$LEDAROOT/Manual/cmd:$PATH
+export PATH
+
+source=$LEDAROOT/incl/LEDA
+ext=h
+
+if [ "$1" != "" ]; then
+  source=$1
+  if [ "$2" = "" ]; then
+    ext=h
+  else
+    ext=$2
+  fi
+fi
+
+
+cd Manual/MANUAL
+
+
+echo
+echo Extracting Manual Pages from $LEDAROOT/incl/LEDA
+echo
+
+
+rm -r -f extract
+
+mkdir extract
+
+
+echo Extracting manual pages ...
+echo " "
+
+for g in core coding geo geo/generic graph graphics numbers string system; do
+if [ -d $source/$g ]; then
+  for f in $source/$g/*.$ext; do
+   echo $f
+   lextract $f  extract/`basename $f .$ext`.tex \
+   informational=no indexing=yes includefile=yes warnings=log constref=yes
+ done
+fi
+done
+
+
+
+#if [ -d $source/generic ]; then
+#  for f in $source/generic/*.$ext; do
+#   echo $f
+#   lextract $f  extract/`basename $f .$ext`.tex \
+#   informational=no indexing=yes includefile=yes warnings=log #constref=yes
+#  done
+#fi
+
+

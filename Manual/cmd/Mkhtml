@@ -1,0 +1,108 @@
+#!/bin/sh
+
+if [ "$1" = "top" -o "$1" = "" ]; then
+echo " "
+echo "Preparing all tex-files in top level of the Manual"
+files="$LEDAROOT/Manual/MANUAL/*.tex"
+for f in $files
+do   
+   core=`basename $f .tex`
+   echo "preparing $core"
+   cp $f $core.mkhtml
+   perl -p -i.bak -e 's/\\</</g;s/\\>/>/g;' $core.mkhtml
+   perl $LEDAROOT/Manual/cmd/handle_refs.pl $core.mkhtml > $core.tex
+done
+\rm -f *.mkhtml *.mkhtml.bak
+fi # $1 != low
+
+if [ "$1" = "low" -o "$1" = "" ]; then
+\rm -r -f extract
+mkdir extract
+cd extract
+
+if [ -x /usr/local/bin/grep ]; then
+  grep_cmd=/usr/local/bin/grep
+elif [ -x /usr/bin/grep ]; then
+  grep_cmd=/usr/bin/grep
+else
+  grep_cmd=grep
+fi
+
+echo "Extending namereplacementtable by Manpage entries"
+#files="$LEDAROOT/incl/LEDA/*.h $LEDAROOT/incl/LEDA/generic/*.h"
+
+files="$LEDAROOT/incl/LEDA"
+for g in beta/geo core coding geo geo/generic graph graphics numbers system string; do
+for f in $files/$g/*.h
+do
+  core=`basename $f .h`
+#  printf "$core "
+  printf "."
+  perl -S extract_mtype.pl $f >> namereplacementtable
+done
+done
+
+echo " "
+echo "Preparing all tex-files for LEDA types"
+#files="$LEDAROOT/incl/LEDA/*.h $LEDAROOT/incl/LEDA/generic/*.h"
+files="$LEDAROOT/incl/LEDA"
+for g in beta/geo core coding geo geo/generic graph graphics numbers system string; do
+for f in $files/$g/*.h
+do
+  if $grep_cmd -q Manpage $f; then
+   core=`basename $f .h`
+   echo "preparing tex-file for $core"
+   perl -S -I$LEDAROOT/Manual/cmd ext.pl HTMLext $f outfile=$core.tex \
+   informational=no warnings=log indexing=yes includefile=yes constref=yes
+  fi
+done
+done
+cd ..
+
+fi #
+
+echo "calling latex MANUAL.tex"
+echo " "
+# fix set.tex
+cd extract
+sed "s/\%/\\\%/" set.tex > schrott.tex; mv schrott.tex set.tex
+#sed "s/\%=/\\\%=/" set.tex > schrott.tex; mv schrott.tex set.tex
+cd ..
+
+latex MANUAL.tex
+latex MANUAL.tex
+dvips MANUAL
+
+echo "please ensure that your path does not contain dots!!!"
+echo "calling latex2html MANUAL.tex"
+echo ""
+
+\rm -rf MANUAL
+
+if [ "$1" = "low" -o "$1" = "top" ]; then
+  shift
+fi
+
+if [ ! -f HTMLdoc-latex2html.cfg ]; then
+  notangle -R.latex2html-init $LEDAROOT/Manual/noweb/ext.nw \
+  > Mkhtml-latex2html.cfg # this gives flags
+fi 
+
+latex2html -init_file Mkhtml-latex2html.cfg MANUAL.tex $*
+
+cd MANUAL
+mv Index.html bindex.html
+mv GRAPH.html bgraph.html
+mv UGRAPH.html bugraph.html
+mv PLANAR_MAP.html bplanar_map.html
+mv Partition.html bpartition.html
+perl -p -i -e 's/Index\.html/bindex\.html/g; 
+s/PLANAR\_MAP\.html/bplanar\_map\.html/g;
+s/Partition\.html/bpartition\.html/g;
+s/UGRAPH\.html/bugraph\.html/g;
+s/GRAPH\.html/bgraph\.html/g;' *.html
+# the following should replace "&nbsp;" by "~" in int_set.html to display operator~
+perl -p -i -e 's/&nbsp;/~/g' int_set.html
+cd ..
+exit
+

@@ -1,0 +1,37 @@
+.SUFFIXES: .asm
+
+
+IPATH = $(LROOT)/incl
+SLIB  = $(LROOT)/lib$L.a
+o     = .o
+
+.c.o:
+	$(PLAIN_C) $(CFLAGS) $(DFLAGS) $(WERR) -DLEDA_INSTALL -I$(IPATH) -c $*.c
+
+.cpp.o:
+	$(CC) $(CFLAGS) $(DFLAGS) $(WERR) -DLEDA_INSTALL -I$(IPATH) -c $*.cpp
+
+.asm.o:
+	$(ASM) $(AFLAGS) $*.asm -o $*.o
+
+
+
+all: $(SLIB)
+	@true
+
+include Make.lst
+
+$(SLIB): $(OBJECTS)
+	ar cr $(SLIB) $?
+	ranlib $(SLIB)
+
+obj: $(OBJECTS)
+	@true
+
+touch:
+	touch -c *.o
+	ar cr $(SLIB) *.o
+
+clean:
+	rm -f $(OBJECTS)
+

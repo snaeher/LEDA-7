@@ -1,0 +1,6 @@
+Die Wurzel ist der größte Schlüssel im Feld, das garantiert die Heapeigenschaft.
+
+Der \tt swap \rm vertauscht das letzte Element im Heap (im Feld) mit der Position 
+der Wurzel.
+
+Die alte Wurzel hat nun ihren endgültigen Platz im Feld.

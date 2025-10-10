@@ -1,0 +1,5727 @@
+% This file should be typeset by
+%
+%	lw2nw ext.nw > ext1.nw;
+%	noweave -delay ext1.nw > ext.tex
+%	latex ext.tex (2x)
+
+\documentclass[a4paper,10pt]{article}
+\usepackage{noweb}
+
+\input MANUAL.pagesize
+\input MANUAL.mac
+
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+\newcommand{\tc}[1]{$\backslash\mathit{#1}$}
+
+\begin{document}
+\title{The LEDA Tools for Manual Production and Documentation}
+\author{Evelyn Haak \and Kurt Mehlhorn \and Stefan N{\"a}her \and
+	Michael Seel \and Christian Uhrig}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{The Manual Page of the Documentation Tools}
+
+\subsection{How to use the manual production tools}
+LEDA offers several tools for manual production and documentation.
+The following diagram shows the different extraction and conversion
+processes possible from a documented and manual commented file 
+to the different intermediate files for further processing.
+
+\begin{verbatim}
+       __________ weave _______   LaTeX source
+      |
+      |   ------- Lman --------   LaTeX source for manual page
+    foo
+      |   ------- Ldoc --------   LaTeX source for full documentation
+      |
+      |   ------- Fman --------   ASCII version of manual page
+      |
+      |__________ tangle ______   C/C++ program
+
+    
+    foo's ------- lextract ----   LaTeX source of manual
+
+    foo's ------- Mkdvi -------   dvi versions of all manual pages
+                                  in directory MANUAL/DVI
+\end{verbatim}
+
+Lman produces manual pages from header files suitably augmented by so-called
+manual comments. Many examples can be found in the LEDA include directory
+(LEDAROOT/incl/LEDA). A manual comment starts with \verb-\*{\M- and ends with
+\verb-}*/-. Try \verb-Lman list- to see Lman in action.  If it does not work
+the error is very likely to be one of the following (if not, you should refer
+to the LEDA installation guide):
+
+\begin{itemize}
+\item The environment variable LEDAROOT is not set to the root directory of the LEDA system. 
+\item \$LEDAROOT/Manual/cmd is not part of your PATH.
+\item \$LEDAROOT/Manual/tex is not part of your TEXINPUTS.
+\end{itemize}
+\begin{verbatim}
+               LEDAROOT
+	           |
+    ___________________________________
+   |               |                   |
+ incl            Manual               DVI
+   |          _____|_______________
+ LEDA        |     |        |      |
+            cmd   noweb    tex   MANUAL
+\end{verbatim}
+shows the parts of the LEDAROOT directory relevant for manual production
+and documentation. The include directory contains all header files of the 
+LEDA system Manual contains all the relevant commands and tex files.
+
+\begin{description}
+\item[Lman] can be applied to LEDA data types and user-defined data
+types. Write \verb-Lman T[.h] options- to apply it to the LEDA data type T and
+\verb-Lman T[.ext] options- to apply it to file T.ext in the working
+directory. The extensions lw (Lweb file), nw (noweb file), w (a Cweb-file), and
+h (h-file) are possible. The extensions are tried in this order and the working
+directory is searched before the LEDA include directory.
+
+The following options are available:
+
+[[size={12,11,10}]]\\
+[[constref={no,yes}]]\\
+[[partypes={no,yes}]]\\
+[[usesubscripts={no,yes}]]\\
+[[numbered={no,yes}]]\\
+[[xdvi={yes,no}]]\\
+[[warnings={yes,no,log}]]\\
+[[includefile={no,yes}]]\\
+[[indexing={no,yes}]]\\
+[[informational={yes,no}]]\\
+[[ack={yes,no}]]\\
+[[latexruns={1,2,0}]]\\
+[[filter={all, signatures, definition, types, creation, operations, events,]]
+[[implementation, example, operator, opname}]]\\
+[[pid={"",string}]]\\
+
+Options are given in assignment syntax. There must be no blank on either side
+of the equality sign.
+
+The size-option selects the font-size. The option constref determines whether
+const-ref pairs are shown, the option partypes determines whether the type of a
+value parameter of an operator is suppressed if equal to the currently defined
+type, and the option usesubscripts determines whether indexed variables are
+typeset using subscripts.
+
+A manual page can be numbered or not and the call of xdvi can be suppressed.
+Lman may be asked to issue warnings and warnings may require a user action or
+not. We recommend to run Lman with \verb-warnings=yes- and \verb-ack=yes- in
+the early stages of designing a manual page.  Lman usually runs \LaTeX\ twice
+in order to get cross-references correct.  You may settle for a single run of
+\LaTeX. Lman makes use of a preprocessor called ext. The preprocessor writes
+its output on file /tmp/pid-ext.tex where pid is either the process
+identification of the preprocessor run or specified by the pid-option. Mkman
+makes use of the pid-option. You will probably never have to use it.
+
+There are four ways to specify options for Lman. You may either put them 
+into the file itself by means of the Moptions command, or you can put them
+onto the command line, or you can put them into a configuration file
+Lman.cfg in either the working directory or the home directory.
+
+The Lman-utility can also be told to extract only part of a manual page by the
+filter-option. The options definition, creation, operations, implementation,
+and example cause extraction of the corresponding section of the manual, and
+the option signatures extracts the signatures of all operations but suppresses
+the descriptions.  One can also extract a single operation by using its name,
+e.g., \verb-Lman stack filter=push- extracts the push operation of the stack
+type and \verb-Lman point filter=operator+- extracts the + operator of the
+point type (write arrop to inquire about the array operator and funop to
+inquire about the function operator).
+
+\item[Fman] is an alternative to Lman. It gives low quality ASCII output but
+works faster.
+
+\item[Mkman] is the tool to produce manuals like the LEDA manual. 
+
+\item[Ldoc] is the utility that supports the production of full
+documentations. All remarks above apply equally well to Ldoc. Ldoc applies to
+Lweb, noweb, and Cweb files. For use with noweb and Lweb, the LEDA dialect of
+noweb, you must have installed noweb and for use with Cweb you must have
+installed Cweb. The subdirectories Cweb, noweb, and Lweb contain full
+documentations of parts of the LEDA system. Copy a file from one of these
+directories to your working directory and run Lman on it to see it in
+action. If it does not work check whether you have installed the proper
+literate programming system.
+ 
+\item[lweave] is the weave tool for Lweb.
+\end{description}
+
+The production of manual pages and full documentations proceeds in phases.
+\begin{description}
+\item[Lman]
+\begin{verbatim}
+XXX.[h|lw|nw|w]  ----->  XXX.tex   -------> XXX.dvi
+                 ext.pl             latex
+\end{verbatim}
+\item[lweave and lw2dvi]
+\begin{verbatim}
+XXX.lw ---------->  XXX.tex -------> XXX.dvi
+         lweave              latex
+\end{verbatim}
+
+\item[Ldoc]
+\begin{verbatim}
+XXX.[lw|nw|w] ----> temp.[lw|nw|w] --------------> XXX.tex -------> XXX.dvi
+  |           ext.pl               [l|no|c]weave       |   latex
+  | ext.pl                                             |
+  |                                                    |
+XXX.man -----------------------------------------------
+                   \input
+\end{verbatim}
+\item[Fman]
+\begin{verbatim}
+XXX.[h|lw|nw|w]  ----------> ASCII
+                    Fman
+\end{verbatim}
+\end{description}
+
+We use standard tools for all but the first phase. The first phase is
+accomplished by the perl program \emph{ext.pl}. It realizes Lman, Ldoc and Fman
+in a very direct way. 
+
+
+\subsection{How to create a Manpage}
+Starting from a C++ data type [[DT]] we give the documentation
+process and its syntactical elements in form of a context
+free grammar. Non-terminals are marked by \verb-<...>-. Terminals
+are pseudocode statements like [[text_text_text]] which represent
+pieces of latex text apart from the C++ language constructs which
+should be easy to locate. Optional syntactical elements are put
+in square brackets \verb-[...]-.
+
+\begin{verbatim}
+<Augmented C++-File> -> <Manpage Statement>
+			class DT {
+			<Mdefinition Statement>
+			<Mtypes Statement>
+			<Mcreation Statement>
+			<Moperations Statement>
+			};
+			<Moperations Statement>
+			<Mimplementation Statement>
+			<Mexample Statement>
+\end{verbatim}
+The previous picture should give you an impression about the
+possible sectioning of the implementation of [[DT]]. Note that
+several of the cited sections are optional and are not necessarily
+part of the data types manpage specification. We now handle the
+different sections.
+
+
+\subsubsection*{The Manpage Statement}
+\begin{verbatim}
+<Manpage Statement> -> 
+	/*{\Manpage {DT} {T1,..,Tk} {short_description} {d}}*/
+\end{verbatim}
+This comment is mandatory for the start of a manpage. It introduces
+the data type to the macro package and sets the main variable 
+\verb-\Mname = DT<T1,..,Tk>-. Thus [[DT]] the data types name. 
+[[T1,..,Tk]] is a list of template parameters which can be empty.
+the [[short_description]] appears in the manpage header and can be used
+as a latex reference. Finally \verb-\Mvar- is set to [[d]] as the
+default variable name of a class instance.
+
+
+\subsubsection*{The Mdefinition Statement}
+\begin{verbatim}
+<Mdefinition Statement> -> 
+	/*{\Mdefinition specification_text}*/
+\end{verbatim}
+This comment is somehow mandatory as a manpage should always contain
+an accurate specification of a data type.
+
+\subsubsection*{The Mtypes Statement}
+\begin{verbatim}
+<Mtypes Statement> -> 
+	/*{\Mtypes [W]}*/
+	<list of local type definitions>
+\end{verbatim}
+
+This comment is optional. It should be placed in a public section of class
+[[DT]] where the user wants to specify local types in class scope. [[W]] is an
+optional width specifier in cm determining the width of the indendation of the
+following type specifications.
+
+\begin{verbatim}
+<list of local type definitions> ->
+	typedef  TYPE1	LOCALTYPE1;
+        /*{\Mtypedef typedef_documentation}*/
+	<list of local type definitions>
+\end{verbatim}
+This triggers a documenation line containing the whole typedef statement
+followed by [[typedef_documentation]].
+
+\begin{verbatim}
+<list of local type definitions> ->
+	typedef TYPE2	LOCALTYPE2;
+        /*{\Mtypemember type_documentation}*/
+	<list of local type definitions>
+\end{verbatim}
+This triggers a documenation line containing only the defined type
+[[LOCALTYPE2]] followed by [[type_documentation]].
+
+\begin{verbatim}
+<list of local type definitions> ->
+	class LOCALTYPE3 {
+        /*{\Mtypemember type_documentation}*/
+ 	  // local class implemenation
+	};
+	<list of local type definitions>
+\end{verbatim}
+This triggers a documenation line containing only the defined type
+[[LOCALTYPE3]] followed by [[type_documentation]].
+
+\begin{verbatim}
+<list of local type definitions> ->
+	enum LOCALTYPE4 { T1, ... , Tk };
+        /*{\Menum type_documentation}*/
+	<list of local type definitions>
+\end{verbatim}
+This triggers a documenation line containing the defined enum type
+[[LOCALTYPE4]] followed by [[type_documentation]].
+
+\begin{verbatim}
+<list of local type definitions> -> <empty>
+\end{verbatim}
+
+
+\subsubsection*{The Mcreation Statement}
+\begin{verbatim}
+<Mcreation Statement> ->
+	/*{\Mcreation [MVAR] [W]}*/
+	<list of constructors>
+\end{verbatim}
+This comment is somehow mandatory as most classes have constructors which have
+to be documented. [[MVAR]] can be used to set \verb-\Mvar- to the string
+[[MVAR]]. [[W]] is an optional width specifier in cm determining the width of
+the indendation of the following construction operations.
+
+\begin{verbatim}
+<list of constructors> ->
+	DT(paramlist);
+	 /*{\Mcreate constructor_specification }*/
+	<list of constructors>
+\end{verbatim}
+creates the documenation for the constructor [[DT(paramlist)]].
+
+\begin{verbatim}
+<list of constructors> ->
+	~DT();
+	 /*{\Mdesctruct desctructor_specification }*/
+	<list of constructors>
+\end{verbatim}
+creates the documenation for the destructor [[~DT()]].
+
+\begin{verbatim}
+<list of constructors> -> <empty>
+\end{verbatim}
+
+\subsubsection*{The Moperations Statement}
+\begin{verbatim}
+<Moperations Statement> ->
+	/*{\Moperations [W1] [W2]}*/
+	<list of operation definitions>
+\end{verbatim}
+This comments starts the operations section of the manpage which usually is
+dominating the manpage. [[W1]] is an optional width specifier determining the
+indendation used for the return type of all following operations.  [[W2]] is an
+optional width specifier determining the width of the additional indendation
+up to the textual specification block. In the following we give all possible
+kinds of manual comments documenting member operations and friend operations
+of a class.
+\begin{verbatim}
+<list of operation definitions> ->
+	<operation definition> <list of operation defintions> |
+	<empty>
+\end{verbatim}
+The following entries should be rather self explaining. The first section
+provides documentation elements concerning member operations. Top down
+we have standard named member operations, static operations, conversion
+operations, binary operators, unary operatos and the special selection
+operator known from arrays. 
+\begin{verbatim}
+<operation definition> ->
+	return_type operation_name(paramlist);
+	/*{\Mop semantic_description }*/ 		|
+	static return_type static_operation_name(paramlist);
+	/*{\Mstatic semantic_description }*/ 		|
+	operator return_type ( );
+	/*{\Mconversion semantic_description }*/ 	|
+	return_type operator binary_op_symbol (paramlist);
+	/*{\Mbinop semantic_description }*/ 		|
+	return_type operator unary_op_symbol (paramlist);
+	/*{\Munop semantic_description }*/ 		|
+	return_type operator [] (paramlist);
+	/*{\Marrop semantic_description }*/ 	
+\end{verbatim}
+The next section gives documentation elements suitable for
+friends in classes or for global functions.
+\begin{verbatim}
+<operation definition> ->
+	return_type friend_operation_name(paramlist);
+	/*{\Mfunc semantic_description }*/ 		|
+	return_type friend_operator binary_op_symbol (paramlist);
+	/*{\Mbinopfunc semantic_description }*/ 	|
+	return_type friend_operator unary_op_symbol (paramlist);
+	/*{\Munopfunc semantic_description }*/ 	
+\end{verbatim}
+Finally there's a function object documentation element.
+\begin{verbatim}
+<operation definition> ->
+	constructor(paramlist);
+	/*{\Mfunobj{return_type} semantic_description }*/
+\end{verbatim}
+
+
+\subsubsection*{The Mimplementation Statement}
+\begin{verbatim}
+<Mimplementation Statement> ->
+	/*{\Mimplementation implemenation_information }*/
+\end{verbatim}
+This section can be used to give the user certain implemenation details
+like running time, space requirements or implementation specific
+informations which are helpfull for the user of the data type.
+
+
+\subsubsection*{The Mexample Statement}
+\begin{verbatim}
+<Mexample Statement> ->
+	/*{\Mexample (example_description [<verbatim_example_block>])* }*/
+\end{verbatim}
+In this section you should provide a small example demonstrating the usage of
+[[DT]]. [[example_description]] is just regular latex description.
+
+\begin{verbatim}
+<verbatim_example_block> ->
+	\begin{Mverb} 
+	verbatim_multi_line_example_code
+	\end{Mverb}
+\end{verbatim}
+This is just an optional block structure enabling code citation within the
+manual comment.
+
+
+@ \subsection{A Manpage Example}
+This section gives a short example of a manpage following the above
+specifications.
+
+\begin{figure}
+{\footnotesize
+\begin{verbatim}
+#ifndef LEDA_STACK_H
+#define LEDA_STACK_H
+
+#include <LEDA/basic.h>
+#include <LEDA/impl/slist.h>
+
+/*{\Manpage {stack} {E} {Stacks} {S}}*/
+
+template<class E> class _CLASSTYPE stack : private SLIST
+{
+/*{\Mdefinition
+An instance |S| of the parameterized data type |\Mname| is a sequence of 
+elements of data type |E|, called the element type of |S|. Insertions or
+deletions of elements take place only at one end of the sequence, called 
+the top of |S|. The size of |S| is the length of the sequence, a stack
+of size zero is called the empty stack.}*/
+
+public:
+
+/*{\Mcreation}*/
+
+  stack() {}
+/*{\Mcreate creates an instance |\Mvar| of type |\Mname| and initializes 
+it to the empty stack.}*/
+
+  stack(const stack<E>& S) : SLIST(S) {}
+ ~stack() { clear(); }
+  stack<E>& operator=(const stack<E>& S) 
+  { return (stack<E>&)SLIST::operator=(S); }
+
+/*{\Moperations 2.5 4}*/
+
+E top()   const { return ACCESS(E,SLIST::head());}
+/*{\Mop      returns the top element of |\Mvar|.\\ 
+             \precond $S$ is not empty.}*/
+
+void push(E x)  { SLIST::push(Copy(x)); }
+/*{\Mop      adds $x$ as new top element to |\Mvar|.}*/
+
+E pop()         { E x=top(); SLIST::pop(); return x; }
+/*{\Mop      deletes and returns the top element of |\Mvar|.\\ 
+             \precond $S$ is not empty.}*/
+
+\*{\Mimplementation
+Stacks are implemented by singly linked linear lists. All operations take 
+time $O(1)$.}*/ 
+
+#endif
+\end{verbatim}
+}% end footnotesize
+\caption{The header file stack.h}
+\label{the header of stack}
+\end{figure}
+
+\begin{figure}
+{\footnotesize
+\begin{verbatim}
+\documentclass[12pt,a4paper]{article}
+\input MANUAL.pagesize
+\input MANUAL.mac
+
+\begin{document}
+\begin{manual}
+ 
+\section*{Stacks(stack)}\label{stack}
+
+\definition
+
+An instance $S$ of the parameterized data type \mbox{$\mathit{stack<E>}$} is a
+sequence of elements of data type $E$, called the element type of
+$S$. Insertions or deletions of elements take place only at one end of the
+sequence, called the top of $S$. The size of $S$ is the length of the sequence,
+a stack of size zero is called the empty stack.
+
+
+\creation
+
+\create {\mbox{$\mathit{stack\<E\>}$}}
+{\mbox{$\mathit{S}$}} 
+{creates an instance \mbox{$\mathit{S}$} of type \mbox{$\mathit{stack\<E\>}$} 
+and initializes it to the empty stack. 
+}
+
+\setlength{\typewidth}{2.5cm}
+\setlength{\callwidth}{4cm}
+\computewidths
+\operations
+
+\function {\mbox{$\mathit{E}$}}
+{\mbox{$\mathit{S.}$}top\mbox{$\mathit{()}$}} 
+{returns the top element of \mbox{$\mathit{S}$}.\\ \precond $S$ is not empty. 
+}
+
+\function {\mbox{$\mathit{void}$}}
+{\mbox{$\mathit{S.}$}push\mbox{$\mathit{(E\ x)}$}} 
+{adds $x$ as new top element to \mbox{$\mathit{S}$}. 
+}
+
+\function {\mbox{$\mathit{E}$}}
+{\mbox{$\mathit{S.}$}pop\mbox{$\mathit{()}$}} 
+{deletes and returns the top element of \mbox{$\mathit{S}$}.\\ \precond $S$ is not empty. 
+}
+
+\function {\mbox{$\mathit{int}$}}
+{\mbox{$\mathit{S.}$}empty\mbox{$\mathit{()}$}} 
+{returns true if \mbox{$\mathit{S}$} is empty, false otherwise. 
+}
+
+\end{manual}
+\end{document}
+\end{verbatim}
+}% end footnotesize
+\caption{The intermediate \TeX-file produced from stack.h}
+\label{intermediate tex-file}
+\end{figure}
+
+Figure \ref{intermediate tex-file} shows the intermediate \TeX-file produced by
+Lman for the data type stack.  The TeX file basically contains one TeX-macro
+call for each manual command. It also has a short preamble and postamble. The
+preamble reads MANUAL.pagesize and MANUAL.mac, opens the document and enters
+the manual environment, and the postamble closes the manual environment and the
+document. The files MANUAL.pagesize and MANUAL.mac are both contained in the
+LEDAMAN directory; they contain the definition of the pagesize used for the
+LEDA manual and the definition of the manual macros respectively.
+
+Ldoc applied to the same file produces (in stack.man) the subfile starting with
+\verb-\begin{manual}- and ending with \verb-\end{manual}-. Ldoc also produces a
+temporary file temp.w which is obtained from the input file by deleting all
+manual comments. It applies cweave to this file to obtain XXX.tex.
+
+
+\newpage
+\section{Implementation of Toplevel Callers}
+\subsection{The ASCII View}
+<<Fman>>=
+#!/bin/sh -f
+perl $LEDAROOT/Manual/cmd/ext.pl Fman "$@"
+
+@ \subsection{The \LaTeX\ View}
+<<Lman>>=
+#!/bin/sh -f
+perl $LEDAROOT/Manual/cmd/ext.pl Lman "$@"
+
+<<Ldoc>>=
+#!/bin/sh -f
+perl $LEDAROOT/Manual/cmd/ext.pl Ldoc "$@"
+
+<<Cdoc>>=
+#!/bin/sh -f
+perl $LEDAROOT/Manual/cmd/ext.pl Cdoc "$@"
+
+<<lextract>>=
+#!/bin/sh -f
+if [ "$1" = "" -o "$2" = "" ] 
+then
+  echo ""
+  echo "Usage is"
+  echo "          lextract infile outfile [options]"
+  echo ""
+  echo "Extracts the manual comments from infile into outfile."
+  exit
+fi
+infile=$1
+outfile=$2
+shift
+shift
+perl $LEDAROOT/Manual/cmd/ext.pl lextract $infile outfile=$outfile "$@"
+
+<<Mkman>>=
+#!/bin/sh
+
+if [ "$1" = "" ]; then
+  source=$LEDAROOT/incl/LEDA
+  ext=h
+else
+  source=$1
+  if [ "$2" = "" ]; then
+    ext=h
+  else
+    ext=$2
+  fi
+fi
+
+rm -r -f extract
+
+mkdir extract
+
+echo Extracting manual pages ...
+echo " "
+
+for f in $source/*.$ext; do
+   echo $f
+   lextract $f  extract/`basename $f .$ext`.tex \
+   informational=no indexing=yes includefile=yes warnings=log
+done
+
+if [ -d $source/generic ]; then
+  for f in $source/generic/*.$ext; do
+   echo $f
+   lextract $f  extract/`basename $f .$ext`.tex \
+   informational=no indexing=yes includefile=yes warnings=log
+  done
+fi
+
+
+<<Mkdvi>>=
+#!/bin/sh
+# this script must be called in $LEDAROOT/Manual/MANUAL
+
+cd ../..
+
+if [ ! -d Manual/MANUAL ]; then
+  echo ""
+  echo "Mkdvi must be called from \$LEDAROOT/Manual/MANUAL"
+  exit 0
+fi;
+
+lroot=`pwd`
+
+LEDAROOT=$lroot
+export LEDAROOT
+
+# check for perl and latex
+
+echo " "
+
+touch t.pl
+
+if perl t.pl; then
+   rm t.pl
+   echo using `which perl`
+else
+   rm t.pl
+   echo Cannot execute perl.
+   echo " "
+   exit 0
+fi
+
+
+source=$lroot/incl/LEDA
+dvidir=$lroot/Manual/DVI
+
+cd $dvidir
+
+cp $lroot/Manual/MANUAL/intro.tex ./Introduction.tex
+cp $lroot/Manual/MANUAL/Title.tex   .
+cp $lroot/Manual/MANUAL/Preface.tex .
+cp $lroot/Manual/MANUAL/Basics.tex  .
+
+
+if latex Introduction > /dev/null; then
+   echo using `which latex`
+else
+   echo Cannot execute latex.
+   echo " "
+   exit 0
+fi
+
+
+echo " "
+echo Updating DVI-files in `pwd`  ...
+echo " "
+
+
+if [ -x /usr/bin/test ]; then
+  tcmd=/usr/bin/test
+elif [ -x /bin/test ]; then
+  tcmd=/bin/test
+else
+  tcmd=test
+fi
+
+
+for f in $source/*.h $source/generic/*.h; do
+  dvi=`basename $f .h`.dvi
+  if grep Manpage $f > /dev/null; then
+     if $tcmd ! $dvi -nt $f; then
+        echo $dvi
+#       perl ../cmd/ext.pl Lman $f xdvi=no dvioutfile=$dvi
+        perl ../cmd/ext.pl Lman $f xdvi=no dvioutfile=$dvi >> mkdvi.log 2>&1
+     fi
+  fi
+done
+
+rm -f *.log
+
+cd ..
+
+
+
+<<Mkdvisfrom>>=
+#!/bin/sh
+
+# check for perl and latex
+
+echo " "
+
+if perl $LEDAROOT/Manual/cmd/ext.pl; then
+   echo "perl  ok"
+else
+   echo Cannot execute perl.
+   echo " "
+   exit 1
+fi
+
+if noweave < /dev/null > /dev/null; then
+   echo "noweb ok"
+else
+   echo Cannot execute noweave.
+   echo " "
+   exit 1
+fi
+
+echo '\\documentclass{article}' > dummy.tex
+echo '\\begin{document} hw \\end{document}' >> dummy.tex
+echo '' >> dummy.tex
+if latex dummy.tex > /dev/null; then
+   echo "latex ok"
+   rm -rf dummy.*
+else
+   echo Cannot execute latex.
+   echo " "
+   exit 1
+fi
+
+
+source=$1
+
+echo " "
+echo Constructing dvi-files for xlman in `pwd`  ...
+echo " "
+
+if [ -x /usr/local/bin/grep ]; then
+  grep_cmd=/usr/local/bin/grep
+elif [ -x /usr/bin/grep ]; then
+  grep_cmd=/usr/bin/grep
+else
+  grep_cmd=grep
+fi
+
+for f in $source/*.h; do
+  if $grep_cmd -q Manpage $f; then
+    ln -s $f .
+  fi
+done
+
+for f in *.h; do
+  fbase=`basename $f .h`
+  fbase=`basename $fbase _decl`
+  perl $LEDAROOT/Manual/cmd/ext.pl Lman $f xdvi=no dvioutfile=$fbase.dvi 
+done
+
+rm -f *.h *.log
+
+@ \subsection{The HTML View}
+The command [[Mkhtml]] makes the html-version of the LEDA-manual.  It can be
+called in any directory. It gets the necessary tex and header files via
+[[LEDAROOT]]. The tasks are done by the two phases [[Toplevel]] and
+[[Lowlevel]] described below.
+
+The top level is determined by
+\begin{itemize}
+\item It copies all tex-files from [[LEDAROOT/Manual/MANUAL]]
+
+\item It applies some replacements to the tex files latex2html insists
+that the command names of LaTeX commands consist of letters only. We
+used \verb-\<-, \verb-\>-. We remove them.  \item We want the
+crossreferences to appear nicely in the html-document. latex2html
+replaces all \verb-\ref- by hyperlinks but an ordinary ref or pageref
+appears only as a box. Named links are nicer. [[handle_refs]] replaces
+occurrences of \verb-\ref{label}- by \verb-\htmlref{label'}{label}-
+where label' is obtained by quoting underscores.
+\end{itemize}
+
+Making the lower level is simple. We only need to call ext.pl in mode HTML
+to extract the appropriate Tex-file. 
+
+Having set up the necessary tex-files we call [[latex MANUAL]] twice and then
+[[latex2html]] once.  This will construct the html-version of the manual in the
+subdirectory [[MANUAL]]. 
+
+<<Mkhtml>>=
+#!/bin/sh
+
+if [ "$1" = "top" -o "$1" = "" ]; then
+echo " "
+echo "Preparing all tex-files in top level of the Manual"
+files="$LEDAROOT/Manual/MANUAL/*.tex"
+for f in $files
+do   
+   core=`basename $f .tex`
+   echo "preparing $core"
+   cp $f $core.mkhtml
+   perl -p -i.bak -e 's/\\</</g;s/\\>/>/g;' $core.mkhtml
+   perl $LEDAROOT/Manual/cmd/handle_refs.pl $core.mkhtml > $core.tex
+done
+\rm -f *.mkhtml *.mkhtml.bak
+fi # $1 != low
+
+if [ "$1" = "low" -o "$1" = "" ]; then
+\rm -r -f extract
+mkdir extract
+cd extract
+notangle -Rnamereplacementtable $LEDAROOT/Manual/noweb/ext.nw \
+  > namereplacementtable
+
+if [ -x /usr/local/bin/grep ]; then
+  grep_cmd=/usr/local/bin/grep
+elif [ -x /usr/bin/grep ]; then
+  grep_cmd=/usr/bin/grep
+else
+  grep_cmd=grep
+fi
+
+echo "Extending namereplacementtable by Manpage entries"
+files="$LEDAROOT/incl/LEDA/*.h $LEDAROOT/incl/LEDA/generic/*.h"
+for f in $files
+do
+  core=`basename $f .h`
+  # printf "$core "
+  printf "."
+  perl $LEDAROOT/Manual/cmd/extract_mtype.pl $f >> namereplacementtable
+done
+
+echo " "
+echo "Preparing all tex-files for LEDA types"
+files="$LEDAROOT/incl/LEDA/*.h $LEDAROOT/incl/LEDA/generic/*.h"
+for f in $files
+do
+  if $grep_cmd -q Manpage $f; then
+   core=`basename $f .h`
+   echo "preparing tex-file for $core"
+   perl $LEDAROOT/Manual/cmd/ext.pl HTMLext $f outfile=$core.tex \
+   informational=no warnings=log indexing=yes includefile=yes
+  fi
+done
+cd ..
+
+fi # 
+
+echo "calling latex MANUAL.tex"
+echo " "
+
+latex MANUAL.tex
+latex MANUAL.tex
+dvips MANUAL
+
+echo "please ensure that your path does not contain dots!!!"
+echo "calling latex2html MANUAL.tex"
+echo ""
+
+\rm -rf MANUAL
+
+if [ "$1" = "low" -o "$1" = "top" ]; then
+  shift
+fi
+
+notangle -R.latex2html-init $LEDAROOT/Manual/noweb/ext.nw \
+  > .latex2html-init # this gives flags
+latex2html MANUAL.tex $*
+
+cd MANUAL
+mv Index.html bindex.html
+mv GRAPH.html bgraph.html
+mv UGRAPH.html bugraph.html
+mv PLANAR_MAP.html bplanar_map.html
+mv Partition.html bpartition.html
+perl -p -i -e 's/Index\.html/bindex\.html/g; 
+s/PLANAR\_MAP\.html/bplanar\_map\.html/g;
+s/Partition\.html/bpartition\.html/g;
+s/UGRAPH\.html/bugraph\.html/g;
+s/GRAPH\.html/bgraph\.html/g;' *.html
+cd ..
+exit
+
+@ We use the following addidional settings in the dotfile:
+<<.latex2html-init>>=
+# This number will determine the size of the equations, special characters,
+# and anything which will be converted into an inlined image
+# *except* "image generating environments" such as "figure", "table"
+# or "minipage".
+# Effective values are those greater than 0.
+# Sensible values are between 0.1 - 4.
+$MATH_SCALE_FACTOR = 1.4;
+ 
+# This number will determine the size of
+# image generating environments such as "figure", "table" or "minipage".
+# Effective values are those greater than 0.
+# Sensible values are between 0.1 - 4.
+$FIGURE_SCALE_FACTOR = 1.4;
+ 
+# If this is set then the resulting HTML will look marginally better if viewed
+# with Netscape.
+$NETSCAPE_HTML = 1;
+
+# We want a friendly white backround for the manual
+$BODYTEXT = 'BGCOLOR="#FFFFFF" BACKGROUND="ledabg.jpg"';
+$HTML_VERSION = "3.2,math";
+$NO_SIMPLE_MATH = 1;
+$MAX_SPLIT_DEPTH = 4;
+$CUSTOM_TITLES = 3;
+# $LONG_TITLES = 3;
+# $SHOW_SECTION_NUMBERS = 1;
+$SHORT_INDEX = 1;
+$LOCAL_ICONS = 1;
+$NAV_BORDER = 0;
+$ALTERNATIVE_ICONS = $ENV{'LEDAROOT'}."/Manual/noweb/icons";
+$EXTERNAL_UP_LINK = "http://www.mpi-sb.mpg.de/LEDA";
+$TEXINPUTS = $ENV{'LEDAROOT'}."/Manual/tex";
+$EXTERNAL_UP_TITLE = "LEDA home page";
+
+$iconsizes{'up'} = 'WIDTH="44" HEIGHT="44"';
+$iconsizes{'next'} = 'WIDTH="44" HEIGHT="44"';
+$iconsizes{'previous'} = 'WIDTH="44" HEIGHT="44"';
+$iconsizes{'contents'} = 'WIDTH="44" HEIGHT="44"';
+$iconsizes{'index'} = 'WIDTH="44" HEIGHT="44"';
+
+
+# the following custom title production procedure makes almost
+# the same as the LONG_TILTLES version, only it finds doubles
+# and takes our short section names in the brackets if there
+sub custom_title_hook  {
+    local($_)= @_;
+    local($num_words) = $CUSTOM_TITLES;
+    $_ =~ s/(^|\s)\s*($GENERIC_WORDS)(\'|\b)//ig;
+    #remove leading numbering, unless that's all there is.
+    local($sec_num);
+    if (!(/^\d+(\.\d*)*\s*$/)&&(s/^\s*(\d+(\.\d*)*)\s*/$sec_num=$1;''/e))
+    { $num_words-- };
+    #revert entities, etc. to TeX-form...
+    &remove_markers; s/<[^>]*>//g; #remove tags
+    $_ = &revert_to_raw_tex($_);
+
+    # get $CUSTOM_TITLES number of words from what remains
+    if ( /[^\(]*\(([^\)]*)\)/ ) { $_ = $1; }
+    else { $_ = &get_first_words($_, $num_words) if ($num_words); }
+    if ( $ledaschondrin{$_} ) 
+    { my $tmp=$_; $_ .= "$ledaschondrin{$_}"; ++$ledaschondrin{$tmp}; }
+    else { $ledaschondrin{$_} = 1; }
+    # ...and cleanup accents, spaces and punctuation
+    s/\\\W\{?|\}//g; s/^\s*//g; s/\s*$//g; s/\s/_/g; s/\W/_/g; s/__+/_/g; s/_+$//;
+    $_;
+}
+
+&ignore_commands( <<_IGNORED_CMDS_);
+setopdims # {} # {}
+_IGNORED_CMDS_
+
+1;      # This must be the last line    
+
+
+@ The following macro extracts the data type symbol from a
+manpage:
+<<extract_mtype.pl>>= 
+$INPUT = $ARGV[0] && shift;
+open (INPUT)  || die "Error:extract_mtype: can't find input file $INPUT: $!\n";
+while (<INPUT>) {  
+  if ( /\/\*\{\\Manpage\s*\{([^\{\}]*)\}/ )
+  { print "$1\n"; }
+}
+
+  
+@ I am handling refs and pagerefs.
+<<handle_refs>>=
+#!/bin/sh -f
+
+for f
+do
+   core=`basename $f .tex`
+   mv $core.tex $core.temp
+   perl $LEDAROOT/Manual/cmd/handle_refs.pl $core.temp > $core.tex
+   rm $core.temp
+done
+
+<<handle_refs.pl>>= 
+$INPUT = $ARGV[0] && shift;
+open (INPUT)  || die "Error: Can't find input file $INPUT: $!\n";
+
+while (<INPUT>)
+{ if (/\\ref\{([^\}]*)\}/)
+  { $key = $1; $key1 = $key; $key1 =~ s/_/\\_/g;
+    s/\\ref\{$key\}/\\htmlref\{$key1\}\{$key\}/g;
+  }
+  if (/\\pageref\{([^\}]*)\}/)
+  { $key = $1; $key1 = $key; $key1 =~ s/_/\\_/g;
+    s/\\pageref\{$key\}/\\htmlref\{$key1\}\{$key\}/g;
+  }
+  print;
+}
+
+
+@ The command [[HTMLman T]] makes the html version of the manual page for type
+T. The command looks for files [[T.lw]], [[T.nw]], [[T.w]], [[T.h]] in this
+order and produces a tex-file [[T.tex]]. The tex-file is sent through 
+latex twice and then through latex2html. The entry node to the html manual page
+is [[T/T.html]].
+
+<<HTMLman>>=
+#!/bin/sh -f
+
+if [ $1 = "" ]; then
+    echo HTMLman file[.h]
+    echo   produce a HTML manual page from a header file
+    exit
+fi
+
+echo " extracting file $1.tex"
+echo " "
+
+notangle -Rnamereplacementtable $LEDAROOT/Manual/noweb/ext.nw \
+  > namereplacementtable
+
+if [ -d $1 ]; then
+  rm -rf $1
+fi
+
+perl $LEDAROOT/Manual/cmd/ext.pl HTMLman $1 outfile=$1.tex \
+  informational=no warnings=log indexing=yes includefile=yes
+
+latex $1.tex
+latex $1.tex
+
+latex2html -split 0 -local_icons -html_version 3.2,math -no_math $1.tex 
+  # we require version > 98.1
+base=`basename $1`
+here=`pwd`;
+netscape -raise -remote "openURL($here/$base/$base.html)"
+  # we use netscape version > 4.0
+
+rm -f namereplacementtable 
+
+@ A tool to make HTML documents from general Lweb documents
+would be nice:
+<<HTMLdoc>>=
+#!/bin/sh
+
+if [ $1 = "" ]; then
+    echo HTMLdoc file[.lw]
+    echo   produce a HTML manual page from a header file
+    exit
+fi
+
+base=`basename $1 .lw`
+if [ -d $base ]; then
+  rm -rf $base
+fi
+
+perl $LEDAROOT/Manual/cmd/ext.pl HTMLdoc $1 
+shift
+if [ ! -f HTMLdoc-latex2html.cfg ]; then
+  notangle -R.latex2html-init $LEDAROOT/Manual/noweb/ext.nw \
+    > HTMLdoc-latex2html.cfg
+fi
+latex2html -init_file HTMLdoc-latex2html.cfg "$@" $base.tex 
+  # we require version > 98.1
+perl $LEDAROOT/Manual/cmd/correct_xlinks.pl $base 
+rm -rf $base/*.html.bak
+  # this script repairs some ill sitting crossrefs created by
+  # l2h when distributing the HTML output over various files
+
+echo You can change the settings for latex2html by editing the file
+echo 
+echo "  HTMLdoc-latex2html.cfg"
+echo
+
+here=`pwd`;
+netscape -raise -remote "openURL($here/$base/$base.html)"
+  # we use netscape version > 4.0
+
+
+@ \section{The Main Engine: ext}
+
+\subsection{An Overview}
+
+Ext.pl operates in phases. The first phase processes the command line, takes
+care of initialization, and produces the preamble. The second phase does most
+of the work. It reads the input file and produces the body of a TeX-file.  The
+third phase adds the postamble and calls cweave and/or latex. In Ldoc-mode the
+third phase also removes all With the option mode=Mkman ext carries out only
+the first two phases, the resulting file can then be included in some larger
+document, and with the option Fman ext produces ASCII-output on standard
+output.
+
+The production of ext's output is controlled by the so-called manual comments
+in the input file, see the chapter on Manual Production in the LEDA-book for
+further details. You must be familiar with that chapter in order to understand
+this program.
+
+The details of the behavior of ext are directed by options. The options are
+processed in the initialization phase of ext.
+
+<<ext.pl>>=
+<<required packages>>
+<<command line processing and initialization>>
+<<main program>>
+<<generate postamble and call LaTeX or Cweb>>
+
+<<subroutines>>
+
+@ \subsection{Command Line Processing and Initialization}
+
+<<command line processing and initialization>>=
+<<determine mode and set options to default values>>
+<<determine actual options and derived variables>>
+<<set up input and output files>>
+<<generate preamble>>
+
+@ The first argument tells ext whether it works for Lman, Ldoc, Fman or
+Mkmanual. If ext receives only one argument it prints usage information for its
+first argument, see section \ref{usage}. We have a variable for each
+option. The variables are initialized to their default values.
+
+<<determine mode and set options to default values>>=
+$mode = $ARGV[0] && shift;
+$filearg = $ARGV[0] && shift;
+
+if ($mode eq "Mkman" || $mode eq "lextract") 
+{ $numbered = "yes"; }
+else 
+{ $numbered  = "no";}      
+  # Usually manual pages are not numbered
+$ack = "yes";            
+  # ext asks for acknowledgments when it is confused
+$constref = "no";   
+  # const-& pairs are usually suppressed
+$partypes = "no";   
+  # operators suppress argument types that are identical to Mname
+$usesubscripts = "no";    
+  # usually we do not write indexed variables as subscripts
+$size = 12;             
+  # default size is 12pt
+$xdvi = "yes";
+$warnings = "yes";
+$informational = "yes";
+  # default is to give warnings, to give progress report 
+$debugging = "no";
+  # no debugging information
+$indexing = "no";
+$indexentry = "";
+  # create no indexing output, indexentry is global index entry buffer
+$includefile = "no";
+
+$filter = "all";        
+  # usually we show everything
+
+$pid = "";            
+  # we do not know the process id yet
+$latexruns=1;
+@substlist = ();     
+  # a list L1,R1,L2,R2,....  of all substitutions
+$delman = "yes";     
+  # Ldoc usually removes manual comments
+$outfile = "";       
+  # the default is that we determine the outfile
+$dvioutfile = "";     
+  # only relevant for Mkdvi
+$section = "section"; 
+  # each manual page is a LaTeX section 
+$nextwarning = "yes"; 
+  # default is to show the next warning
+$justset = "no";      
+  # $nextwarning was not just set to no.
+$noweaveoptions = "";  
+  # we start with no options.
+if ($mode eq "Lman" || $mode eq "Mkman" || $mode eq "lextract" ||
+    $mode eq "HTMLman" || $mode eq "HTMLext" || $mode eq "Fman" )
+{ $print_title = "yes"; }
+else
+{ $print_title = "no"; }
+
+
+@ In Fman-mode there is only one further argument, the filter. In the other
+modes we look for options in the file \$mode.cfg in the home directory or in
+the working directory or on the command line. Later options take precedence.
+
+The variable \$pid is set to the process id of the current process (available
+in variable \$\$) if the user leaves it undefined.
+
+We use a derived variable \$showsem. 
+
+<<determine actual options and derived variables>>=
+if ($mode eq "Fman") {
+  if ($ARGV[0]) {
+    $filter = $ARGV[0];    
+    foreach  $candidate ("all","signatures","definition","types", "events",
+                         "creation","operations","implementation","example") {
+      if ($filter eq $candidate) { goto filterfound; }
+    }
+    &print_info("Searching for operation $filter of type $filearg");
+    filterfound:
+  } 
+}
+else {
+  foreach $path ("HOME","PWD") {
+    if ($path eq "HOME") {
+      $CFG = $ENV{$path} . "\/" . $mode . "\.cfg";
+    }
+    else {
+      $CFG = $mode . "\.cfg";
+    }
+    if (-e $CFG) {
+      open (CFG); 
+      &print_info("Reading $CFG");
+      while (<CFG>) {
+        if (/^(\w+)=(.*)$/) 
+	{ eval "\$$1 = \$2"; } 
+      }
+      close (CFG);
+    }
+  }
+  eval "\$$1 = \$2" while $ARGV[0] =~ /(\w+)=(.*)/ && shift; 
+}
+
+if ($informational eq "no") { $dontshowinfo = '> /dev/null'; }
+if ($pid eq "") { $pid = $$; }
+if ( $warnings eq "log" ) { open(LOGFILE,">>$mode.log"); }
+
+
+$showsem = 1;          # usually we show the semantics of functions
+if ($filter eq "signatures") {
+  $filter = "operations";
+  $showsem = 0;
+}
+
+ 
+@ We set up the various input and output files. We set\\ \verb-$LEDAROOT- to
+the LEDA root directory \verb-$LEDAINCL- to the directory containing all LEDA
+header files,\\ \verb-$basepath- to the file argument minus the extension (if
+any), \verb-$basename- to the actual name of the file\\ 
+\verb-$INPUT- to the input file ( either [[\$basepath.[lw|w|nw|h] ]]
+in the working directory or \verb-$basename.h- in the LEDAINCLUDE directory,\\
+\verb-$kind- to the kind of the input file,\\ [[OUTPUT]] to /tmp/\$pid-ext.tex.
+
+If we are in Lman-mode, want to use xdvi, and the dvi-file exists already
+we simply call xdvi. This is for quick access to the LEDA manual.
+
+In HTML mode we need to read the file
+\begin{verbatim}
+  $LEDAROOT/Manual/noweb/namereplacementtable
+\end{verbatim}
+
+The first file contains lines of the form\\ \verb-cmd xxx-\\ where \verb-\cmd-
+is a tex-command and [[xxx]] is any string not containing a backslash. Any
+occurence of \verb-\cmd- is replaced by [[xxx]] in the detex-phase of
+translation to HTML. If [[xxx]] is missing it is assumed to be [[cmd]].
+
+The second file contains lines of the form\\
+\verb-xxx  yyy-\\
+where [[xxx]] is any name which we want to tag in the LEDA manual 
+and [[yyy.html]] is the html-file to which we want to make the link.
+If [[yyy]] is missing then it is assumed to be [[xxx]].
+
+The third file contains lines of the form\\
+\verb-xxx yyy-\\
+where [[xxx]] is any label which we set in our manual and [[yyy.html]]
+is the html-file to which we want to make the link.
+<<set up input and output files>>=
+
+&print_info("$mode version 2.4.3");
+if (!($filearg)) { &print_usage($mode); }
+if ( $filearg eq "mancommands" ) {
+  &print_mancommands($mode);
+}
+if ( $filearg eq "ltools" || $filearg eq "Lman" ||
+     $filearg eq "Ldoc") {
+  &print_ltools($mode);
+}
+
+$LEDAROOT = $ENV{"LEDAROOT"};
+$MANFILES = "$LEDAROOT/incl/LEDA:$LEDAROOT/incl/LEDA/generic";
+$MANDVIS = "$LEDAROOT/Manual/DVI";
+$LMANFILES = $ENV{"LMANFILES"};
+if ( $LMANFILES ) { $MANFILES = $LMANFILES; }
+$LMANDVIS = $ENV{"LMANDVIS"};
+if ( $LMANDVIS ) { $MANDVIS = $LMANDVIS; }
+
+if ($mode eq "HTMLman" || $mode eq "HTMLext") {
+  $INPUT = "namereplacementtable";
+  open (INPUT)  || die "Error: Can't find input file $INPUT: $!\n";
+ 
+  while (<INPUT>) {
+    chop;
+    if (/^\s*$/) { next; } # skip empty lines
+    s/\t/ /g;  # subsitute a tab by a blank; some people write xxx\tyyy
+    if (/^\s*(\S+)\s+(\S+)\s*$/) {
+      $LEDAname = $1;
+      $URL = $2;
+    }
+    else {
+      /^\s*(\S+)\s*$/;
+      $LEDAname = $1;
+      $URL = $1;
+    }
+    $namereplacementtable{"$LEDAname"} = $URL;
+  }
+  close (INPUT);
+}
+
+if ($filearg =~ /(.*)\.[whln]/) { $basepath = $1; }
+else                            { $basepath = $filearg; }
+
+if ( $basepath =~ /.*\/(\w+).*/ ) { $basename = $1; }
+else { $basename = $basepath; }
+
+if (-e ($basepath . "\.w")) 
+{ $INPUT = $basepath . "\.w" ; $kind = "Cweb"; $ext = "w"; goto DONE; }
+if (-e ($basepath . "\.web")) 
+{ $INPUT = $basepath . "\.web" ; $kind = "Cweb"; $ext = "web"; goto DONE; }
+if (-e ($basepath . "\.lw")) 
+{ $INPUT = $basepath . "\.lw" ; $kind = "Lweb"; $ext = "lw"; goto DONE; }
+if (-e ($basepath . "\.nw")) 
+{ $INPUT = $basepath . "\.nw" ; $kind = "noweb"; $ext = "nw"; goto DONE; }
+if (-e ($basepath . "\.h")) 
+{ $INPUT = $basepath . "\.h" ; $kind = "h"; goto DONE; }
+@MANPATHS = split(/\:/,$MANFILES);
+if ($mode =~ /man$/ ) {
+  foreach my $manpath (@MANPATHS) {
+    my $longname = "$manpath/$basename";
+    if (-e ($longname . "\.h") ) {
+      $INPUT = $longname . "\.h" ; $kind = "MANROOTtype"; goto LMAN;
+    }
+  }
+  foreach my $manpath (@MANPATHS) {
+    $greppath = qx{grep \'$basename\' $manpath/*.h };
+    @greplist = split('\n',$greppath);
+    FOUND: while ( $filecand = shift(@greplist) ) {
+             if ( $filecand =~ s/(.*?)\:.*\\Manpage.*/$1/ ) { last FOUND; }
+           }
+    $INPUT = $filecand;
+  }
+}
+
+LMAN:
+if ($mode eq "Lman" && $xdvi eq "yes" && 
+    (-e "$MANDVIS/$basename.dvi")) {
+  &print_info("  Taking $MANDVIS/$basename.dvi as a shortcut");
+  system("xdvi $MANDVIS/$basename.dvi $dontshowinfo");
+  exit;
+}
+
+DONE:
+open (INPUT) || 
+die "Error: Cannot find input file $basepath.[w|lw|nw|h]: $!\n\n";
+
+if ($mode ne "Fman") {
+  if ($outfile eq ""  || $mode eq "Ldoc" || $mode eq "Cdoc" || $mode eq "HTMLdoc") {
+    $outfile = "/tmp/" . $pid . "-ext.tex";
+    $existing_outfiles{$outfile} = 1;
+  }
+  open(OUTPUT,">".$outfile);
+  &print_info("Reading input file $INPUT to extract manual ...");
+}
+$HTMLopentabular{$outfile} = "no";
+
+
+@ \subsection{Preamble for the different modi}
+Having opened all files we now construct the preamble. For Lman it has the
+form
+
+\begin{verbatim}
+\documentclass[$size pt,a4paper]{article}
+\input MANUAL.pagesize
+\input MANUAL.mac
+\begin{document}
+\begin{manual}
+\end{verbatim}
+
+For Ldoc and Mkman we only need to generate \verb-\begin{manual}-.
+For the HTMLman usage we need a complete latex header but without the
+manual environment as everything is produced in form of standard
+blocks like tables.
+<<generate preamble>>=
+local($preambletext)="";
+if ($mode eq "HTMLman" ) { 
+  $preambletext .= "\\documentclass[a4paper]{article}\n";
+  $preambletext .= "\\usepackage{html}\n";
+  $preambletext .= "\\input ".$ENV{"LEDAROOT"}."/Manual/tex/MANUAL.mac\n\n";
+  $preambletext .= "\\begin{document}";
+  print_unit($preambletext);
+} 
+elsif ($mode eq "Lman") {
+  $preambletext .= "\\documentclass\[".$size."pt,a4paper\]\{article\}\n\n"; 
+  $preambletext .= "\\input ".$ENV{"LEDAROOT"}."/Manual/tex/MANUAL.pagesize\n";
+  $preambletext .= "\\input ".$ENV{"LEDAROOT"}."/Manual/tex/MANUAL.mac\n\n";
+  $preambletext .= "\\begin\{document\}\n";
+  $preambletext .= "\\begin\{manual\}";                        
+  print_unit($preambletext);
+} 
+elsif ($mode eq "Cdoc") {
+  print_unit("% begin cgal manual");
+}
+elsif ($mode eq "Ldoc" || $mode eq "Mkman" || $mode eq "lextract") 
+{ print_unit("\\begin{manual}"); }
+
+
+@ \subsection{The Main Loop}
+
+We now come the core of ext. It is a single while loop that scans the input
+for manual commands. Whenever a manual command is encountered the appropiate 
+output is produced.
+
+We need to recall some facts. The output actions of ext are directed
+by manual comments, i.e., comments starting with \verb-/*{\M- and
+ending with \verb-}*/-. Many of these comments refer to the preceeding
+code unit. A code unit is any maximal contiguous sequence of non-empty lines
+not containing any line belonging to an Mcomment. We call a line starting with
+\verb-/*{\M- an Mline.
+
+Three placeholders are relevant for manual production:\\
+Mvar = the name of the canonical variable.\\
+Mtype = the short type name, defined in the header of the manpage\\
+Mname = the full type name, i.e., Mtype if there are no type parameters and 
+Mtype$\langle$par\_list$\rangle$ if there are type parameters. 
+The default value of all three placeholders is the empty string.
+
+<<main program>>=
+$Mvar    = "";
+$Mtype   = ""; 
+$Mname   = "";
+$MIname =  "";
+main_loop:
+{ # $_ is either undefined or the last line of an Mcomment
+  <<determine code unit>>
+  # $_ is an Mline and variables $original_code_unit and $code_unit 
+  # contain the current code unit. 
+  <<determine manual comment and manual command>>
+  # $Mcomment contains the manual command (without the brackets /*{\M and }*/
+  # $Mcommand contains the command (without the leading M)
+  <<process manual comment>>
+redo main_loop;
+}
+
+
+@ \subsubsection{Building a Code Unit}
+
+We build up a code unit by reading lines until we encounter an empty
+line or an Mline. We skip empty lines. If the first nonempty line is
+an Mline we have found a code unit that requires action.  Otherwise,
+we discard the current code unit and use the non-empty line as the
+first line of our next attempt.
+
+Cweb inputs require some additional care. We ignore all lines starting
+with \verb-@s- or \verb-@f-.
+
+<<determine code unit>>=
+# I advance $_ to a non-empty line (WEB-directives are output but count as 
+# empty lines otherwise) or beyond the end of the file
+
+$_ = <INPUT>;
+
+build_code_unit:
+    while ($_ && (($_ =~ /^\s*$/) || ($_ =~ /^\@[sf]/)))
+    { $_ = <INPUT>; }
+    if (! $_) { last main_loop; }   # input exhausted
+    $code_unit = "";
+    # $_ exists, is non_empty, and contains no @, and $code_unit is empty
+    # The code_unit is either terminated by an Mcomment or an empty line
+    # (empty line: only white space characters) or the end of the file
+    while ($_ && !(/\/\*\{\\M/ || /^\s*$/)) {
+      if ($_ =~ /\/\* *\{M/) {
+        &print_warning("I encountered /*{M. Did you really mean it?");
+      }     
+      $code_unit .= $_;   # append current line to code unit
+      $_ = <INPUT>;
+    }
+
+# The current line either does not exist or is either empty or the 
+# begin of an Mcomment.
+# Skip empty lines.
+
+while ( $_ && /^ *$/ ){ $_ = <INPUT>; }
+
+# the current line is non-empty (if it exists).
+
+if (! $_) { last main_loop; }   # input exhausted
+
+# the current line is non-empty.
+
+if (! (/\/\*\{\\M/)) { 
+  goto build_code_unit;  # start new code unit.
+}  
+
+@invisible_words = ('__exportC' , 
+                    '__exportF' , 
+	            '__exportD', 
+	            '__typename');
+foreach $invis_word (@invisible_words) {
+  $code_unit =~ s/$invis_word//g;
+}
+$original_code_unit = $code_unit;
+
+
+@ \subsubsection{Reading a Manual Comment}
+
+The current line contains the begin of an Mcomment. I first remove the
+\verb-/*{\- and everything preceeding it and then process a command.
+Processing a command entails the following: Production of the required
+output and moving the current line to the last line of the manual
+comment.  In order to make life simple I concatenate the comment into
+a single string.
+
+<<determine manual comment and manual command>>=
+
+s/^(.*)\/\*\{\\//; # remove begin comment and everything before it
+
+local($stuff)=$1;
+$original_comment = $&.$_;
+if ($stuff =~ /\S/) { # issue warning if something non-white before comment
+  &print_warning("appending non-white stuff in front of begin comment"); 
+  $code_unit .= $stuff;
+}
+
+$Mcomment = "";
+
+while ($_ && (! ( /\}\*\// ) ) ) {
+
+  if (/\} *\*\//) 
+  { &print_warning("encountered } */ in manual comment. Did you mean }*/ ?"); }
+  $Mcomment .= $_;
+  $_ = <INPUT>;
+}
+if (! $_) { die "Error: missing end comment\n"; }
+
+s/\}\*\/(.*)$/ /;  # replace end comment and everything after it by a blank
+if ($1 =~ /\S/) { &print_warning("ignored non-white after Mcomment"); }
+
+$Mcomment .= $_;   
+$original_comment = $Mcomment;
+
+# Mcomment contains the entire manual comment. We extract the command (the
+# maximal alphanumeric prefix).
+
+$Mcomment =~ /^(\w*)\W.*/;
+$command = $1;
+$Mcomment =~ s/$command *//;  # remove command and succeeding blanks
+$command =~ s/^M//;           # remove the M
+
+if (! ($command eq "\options")) {
+  &apply_Msubst(*Mcomment); 
+}
+# we replace all substitution strings in the comment as an exception
+# you can escape any string by a preceding backslash.
+
+
+
+@ \subsubsection{Processing a Manual Command}
+
+At this point we have completely read a manual comment. We have the command
+(without the leading M) available in \verb-$command- and we have the remainder
+of the comment available in \verb-$Mcomment-. We process commands in a big case
+statement with one case for each manual command.
+
+There is one command that requires special treatment, the Moptions command that
+turns off warnings for the next command. We use variables \$nextwarning and
+\$justset to deal with them. We initialize the first variable to yes and the
+second variable to no. Whenever we process a nextwarning=no in Moptions we set
+nextwarning to no and justset to true. The justset is changed back to no before
+the next command is processed. This makes sure that nextwarning applies exactly
+to the next command.  pront\_warning does not print if nextwarning is no.
+
+<<process manual comment>>=
+if ($nextwarning eq "no" && $justset eq "no") { $nextwarning = "yes";} 
+$justset = "no";
+switch: {
+  if ($command eq 'options') {
+    <<options>> 
+    last switch;
+  }
+  if ($command eq 'subst') {
+    <<subst>> 
+    last switch;
+  }
+  if ($command eq 'anpage') {
+    <<Manpage command>> 
+    last switch;
+  }
+  if ($command eq 'definition' || 
+      $command eq 'types' ||
+      $command eq 'creation' ||
+      $command eq 'operations' ||
+      $command eq 'events' ||
+      $command eq 'implementation' || 
+      $command eq 'example') {
+    <<definition etc.>> 
+    last switch;
+  }
+  if ($command eq 'text'  || $command eq "preamble") {
+    <<text or preamble>> 
+    last switch;
+  }
+  <<commands for manual entries>>
+  &print_warning( "did not recognize command name M" . $command);
+}
+
+@ We now come to the various manual commands. They fall naturally into three
+groups: Moptions and Msubst produce no output, Manpage, Mdefinition, Mexample,
+Mimplementation, Mcreation, Moperations, Mtext and Mpreamble only deal with
+text, and all others need to extract code from the preceding code unit.
+
+
+@ \subsection{The Toplevel Manual Commands}
+\subsubsection{Moptions}
+
+The comment is a single option. We first remove leading and trailing white
+stuff (= all space characters) and then proceed as on command line.  The filter
+variable in used in regular expressions and it is therefore necessary to quote
+all special characters.
+
+<<options>>= 
+$Mcomment =~ s/\s//g;
+$Mcomment =~ /^(\w+)=(.*)$/ ;
+if ($1 eq "outfile") {
+  if ($print_title eq "no") { 
+  # gives information if we are in Lman/Mkman mode 
+  # where we don't want to change the outfile but 
+  # just parse the manual comments in one file in
+  # the given sequence${$outfile} = 1;
+      
+    close(OUTPUT);
+    $outfile = $2;
+    if ( $existing_outfiles{$outfile} == 1 )
+    { open OUTPUT, ">>$outfile"; }
+    else
+    { $existing_outfiles{$outfile} = 1;
+      open OUTPUT, ">$outfile";  
+      $HTMLopentabular{$outfile} = "no";
+      if ( $mode eq "Ldoc" ) { &print_unit("\\begin{manual}\n"); }
+      if ( $mode eq "Cdoc" ) { &print_unit("% begin cgal manual\n"); }
+    }
+  }
+}
+else
+{  eval "\$$1 = \$2"; }
+
+if ($nextwarning eq "no") {$justset = "yes";}
+
+
+@ \subsubsection{Msubst}
+The comment is a sequence of lines each containing either a pair w1 w2 or a
+pair w1 \# w2.. We put them into [[\$map]]. Note that the first line may be
+empty and contains only a carriage return or line feed.
+We do the following substitution strategy. We substitute the w1 by w2 in
+all [[code_unit]] and [[Mcomment]] just after they have been detected.
+If you want to keep a generally replaced string (as defined by Msubst)
+you can escape it with a backslash $\\$. This keeps the string and the
+backslash will be erased before prettyprinting.
+
+<<subst>>= 
+while ($Mcomment =~ s/^([^\n\r]*)[\r\n]//) 
+{ $substline = $1;
+  if ($substline =~ /^(.*)#(.*)$/ || $substline =~ /^ *(\S+) +(\S+) *$/)
+  { $leftside = $1; $rightside = $2;
+    &remove_enclosing_blanks($leftside);
+    &remove_enclosing_blanks($rightside);
+    push(@substlist,$leftside); push(@substlist,$rightside);
+  }
+  else
+  { if ($substline =~ /\S/) 
+    { &print_warning("Msubst does not understand $substline"); }
+  }
+}
+ 
+@ \subsubsection{Manpage}
+
+Mcomment is equal to $\{$type$\}\ \{$par\_list$\}\ \{$title$\}\
+\{$varname$\}$ where the last argument is optional. We extract the
+parts, define the values of the placeholders, and produce the header
+line of the manual page. The header line is not produced if ext works
+for Ldoc.
+
+<<Manpage command>>=
+if (! ($Mcomment =~ /\{([^\{\}]*)\}\s*\{([^\{\}]*)\}\s*\{([^\{\}]*)\}\s*\{([^\{\}]*)\}/ || 
+       $Mcomment =~ /\{([^\{\}]*)\}\s*\{([^\{\}]*)\}\s*\{([^\{\}]*)\}/ ) )          
+{ &print_warning("Manpage expects either three or four arguments"); }
+$Mtype = $1;
+$par_list = $2;
+$title = $3;
+if ($4) { $Mvar = $4; }
+if ($par_list =~ /^ *$/) 
+{ $MIname = $Mname = $Mtype; }
+else {
+  # remove excessive blanks in parlist but be case sensitive
+  $par_list =~ s/ //g;
+  local($opar_list) = $par_list;
+  @params = split(',',$par_list);
+  local($longtemplatepar)= (length($par_list) > 20);
+  foreach my $para (@params) 
+  { if ( length($para) > 5 ) { $longtemplatepar=1; } }
+  if ( $longtemplatepar ) 
+  { $par_list = " ".join(", ",@params)." "; } 
+  # we do something for long template params 
+  # if we produce ,blank the command covert_M enables
+  # line breaks in the template list, thus we do this
+  # as soon as one param is longer than 7 characters or
+  # if the parameter list is longer than 20 characters
+  $Mname = $Mtype."<".$par_list.">";
+  if ( length($opar_list) < 11 ) { $MIname = $Mname; }
+  else { $MIname = $Mtype."<".substr($opar_list,0,7)."...>"; }
+}
+
+&create_indexentry($mode, $MIname, "class");
+if ($mode ne "Fman" && $mode ne "Cdoc" &&  !($mode =~ /HTML/) ) {
+  &print_unit("\\resetmancounter");
+}
+if ($mode eq "Cdoc") {
+  &print_unit("\\begin{ccRefClass}{$Mname}\\ccCreationVariable{$Mvar}"); 
+}
+
+if ($print_title eq "yes") {
+  if ($mode eq "Cdoc") {
+    &print_unit("\\ccSection{$title}");
+  } elsif ($mode ne "Fman" ) {
+    # we print \section*{title (type')}\label{type}\n 
+    # where type' is obtained from type by quoting underscores.
+    # if numbered is true we supress the star
+    my $Mtype1 = $Mtype; $Mtype1 =~ s/_/\\_/g;
+    if ($numbered eq "yes" ) {$star = "";} else {$star = "*";}
+    if ($mode =~ /HTML/) { &closetabular(); $star = ""; }
+    &print_unit("\\$section$star \{ $title \( $Mtype1 )}\n".
+		"\\label\{$title\}\n\\label\{$Mtype\}");
+  } else {
+    &print_unit("$title ( $Mtype )");
+  }
+}
+
+$includeline="";
+if (($kind eq "MANROOTtype" || $kind eq "h") && $includefile eq "yes") {
+  $includeline = $INPUT;
+  if ( $includeline =~ /LEDA/ ) 
+  { $includeline =~ s/.*(LEDA.*)/$1/; } # chop off before LEDA
+  $includeline = "\\\#include \< $includeline \>"; 
+}
+
+
+ 
+@ \subsubsection{Mansections: Mdefinition, Mtypes, Mcreation, Moperations, Mevents,
+Mexample, and Mimplementation}
+
+We come to the commands for the header lines of the various parts of a manual
+page. The body of these commands is either text or defines some widths and/or
+placeholders. We proceed in steps:
+
+\begin{enumerate}
+\item Mcreation: determine varname and declwidth. Set [[\$Mcomment]] to empty
+string. Moperations: determine typewidth and callwidth. Set [[\$Mcomment]] to
+empty string. All others: Do nothing
+\item Store [[\$Mcommand]] in [[\$currentsection]]
+\item Produce output. The output consists of a backslash, followed by the
+command name, followed (if there is text) by a newline followed by the
+text. The text is subject to placeholder substitution and conversion from C to
+LaTeX. This is the task of procedure [[convert_to_LaTeX]]. In Fman mode we only
+perform placeholder substitution.
+\end{enumerate}
+
+<<definition etc.>>=
+if ($command eq "creation" || $command eq "types" || $command eq "events") {
+  # Mcomment may contain a varname and/or a length.
+  @params = split(' ',$Mcomment);  # split at blanks
+  foreach $i (0 .. $#params) {
+    if ($params[$i] =~ /^[a-zA-Z]/) { 
+      $Mvar = $params[$i]; 
+      if ($mode eq "Cdoc") { &print_unit("\\ccCreationVariable{$Mvar}"); }
+    } # variable names start with a letter
+    else {
+      $a = $params[$i];
+      if ($a =~ /^ *$/) { &print_warning("something wrong in $command"); }
+      if ($a =~ /^[0-9\.]*$/) { $a = $a . 'cm';}
+      &print_unit("\\setlength{\\declwidth}{$a}\n\\computewidths\n") 
+        unless ($mode =~ /HTML/ || $mode eq "Fman" || $mode eq "Cdoc");
+      &print_unit("\\ccSetOneOfTwoColumns{$a}") if ($mode eq "Cdoc");
+    }
+  }
+  $Mcomment = "";
+}
+
+
+if ($command eq "operations") {
+  # Mcomment is either empty or a b where a and b are lengths
+  # If the lengths are without dimension then we add cm
+  local($settings)= "";
+  @params = split(' ',$Mcomment);  # split at blanks
+  if ($mode ne "Fman" && $mode ne "Cdoc" && !($mode =~ /HTML/) ) {
+    foreach $i (0 .. $#params) {
+      $a = $params[$i];
+      $a .= 'cm' if ($a =~ /^[0-9\.]*$/);
+      $settings .= "\\setlength{\\typewidth}{$a}\n" if ( $i == 0 );
+      $settings .= "\\setlength{\\callwidth}{$a}\n" if ( $i == 1 ); 
+    }
+    $settings .= "\\computewidths\n";
+  } elsif ($mode eq "Cdoc") {
+    foreach $i (0 .. $#params) {
+      $a = $params[$i];
+      $a .= 'cm' if ($a =~ /^[0-9\.]*$/);
+      $settings = "\\ccSetTwoOfThreeColumns{$a}" if ( $i == 0 );
+      $settings .= "{$a}" if ( $i == 1 ); 
+    }
+  }
+  &print_unit($settings);
+  $Mcomment = "";
+}
+
+$currentsection = $command;
+
+# print mansections:
+
+my($header,$semantics);
+if ($filter eq "all" || $filter eq $currentsection) {
+  &subst_vars(*Mcomment);
+  if ($mode eq "Fman") {
+    $header =  ucfirst($command)."\n____________________________";
+    $semantics = &convert_to_ASCII($Mcomment,1,80);
+    if ( $includeline ne "" ) 
+    { $semantics .= "\n$includeline"; $includeline=""; }
+  } elsif ($mode =~ /HTML/) {
+    &closetabular();
+    $header = "\\textbf\{\\large " . ucfirst($command) . "\}";
+    $semantics = &convert_to_HTML($Mcomment);
+    if ( $includeline ne "") 
+    { $semantics .= "\n".&convert_R($includeline); $includeline=""; }
+  } elsif ($mode eq "Cdoc") {
+    $header = "\\cc".ucfirst($command);
+  } else { # Lman, Ldoc here !
+    $header = "\\mansection\{ " . ucfirst($command) . " \}";
+    if ($Mcomment) { $semantics = &convert_to_LaTeX($Mcomment); }
+    if ($includeline) 
+    { $semantics .= "\n". &convert_M($includeline); $includeline=""; }
+  }
+  &print_unit($header);
+  &print_unit($semantics);
+}
+      
+@ \subsubsection{Mtext and Mpreamble}
+
+This is basically the third step of the previous section. However, in Ldoc mode
+we produce no output for Mpreamble. 
+
+In HTML mode we also have to be careful if the text appears in the
+creation section or operations sections.
+<<text or preamble>>=
+if ($filter eq "all" || $filter eq $currentsection ) { 
+  &subst_vars(*Mcomment);
+  if ($mode eq "Fman") {
+      if ($showsem) { print_unit(&convert_to_ASCII($Mcomment,1,80)); }
+  } elsif ($mode =~ /HTML/ ) {
+    &closetabular();
+    &print_unit(&convert_to_HTML($Mcomment));
+  } elsif ($command eq "text" || $mode ne "Ldoc" || $mode ne "HTMLdoc") { 
+    &print_unit(&convert_to_LaTeX($Mcomment)); 
+  }
+}
+
+
+@ It is natural to learn about functions [[print_unit]],
+[[print_table_row]] at this point. [[print_unit]] prints one unit of
+text to OUTPUT. It also produces an index entry if the global variable
+[[indexentry]] is not empty.  [[create_indexentry]] fills the global
+variable with a string marking an index term. [[short_prototype]] does
+a shortening of a C-prototype thus it fits into our index.
+
+<<subroutines>>=
+sub create_indexentry {	
+  my ($mode,$entry,$scope) = @_;
+  if ($indexing eq "yes") {
+    if ( $mode =~ /HTML/ ) { 
+      if ($scope eq "local")  
+      { $indexentry .= "\\index\{$entry\!$MIname\}\n"; }
+      else { $indexentry .= "\\index\{$entry\}\n"; }
+    } else { # latex like
+      if ($scope eq "local")  
+      { $indexentry .= "\\index\{".&convert_R($entry)."\!".
+	               &convert_MI($MIname)."\}\n"; }
+      elsif ($scope eq "global") 
+      { $indexentry .= "\\index\{".&convert_R($entry)."\}\n"; }
+      else # class symbol
+      { $indexentry .= "\\index\{".&convert_MI($entry)."\}\n"; }
+    }
+  }
+}
+
+sub short_prototype {
+  local($mode) = shift(@_);
+  local($proto) = shift(@_);
+  if ($proto eq "") { return ""; }
+  local($params) = shift(@_);
+  if ( ! ($mode =~ /HTML/) ) { 
+    if (length($proto) > 20) 
+    { $proto = substr($proto,0,17) . "..."; }
+  }
+  $proto = &convert_R($proto);
+  if ($params) { $proto.="(...)"; } 
+  else { $proto.="()"; }
+  $proto;
+}
+
+
+sub print_unit {
+   local($text) = @_; # read argument into local variable
+   if ($indexentry ne "") { 
+     chop $indexentry;
+     $text .= "\n" . $indexentry;
+     $indexentry=""; 
+   } 
+   if ( $text ne "" ) { $text .="\n\n"; }
+   if ( $mode ne "Fman" ) { print OUTPUT $text; }
+   else { print STDOUT $text; }
+}
+
+
+# the following is only used in HTML mode:
+
+sub print_table_row {
+  my @params = @_;
+  my $row = "";
+  #if ($indexentry ne "") { chop $indexentry; }
+  foreach $i (0 .. $#params) {
+    if ($params[$i] eq "") { $row.="\\ "; }
+    else { $row.=$params[$i]; }
+    if ($i == 0) { $row .= $indexentry; }
+    if ($i == $#params) { $row .= " \\\\";} 
+    else { $row .= " \& "; }
+    # was { $row .= "\n" .$indexentry . " \\\\";}
+  }
+  if ($indexentry ne "") {  $indexentry=""; } 
+  print OUTPUT $row , "\n";
+}
+
+#the following is only used in HTML mode:
+sub multicol {
+  my $colnum = shift(@_);
+  my $content = shift(@_);
+  my $line = "\\multicolumn\{$colnum\}\{l\}\{ ".$content."\}";
+  $line;
+}
+
+
+@ \subsection{Converting Bodies of Manual Commands to \LaTeX}
+
+Many manual comments contain pieces of text. We prepare this text for
+output in a two step process.  We do here \CC to \LaTeX\
+conversion. We takes any string and apply [[convert_inline_code]] to each
+chunk of the string which is not a verbatim
+environment. If they are inside we just skip them.
+
+The result of this process is not for human consumption. We found that
+even some programs have difficulties with it because it may contain
+lines of 200 and more characters. Latex has no problems with this but
+cweave does. We therefore break the output at suitable blanks.
+
+<<subroutines>>=
+# we expect that placeholder substitution already took place
+sub convert_to_LaTeX {
+  local($text) = @_; # read argument into local variable
+  if ($mode ne "Cdoc") # standard conversion
+  { $text = &convert_inline_code($text,\&convert_M,\&convert_T); }
+  else # CGAL conversion leaves it via convert_C to TeX
+  { $text = &convert_inline_code($text,\&convert_C,\&convert_C); }
+  if ($kind eq "Cweb") {
+    <<break into reasonable length lines>> 
+  } 
+  return $text;
+}
+
+<<conversion subroutines>>
+
+@ Now for the Cweb part which breaks up some long text elements.
+<<break into reasonable length lines>>=
+local($i, $remline, $outline, $lines , $word); 
+@lines = split(/^/,$text);  # split at new lines
+$text = "";
+foreach $i (0 .. $#lines) {
+  if (length($lines[$i]) > 80) {
+     $outline = "";
+     $remline = $lines[$i];
+     while ($remline ) {
+       if ($remline =~ /[\w\,] /) 
+       { $word = $` . $&; $remline = $'; }
+       else 
+       { $word = $remline; $remline = ""; }
+       # a word charachter or komma followed by a blank or the entire line
+       if (length($outline) + length($word) < 80)
+       { $outline  .= $word; }
+       else { 
+         if ($outline) 
+         { $text .= $outline . "\n"; }
+         else { 
+           &print_warning("unable to break line, " .
+	   "might cause trouble with cweave\n$word\n\n");
+         }
+         $outline = $word;
+       }
+     }
+     $text .= $outline;   # no newline here
+   }
+   else 
+   { $text .= $lines[$i]; }   # no newline here
+}  
+
+
+@ \subsubsection{Placeholder Substitution}
+
+We define a function that replaces all occurences of the placeholders Mvar,
+Mtype, and Mname by the values of the corresponding variable. Some users prefer
+to drop the M in all placeholders. We warn them. We also replace the keys in
+the substitution map.
+
+<<subroutines>>=
+
+sub subst_vars {
+  local(*string) = @_;
+  # print "SUBST_VARS call on $string\n\n";
+  if ($string eq "") { return; }
+  $string =~ s/\\Mvar/$Mvar/g;
+  $string =~ s/\\Mtype/$Mtype/g;
+  $string =~ s/\\Mname/$Mname/g;
+  if ($string =~ /\\var\W/ || $string =~ /Mvar/) 
+  { &print_warning("found an occurrence of \\var or an unslashed ".
+		   "occurrence of Mvar. Did you mean \\Mvar?"); }
+  if ($string =~ /\\type\W/ || $string =~ /Mtype/) 
+  { &print_warning("found an occurrence of \\type or an unslashed ".
+		   "occurrence of Mtype. Did you mean \\Mtype?"); }
+  if  ($string =~ /\\nameW/ || $string =~ /Mname/) 
+  { &print_warning("found an occurrence of \\name or an unslashed ".
+		  "occurrence of Mname. Did you mean \\Mname?"); }
+}
+
+sub apply_Msubst{
+  local(*alias) = @_;
+  my $i = 0;
+  while ($i < @substlist)
+  { $leftside =  $substlist[$i]; $i++;
+    $rightside = $substlist[$i]; $i++;
+    $alias =~ s/^$leftside/$rightside/g;
+    $alias =~ s/([^\\])$leftside/$1$rightside/g;
+    # \name can be used as an escape symbol to keep name
+    $alias =~ s/\\$leftside/$leftside/g;
+    # when escaping \name we delete the \ for typesetting
+  }
+}
+
+
+@ \subsection{The Lowlevel Manual Commands}
+
+All commands to follow generate output for the current code unit.
+We therefore need to parse the current code unit. It is supposed to 
+contain the definition or declaration of a single function or operator. 
+The result of the parse will be made available in the following varables:\\
+[[\$type]] contains the return type.\\
+[[\$fname]] is the name of the function.\\
+[[\$signature]] is what we usually set in the second column.\\
+[[\$prefix]], [[\$funcname]], [[\$postfix]] are a detailed version of the
+signature. [[\$funcname]] is what appears in roman in the LEDA manual.\\
+[[\$constructor]], [[\$static]], [[\$operator]], [[\$conversion]], 
+[[\$destructor]] record if the code unit contains a special function.\\
+
+We generate a manual entry in two steps. We first parse the code unit and thus
+determine the values of all variables below. In a second step we actually
+generate the entry.
+
+<<commands for manual entries>>=
+$prefix = "";
+$funcname = "";
+$postfix = "";
+$signature = ""; 
+$enumconsts = "";
+$type = "";
+$fname = "";
+$static = 0;
+$constructor = 0;
+$operator = 0;
+$conversion = 0;
+$destructor = 0;
+$enum = 0;
+$typedef = 0;
+$localclass = 0;
+
+if (!$code_unit) {
+  &print_warning("current code unit is empty"); 
+  last switch;
+}
+<<parsing the code unit>>
+<<producing the manual entry>>
+
+@ \subsubsection{Parsing the Code Unit}
+
+A (standard) function definition or declaration has the following form:
+A possibly empty list of qualifiers (static, extern, friend, inline,
+virtual) and a return type separated by blanks (if the return type is 
+missing it is taken to be int)\\
+the function name (a function name is a string over a-zA-Z\_0-9.
+(HOW ABOUT ::?) or it has the form operator opsymbol)\\
+a (\\
+a possibly empty list of parameters separated by comma\\
+a )\\
+the optional qualifier const\\
+a semicolon or a compound statement\\
+the initializer =0 ; (for pure virtual functions ).\\
+
+\noindent
+Among the qualifiers only static has an effect on the output.
+\smallskip
+
+\noindent
+If the function is a constructor we may have a list of constructor calls
+after the closing bracket, i.e.,\\
+a :\\
+followed by a sequence of function calls seperated by comma.
+\smallskip
+
+\noindent A destructor has the format $\sim$Mtype().
+\smallskip
+
+\noindent
+The syntax of type conversion functions is different, namely
+\verb-operator typname-. There are no brackets.
+
+A code unit is supposed to consist of a single function definition 
+or declaration. We allow to stretch this rule a bit in order to 
+allow a more natural mode of expression. 
+\begin{itemize}
+\item The code unit may be a comment. In this case it must start 
+with /* and end with */ both on 
+separate lines. The first line may contain a text.
+\item The code unit may contain more than one function definition. 
+This is either used for closely related functions or for functions 
+that have a conditional definition. I remove the compiler 
+directives (starting with \# followed by letters) and then
+extract the \emph{last} definition as follows. We search for a innermost 
+matching pairs of 
+parenthesis (pattern \verb-\{[^\{\}]*\}-) and replace it by a 
+semicolon. We proceed until there are no pairs left. At this point we have a 
+sequence of function definitions, each followed by a semicolon. 
+The last function definition is the one after the next to last semicolon.  
+\end{itemize}
+
+A code unit may contain Cweb-directives. We remove them first.
+ 
+<<parsing the code unit>>=
+$code_unit =~ s/\@\+/ /g; # remove @+
+$code_unit =~ s/\@\// /g; # remove @/
+$code_unit =~ s/\@\|/ /g; # remove @|
+$code_unit =~ s/\@\#/ /g; # remove @#
+$code_unit =~ s/\@\;/ /g; # remove @;
+$code_unit =~ s/\@\,/ /g; # remove @,
+
+&print_debug("\nDEBUG code unit at start=$code_unit");
+
+if ($code_unit =~ /\/\*/) {      # commented code units
+  &print_warning("code unit contains a comment. ".
+                 "I remove the lines containing /* and */");
+  $code_unit =~ s/ *\/\*.*//;  # remove first line
+  $code_unit =~ s/ *\*\/ *//;  # remove last line
+  $original_code_unit = $code_unit;
+}
+
+$code_unit =~ s/.*\<\<.*?\>\>\=//g;  # remove chunk labels and chars in front
+$code_unit  =~ s/\/\/.*\n//g;  # remove C++ comment to end of line
+$code_unit =~ s/\t/ /g;        # replace tab by blank
+$code_unit =~ s/ *\#.*\n/ /g;  # remove all lines with compiler directives 
+$code_unit =~ s/\n/ /g;        # replace newline characters by blanks
+
+if ($code_unit =~ s/\{(.*)\}/\;/ ) 
+{ $enumconsts = $1; }
+$code_unit =~ s/\{.*/\;/g; # just an opening bracket purges rest
+# note that we did the previous to enable a opening bracket behind
+# the prototype not balanced by a closing one following way behind
+# the man comment
+while ($code_unit =~ s/\;\s*\;/\;/) {}        
+# replaces white space-separated ; by a single ;
+$code_unit =~ s/= *0 *; *$//; # removes = 0 ;
+$code_unit =~ s/\; *$//; # remove last semicolon if only followed by whitespace
+if ($code_unit =~ /\;([^\;]*)$/) {
+  &print_warning("code unit contains several function definitions. " .
+                 "I extracted\n $1");
+  $code_unit = $1;
+}
+
+# At this point we have a single function definition in code_unit
+&print_debug("code unit after bracket removal=$code_unit"); #DEBUGOUT
+
+@ At the end of the code unit there can be const qualifiers as well as
+an initialization list in constructors. We remove them.  We next work
+at the beginning of the code unit. We first remove a template
+definition \verb-template< (class T,)* class S>- and then all
+qualifiers. If we find a static qualifier we record that fact.
+<<parsing the code unit>>=
+
+$code_unit =~ s/const *$//;  # remove const qualifier at end
+$code_unit =~ s/::/doppeldoppel/g;  # replace :: by doppeldoppel
+$code_unit =~ s/\) *:.*$/\)/;    # remove initialization constructor call
+$code_unit =~ s/doppeldoppel/::/g;   # reintroduce ::
+$code_unit  =~ s/(^|\W+)virtual(\W+)/$1$2/;             # remove blanks virtual blanks      
+$code_unit  =~ s/(^|\W+)friend(\W+)/$1$2/;              # remove friend
+$code_unit  =~ s/(^|\W+)inline(\W+)/$1$2/;              # remove inline
+$code_unit  =~ s/(^|\W+)extern(\W+)/$1$2/;              # remove extern
+$static = ($code_unit  =~ s/(^|\W+)static(\W+)/$1$2/);  #remove static and record
+$enum   = ($code_unit  =~ s/(^|\W+)enum(\W+)/$1$2/);     #remove enum
+$typedef = ($code_unit  =~ s/(^|\W+)typedef(\W+)/$2/); #remove typedef
+if ($code_unit =~ s/(^|\W+)template *<([ ,\w]*)>/$1/ ) 
+{ $templatelist = $2; } # remove template definition
+$localclass = ($code_unit  =~ s/(^|\W+)class(\W+.*)/$2/); #remove class
+&apply_Msubst(*code_unit);
+&print_debug("code unit after qualifier removal=$code_unit"); #DEBUGOUT
+
+@ At this point we have the form\\
+\begin{tabular}{ll} 
+type fname ( parlist )            & for a standard function\\
+type operator opsymbol (parlist ) & for the definition of an operator\\
+Mtype ( parlist )                 & for a constructor\\
+operator type                     & for a conversion function.\\
+$\sim$Mtype ()                    & for a destructor.\\
+type1 type2                       & for a typedef
+\end{tabular}
+
+\noindent 
+In either case we define signature as fname(parlist).\\
+
+\noindent
+We collect information to distinguish cases. We have a conversion operator 
+if there is no (), an operator if "operator" is present but we are not 
+in the conversion case, a destructor if the code unit starts with ~,
+and a constructor or member function otherwise.
+<<>>=
+  $conversion = ($code_unit =~ /operator\s*\w+\s*\(\s*\)/); 
+  if ($code_unit =~ /\( *\) *\(.*\)/) { 
+    $code_unit =~ s/\( *\) *\((.*)\)//; 
+    $par_list = $1;
+  } else { 
+    $code_unit =~ s/\((.*)\)//; 
+    $par_list = $1;
+  }
+
+  $operator = (($code_unit =~ /operator/) && !$conversion);  # symbol operator
+  $destructor = ($code_unit =~ /^ *\~/);
+
+  &remove_enclosing_blanks($code_unit); # I do anchored matches below
+
+  &print_debug("code unit after first clean-up=$code_unit");
+  &print_debug("par_list = $par_list");
+
+extraction:
+{ if ($destructor) { last extraction; }
+ 
+  if ($conversion) {    # a conversion function: operator type
+    if (!($code_unit =~ s/ *operator *//)) {
+      &print_warning("expected a conversion function");
+    }
+    $fname = $code_unit;
+    last extraction;
+  }
+
+  if ($operator) { # an operator: type operator opsymbol  
+    $code_unit =~ /^(.*) *operator *(.*)$/;
+    $type = $1;
+    $fname = $2;
+    last extraction;
+  }
+  <<constructor and proper function>>
+}    
+
+@ The case of a standard function or constructor remains: 
+a standard function is of the form type fname where 
+fname is of the form (class name::)*name
+I postulate that fname contains no blank and hence fname is
+everything after the last blank 
+note that type may be empty and that type may bracketed by const \&
+A constructor has the form $\sim$Mtype.
+
+Cweave taught me that life is more complex than this.\\
+\verb+array<rat_vector>linear_base()+\\
+is apparently perfect \CC. I think it's sick but I have to handle it anyhow.
+
+If the code unit matches Mtype then I have a constructor. Otherwise the 
+function name is the maximal suffix that consists only of word characters and colons. If this is everything the return type is integer. If it is not everything then the return type is the remainder (but without trailing blanks).
+
+<<constructor and proper function>>=
+
+if ( $code_unit eq $Mtype ) 
+{ $constructor = 1; }
+elsif ( $currentsection ne "types" ) {
+  # a function
+  if ($code_unit =~ /^([:\w]+)$/ ) {
+    $type = "int";
+    $fname = $code_unit;
+  } else { 
+    &print_debug("proper function $code_unit");
+    $code_unit =~ /^(.*[^\:\w])([\:\w]+)$/ ;
+    $type = $1; 
+    $fname = $2;
+    &print_debug("proper function $type $fname");
+    while ($type =~ s/^ //) {}
+    while ($type =~ s/ $//) {} # remove beginning and trailing blanks
+    if (($type =~ /^\s*const\W/) && ($constref eq "no")) {  
+      # remove const & bracket
+      $type =~ s/^\s*const//; 
+      $type =~ s/ *\& */ /;
+    }
+    $type =~ s/ *\& */\& /g;
+    &print_debug("proper function $type $fname");
+  }
+}
+
+
+@ \subsubsection{Generating a Manual Entry -- Mancommands}
+
+Now that we parsed the code unit we can proceed to generate output.
+We prepare type, fname, varname, and par\_list for output and  
+define signature as fname(parlist). 
+
+It is helpful to remove leading and trailing blanks from all relevant variables.
+
+<<producing the manual entry>>=
+&remove_enclosing_blanks($type);
+&remove_enclosing_blanks($fname);
+&remove_enclosing_blanks($Mvar);
+&remove_enclosing_blanks($Mtype);
+&remove_enclosing_blanks($command);
+
+@ In par\_list we remove const \& pairs and rebuild par\_list with one blank
+after each comma. We also remove blanks before \&. How do I recognize a 
+const \& pair? I look for an occurrence of const followed by a blank followed
+by anything followed by \&.
+
+Well, this is not quite right. I do not want a blank before the second comma in
+\verb-...,sortseq<K,I> S,...-
+
+<<>>=
+@params = split(/,/,$par_list);  # split at commas
+$par_list = "";
+$i = 0;
+while ($i <= $#params) {
+  $j = $i + 1;
+  while ($params[$i] =~ /</  && !($params[$i] =~ /\(.*<.*\)/) &&
+         (($params[$i]=~tr/</</) > ($params[$i]=~tr/>/>/))) {
+    # append all comma separated parameter parts together
+    # as part of a template type list or comma separated
+    # init parts, the second condition allows initialization
+    # by bracketed expressions containing < or <<
+    $params[$i] .= "," . $params[$j]; $j++;
+  }
+  if (($params[$i] =~ /const .*\&/) && ($constref eq "no")) {
+    $params[$i] =~ s/ *const //;
+    $params[$i] =~ s/ *\& */ /; # replace blanks&blanks by a single blank
+    # $params[$i] =~ s/\&//;     simply remove & if not followed by a blank.
+  }
+  &remove_enclosing_blanks($params[$i]);
+  $params[$i] =~ s/ *\& */\& /g;
+
+  if ($i > 0) {$par_list .= "\, ";}
+  $par_list .= $params[$i];
+  $i = $j;
+}
+
+$varname = $Mvar;
+$signature = $fname . "(" . $par_list . ")";
+
+if ( !$showsem ) { $Mcomment = ""; }
+&subst_vars(*Mcomment);
+
+if ($command =~ /^enum$/) {
+  <<Menum>> 
+  last switch;
+}
+if ($command =~ /^typemember$/) {
+  <<Mtypemember>> 
+  last switch;
+}
+if ($command =~ /^typedef$/) {
+  <<Mtypedef>> 
+  last switch;
+}
+if ($command =~ /^event$/) {
+  <<Mevent>> 
+  last switch;
+}
+if ($command =~ /^opl?$/) {
+  <<Mop>> 
+  last switch;
+} 
+if ($command =~ /^funcl?$/) {
+  <<Mfunc>> 
+  last switch;
+}
+if ($command =~ /^binopl?$/) {
+  <<Mbinop>> 
+  last switch;
+}
+if ($command =~ /^binopfuncl?$/) {
+  <<Mbinopfunc>> 
+  last switch;
+}
+if ($command =~ /^arropl?$/) {
+  <<Marrop>> 
+  last switch;
+}
+if ($command =~ /^funopl?$/) {
+  <<Mfunop>> 
+  last switch;
+}
+if ($command =~ /^funobjl?$/) {
+  <<Mfunobj>> 
+  last switch;
+}
+if ($command =~ /^unopl?$/) {
+  <<Munop>> 
+  last switch;
+}
+if ($command =~ /^unopfuncl?$/) {
+  <<Munopfunc>> 
+  last switch;
+}
+if ($command =~ /^staticl?$/) {
+  <<Mstatic>> 
+  last switch;
+}
+if ($command =~ /^conversion/) {
+  <<Mconversion>> 
+  last switch;
+}
+if ($command =~ /^create/) {
+  <<Mcreate>> 
+  last switch;
+}
+if ($command =~ /^destruct/) {
+  <<Mdestruct>> 
+  last switch;
+}
+
+ 
+@ \subsubsection{Mop}
+
+<<Mop>>=
+if ($operator || $constructor || $conversion || $static) {
+ &print_warning("Mop applies only to member functions " .
+	        "and not to operators,...");
+}
+if ($filter eq "all" || $filter eq $currentsection || 
+    ($fname =~ /$filter/)) {
+  &create_indexentry( $mode, &short_prototype($mode,$fname,$par_list), "local");
+  &print_function($mode,$type,$signature,$Mcomment,
+		  "$Mvar\.",$fname,$par_list); 
+}
+
+@ \subsubsection{Mfunc}
+
+<<Mfunc>>=
+if ($operator || $constructor || $conversion || $static) {
+  &print_warning("Mfunc applies only to functions " .
+	         "and not to operators,... ");
+}
+if ($filter eq "all" || $filter eq $currentsection || 
+    ($fname =~ /$filter/) ) {
+  &create_indexentry( $mode, &short_prototype($mode,$fname,$par_list), "global");
+  &print_function($mode,$type,$signature,$Mcomment,"",$fname,$par_list); 
+}
+     
+@ \subsubsection{Binary Operators as Members}
+The operator name is available in fname, the first argument is
+Mvar, and the second argument is par\_list. Everything else is as below.
+<<Mbinop>>=
+if (! $operator) {
+  &print_warning("Mbinop applies only to operators");
+}
+$Mreplace = $Mname . " ";
+if ($partypes eq "no") {
+  while ($par_list =~ /$Mreplace/) { $par_list = $` . $';} 
+}    
+
+$signature = $Mvar. " " . $fname . " " . $par_list;
+if ($filter eq "all" || $filter eq $currentsection || 
+    $filter eq ("operator" . $fname) ){
+  &print_function($mode,$type,$signature,$Mcomment);
+}
+
+
+@ \subsubsection{Binary Operators as Non-Members}
+fname contains the operator symbol and par\_list contains the arguments.  We
+replace the comma in par\_list by fname surrounded by blanks.
+<<Mbinopfunc>>=
+if (! $operator) {
+  &print_warning("Mbinopfunc applies only to operators");
+}
+$Mreplace = $Mname . " ";
+if ($partypes eq "no") {
+  while ($par_list =~ /$Mreplace/) { $par_list = $` . $'; } 
+}        
+$par_list =~ s/\, / $fname /;
+$signature = $par_list;
+if ($filter eq "all" || $filter eq $currentsection || 
+    $filter eq "operator".$fname) {
+  &print_function($mode,$type,$signature,$Mcomment);
+}
+
+@ \subsubsection{Array Operator}
+
+par\_list contains a single element.
+
+<<Marrop>>=
+if (! $operator) {
+  &print_warning("Marrop applies only to operators");
+}
+$signature = $varname . "\[" . $par_list . "\]";
+if ($filter eq "all" || $filter eq $currentsection ||
+    $filter eq "arrop" ) {
+  &print_function($mode,$type,$signature,$Mcomment);
+}
+
+@ \subsubsection{Function Operator}
+
+<<Mfunop>>=
+if (! $operator) {
+  &print_warning("Mfunop applies only to operators");
+}
+$signature = $varname . "\(" . $par_list . "\)";
+if ($filter eq "all" || $filter eq $currentsection || 
+    $filter eq "funop" ) {
+  &print_function($mode,$type,$signature,$Mcomment);
+}
+
+@ \subsubsection{Unary Operator as Member}
+
+The operator is availabe in fname.  \verb=++= and \verb=--= come in postfix and
+prefix. The postfix operators have an integer argument.  new and delete have
+arguments and are prefix.  \verb=->= is postfix.
+<<Munop>>= 
+if (! $operator) {
+  &print_warning("Munop applies only to operators");
+}
+unopcases: {
+  if ($fname eq "->") {
+    $signature = $varname . $fname;   # -> is postfix
+    last unopcases;
+  }
+  if ($fname eq "new" || $fname eq "delete" ) {
+    $signature = $fname . ' ' . $varname;  # new and delete are prefix
+    last unopcases;
+  }
+  if ($par_list) {
+    $signature = $varname . $fname; # postfix ++ and --
+    last unopcases;
+  }       
+  $signature = $fname . $varname; # all others are prefix operators 
+}
+
+if ($filter eq "all" || $filter eq $currentsection || 
+    $filter =~ /$fname/ || $filter eq ("operator" . $fname )) {
+  &print_function($mode,$type,$signature,$Mcomment);
+}
+
+@ \subsubsection{Unary Functions as Non-Members}
+
+The operator is availabe in fname.  \verb=++= and \verb=--= come in postfix and
+prefix. The postfix operators have two arguments, new and delete have
+arguments and are prefix.  \verb=->= is postfix .
+     
+<<Munopfunc>>=
+if (! $operator) {
+  &print_warning("Munop applies only to operators");
+}
+     
+unopfunccases: {
+  if ($fname eq "->") {
+    $signature = $varname . $fname;   # -> is postfix
+    last unopfunccases;
+  }
+  if ($fname eq "new" || $fname eq "delete" ) {
+    $signature = $fname . ' ' . $varname;  # new and delete are prefix
+    last unopfunccases;
+  }
+  if ($par_list =~ /,/) {
+    $signature = $varname . $fname; # postfix ++ and --
+    last unopfunccases;
+  }       
+  $signature = $fname . $varname; # all others are prefix operators 
+}
+
+if ($filter eq "all" || $filter eq $currentsection ||
+    $filter =~ /$fname/ || $filter eq ("operator" . $fname )) {
+  &print_function($mode,$type,$signature,$Mcomment);
+}
+
+@ \subsubsection{Static Member Functions}
+
+For static member functions the fname is Mtype::fname.
+<<Mstatic>>=
+if (!$static) {
+  &print_warning("Mstatic applies only to static member functions");
+}
+     
+if ($filter eq "all" || $filter eq $currentsection || 
+    ($fname =~ /$filter/)) {
+  &create_indexentry( $mode, &short_prototype($mode,$fname,$par_list), "local");
+  &print_function($mode,$type,$signature,$Mcomment,"$Mname\:\:",$fname,$par_list);
+}
+
+@ \subsubsection{Conversion Operators}
+
+We have the type to be converted
+to in fname. A conversion call is fname(Mvar).
+
+<<Mconversion>>=
+if (!$conversion) {
+  &print_warning("Mconversion applies only to conversion operators");
+}
+if ($filter eq "all" || $filter eq $currentsection ){
+  &print_function($mode,$type,$signature,$Mcomment,"",$fname,$Mvar);
+}
+
+@ \subsubsection{Constructors}
+Mcomment is Ltext at this point. A constructor call is Mtype(par\_list).
+
+<<Mcreate>>=
+if (!$constructor) {
+  &print_warning("Mcreate applies only to constructors");
+}
+if ($filter eq "all" || $filter eq $currentsection ) {
+  &print_constructor($mode,$Mname,$Mvar,$par_list,$Mcomment);
+}
+
+@ \subsubsection{Destructors}
+Mcomment is Ltext at this point. A destructor call is $\sim$Mtype().
+
+<<Mdestruct>>=
+if (!$destructor) {
+  &print_warning("Mdestruct applies only to destructors");
+}
+if ($filter eq "all" || $filter eq $currentsection ){ 
+  &print_destructor($mode,$Mname,$Mcomment);
+}
+
+@ \subsubsection{Mfunobj} 
+Function objects are classes which return a value either by
+construction and conversion operation or by an explicit operator
+call. The following comment can thereby be used below an constructor
+prototype then defining a return type by \verb-\Mfunobj{type}- (at the
+beginning of a manual comment), or below a [[type operator()]] call.
+Currently function objects are 
+<<Mfunobj>>=
+if ($operator || $conversion || $static) {
+  &print_warning("Mfunobj applies only to function objects " .
+	         "and not to operators,...");
+}
+$prefix = "";
+$funcname = $fname;
+$postfix = $par_list;
+if ( $Mcomment =~ /\s*\{([^\}]*)\}/ ) {
+  $type = $1;
+  $Mcomment = $';
+} 
+$signature = $Mname."(".$par_list.")";
+if ($filter eq "all" || $filter eq $currentsection ||
+    $filter eq "funobj" ) {
+  &print_constructor($mode,$type,$Mname,$par_list,$Mcomment); 
+}
+
+
+@ \subsubsection{Member Types} 
+
+In this case we want to document the existence of a type in the local
+scope. Such a type can be the result of a typedef or the definition of
+a local class. In the second case we only want to document the
+existence of a type.  Which is stored in [[\$type]] to be output in
+[[print_typemember]].
+
+<<Mtypemember>>= 
+if ( $typedef ) {
+  $code_unit =~ s/.*\s+(\w+)\s*$/$1/;
+  $type = $1;
+} elsif ($localclass) {
+  $type = $code_unit;
+} else 
+{ &print_warning("Type member should be a typedef or a class"); }
+if ($filter eq "all" || $filter eq $currentsection || 
+    $fname =~ /$filter/ ) {
+  &print_typemember($Mname,$type,$Mcomment);
+}
+
+<<Mtypedef>>= 
+if ( !$typedef ) 
+{ &print_warning("Typedef should countain a typedef"); }
+
+  local $from;
+  $code_unit =~ s/typename//g;
+  $code_unit =~ s/(.*)\s+(\w+)\s*$/$1 $2/;
+  $from = $1;
+  $type = $2; 
+
+if ($filter eq "all" || $filter eq $currentsection || 
+    $fname =~ /$filter/ ) {
+  &print_typedef($from,$type,$Mcomment);
+}
+
+
+@ \subsubsection{Enumeration Types}
+Mcomment is Ltext at this point and [[\$code_unit]] contains the code. It
+should be of the form [[type]]. The constant list was extracted before into
+\verb-$enumconsts-. The parsing is trivial.
+
+<<Menum>>= 
+if ( !$enum ){ &print_warning("Enum should start with keyword enum"); }
+$code_unit =~ s/^ *(\w*)//;    # remove blanks type blanks {
+$type = $1;
+$enumconsts =~ s/\s*//g;
+$enumconsts =~ s/,/, /g;
+if ($filter eq "all" || $filter eq $currentsection || 
+    $type =~ /$filter/ || $enumconsts =~ /$filter/ ) {
+  &print_enum($mode,$Mname,$type,$enumconsts,$Mcomment);
+}
+
+@ \subsubsection{Events}
+Mcomment is Ltext at this point and [[\$code_unit]] contains the code. It
+should be of the form [[event<...> name]]. The parsing is trivial.
+<<Mevent>>= 
+# $code_unit =~ /^\s*\w+\<(.*)\>\s*(\w+)/;
+# change due to Stefan/Oliver
+$code_unit =~ /^\s*\w+\<(.*)\>\s*(.*)/;
+$par_list=$1;
+$fname = $2;
+my $scoper;
+if ($static) { $scoper = $Mname."::"; }
+else { $scoper = $Mvar."."; }
+if ($filter eq "all" || $filter eq $currentsection || 
+    $fname =~ /$filter/ ) {
+  &print_event($scoper,$fname,$par_list,$Mcomment);
+} 
+
+@ \subsection{Creating the Output File}
+\subsubsection{Printing a Function}
+[[print_function]] prints the manual entry for a function. It makes use of the
+global variables command, type, prefix, funcname , postfix, and Mcomment. We
+have
+
+\begin{verbatim}
+               prefix    funcname     postfix          signature           return type
+Mop            Mvar.      fname        par_list                            yes
+Mfunc                     fname        par_list                            yes
+Mfunobj                   fname        par_list                            yes
+Mstatic        Mtype::    fname        par_list                            yes
+Mconversion               fname        Mvar                                no
+
+Mbinop                                               Mvar op  par_list     yes
+Mbinopfunc                                           arg1 op arg2          yes
+Marrop                                               Mvar[arg]             yes
+Mfunop                                               Mvar(par_list)        yes
+Munop                                                the right thing       yes
+Munopfunc                                            the right thing       yes
+  
+\end{verbatim} 
+
+We output\\
+\verb-\function {return type} {prefix funcname} {postfix} {Mcomment}- 
+in the first four cases and \\
+\verb-\operator {return type} {signature} {Mcomment}- in the other cases.
+
+There is a subtlety in the first case. We want funcname to be printed in
+roman. Thus web to latex conversion is only applied to the prefix and not to
+funcname. In funcname we only quote underscores.
+
+We need to apply the substitution map to all elements of funcname, prefix,
+\ldots. We use the following construction. We create a list [[@args]] of
+relevant quantities.  We cycle through the list ann apply the substitution map
+to each element of the list.
+
+In HTML-mode we need to do two things.
+\begin{itemize}
+\item Add \verb-\htmlnormallink{typename}{URL}- for all typenames in the 
+[[namereplacementtable]].
+\item Perform HTML like quoting. Type name and signature consist only of
+alphanumeric characters, round brackets ( and ), angular brackets < and >,
+kommas, and ampersands (\&).
+\end{itemize}
+Typenames are maximal substrings of alphanumeric characters.
+
+<<subroutines>>=
+sub print_function {
+
+  &print_debug("print_function:".join(':',@_));
+  my($mode, $type, $signature, $semantics, $prefix, $funcname, $postfix) = @_;
+
+if ($mode eq "Fman") {
+   if ($funcname) 
+   { $signature = $prefix . $funcname . "(". $postfix. ")"; }
+   &print_unit( $type." ".$signature );
+   &print_unit(&convert_to_ASCII($semantics,5,70));
+   return;
+} elsif ($mode =~ /HTML/) {
+  if ($funcname) 
+  { $signature = $prefix . $funcname . "(". $postfix. ")"; }
+  my $shortsig = ( length($signature) <= 25 );
+  $type = &insert_URLs_and_quote($type);
+  $signature = &insert_URLs_and_quote($signature);
+  $semantics = &convert_to_HTML($semantics);
+  &opentabular(3);
+  if ( $shortsig ) 
+  { &print_table_row($type, $signature, $semantics); }
+  else {
+    &print_table_row($type, &multicol(2,$signature));
+    &print_table_row("","",$semantics);
+  }
+  return;
+} elsif ($mode =~ /Cdoc/) {
+  $semantics = &convert_to_LaTeX($semantics); $semantics =~ s/\n\s*\n/\n/gs;
+  if (!$prefix) 
+  { &print_unit("\\ccFunction{$type $funcname($postfix);}{$semantics}"); }
+  else
+  { &print_unit("\\ccMethod{$type $funcname($postfix);}{$semantics}"); }
+  return;
+}
+
+  $type = &convert_M($type);
+  my $paralist = "";
+  if ($funcname) {
+    $funcname = &convert_M($prefix) . &convert_R($funcname);
+    $paralist = &convert_M($postfix);
+    if ($paralist eq "") { $paralist = "\$\\,\$"; } # small space
+  } else {
+    $signature = &convert_M($signature);
+  }
+  $semantics = &convert_to_LaTeX($semantics);
+
+  if ( $type eq "" && $funcname eq "" && $signature =~ /\(\s*\)/ ) {
+    &print_warning("I encountered an empty prototype ".
+	  $signature . " and will not produce an entry.");
+    return;
+  }
+
+  if ($funcname) {
+      if (! ($command =~ /^opl?/ || $command =~ /^funcl?/ || $command =~ /^funobj/ ||
+	     $command =~ /^staticl?/ || $command =~ /^conversion?/) )
+      { &print_warning("wrong case for function print");}
+    &print_unit("\\function\{$type\}\n\{$funcname\}\n".
+		"\{$paralist\}\n\{$semantics\}");
+  } else { 
+    &print_unit("\\operator\{$type\}\n\{$signature\}\n\{$semantics\}"); 
+  }
+}
+
+@ \subsubsection{Printing a Constructor}
+We output \verb-\create {Mname} {Mvar} {par_list} {Mcomment}-
+
+<<subroutines>>=
+sub print_constructor {
+
+  &print_debug("print_constructor:".join(':',@_));
+  my ($mode,$Mname,$Mvar,$par_list,$semantics) = @_;
+
+if (!$Mvar || !$Mname ) {
+  &error_handler("You forgot to define either Mvar or Mname.");
+}
+
+my $signature;
+if ($mode eq "Fman") {
+  $signature = $Mname . " " . $Mvar;
+  if ($par_list) { $signature .= " ( " . $par_list. " )"; }
+  &print_unit($signature);
+  &print_unit(&convert_to_ASCII($semantics,5,70));
+  return;
+} elsif ($mode =~ /HTML/) {
+  $semantics = &convert_to_HTML($semantics); 
+  my ($sig1,$sig2);
+  $sig2 = $Mvar;
+  if ($par_list) { $sig2 .= "(" . $par_list. ")"; }
+  my $shortsig = (length($sig2) <= 25);
+  $sig1 = &insert_URLs_and_quote($Mname);
+  $sig2 = &insert_URLs_and_quote($sig2);
+  &opentabular(3);
+  if ( $shortsig ) 
+  { &print_table_row($sig1,$sig2,$semantics); }
+  else {
+    &print_table_row($sig1,&multicol(2,$sig2));
+    &print_table_row("","",$semantics);
+  }
+  return;
+} elsif ($mode eq "Cdoc") {
+  $semantics = &convert_to_LaTeX($semantics); $semantics =~ s/\n\s*\n/\n/gs;
+  print_unit("\\ccConstructor{$Mname($par_list)}{$semantics}"); 
+  return;
+}
+
+my ($arg1,$arg2,$arg3,$arg4) = ("","","","");
+$arg1 = &convert_M($Mname);  
+$arg2 = &convert_M($Mvar);
+$arg3 = &convert_M($par_list);
+$arg4 = &convert_to_LaTeX($semantics);
+print_unit("\\create\{$arg1\}\n\{$arg2\}\n\{$arg3}\n\{$arg4\}");
+}
+
+@ \subsubsection{Printing a Destructor}
+We output \verb-\destruct {Mname} {Mcomment}-
+
+<<subroutines>>=
+sub print_destructor {
+
+  my ($mode,$Mname,$semantics) = @_;
+  my $sig = "~".$Mname."()";
+  if ($mode eq "Fman") {
+    print_unit($sig);
+    print_unit(&convert_to_ASCII($semantics,5,70));
+  }
+  elsif ($mode =~ /HTML/) {
+    &print_table_row($sig,&convert_to_HTML($semantics));
+  }
+
+  my ($arg1,$arg2);
+  $arg1 = &convert_M($Mname);
+  $arg2 = &convert_to_LaTeX($semantics);
+  &print_unit("\\destruct\{$arg1\}\n\{$arg2\}");
+}
+
+
+@ \subsubsection{Printing an Enum}
+
+[[\$type]] contains the type, [[\$enumconsts]] contains the alternatives, and
+[[\$Mcomment]] contains the text.  We output \verb-\enum{type}{par_list}-. The
+typesetting is done via a latex macro.
+
+<<subroutines>>=
+sub print_enum {
+
+  my ($mode,$Mname,$type,$enumconsts,$semantics) = @_;
+  my $signature = $Mname . "::" . "$type";
+  my @enumvals = split(',',$enumconsts);
+  &create_indexentry($mode, $type, "local");
+  foreach my $enumv (@enumvals) 
+  { &create_indexentry($mode, $enumv, "local"); }
+
+if ($mode eq "Fman") {
+  &print_unit("$signature \{ ".join(", ",@enumvals)." \}");
+  &print_unit(&convert_to_ASCII($semantics,5,70));
+  return;
+} elsif ($mode =~ /HTML/) {
+  my $shortsig = (length($signature) <= 25);
+  $signature = &insert_URLs_and_quote($signature);
+  &opentabular(2);
+  $semantics = &convert_to_HTML($semantics);
+  if ($shortsig) 
+  { &print_table_row($signature, $semantics); }
+  else { 
+    &print_table_row(&multicol(2,$signature)); 
+    &print_table_row("",$semantics);
+  }
+  return;
+} elsif ($mode eq "Cdoc") {
+  my $enum = "enum $type { ".join(", ",@enumvals)." }";
+  $semantics = &convert_to_LaTeX($semantics); $semantics =~ s/\n\s*\n/\n/gs;
+  &print_unit("\\ccEnum{$enum}{$semantics}");
+  return;
+}
+
+  # now the latex print:
+  $signature = &convert_M($signature);
+  $enumconsts = &convert_R($enumconsts);
+  $semantics = &convert_to_LaTeX($semantics);
+  &print_unit("\\enum\{$signature\}\n\{$enumconsts\}\n\{$semantics\}");
+}
+
+
+@ \subsubsection{Printing a Typedef}
+
+[[\$type]] contains the type, [[\$fname]] contains the new type, and
+[[\$Mcomment]] contains the text.  We output
+\verb-\typedef{type}{fname}{Mcomment}- or
+\verb-\typemember{type}{Mcomment}- . The typesetting is done via a
+latex macro.
+
+<<subroutines>>=
+sub print_typemember 
+{
+  my ($Mname,$type,$semantics) = @_;
+  my $signature = $Mname."::"."$type";
+  &create_indexentry($mode, $type, "local");
+
+if ($mode eq "Fman") {
+  &print_unit($signature);
+  &print_unit(&convert_to_ASCII($semantics,5,70));
+  return;
+} elsif ($mode =~ /HTML/) {
+  $semantics = &convert_to_HTML($semantics);
+  my $shortsig = ( length($signature) <= 25 );
+  $signature = &insert_URLs_and_quote($signature);
+  &opentabular(2);
+  if ( $shortsig ) 
+  { &print_table_row($signature, $semantics); }
+  else {
+    &print_table_row(&multicol(2,$signature));
+    &print_table_row("",$semantics);
+  }
+  return;
+} elsif ($mode eq "Cdoc") {
+  $semantics = &convert_to_LaTeX($semantics); $semantics =~ s/\n\s*\n/\n/gs;
+  print_unit("\\ccNestedType{$type}{$semantics}");
+  return;
+} 
+  $signature = &convert_M($signature);
+  $semantics = &convert_to_LaTeX($semantics);
+  &print_unit("\\typemember\{$signature\}\n\{$semantics\}");
+}
+
+
+sub print_typedef 
+{
+  my ($fromtype,$newtype,$semantics) = @_;
+  my $signature = "typedef $fromtype $newtype";
+  &create_indexentry($mode, $newtype, "local");
+
+if ($mode eq "Fman") {
+  &print_unit($signature);
+  &print_unit(&convert_to_ASCII($semantics,5,70));
+  return;
+} elsif ($mode =~ /HTML/) {
+  $semantics = &convert_to_HTML($semantics);
+  my $shortsig = ( length($signature) <= 25 );
+  $signature = &insert_URLs_and_quote($signature);
+  &opentabular(2);
+  if ( $shortsig ) 
+  { &print_table_row($signature, $semantics); }
+  else {
+    &print_table_row(&multicol(2,$signature));
+    &print_table_row("",$semantics);
+  }
+  return;
+} elsif ($mode eq "Cdoc") {
+  $semantics = &convert_to_LaTeX($semantics);
+  &print_unit("\\cctypedef{$signature}{$semantics}");
+  return;
+}
+  $fromtype = &convert_M($fromtype);
+  $newtype = &convert_M($newtype);
+  $semantics = &convert_to_LaTeX($semantics);
+  &print_unit("\\typedef\{$fromtype\}\{$newtype\}\n\{$semantics\}");
+}
+
+@ \subsubsection{Printing an Event}
+
+[[\$type]] contains the type, [[\$fname]] contains the new type, and
+[[\$Mcomment]] contains the text.  We output
+\verb-\typedef{type}{fname}{Mcomment}- or
+\verb-\typemember{type}{Mcomment}- . The typesetting is done via a
+latex macro.
+
+<<subroutines>>=
+sub print_event 
+{
+  my ($scope,$eventname,$par_list,$semantics) = @_;
+  my $signature = $scope.$eventname."(".$par_list.")";;
+  &create_indexentry($mode, $eventname, "local");
+
+if ($mode eq "Fman") {
+  &print_unit($signature);
+  &print_unit(&convert_to_ASCII($semantics,5,70));
+  return;
+} elsif ($mode =~ /HTML/) {
+  $semantics = &convert_to_HTML($semantics);
+  my $shortsig = ( length($signature) <= 25 );
+  $signature = &insert_URLs_and_quote($signature);
+  &opentabular(2);
+  if ( $shortsig ) 
+  { &print_table_row($signature, $semantics); }
+  else {
+    &print_table_row(&multicol(2,$signature));
+    &print_table_row("",$semantics);
+  }
+  return;
+}
+  $signature = &convert_M($signature);
+  $semantics = &convert_to_LaTeX($semantics);
+  &print_unit("\\event\{$signature\}\n\{$semantics\}");
+}
+
+@ \subsection{Postamble and Calling LaTeX and weave.}
+The core of the output is produced at this point. We next generate the
+postamble and then call weave and/or latex.
+
+<<generate postamble and call LaTeX or Cweb>>=
+if    ($mode eq "Fman" ) { exit; }
+elsif ($mode eq "HTMLman" || $mode eq "HTMLext") {
+  &closetabular();
+  if ($mode eq "HTMLman") { print_unit("\\end{document}"); }
+}
+elsif ($mode eq "Lman") {
+  print_unit("\\end\{manual\}\n\\end{document}");          
+  close OUTPUT;
+  $owd = $ENV{"PWD"};
+  if ($latexruns == 0) { exit; }
+  chdir ("/tmp");
+   
+  &print_info("Preparing manual page with LaTeX...");
+
+  if ($outfile ne "/tmp/$pid-ext.tex") {
+    if ($outfile =~ /\//) # absolute path name 
+    { system("cp $outfile /tmp/$pid-ext.tex");}
+    else 
+    { system("cp $owd/$outfile /tmp/$pid-ext.tex");}
+  }
+
+  system ("latex /tmp/" . $pid . "-ext.tex" . $dontshowinfo);
+  if ($latexruns == 2) {
+    system ("latex /tmp/" . $pid . "-ext.tex" . $dontshowinfo);
+  }
+
+  if ($xdvi eq "yes") {
+    &print_info("Starting xdvi previewer...");
+    system ("xdvi /tmp/" . $pid . "-ext.dvi" . $dontshowinfo);
+  }
+  elsif ($dvioutfile ne "") {
+    &print_info("Copying dvi file into file $dvioutfile ".
+                "in working directory...");
+    system("cp /tmp/$pid-ext.dvi $owd/$dvioutfile");
+  }
+  else {
+    &print_info("Copying dvi file into file $basename.dvi ".
+                "in working directory...");
+    system("cp /tmp/$pid-ext.dvi $owd/$basename.dvi");
+  }
+
+  system("rm -f /tmp/" . $pid . "-ext.*");
+  chdir ("$owd");
+}
+elsif ($mode eq "Mkman" || $mode eq "lextract") {
+  print_unit("\\end{manual}");
+}
+elsif ($mode eq "Ldoc" || $mode eq "Cdoc" || $mode eq "HTMLdoc") {
+  close(OUTPUT);
+  my $addmanpages = "";
+  if ($mode eq "Ldoc") {
+    foreach my $key (keys(%existing_outfiles)) {
+      if ( ! ($key =~ /ext\.tex/) ) { $addmanpages .= $key." "; }
+      open OUTPUT, ">>$key"; 
+      &print_unit("\\end{manual}\n"); 
+      close OUTPUT;
+    }
+  }
+  elsif ($mode eq "Cdoc") {
+    foreach my $key (keys(%existing_outfiles)) {
+      if ( ! ($key =~ /ext\.tex/) ) { $addmanpages .= $key." "; }
+      open OUTPUT, ">>$key"; 
+      &print_unit("\\end{ccRefClass}\n"); 
+      close OUTPUT;
+    }
+  }
+  elsif ($mode eq "HTMLdoc") {
+    foreach my $key (keys(%existing_outfiles)) {
+      if ( ! ($key =~ /ext\.tex/) ) { $addmanpages .= $key." "; }
+      if ( $HTMLopentabular{$key} eq "yes" ) {
+        open OUTPUT, ">>$key"; 
+        &closetabular();
+        close OUTPUT;
+      }
+    }
+  }
+
+  &print_info("  Created $basename.man $addmanpages");
+  &print_info("Removing the manual comments (except for Mpreamble)".
+	      " from $INPUT...");
+
+  $tempfile = "/tmp/" . $pid . "-$basename";
+  if ($delman eq "refined") {
+    system("ext_ldel $INPUT $tempfile.$ext");
+    &print_info("  Created $tempfile.$ext through ext_ldel");
+  }
+  if ($delman eq "yes" || $kind eq "Cweb") {
+    if ($delman eq "no") 
+    { &print_info("Option delman=no not implemented for Cweb");}
+    system("ldel $INPUT $tempfile.$ext");
+    &print_info("  Created $tempfile.$ext through ldel");
+  }
+  if ($delman eq "no" && $kind ne "Cweb") {
+    system("cp  $INPUT $tempfile.$ext"); 
+    &print_info("  Created $tempfile.$ext by copying");
+  }
+
+  system("mv /tmp/$pid-ext.tex $basename.man");  # move manpage
+  &print_info("Calling $kind weave on $tempfile.$ext...");
+  # cweave produces its output in the working directory
+  # lweave produces its output in the directory of the input
+  # noweave produces its output on standard output
+  if ($mode eq "HTMLdoc") {
+    system( "lweave $tempfile.$ext HTML");
+    system( "mv $tempfile.tex $basename.tex");
+    $xdvi="no";
+  }
+  elsif ($mode eq "Cdoc") {
+    system( "lweave $tempfile.$ext Cdoc");
+    system( "mv $tempfile.tex $basename.tex");
+  }
+  elsif ($kind eq "Cweb") {
+    system( "cweave $tempfile.$ext");
+    system( "mv $pid-$basename.scn $basename.scn");
+    system( "mv $pid-$basename.idx $basename.idx");
+    system( "mv $pid-$basename.tex $basename.tex");
+  }
+  elsif ($kind eq "Lweb") {
+    system( "lweave $tempfile $noweaveoptions");
+    system( "mv $tempfile.tex $basename.tex");
+    system( "mv $tempfile.nw $basename.nw");
+  }
+  elsif ($kind eq "noweb") {
+    system("noweave -delay $noweaveoptions $tempfile.nw".
+           " > $basename.tex");
+  }
+
+  &print_info("  Created $basename.tex");
+  if ($latexruns == 0) { exit; }
+  &print_info("Calling latex...");
+  system("latex $basename.tex $dontshowinfo");
+  if ($latexruns == 2) {
+    system("latex $basename.tex $dontshowinfo");
+  }
+  if ($xdvi eq "yes") {
+    &print_info("Starting xdvi previewer...");
+    system("xdvi $basename.dvi $dontshowinfo");
+  }
+  system("rm -f /tmp/$pid*");
+
+}
+
+
+@ In order to have access to the value of PWD we need to include the package
+pwd.pl.
+
+<<required packages>>=
+require "pwd.pl";
+&initpwd;
+
+
+@ \subsection{Warnings and Error Messages}
+
+Error\_handler and print\_warning prints the current line number, the error
+message, and the current code unit and manual comment. If desired, both asks
+for an acknowledgement. The output of the former functions cannot be turned
+off. Print\_info displays progress information if switched on.
+
+<<subroutines>>=
+sub error_handler{
+  local($text) =  @_;  # read argument into local variable
+  print STDERR "A problem occured near line " , $. ,"\n";
+  print STDERR "ERROR: ",$text,"\n\n";
+  print STDERR "The current code unit is:\n";
+  print STDERR $original_code_unit, "\n";
+  print STDERR "The current manual comment is:\n";
+  print STDERR $original_comment, "\n\n";
+  if ($ack eq "yes") 
+  { print STDERR "*  "; read(STDIN,$meaningless,1); }
+}
+
+sub print_warning {
+  if ($warnings eq "no" || $nextwarning eq "no") { return; }
+  local($text) =  @_;  # read argument into local variable
+  if ($warnings eq "log")
+  { print LOGFILE "WARNING: $text\n"; 
+    print LOGFILE "CODEUNIT:\n$original_code_unit\n";
+    print LOGFILE "MANCOMMENT:\n$original_comment\n\n";
+    return;
+  }
+  print STDERR "A problem occured near line " , $. ,"\n";
+  print STDERR "WARNING: ",$text,"\n\n";
+  print STDERR "The current code unit is:\n\n";
+  print STDERR $original_code_unit, "\n";
+  print STDERR "The current manual comment is:\n\n";
+  print STDERR $original_comment, "\n\n";
+  if ($ack eq "yes") 
+  { print STDERR "*  "; read(STDIN,$meaningless,1); }
+}
+
+sub print_info {
+  if ($informational eq "yes") {
+    local($text) =  @_;  # read argument into local variable
+    print STDERR "$text\n\n";
+  }
+}
+
+sub print_debug {
+  if ($debugging eq "yes") {
+    local($text) =  @_;  # read argument into local variable
+    print STDERR "DEBUG $text\n";
+  }
+}
+
+@ \subsection{Helpers and Subroutines}
+
+The function [[remove_enclosing_blanks]] takes a string and removes all leading
+and trailing whitespace characters.  The perl notation for whitespace is
+\verb-\s-. It is equivalent to blank, newline, carriage return, tab, and form
+feed. \verb-\S- is any non-whitespace character. The pattern below relies on
+the fact that perl makes maximal matches, i.e., the first \verb-\s*- matches a
+maximal prefix of whitespace characters.
+<<subroutines>>=
+
+sub remove_enclosing_blanks
+{
+  if ($_[0] =~ /^ *$/) { $_[0] = ""; }
+  else { 
+    $_[0] =~ / *(.*[^ ]) *$/; 
+    $_[0] = $1;   
+  }
+}
+
+
+@ In HTML-mode we need function to open and close tabulators. We have a global
+variable [[\$HTMLopentabulator]] which tells us whether a tabulator is open.
+
+<<subroutines>>=
+
+sub opentabular{
+ local($cols) = @_;  # this is either two, three or four
+ if ($HTMLopentabular{$outfile} eq "no") {
+   if ($cols == 2) {
+     print OUTPUT "\\begin{tabular}{ll}\n"; }
+   elsif ($cols == 3) {
+     print OUTPUT "\\begin{tabular}{lll}\n"; }
+   elsif ($cols == 4) {
+     print OUTPUT "\\begin{tabular}{llll}\n"; }
+   else {
+     &error_handler("open_tabulator expects argument 2 or 3"); 
+   }
+   $HTMLopentabular{$outfile} = "yes";
+ }
+}
+
+sub closetabular{
+ if ($mode =~ /HTML/ && 
+     $HTMLopentabular{$outfile} eq "yes") {
+   print OUTPUT "\\end{tabular}\n\n";
+   $HTMLopentabular{$outfile} = "no";
+ }
+}
+
+
+@ \subsection{Procedure convert\_inline\_code}
+
+[[convert_inline_code]] takes any string and applies C to LaTeX
+conversion to the C-text contained in it. C-text may be enclosed
+between vertical bars, in Mcode\{\ldots\}, between \DLK\ and \DRK\
+brackets and in Tcode\{\ldots\}.  We find the brackets and perform the
+appropriate conversion. [[$mconv]] does the math-like conversion
+and [[$tconv]] does the typewriter-like conversion.
+
+<<conversion subroutines>>=
+
+sub convert_inline_code {
+  local($text,$mconv,$tconv) = @_; 
+  # read argument into local variable
+  local($output) = "";
+  local($code);
+  $text =~ s/\\begin\{Mverb\}/\\begin\{verbatim\}/gs;
+  $text =~ s/\\end\{Mverb\}/\\end\{verbatim\}/gs;
+iteration:
+  while ($text) {
+    if ( $text =~ /^([^\\\[\|\@]+)/s ) { 
+      # transport string that does not start with [ or | or \ to output
+      $text = $';
+      $output .= $1;
+      if ($text eq "") { last iteration; }
+    } 
+    # text is nonempty and starts with [ or | or \       
+    if ($text =~ /^\\Mcode(.)/) {
+      $text = $';
+      $delimiter=$1;
+      if ( !( $text =~ /\\$1/s ))  # \ to protect meta characters
+      { &print_warning("No Mcode $delimiter in rest of text chunk."); }
+      $text = $';
+      $output .= &$mconv($`);
+      next iteration;
+    }
+    if ($text =~ /^\\Tcode(.)/) {
+      $text = $';
+      $delimiter=$1;
+      if ( !( $text =~ /\\$1/s ))  # as above
+      { &print_warning("No Tcode $delimiter in rest of text chunk."); }
+      $text = $';
+      $output .= &$tconv($`);
+      next iteration;
+    }
+    # next we deal with | in its exceptional meanings
+    if ( $text =~ /^\\begin\{tabular\}[^\{]*\{[^\}]*\}/s )
+    { $text = $'; $output .= $&; next iteration; }
+    if ( $text =~ /^\\left\|/) 
+    { $text = $'; $output .= $&; next iteration; }
+    if ( $text =~ /^\\right\|/)
+    { $text = $'; $output .= $&; next iteration; }
+    if ( $text =~ /^\|\|/) 
+    { $text = $'; $output .= $&; next iteration; }
+    if ( $text =~ /^\@\[\[/) 
+    { $text = $'; $output .= $&; next iteration; }
+    if ( $text =~ /^\\begin\{.*?verbatim.*?\}/ ) {
+      $text = $'; $output .= $&;
+      if ( !( $text =~ /\\end\{.*?verbatim.*?\}/s ))
+      { &print_warning("Encountered non-closed verbatim :\n$text"); }
+      $text = $';
+      $output .= $`.$&;
+      next iteration;
+    }
+    if ($text =~ /^\|/) {
+      $text = $';
+      if ( !( $text =~ /([^\@])\|/s )) 
+      { &print_warning("Encountered | without matching |:\n|$text"); }
+      $text = $';
+      $code = $`.$1; 
+      $code =~ s/\@\|/\|/gs;
+      $code =~ s/\n/\ \n/gs;
+      $output .= &$mconv($code);
+      next iteration;
+    }
+    if ($text =~ /^\[\[/) {
+      $text = $';
+      if ( !( $text =~ /([^\@])\]\]/s ))
+      { &print_warning("Encountered [[ without matching ]]:[[$text"); }
+      $text = $';
+      $code = $`.$1; $code =~ s/\@\]\]/\]\]/gs;
+      $output .= &$tconv($code);
+      next iteration;
+    }
+     
+    # text does not start with a special symbol. Move first symbol to output.
+    $text =~ /^(.)/;
+    $output .= $1;
+    $text = $';
+  }
+  return $output . "\n";
+}
+
+         
+@ \subsection{Procedure convert\_M}
+
+Procedure [[convert_M]] typesets \CC-statements and returns
+\verb-\mbox{$\mathit{transformed text}$}-.  It is important to observe
+that this function makes no decisions about spacing. They are made
+somewhere else. For example, we decided to have a blank after each
+comma in a parameter list, but no blanks in type parameter lists of
+templates if the template lists are short and have short type
+names. If they are long we insert the corresponding space and allow
+line breaks at those positions.
+
+Also \& is sometimes a binary operator and sometimes a unary
+operator. The decisions above require more knowledge about the context
+than is available at this point. Hence all these decisions are made
+somewhere else.  The input is transformed according to the following
+rules:\\ quote all occurrences of \verb-&,%,_, ,<,>-, replace all
+occurrences of \verb-~- by \verb-\tildeop-, all occurences of \verb-^-
+by \verb-\circumflexop- all occurrences of \verb-@<<- by \verb-\ll-,
+all occurrences of \verb->>- by \verb-\gg-, and all occurences of ::
+by \verb-\DD-.
+
+Some users like indexed variables to be written with subscripts. We provide
+this feature as an option. We want to apply this transformation only
+to variables consisting of a single character followed by a number.
+We therefore search for the pattern [a-zA-Z][0-9]+, where the pattern
+either occurs at the beginning of the string or after a nonword character.
+
+
+We print the transformed string as 
+\verb-\mbox{$\mathit{transformed text}$}-. 
+The purpose of the mbox-command is to put LaTeX into non-math mode at
+the beginning of the C-Text and let it return to the original mode at the end
+of the Ctext. The net effect of the mbox command is no effect if the Ctext
+appears in ordinary mode and to erase the enclosing \$s if the Ctext appears in
+math-mode.
+
+Change on April 4: The above strategy is to simple. I do not want to have the
+entire text in mathitalics, e.g., in \verb-diff + 1- only diff should be in
+math italics. I therefore change the strategy as follows. I output 
+\verb-\mbox{$transformed text}$}-, where the transformed text contains all
+identifiers in mathitalics. I also added one more layer of bracketing because
+\verb-\Litem\mbox{ }- does not work.
+
+One more difficulty with C-text is that the transformed test 
+is a single long string. After all,
+we quote blanks. This leads to difficulties with functions with long 
+argument lists. I want to allow a line break after every comma and 
+semicolon. To do so
+I simulate the occurrence of two vertical bars after every comma or 
+semicolon, in other words I replace ,blank by $|\ |$. This is only 
+implemented for commas at the moment.
+
+On March 6th, I made the following change. I want that indentifiers 
+that consist of a single symbol are typeset as in math mode. Therefore 
+I only put identifiers of more than one symbol into mathit. 
+
+<<conversion subroutines>>=
+
+# the following procedure is copied from ext.nw. Please make changes only here.
+# I still need a way to maintain consistency with ext.
+
+sub convert_M {
+ local($Ctext) = @_; # read argument into local variable
+ # we first work on identifiers 
+ &print_debug("convert_M $Ctext\n");
+ if ($Ctext eq "") { return ""; }
+ local($prefix) = "";
+ local($suffix) = $Ctext;
+ local($ident) = "";
+
+identloop:
+  while ($suffix =~ /^(\W*)(\w.*)$/) {
+    $prefix .= $1;
+    $suffix = $2;
+    if ( $suffix =~ /^(\w+)(\W.*)$/ ) {
+      $ident = $1;
+      $suffix = $2;
+    } else { 
+      $ident = $suffix;
+      $suffix = "";
+    }
+    if ($prefix =~ /\\$/) { # For things like \n
+      if ($ident ne "n") 
+      { &print_warning("Huch:\\ in  quoted code:\n".$Ctext); }
+      $prefix .= "L" . $ident; next identloop;
+    }
+    if ($ident =~ /^[0-9]*$/ ) # just a number
+    { $prefix .= $ident; next identloop; }
+    if (($usesubscripts eq "yes") && ($ident =~ /^([a-zA-Z])([0-9]+)$/)) 
+    { $ident = $1 ."\_\{$2\}"; }
+    elsif ( length($ident) > 1 ) 
+    { $ident = "\\mathit\{$ident\}"; }
+    $prefix .= $ident;
+  }
+  $Ctext = $prefix . $suffix;
+  $Ctext =~ s/&/\\&/g;
+  $Ctext =~ s/_/\\nspaceunderscore\\_/g; # small negative space before _
+  $Ctext =~ s/\./\\nspacedot\./g;  # small negative space before .
+  $Ctext =~ s/::/\\DP /g;
+  $Ctext =~ s/<</\\ll/g;
+  $Ctext =~ s/>>/\\gg/g;
+  $Ctext =~ s/ *<= */\\Lle/g;
+  $Ctext =~ s/ *>= */\\Lge/g;
+  $Ctext =~ s/ *== */\\Leq/g;
+  $Ctext =~ s/ *-> */\\Larrow/g;
+  $Ctext =~ s/ *\+ */+/g;   # LaTeX takes care of the spacing
+  $Ctext =~ s/ *- */-/g;
+  $Ctext =~ s/ *\* +/\*/g;
+  if ($Ctext =~ /<.*>/) {
+    # I guess that I discovered template brackets. Therefore, I interpret
+    # all brackets in the text as template brackets and I keep the spacing
+    # in the input.
+    $Ctext =~ s/</\\Ltemplateless/g;
+    $Ctext =~ s/>/\\Ltemplategreater/g;
+  } else {
+    # there are no template brackets. I interpret < and > as in Latex and 
+    # leave the spacing to LATEX
+    $Ctext =~ s/ *< */</g;
+    $Ctext =~ s/ *> */>/g;
+  }
+  $Ctext =~ s/ *\+= */\\Lass\{\+\}/g;
+  $Ctext =~ s/ *\-= */\\Lass\{\-\}/g;
+  $Ctext =~ s/ *\*= */\\Lass\{\*\}/g;
+  $Ctext =~ s/ *\/= */\\Lass\{\/\}/g;
+  $Ctext =~ s/ *\\&= */\\Lass\{\\&\}/g;
+  $Ctext =~ s/ *!= */\\Lass\{\!\}/g;
+  $Ctext =~ s/ *\|= */\\Lass\{\|\}/g;
+
+  # All blanks that are still in Ctext are to be preserved and
+  # are hence quoted.
+  $Ctext =~ s/ /\\ /g;
+  $Ctext =~ s/\+\+/\\Dplus /g;
+  $Ctext =~ s/\-\-/\\Dminus /g;
+  # $Ctext =~ s/!=/\\Noteq /g;
+  $Ctext =~ s/\\Lle/\\Lle /g;
+  $Ctext =~ s/\\Lge/\\Lge /g;
+  $Ctext =~ s/\\Leq/\\Leq /g;
+  $Ctext =~ s/\\Ltemplateless/\\Ltemplateless /g;
+  $Ctext =~ s/\\Ltemplategreater/\\Ltemplategreater /g;
+  $Ctext =~ s/\\Larrow/\\Larrow /g;
+  $Ctext =~ s/%/\\%/g; 
+  $Ctext =~ s/\^/\\circumflexop /g;
+  $Ctext =~ s/~/\\tildeop /g;
+  $Ctext =~ s/'/\\Lrquote /g;
+  $Ctext =~ s/`/\\Llquote /g; 
+  $Ctext =~ s/\(\)/\(\\;\)/g;      # a little space for empty argument list
+  $Ctext =~ s/\,\\ /\,\} \\ensuremath\{/g;  
+  $Ctext =~ s/\\Ltemplateless\\ /\\Ltemplateless\}\n\\ensuremath\{/g;  
+  $Ctext =~ s/\\ \\Ltemplategreater/\}\n\\ensuremath\{\\Ltemplategreater/g;  
+  $Ctext = "\\ensuremath\{" . $Ctext . "\}";
+  #$Ctext =~ s/\,\\ /\,\$\}\n\\mbox\{\$/g;  
+  #$Ctext =~ s/\\Ltemplateless\\ /\\Ltemplateless\$\}\n\\mbox\{\$/g;  
+  #$Ctext =~ s/\\ \\Ltemplategreater/\$\}\n\\mbox\{\$\\Ltemplategreater/g;  
+    # separate mbox at ,blank OR <blank OR blank> by $}newline\mbox{$ 
+     # to allow better line breaks
+  #$Ctext = "\\mbox\{\$" . $Ctext . "\$\}";
+  &print_debug("convert_M $Ctext\n");
+  $Ctext;
+}
+
+sub convert_C {
+ local($Ctext) = @_; # read argument into local variable
+ $Ctext = "\\ccc{$Ctext}";
+ $Ctext;
+}
+
+
+@ \subsection{Procedure convert\_R}
+The following subroutines just do small typesetting jobs. [[convert_R]]
+just escapes the underscore. We keep roman typesetting.
+<<conversion subroutines>>=
+# the following operation does just a roman typesetting of code text
+
+sub convert_R {
+  local($romantext) = @_;
+  $romantext =~ s/([^\\])\_/$1\\nspaceunderscore\\_/g;
+  $romantext;
+}
+
+# math like style for index
+sub convert_MI {
+  local($indexentry) = @_;
+  $indexentry .= '@' . &convert_M($indexentry); 
+  # this makes entry the key and the second the look of it
+  $indexentry;
+}
+
+# ascci text formatting
+sub convert_to_ASCII {
+  local($text) = shift(@_);
+  if ($text eq "") { return ""; }
+  $text = &remove_confusing_latex($text);
+  local($left) = shift(@_);
+  local($cols) = shift(@_);
+  local($indent);
+  for (1 .. $left) { $indent.=' '; }
+  local($result) = "";
+  $text =~ s/\n\n/\\\\/g;
+  $text =~ s/\n/\ /g;
+  $text =~ s/\s+/\ /g; 
+  $text =~ s/^\s*//g;
+  local($line)=$indent; 
+  local($rest)="";
+  getloop: {
+    if ($text =~ s/(\S+\s+)//) { $rest .= $1; }
+    else { last getloop; }
+    if (length($line.$rest) < $cols) 
+    { if ( $rest =~ /\\\\\s*/ ) { $line .= $`; $rest = $'; }
+      else { $line .= $rest; $rest=""; redo getloop; }
+    }
+    $result .= $line."\n"; $line=$indent;
+    redo getloop;
+  }
+  $line .= $rest;
+  if ($line ne "") { $result .= $line; } 
+  else { chop $result; }
+  $result;
+}
+
+
+
+@ \subsection{Procedure Convert\_T}
+
+We only need to quote all special characters and to change the font to
+typewriter.
+
+<<conversion subroutines>>=
+
+# the following procedure is copied from ext.nw. Please make changes only here.
+# I still need  way to maintain consistency with ext.
+
+sub convert_T{
+ local($Ctext) = @_; # read argument into local variable
+ $Ctext =~ s/&/\\&/g;
+ $Ctext =~ s/_/\\_/g;
+ $Ctext =~ s/{/\\{/g;
+ $Ctext =~ s/}/\\}/g;
+ $Ctext =~ s/%/\\%/g; 
+ $Ctext =~ s/\^/\\circumflexop /g;
+ $Ctext =~ s/~/\\Tildeop /g; 
+ return "\{\\tt " . $Ctext . "\}";
+}
+
+@ \subsection{Procedure Convert\_HTML}
+
+We want to remove quoted code and mathmode from the input and we want to deal
+with labels.  We first remove quoted code and then remove math-mode. Finally we
+deal with the labels.
+
+<<conversion subroutines>>=
+
+sub convert_to_HTML {
+ local($text) = @_; # read argument into local variable
+ if ( $text eq "" ) { return ""; }
+ &print_debug("convert_to_HTML $text\nTEXTEND convert_to_HTML");
+ $text = &convert_inline_code($text,\&convert_M_for_HTML,\&convert_T);
+ $text = &convert_math_for_HTML($text);
+ $text = &deal_with_refs($text);
+ return $text;
+}
+
+@ \subsubsection{Removing Quoted Code in Conversion to HTML}
+
+I am reusing the code from procedure [[convert_inline_code]], which
+takes any string and applies C to LaTeX conversion to the C-text
+contained in it. C-text may be enclosed between vertical bars, in
+Mcode\{\ldots\}, between \DLK\ and \DRK\ brackets and in
+Tcode\{\ldots\}.
+
+We find the brackets and perform the appropriate
+conversion. [[convert_M_for_HTML]] does the math-like conversion and
+[[convert_T]] does the typewriter-like conversion.
+
+The code can be simplified since we are aiming for conversion to plane
+ASCII and not to LaTex. Essentially I only have to recognize quoted
+code, to remove the brackets, and to quote some special characters
+(namely \_ and \&). 
+
+<<conversion subroutines>>=
+
+sub convert_M_for_HTML {
+ local($Ctext) = @_; # read argument into local variable
+ &print_debug("convert_M_for_HTML $Ctext\n");
+ # we first work on identifiers 
+ if ($Ctext eq "") { return ""; }
+ local($prefix) = "";
+ local($suffix) = $Ctext;
+ local($ident) = "";
+
+identloop:
+  while ($suffix =~ /^(\W*)(\w.*)$/) {
+    $prefix .= $1;
+    $suffix = $2;
+    if ( $suffix =~ /^(\w+)(\W.*)$/ ) {
+      $ident = $1;
+      $suffix = $2;
+    } else { 
+      $ident = $suffix;
+      $suffix = "";
+    }
+    if ($prefix =~ /\\$/) { # For things like \n
+      if ($ident ne "n") 
+      { &print_warning("Huch:\\ in  quoted code:\n".$Ctext); }
+      $prefix .= "L" . $ident; next identloop;
+    }
+    if ($ident =~ /^[0-9]*$/ ) # just a number
+    { $prefix .= $ident; next identloop; }
+    if (($usesubscripts eq "yes") && ($ident =~ /^([a-zA-Z])([0-9]+)$/)) 
+    { $ident = $1 ."\\HTML\{SUB\}\{$2\}"; }
+    else 
+    { $ident = "\\HTML\{I\}\{$ident\}"; }
+      
+    $prefix .= $ident;
+  }
+
+  # All blanks that are still in Ctext are to be preserved and
+  # are hence quoted.
+  $Ctext = $prefix . $suffix;
+  $Ctext =~ s/&/\\&/g;
+  $Ctext =~ s/_/\\_/g;
+  $Ctext =~ s/\%/\\%/g; 
+  $Ctext =~ s/\#/\\#/g; 
+  $Ctext =~ s/~/\$\\sim\$/g;
+  $Ctext =~ s/\^/\$\\circumflexop\$/g;
+  $Ctext;
+}
+
+
+@ \subsubsection{Removing Math-Mode in Conversion to HTML}
+
+I am not touching any display math mode. Displayed math is started by
+\verb+\[+ and ended by \verb+\]+. So if the text contains displayed
+math I simply return it.  This is to simplistic as the text may
+contain [[\\]] outside the displayed math.  This is not allowed in a
+tabular. I leave it for manual treatment. Moreover, latex does not
+like displayed math in a tabular environment.  My new strategy is to
+simpy delete displayed math and warn the user that he is supposed to
+edit the file manually.
+
+For the occurance of [[\\]] in the [[\$semantics]] string we follow the
+following rule. If we are to end within a tabular row which is the case in any
+creation, destruction, function comment we put in a rawhtml line break via the
+call to [[quote_special_symbols_in_text_mode]]. For all tabular structures
+which need the linebreak symbols like [[eqnarray]] and  [[array]] we keep
+them in the string for the latex run over the manual page.
+
+For mathmode we search for the first two occurrences of \$.  We take
+the stuff between the dollars and try to convert it. If we do not
+succeed we put it back in and report our failure in file
+[[unrecognizedmath]].
+<<conversion subroutines>>=
+
+sub protect_newlines {
+ local ($latexenv,$text) = @_;
+ if ( $text =~ /\\begin\s*\{(\s*$latexenv[\s\*]*)\}/s ) {
+   &print_debug("protect_newlines $latexenv");
+   local($unprocessed) = $text;
+   local($transformed) = "";
+   while ( $unprocessed =~ s/(.*?)(\\begin\s*\{\s*$latexenv[\s\*]*\})(.*?)(\\end\{\s*$latexenv[\s\*]*\})//s ) {
+     local($before,$bk,$between,$ek,$unprocessed) = ($1,$2,$3,$4,$');
+     $between =~ s/\\\\/LEDAARRAYNL/gs;
+     $transformed .= $before . $bk . $between . $ek;
+     &print_debug("protect_newlines $bk\n\n$between\n\n$ek\n\n");
+   }
+   $text = $transformed . $unprocessed;
+ }
+ return $text;
+}
+
+sub protect_math_environment {
+ local ($latexenv,$text) = @_;
+ if ( $text =~ /\\begin\{([^\}]*$latexenv[^\}]*)\}/s ) {
+   local($lenv) = $1; $lenv =~ s/ //g;
+   local($unprocessed) = $text;
+   local($transformed) = "";
+   while ( $unprocessed =~ s/(.*?)(\\begin\{[^\}]*$lenv[^\}]*\})(.*?)(\\end\{[^\}]*$lenv[^\}]*\})//s ) {
+     local($before,$bk,$between,$ek,$unprocessed) = ($1,$2,$3,$4,$');
+     $transformed .= $before .'\HTML[ALIGN=CENTER]{P}{\begin{makeimage}' 
+	                     . $bk . $between . $ek 
+			     .'\end{makeimage}}';
+   }
+   $text = $transformed . $unprocessed;
+ }
+ return $text;
+}
+
+sub protect_displaymath {
+ # we convert $$ and \[ into normal math
+ local ($text) = @_;
+ if ( $text =~ /\$\$/s ) {
+   local($unprocessed) = $text;
+   local($transformed) = "";
+   while ( $unprocessed =~ s/(.*?)(\$\$)(.*?)(\$\$)//s ) {
+     local($before,$bk,$between,$ek,$unprocessed) = ($1,$2,$3,$4,$');
+     $transformed .= $before . '\HTML{P}{}\HTML{CENTER}{' . 
+	 "\\begin{makeimage}\n\$" . $between . "\$\n\\end{makeimage}" .
+	 '}';
+   }
+   $text = $transformed . $unprocessed;
+ }
+ if ( $text =~ /\\\[/s ) {
+   local($unprocessed) = $text;
+   local($transformed) = "";
+   while ( $unprocessed =~ s/(.*?)(\\\[)(.*?)(\\\])//s ) {
+     local($before,$bk,$between,$ek,$unprocessed) = ($1,$2,$3,$4,$');
+     $transformed .= $before . '\HTML{P}{}\HTML{CENTER}{' . 
+	 "\\begin{makeimage}\n\$" . $between . "\$\n\\end{makeimage}" .
+	 '}';
+   }
+   $text = $transformed . $unprocessed;
+ }
+ return $text;
+}
+
+
+sub is_complicated_math {
+  local($math) = @_;
+  if ($math=~ /array/   ||
+      $math=~ /\\frac/s )
+  { return 1; }
+  return 0;
+}
+
+sub convert_math_for_HTML {
+ local($Ctext) = @_; 
+ &print_debug("convert_math_for_HTML1 $Ctext\nTEXTEND convert_math_for_HTML1");
+ $Ctext =~ s/\n/LEDANEWLINE/gi;
+
+  $Ctext = &protect_newlines("array",$Ctext);
+  $Ctext = &protect_newlines("eqnarray",$Ctext);
+  $Ctext = &protect_newlines("tabular",$Ctext);
+  $Ctext = &protect_newlines("cases",$Ctext);
+  $Ctext = &protect_newlines("matrix",$Ctext);
+
+  $Ctext = &protect_math_environment("eqnarray",$Ctext);
+  $Ctext = &protect_math_environment("displaymath",$Ctext);
+  $Ctext = &protect_displaymath($Ctext);
+
+  local($unprocessed) = $Ctext;
+  $Ctext = "";
+ 
+  while ( $unprocessed =~ /(.*?)\$([^\$]*)\$/s ) {
+     # text contains two or more dollars
+     $Ctext .= &quote_special_symbols_in_text_mode($1);
+     local($math) = $2;
+     $unprocessed = $';
+     if ( &is_complicated_math($math) )
+     { $Ctext .= "\\begin{makeimage}\$$math\$\\end{makeimage}"; } 
+     else
+     { $Ctext .= "\$".&simplify_math_for_HTML($math)."\$"; }
+  }
+  $Ctext .= &quote_special_symbols_in_text_mode($unprocessed);
+  $Ctext =~ s/LEDANEWLINE/\n/gi;
+  $Ctext =~ s/LEDAARRAYNL/\\\\/gi;
+  &print_debug("convert_math_for_HTML2 RESULT:\n $Ctext\nENDRESULT convert_math_for_HTML2");
+  return $Ctext;
+}
+
+
+@ The following operation simplifies simple latex commands which 
+create complications when pumped through l2h.
+<<conversion subroutines>>=
+# the following operation simplifies simple latex commands which 
+# create complications when pumped through l2h.
+
+sub replace_simple_latex_commands {
+  local($math) = @_;
+  $math =~ s/\\_/{\\_}/gs;
+  $math =~ s/\\Lvert(\W|$)/|$1/gs;
+  $math =~ s/\\cdot(\W|$)/*$1/gs;
+  $math =~ s/\\leq(\W|$)/<=$1/gs;
+  $math =~ s/\\le(\W|$)/<=$1/gs;
+  $math =~ s/\\geq(\W|$)/>=$1/gs;
+  $math =~ s/\\ge(\W|$)/>=$1/gs;
+  $math =~ s/\\neq(\W|$)/!=$1/gs;
+  $math =~ s/\\ne(\W|$)/!=$1/gs;
+  $math =~ s/\\</</gs;
+  $math =~ s/\\>/>/gs;
+  $math =~ s/\\range\{(.*?)\}\{(.*?)\}/\[$1\.\.$2\]/gs;
+  return $math;
+}
+
+sub step_over_braces {
+  local($text) = @_;
+  local($braced,$bracelevel) = ("",0);
+  LOOP: while ( $text ) { 
+    if ( $text =~ /([^\{\}]*)([\{\}])/s ) {
+      $braced .= $`.$1.$2;
+      $text = $';
+      if ( $2 eq '{' ) { $bracelevel++; }
+      if ( $2 eq '}' ) { $bracelevel--; }
+    }
+    last LOOP if $bracelevel==0;
+  }
+  if ($bacelevel != 0) { &error_handler("error in brace stepping"); }
+  $braced =~ s/\{(.*)\}/$1/s; # remove outer backets
+  return ($braced,$text);
+}
+
+sub simplify_math_for_HTML {
+   local($math) = @_; 
+   &print_debug("simplify_math_for_HTML $math\n");
+   local($cleaned,$braced)=("","");
+   while ( $math =~ /\\Labs/s ) {
+     $cleaned .= $`;
+     ($braced,$math) = &step_over_braces($');
+     $cleaned .= "\\|$braced\\|";
+   }
+   $math = $cleaned.$math; $cleaned="";
+   while ( $math =~ /\\Litem/s ) {
+     $cleaned .= $`;
+     ($braced,$math) = &step_over_braces($');
+     $cleaned .= "<$braced>";
+   }
+   $math = $cleaned.$math; $cleaned="";
+   # now we exclude the italic styled text from the math
+   # by transporting them outside the math $..$ environment
+   while ( $math =~ /\\HTML\{I\}/s ) {
+     $cleaned .= $`;
+     ($braced,$math) = &step_over_braces($');
+     $cleaned .= "\\mathit\{$braced\}";
+   }
+   $math = $cleaned.$math; $cleaned="";
+   $math = &replace_simple_latex_commands($math);
+   &print_debug("simplify_math_for_HTML $math\n");
+   $math;
+}
+
+@  The following conversion cleans up latex commands for
+ASCII output.
+<<conversion subroutines>>=
+sub remove_confusing_latex {
+   local($text) = @_; 
+   $text =~ s/\\\_/\_/g;
+   $text =~ s/\\\{/{/g;
+   $text =~ s/\\\}/}/g;
+   $text =~ s/\\ / /g;
+   $text =~ s/\\\&/\&/g;
+   $text =~ s/\\dots/.../g;
+   $text =~ s/\\ldots/.../g;
+   $text =~ s/\\pi[\W]/pi/g;
+   $text =~ s/\\leq/<=/g;
+   $text =~ s/\\times/ x /g;
+   $text =~ s/\\le/</g;
+   $text =~ s/\\geq/>=/g ;
+   $text =~ s/\\ge/\>/g;
+   $text =~ s/\\ne/!=/g ;
+   $text =~ s/\\in/ in/g;
+   $text =~ s/\\Lvert/\|/g;
+   $text =~ s/\\text..\{([^\}]*)\}/$1/g;
+   $text =~ s/\{\\\w{2}?([^\}]*)\}/$1/g;
+   $text =~ s/\\headerline\{([^\}]*)\}/uc($1)."\n\n"/ge;
+   $text =~ s/\\precond/Precondition\: /g;
+   $text =~ s/\\bigskip//g;
+
+   $text;
+}
+
+@  The following conversion also servers some transformation concerning
+HTML typesetting. We replace in case of HTML the complicated command
+\verb-\headerline= by a simple \verb-\textbf- which serves our purposes
+perfectly.
+
+<<conversion subroutines>>=
+
+sub quote_special_symbols_in_text_mode {
+  local($Ctext) = @_; # read argument into local variable
+  # it remains to quote all special characters.
+  $Ctext =~ s/\\\\/\\HTML\{BR\}\{\}/g;
+  $Ctext =~ s/\\headerline/\\textbf/g;
+  $Ctext =~ s/\\precond/\\textbf\{Precondition\}/sg;
+  # starting latex2html 98.1 we can enforce a linebreak
+  return $Ctext;
+}
+
+
+@ [[deal_with_refs]] looks for \verb-\ref-. It replaces it by a
+\verb-\hyperref-.  Hyperref takes four arguments. The last argument is the
+label. The first argument appears in the html-document. The text output
+contains the second argument followed by the numerical reference followed by
+the third argument. I set the second and the first argument to the empty
+string. Thus [[see section \verb-\ref{graphs}-]] generates 
+[[see section graph]] in the html-document and generates 
+[[see section number]] in the paper document.
+
+<<conversion subroutines>>=
+
+sub deal_with_refs{
+ local($text) = @_; # read argument into local variable
+ while ($text =~ /\\ref\{([^\}]*)\}/)
+ { local($key) = $1;
+   $key1 = $key; $key1 =~ s/_/\\_/g;
+   $text =~ s/\\ref\{$key\}/\\hyperref{$key1}{}{}{$key}/;
+   #$text =~ s/\\ref\{$key\}/\\htmlref{$key1}{$key}/;
+ }
+ return $text;
+
+}
+
+
+@ [[insert_URLs_and_quote]] is applied to return types and to signatures of
+functions.  They consist of strings of alphanumeric characters (including \_),
+blanks, round brackets, angular brackets, square brackets, kommas, equality
+signs, star, dots, colon, and ampersands. For each maximal alphanumeric
+substring that is in the namereplacementtable we need to add an
+\verb-\addnormallink{typename}{URL}-. The split character [[&]] need to be
+quoted.
+
+
+
+<<conversion subroutines>>=
+
+sub insert_URLs_and_quote{
+  local($Ctext) = @_; 
+  local(@fields) = split(/([\ \(\)\<\>\,\&\.\:\[\]\=\*\'])/,$Ctext);
+  foreach $i (0 .. $#fields) {
+    if ($fields[$i] =~ /^\w*$/) { # alphanumeric string
+      local($key) = $fields[$i];
+      local($label) = $namereplacementtable{$key};
+      if ($label ne "" && $key ne $Mtype) {
+        $key =~ s/_/\\_/g;
+         $fields[$i] = "\\htmlref\{$key\}\{$label\}"; 
+       }
+       else {
+         $key =~ s/_/\\_/g;
+         $fields[$i] = $key;
+       }
+    }    
+    else { # quote some characters
+      if ($fields[$i] =~ /&/) {
+        $fields[$i] = "\\$fields[$i]"; 
+      }
+      if ($fields[$i] =~ /</) {
+        $fields[$i] = "\$<\$"; 
+      }
+      if ($fields[$i] =~ />/) {
+        $fields[$i] = "\$>\$"; 
+      }
+      $fields[$i] =~ s/\\n/\$\\backslash\\mathtt\{n\}\$/g;  # takes care of \n
+    }
+  }
+  $Ctext = join("",@fields);
+  return $Ctext;
+}
+
+
+
+@ \subsection{Usage Information}
+
+All utilities give manual information if called without arguments.
+
+<<subroutines>>=
+sub print_usage {
+if ($mode eq "Lman" || $mode eq "Ldoc" || $mode eq "Cdoc") {
+  print "Usage is
+          $mode file [options]
+
+Options are given in assignment syntax variable=value. There must be no
+blank on either side of the equality sign. We list all variables and 
+their possible values below. For each variable the default value of 
+each option is given first.
+
+size={12,11,10}
+constref={no,yes}
+partypes={no,yes}
+numbered={no,yes}
+xdvi={yes,no}
+warnings={yes,no}
+includefile={no,yes}
+indexing={no,yes}
+informational={yes,no}
+ack={yes,no}
+usesubscripts={no,yes}
+latexruns={1,2,0}
+delman={yes,no}
+filter={all,signatures,definition,types,creation,
+operations,implementation,example,opname}
+
+$mode can be customized by putting options in a file 
+$mode.cfg in either the home directory or the working 
+directory.
+
+Call 
+      $mode ltools 
+        for more information on the tools usage.
+      $mode mancommands 
+        for a short overview of usable manual commands.\n\n";
+}
+
+if ($mode eq "Fman") {
+  print "Usage is
+          $mode file filter
+
+where the file name is of the form T.[h|w|lw] and T is either 
+the name of a LEDA type, e.g., list, sortseq, or point, or 
+the name of a user defined data type. The value of filter is 
+one of 
+
+ { all, signatures, definition, types, creation, 
+   operations, implementation, example, opname }
+
+Call 
+      $mode ltools 
+        for more information on the tools usage. 
+      $mode mancommands 
+        for a short overview of usable manual commands.\n\n" ;
+}
+exit;
+}
+
+
+sub print_mancommands {
+if ($mode eq "Lman" || $mode eq "Ldoc" || $mode eq "Fman") {
+print "Manpage start header is:
+
+   /*{\\Manpage {DT} {T1,..,Tk} {short_description} [MVAR]}*/
+   afterwards common variables are 
+   \\Mname = DT<T1,..,Tk>
+   \\Mvar =  MVAR
+
+Manual sections are:
+
+   /*{\\Mdefinition specification_text}*/
+
+   /*{\\Mtypes [W]}*/
+       /*{\\Mtypedef typedef_documentation}*/
+       /*{\\Mtypemember type_documentation}*/
+       /*{\\Menum type_documentation}*/
+
+   /*{\\Mcreation [MVAR] [W]}*/
+       /*{\\Mcreate constructor_specification }*/
+       /*{\\Mdesctruct desctructor_specification }*/
+
+   /*{\\Moperations [W1] [W2]}*/          
+       /*{\\Mop semantic_description }*/ 	
+       /*{\\Mstatic semantic_description }*/
+       /*{\\Mconversion semantic_description }*/
+       /*{\\Mbinop semantic_description }*/
+       /*{\\Munop semantic_description }*/
+       /*{\\Marrop semantic_description }*/ 
+       /*{\\Mfunc semantic_description }*/
+       /*{\\Mfunop semantic_description }*/
+       /*{\\Mfunobj semantic_description }*/
+       /*{\\Mbinopfunc semantic_description }*/
+       /*{\\Munopfunc semantic_description }*/ 
+       /*{\\Mfunobj{return_type} semantic_description }*/
+
+   /*{\\Mevents [W]}*/
+       /*{\\Mevent event_specification }*/
+
+   /*{\\Mimplementation implemenation_information }*/
+   /*{\\Mexample example_description }*/
+
+Additional man commands
+  /*{\\Mtext some_text }*/
+  /*{\\Moptions nextwarning=no }*/
+  /*{\\Moptions outfile=new_man_file_name }*/
+  /*{\\Msubst pattern replacement }*/
+Common tex macros for man comments are 
+  \\setopdims[2], \\restoreopdims, \\precond[1], \\headerline[1]
+Verbatim code in example section with environment 
+  \\begin|end{Mverb}.\n\n"; 
+}
+exit;
+}
+
+sub print_ltools {
+$owd = $ENV{"PWD"};
+chdir ("/tmp");
+local($pid)=$$;
+if ($mode eq "Fman") {
+  system("cat \$LEDAROOT/Manual/MANUAL/DocTools.tex");
+}
+else {
+  $outfile = "/tmp/" . $pid . "-ext.tex";
+  open(OUTPUT,">".$outfile);
+  print OUTPUT "\\documentclass\[11pt,a4paper\]\{article\}\n\n"; 
+  print OUTPUT "\\usepackage\{html\}";
+  print OUTPUT "\\input " . $ENV{"LEDAROOT"} . "/Manual/tex/MANUAL.pagesize\n\n";
+  print OUTPUT "\\input " . $ENV{"LEDAROOT"} . "/Manual/tex/MANUAL.mac\n\n"; 
+  print OUTPUT "\\begin\{document\}\n\n";
+  close(OUTPUT);
+  system("cat \$LEDAROOT/Manual/MANUAL/DocTools.tex  >> $outfile");
+  open(OUTPUT,">>".$outfile);
+  print OUTPUT "\\end\{document\}\n\n";
+  close(OUTPUT);
+  system ("latex /tmp/$pid-ext.tex $dontshowinfo");
+  system ("xdvi /tmp/$pid-ext.dvi $dontshowinfo");
+  system ("rm -f /tmp/$pid-ext.*");
+}
+chdir ("$owd");
+exit;
+}
+
+
+@ \section{The \LaTeX-Macro Files}
+<<MANUAL.pagesize>>=
+%the following settings are adequate for European size a4 paper
+\if@twoside
+\textwidth 16cm  
+\textheight 24 cm  
+\topmargin -14mm    
+\evensidemargin -5mm 
+\oddsidemargin 3mm
+\else
+\textwidth 16cm  
+\textheight 24 cm  
+\topmargin -14mm    
+\evensidemargin 3mm 
+\oddsidemargin 3mm
+\fi
+%the following settings are adequate for US legal size paper
+%\textwidth 16cm  
+%\textheight 24 cm  
+%\topmargin -14mm    
+%\evensidemargin 3mm 
+%\oddsidemargin 3mm
+\sloppy	
+
+<<MANUAL.mac>>=
+<<manual environment>>
+<<special symbols>>
+<<items and such>>
+<<widths>>
+<<functions>>
+<<constructors and destructors>>
+<<enumerations, typemembers and events>>
+
+
+@ \subsection{The Manual Environment}
+The manual environment redefines some basic parameters of LaTeX, namely
+parskip, parindent, and baselineskip. Parskip governs the vertical space
+between paragraphs and parindent governs indentation at the beginning of a
+paragraph. In LaTeX the first quantity is zero and the second quantity is
+non-zero. The TeX file of Figure \ref{intermediate Tex file} consists of many
+short paragraphs, each paragraph being basically a LaTeX command. We therefore
+want no indentation but we want paragraphs to be separated. baselineskip
+controls the vertical distance between lines. We increase its value slightly.
+
+When leaving the manual environment we set all values back to their original
+values. This requires no code in LaTeX. When used in Ldoc this has the effect
+of using the parameter settings below for the manual and to use the standard
+Cweb settings for the remainder of the document.
+
+The commands for header lines all have the same format. They typeset the
+headerline in bold-face and put some stuff around it to control page breaks and
+distances. They disallow a pagebreak after the header line and encourage
+pagebreaks before the header line. The empty line after the nopagebreak command
+is crucial. It ensures that the text following the command is not in the same
+paragraph as the expanded command.
+<<manual environment>>=
+\newcommand{\headerline}[1]{
+\smallskip\par
+\parbox[t]{\textwidth}{{\bf #1}}\par
+\nopagebreak
+}
+%empty line before bracket is crucial 
+
+\newcounter{manctr}
+\newenvironment{manual}{
+\setcounter{manctr}{1}
+\baselineskip 3.0ex   
+%\spaceskip  .4em plus .25em minus .25em
+%\xspaceskip .65em
+\parskip 11pt plus 1pt minus 1pt
+\parindent 0pt
+\newcommand{\mansection}[1]{
+\headerline{\arabic{manctr}. ##1}\stepcounter{manctr}}
+\newcommand{\resetmancounter}{\setcounter{manctr}{1}}
+}{}
+
+
+@ \subsection{ \TeX-Macros that typeset functions, operators, constructors and
+destructors}
+
+We define and initialize some width parameters that are used in the commands
+that typeset manual entries and then turn to the actual typesetting.
+
+\subsection{Some width variables}
+We define several length variables. These variables define the width of the
+various columns in the layout of the creation and the operations sections. The
+separation between columns is colsep.
+
+The layout for the creation-section uses the variables createtextwidth and
+declwidth, where\\ createtextwidthwidth = textwidth - declwithwidth. We use
+two-column layout if the length of the declaration is at most declwidth minus
+colsep, and use two-row layout otherwise.
+
+The layout of the operations-section uses the variables typewidth, callwidth,
+longcallwidth, and descriptwidth, where\\ longcallwidth = textwidth - typewidth
+and\\ descriptwidth = textwidth - typewidth - callwidth We use three-column
+layout if the width of the call is at most callwidth and use two-row layout
+otherwise. Again we make sure that the colums are separated by colsep.
+
+Manual entries for variables and constructors are separated by entrysep and
+the two rows of an entry in two-row layout are separated by rowsep.
+The default values are set as percentages of textwidth or as relative length.
+I hope that this will allow to use different font sizes and page sizes.
+  
+<<widths>>=
+\newlength{\rowsep} \setlength{\rowsep}{0.7ex} 
+%separation in two-row layout
+\newlength{\entrysep} \setlength{\entrysep}{0.2ex} 
+%additional space between entries
+
+\newlength{\colsep} \settowidth{\colsep}{\ }    
+
+\newlength{\typewidth} \setlength{\typewidth}{0.15\textwidth}    
+\newlength{\longtypewidth} \setlength{\longtypewidth}{0.4\textwidth}    
+\newlength{\restoretypewidth} \setlength{\restoretypewidth}{0.15\textwidth}    
+\newlength{\callwidth} \setlength{\callwidth}{.25\textwidth}      
+\newlength{\restorecallwidth} \setlength{\restorecallwidth}{.25\textwidth}      
+\newlength{\declwidth} \setlength{\declwidth}{0.25\textwidth}  
+
+\newlength{\longcallwidth}
+\newlength{\descriptwidth}
+\newlength{\createtextwidth}
+\newlength{\textminusdescriptwidth}
+\newlength{\typepluscallwidth}
+
+\newcommand{\computewidths}{
+          \setlength{\createtextwidth}{\textwidth}
+          \addtolength{\createtextwidth}{-\declwidth}             
+
+          \setlength{\longcallwidth}{\textwidth} 
+          \addtolength{\longcallwidth}{-\typewidth}
+
+         \setlength{\descriptwidth}{\textwidth}
+         \addtolength{\descriptwidth}{-\typewidth}
+         \addtolength{\descriptwidth}{-\callwidth} 
+
+         \setlength{\textminusdescriptwidth}{\textwidth}
+         \addtolength{\textminusdescriptwidth}{-\descriptwidth}
+
+         \setlength{\typepluscallwidth}{\typewidth}
+         \addtolength{\typepluscallwidth}{\callwidth}
+       }
+
+\newcommand{\setopdims}[2]{
+  \setlength{\restoretypewidth}{\typewidth}
+  \setlength{\restorecallwidth}{\callwidth}
+  \setlength{\typewidth}{#1}
+  \setlength{\callwidth}{#2}
+  \computewidths
+}
+
+\newcommand{\restoreopdims}{
+  \setlength{\typewidth}{\restoretypewidth} 
+  \setlength{\callwidth}{\restorecallwidth}
+  \computewidths
+}
+
+\computewidths    % initializes all widths
+
+
+@ \subsection{Operations}
+
+We have two macros to typeset entries for functions and
+operators:\verb-\function- and \verb-\operator-. The second is a simplified
+version of the first and thus we discuss \verb-\function-. It has four
+arguments, the return type, the fname, the parameter list and the
+description. We need to make layout decisions based on the length of the
+various parameters. The if-then package comes handy to program the case
+distinction.
+
+Both commands use the LaTeX parbox command extensively. In particular, in
+two-row layout I generate a parbox for each row and also put the two
+rows into a parbox. Since parboxes are symbols this has the effect of
+disallowing page breaks between the two rows.
+
+We start out by checking the equation 
+\verb-\typewidth + \callwidth + \descriptwidth = \textwidth-. 
+It is easy to violate it without noticing. This produces strange layouts. I
+have once spent hours to discover the error.
+
+Our layout strategy is as follows. Assume first that the actual width of the
+return type plus colsep is larger than typewidth.  Consider \verb-#1 #2(#3)-. 
+This is the return type plus the function call. If its width plus
+colsep is larger than the width alloted for the first two columns we use two
+row layout and otherwise we use one row layout. In the first case it may even
+be the case that the function call does not fit into a single line. We
+therefore compute the width of \verb-#1 #2(-.  This is assumed to fit into a
+line. We put it down and use the remaining width for the parameter list plus ).
+
+<<functions>>=
+\usepackage{ifthen}
+\newlength{\actualcallwidth}
+\newlength{\actualtypewidth}
+\newlength{\actualtypepluscallwidth}
+\newlength{\fnamewidth}
+\newlength{\checkwidth}
+\newcommand{\returntype}{\,}
+
+\newcommand{\function}[4]{
+   \setlength{\checkwidth}{\typewidth}
+   \renewcommand{\returntype}{#1}   
+   \addtolength{\checkwidth}{\callwidth}
+   \addtolength{\checkwidth}{\descriptwidth}
+   \ifthenelse{\lengthtest{\checkwidth = \textwidth}}
+              {}
+              {\typein{WARNING: The invariant 
+\typewidth + \callwidth + \descriptwidth = \textwidth is violated. 
+Did you change one of the quantities without calling
+\protect\computewidths? I do it for you. If the output looks okay
+and you changed textwidth after reading in Lweb.sty it is safe to ignore
+this warning. Type any character to proceed.}
+\computewidths}
+
+       \settowidth{\actualcallwidth}{#2(#3)}        
+       \settowidth{\actualtypewidth}{#1}
+       \addtolength{\actualcallwidth}{\colsep}
+       \addtolength{\actualtypewidth}{\colsep} 
+       \ifthenelse{\actualtypewidth > \longtypewidth}
+       {\parbox[t]{\textwidth}{#1}\\
+       \renewcommand{\returntype}{\ }
+        \settowidth{\actualtypewidth}{\returntype}
+        \addtolength{\actualcallwidth}{\colsep}
+       }
+       {} %empty else case
+       \ifthenelse{\actualtypewidth > \typewidth}
+       {
+        \settowidth{\actualtypepluscallwidth}{#1\ #2(#3)}
+        \addtolength{\actualtypepluscallwidth}{\colsep}
+        \ifthenelse{\actualtypepluscallwidth > \typepluscallwidth}
+        {% begin then1
+       \settowidth{\fnamewidth}{#1\ #2(}%
+       \setlength{\parlistwidth}{\textwidth}%
+       \addtolength{\parlistwidth}{-\fnamewidth}%
+       \noindent
+       \parbox[t]{\textwidth}{%
+       \parbox[t]{\fnamewidth}{#1\ #2(}%
+       \parbox[t]{\parlistwidth}{\raggedright \sloppy #3)}\vspace{\rowsep}\\%
+       \hspace*{\typewidth}\hfill\parbox[t]{\descriptwidth}
+       {\sloppy #4 }%
+       }%end big parbox       
+       }%end then1
+       {%else descript on same line
+       \parbox[t]{\typepluscallwidth}{#1\ #2(#3)}%  
+       \parbox[t]{\descriptwidth}{\sloppy #4 }%
+       }% end else descript on same line 
+       }% end return type does not fit
+       {% else return type fits                      
+       \ifthenelse{\actualcallwidth > \callwidth}
+      {\settowidth{\fnamewidth}{#2(}%
+       \setlength{\parlistwidth}{\longcallwidth}%
+       \addtolength{\parlistwidth}{-\fnamewidth}%
+       \noindent
+       \parbox[t]{\textwidth}{%
+       \parbox[t]{\typewidth}{\returntype}\parbox[t]{\fnamewidth}{#2(}%
+       \parbox[t]{\parlistwidth}{\raggedright \sloppy #3)}\vspace{\rowsep}\\%
+       \hspace*{\typewidth}\hfill\parbox[t]{\descriptwidth}{\sloppy  #4 }%
+       }%end big parbox       
+      }%end then
+      {
+       \noindent\parbox[t]{\typewidth}{\fussy \returntype}%
+       \parbox[t]{\callwidth}{\raggedright \sloppy  #2(#3)}%\hspace{\colsep} 
+       \parbox[t]{\descriptwidth}{\sloppy  #4}%
+      }%end else
+      }%end return type fits
+       \vspace{\entrysep}
+       \par
+       }
+
+\newcommand{\operator}[3]{%
+       \smallskip
+       \settowidth{\actualcallwidth}{#2} 
+       \settowidth{\actualtypewidth}{#1}
+       \addtolength{\actualcallwidth}{\colsep}
+       \addtolength{\actualtypewidth}{\colsep} 
+       \ifthenelse{\actualtypewidth > \typewidth}
+       {%\typeout{WARNING: #1 is too long to fit into the box provided
+%for the return type. I adopt another layout style. }
+        %\typein{\\Type anything to acknowledge.}
+        \settowidth{\actualtypepluscallwidth}{#1\ #2}
+        \addtolength{\actualtypepluscallwidth}{\colsep}
+        \ifthenelse{\actualtypepluscallwidth > \typepluscallwidth}
+        {\parbox[t]{\textwidth}{%
+       \parbox[t]{\textwidth}{#1\ #2}\vspace{\rowsep}\\%
+       \hspace*{\textminusdescriptwidth}\parbox[t]{\descriptwidth}{\sloppy #3}%
+       } %end big parbox
+       }
+       {%else descript on same line
+       \parbox[t]{\typepluscallwidth}{#1\ #2}  
+       \parbox[t]{\descriptwidth}{\sloppy #3}%
+       }
+       }
+       {%else return type fits                     
+       \ifthenelse{\actualcallwidth > \callwidth}
+      {
+       \noindent
+       \parbox[t]{\textwidth}{%
+       \parbox[t]{\typewidth}{\fussy #1}\parbox[t]{\longcallwidth}{\raggedright \sloppy #2}\vspace{\rowsep}\\%
+       \hspace*{\textminusdescriptwidth}\parbox[t]{\descriptwidth}{\sloppy #3}%
+       } %end big parbox
+      }%end then
+      {
+       \noindent\parbox[t]{\typewidth}{\fussy #1}%\hspace{\colsep}
+       \parbox[t]{\callwidth}{\raggedright \sloppy  #2}%\hspace{\colsep}%  
+       \parbox[t]{\descriptwidth}{\sloppy #3}%
+      }%end else
+      }%end outermost else
+       \vspace{\entrysep}
+       \par
+       }
+
+
+
+@ \subsection{Constructors}
+
+create has four arguments, the typename, the variable name, the parameter list
+and the text. We always put the text into a parbox of width createtextwidth. We
+measure the length of the declaration \verb-#1 #2;- or \verb-#1 #2(#3);- and
+use two-layout if the declaration is short. We use two-row layout
+otherwise. See the section on functions for more details.
+ 
+
+<<constructors and destructors>>=
+\usepackage{ifthen}
+\newlength{\actualdeclwidth} \newlength{\parlistwidth}
+\newcommand{\decl}{\,}        % was empty before but creates trouble 2html
+\newcommand{\createtype}{\,}  % was empty before but creates trouble 2html
+\newlength{\actualtypeplusnamewidth}
+\newlength{\createtypewidth}
+
+\newcommand{\create}[4]{
+   \setlength{\checkwidth}{\declwidth}   
+   \addtolength{\checkwidth}{\createtextwidth}
+   \ifthenelse{\lengthtest{\checkwidth = \textwidth}}
+              {}
+              {\typein{WARNING: The invariant 
+\declwidth + \createtextwidth = \textwidth is violated. 
+Did you change one of the quantities without calling
+\protect\computewidths? I do it for you. If the output looks okay and you
+changed textwidth after reading Lweb.sty it is safe to ignore this warning. 
+Type any character to proceed.}
+\computewidths}
+   \ifthenelse{\equal{#3}{}}%
+   {\renewcommand{\decl}{#1\ \ #2;}}%
+   {\renewcommand{\decl}{#1\ \ #2(#3);}}% end of ifthenelse
+   \settowidth{\createtypewidth}{#1}
+   \ifthenelse{\createtypewidth > \longtypewidth}
+   {\parbox[t]{\textwidth}{#1}\\
+    \ifthenelse{\equal{#3}{}}%
+    {\renewcommand{\decl}{\hspace*{\typewidth}#2;}}%
+    {\renewcommand{\decl}{\hspace*{\typewidth}#2(#3);}}
+   }{}
+   \settowidth{\actualdeclwidth}{\decl}
+   \addtolength{\actualdeclwidth}{\colsep}
+   \ifthenelse {\actualdeclwidth > \declwidth}
+         {%\typeout{decl is long}
+          \ifthenelse{\actualdeclwidth > \textwidth}
+             {%\typeout{decl is very long}
+              \settowidth{\actualtypeplusnamewidth}{#1\ \ #2(}%
+               \setlength{\parlistwidth}{\textwidth}%
+               \addtolength{\parlistwidth}{-\actualtypeplusnamewidth}%
+               \parbox[t]{\textwidth}{%
+               \parbox[t]{\actualtypeplusnamewidth}{#1\ \ #2(}%
+                \parbox[t]{\parlistwidth}{\raggedright #3);}%
+                \vspace{\rowsep}\\%
+               \hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #4 }% 
+                                      }%end parbox
+             }
+             {%\typeout{decl is long}
+              \parbox[t]{\textwidth}{%
+               \parbox[t]{\textwidth}{\decl}\vspace{\rowsep}\\%
+               \hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy  #4 }% 
+                                      }%end parbox
+             }
+       }%end then
+       {%\typeout{decl is short}
+\parbox[t]{\declwidth}{\decl}\parbox[t]{\createtextwidth}{\sloppy #4 }%
+       }%end else
+  \vspace{\entrysep}\par
+    }
+
+
+@ \subsection{Destructors}
+
+destruct has two arguments, the variable name followed by the text. We always
+put the text into a parbox of width createtextwidth. We measure the length of
+the destruction \verb-delete #1;- and use two-column layout if the destruction
+is short. We use two-row layout otherwise.
+
+<<>>=
+\usepackage{ifthen}
+\newlength{\actualdestructwidth}
+
+\newcommand{\destruct}[2]{
+        \settowidth{\actualdestructwidth}{$\sim$#1()}
+        \ifthenelse {\actualdestructwidth > \declwidth}
+           { \noindent
+             \parbox[t]{\textwidth}{%
+                 \parbox[t]{\textwidth}{$\sim$#1()}\vspace{\rowsep}\\%
+                 \hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #2}%
+              } 
+           }
+           {\noindent\parbox[t]{\declwidth}{$\sim$#1()}%
+            \parbox[t]{\createtextwidth}{\sloppy #2}%
+           }
+         \vspace{\entrysep}\par 
+       }
+
+@ \subsection{Enumerations, Typemembers and Events}
+
+For the enums we have three arguments, the type, the list of alternatives, and
+the text.  We put the first two arguments centered on a line and add the text
+below.
+
+<<enumerations, typemembers and events>>=
+\newlength{\firstcolwidth}
+
+\newcommand{\enum}[3]{%
+\settowidth{\firstcolwidth}{#1\ \{\ #2\ \}}
+\ifthenelse {\firstcolwidth > \declwidth}{
+\noindent\parbox[t]{\textwidth}{%
+\parbox[t]{\textwidth}{#1\ \{\ #2\ \}}\vspace{\rowsep}\\%
+\hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #3}%
+}}% else
+{\noindent\parbox[t]{\declwidth}{#1\ \{\ #2\ \}}%
+\parbox[t]{\createtextwidth}{\sloppy #3}%
+}\par}
+
+\newcommand{\typemember}[2]{%
+\settowidth{\firstcolwidth}{#1}
+\addtolength{\firstcolwidth}{\colsep}
+\ifthenelse {\firstcolwidth > \declwidth}{
+\noindent\parbox[t]{\textwidth}{%
+\parbox[t]{\textwidth}{#1}\vspace{\rowsep}\\%
+\hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #2}%
+}}
+{\noindent\parbox[t]{\declwidth}{#1}%
+\parbox[t]{\createtextwidth}{\sloppy #2}%
+}\par}
+
+\newcommand{\typedef}[3]{%
+\settowidth{\firstcolwidth}{typedef #1 #2}
+\ifthenelse {\firstcolwidth > \declwidth}{
+\noindent\parbox[t]{\textwidth}{%
+\parbox[t]{\textwidth}{typedef #1 #2}\vspace{\rowsep}\\%
+\hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #3}%
+}}% else
+{\noindent\parbox[t]{\declwidth}{typedef #1\ #2\ }%
+\parbox[t]{\createtextwidth}{\sloppy #3}%
+}\par}
+
+\newcommand{\event}[2]{%
+\settowidth{\firstcolwidth}{#1}
+\addtolength{\firstcolwidth}{\colsep}
+\ifthenelse {\firstcolwidth > \declwidth}{
+\noindent\parbox[t]{\textwidth}{%
+\parbox[t]{\textwidth}{#1}\vspace{\rowsep}\\%
+\hspace*{1cm}\hfill\parbox[t]{\createtextwidth}{\sloppy #2}%
+}}
+{\noindent\parbox[t]{\declwidth}{#1}%
+\parbox[t]{\createtextwidth}{\sloppy #2}%
+}\par}
+
+
+@ \subsection{Items and Accronyms}
+
+<<items and such>>=
+\newcommand{\CC}{C\raise.06ex\hbox{\texttt{++}}}
+\newcommand{\CCC}{C\raise.08ex\hbox{\texttt{++}}}
+\newcommand{\gpp}{g\hbox{\texttt{++}\ }} 
+\newcommand{\nat}{\hbox{\rm\vrule\kern-0.045em N}}
+\newcommand{\real}{\hbox{\rm\vrule\kern-0.035em R}}
+
+\newlength{\setspacing}
+\setlength{\setspacing}{0.05em}
+\newcommand{\sset}[1]{\{\hspace{\setspacing}#1\hspace{\setspacing} \}}
+\newcommand{\set}[2]{ \left\{\hspace{\setspacing} #1 \mbox{ ; } #2 \hspace{\setspacing} \right\}  }
+\newcommand{\range}[2]{[#1 \, .. \, #2]}
+
+\newlength{\Labsspacing}
+\setlength{\Labsspacing}{0.01em}
+\newcommand{\precond}{{\it Precondition}: }
+\newcommand{\Labs}[1]{%
+\hbox{$| \hspace{\Labsspacing} #1 \hspace{\Labsspacing} |$}}
+
+\newcommand{\Lvert}{|}
+\newcommand{\Litem}[1]{\hbox{$\langle #1 \rangle$}}
+\newcommand{\Lchunk}[1]{$\langle${\it #1}$\rangle$}
+
+
+@ \subsection{Special Symbols}
+
+And here are the corresponding \TeX\ commands.
+
+<<special symbols>>=
+\newcommand{\Lless}{\texttt{<}}
+\newcommand{\Lgreater}{\texttt{>}}
+\newcommand{\Ltemplateless}{\texttt{<}}
+\newcommand{\Ltemplategreater}{\texttt{>}}
+\newcommand{\<}{\ensuremath{\mathtt{<}}}
+\renewcommand{\>}{\ensuremath{\mathtt{>}}}
+\newcommand{\Lle}{\le}
+\newcommand{\Lge}{\ge}
+\newcommand{\Dplus}{{++}}
+\newcommand{\Dminus}{{--}}
+\newcommand{\Lass}[1]{\mathrel{{#1}{=}}}
+\newcommand{\Lminuseq}{{-}{=}}
+\newcommand{\Noteq}{{!}{=}}
+%\newcommand{\Leq}{\equiv}
+\newcommand{\Leq}{\mathbin {{=}{=}}}
+\newcommand{\Larrow}{\rightarrow}
+\newcommand{\tildeop}{{\sim}}
+\newcommand{\Tildeop}{{\char126}}
+\newcommand{\circumflexop}{\hbox{\^{}}}
+\newcommand{\DP}{\hspace{.1em}{::}\hspace{-.2em}} % symbol for ::
+\newcommand{\nspacedot}{\hspace{-0.09em}}
+\newcommand{\nspaceunderscore}{\hspace{-0.13em}}
+\newcommand{\Lrquote}{\mbox{'}}
+\newcommand{\Llquote}{\mbox{`}}
+\newcommand{\KLL}{@$\Lless\Lless$}           % geaendert von \<\<
+\newcommand{\KGG}{@$\Lgreater\Lgreater$}
+\newcommand{\DLK}{\mbox{\tt [[}}
+\newcommand{\DRK}{\mbox{\tt ]]}}
+\newcommand{\Ln}{\mbox{$\backslash${\tt n}}} 
+
+
+@ \subsection{Old Macros}
+
+Some of the stuff that follows can be purged.
+
+<<old macros>>=
+\newcommand{\Mdefinition}{{\bf $\backslash$ Mdefinition}\\}
+\newcommand{\Mcreation}{{\bf $\backslash$ Mcreation}\\}
+\newcommand{\Mtypes}{{\bf $\backslash$ Mtypes}\\}
+\newcommand{\Moperations}{{\bf $\backslash$ Moperations}\\}
+\newcommand{\Mimplementation}{{\bf $\backslash$ Mimplementation}\\}
+\newcommand{\Mexample}{{\bf $\backslash$ Mexample}\\}
+\newcommand{\Mcreate}{{\bf $\backslash$ Mcreate}\\}
+
+\newcommand{\Mop}{{\bf $\backslash$ Mop}        \hspace{1cm}}
+\newcommand{\Mopl}{{\bf $\backslash$ Mopl}       \hspace{1cm}}
+\newcommand{\Mbinop}{{\bf $\backslash$ Mbinop}     \hspace{1cm}}
+\newcommand{\Marrop}{{\bf $\backslash$ Marrop}     \hspace{1cm}}
+\newcommand{\Mfunop}{{\bf $\backslash$ Mfunop}     \hspace{1cm}}
+\newcommand{\Munop}{{\bf $\backslash$ Munop}      \hspace{1cm}}
+\newcommand{\Mfunc}{{\bf $\backslash$ Mfunc}      \hspace{1cm}}
+\newcommand{\Mfuncl}{{\bf $\backslash$ Mfunc}      \hspace{1cm}}
+\newcommand{\Mbinopfunc}{{\bf $\backslash$ Mbinopfunc} \hspace{1cm}}
+\newcommand{\Munopfunc}{{\bf $\backslash$ Munopfunc}  \hspace{1cm}}
+
+\newcommand{\If}{{\bf if} }
+\newcommand{\Fi}{{\bf fi} }
+\newcommand{\Then}{{\bf then} }
+\newcommand{\Else}{{\bf else} }
+\newcommand{\Do}{{\bf do} }
+\newcommand{\Od}{{\bf od} }
+\newcommand{\For}{{\bf for} }
+\newcommand{\While}{{\bf while} }
+\newcommand{\Return}{{\bf return} }
+\newcommand{\Break}{{\bf return} }
+\newcommand{\Continue}{{\bf continue} }
+\newcommand{\Case}{{\bf case} }
+\newcommand{\Switch}{{\bf switch} }
+\newcommand{\Class}{{\bf class} }
+\newcommand{\Struct}{{\bf struct} }
+\newcommand{\Public}{{\bf public} }
+\newcommand{\Friend}{{\bf friend} }
+\newcommand{\Typedef}{{\bf typedef} }
+
+\newcommand{\n}{\backslash n}
+
+\newcommand{\co}{\mbox{//}}
+
+% LEDA macros:
+
+\newcommand{\Forall}{{\bf forall} }
+\newcommand{\Forallnodes}{{\bf forall\_nodes} }
+\newcommand{\Foralledges}{{\bf forall\_edges} }
+\newcommand{\Foralladjnodes}{{\bf forall\_adj\_nodes} }
+\newcommand{\Foralladjedges}{{\bf forall\_adj\_edges} }
+
+
+% verbatim
+
+\font\ttbig= cmtt10 scaled \magstephalf
+
+\chardef\other=12
+\newcommand{\ttverbatim} {
+\parskip 5pt
+\catcode`\&=\other \catcode`\{=\other \catcode`\}=\other
+%\catcode'\\=\other 
+\catcode`\$=\other \catcode`\&=\other
+\catcode`\#=\other \catcode`\%=\other \catcode`\~=\other
+\catcode`\_=\other \catcode`\^=\other
+\obeyspaces \obeylines}
+
+% usage:
+%
+%\begingroup
+% \ttbig
+% {\obeyspaces\gdef {\ }}
+% \ttverbatim
+%
+% ...
+%
+%\endgroup
+
+
+@ \section{Additional Scripts - Pre and Postprocessing}
+\subsection{Cleaning up Manual Comments - ldel and ext\_ldel}
+[[ldel infile outfile]] reads a file, deletes all manual comments from it
+(except Mpreamble comments) and writes the output to outfile.
+
+<<ldel>>=
+#!/bin/sh 
+perl $LEDAROOT/Manual/cmd/ldel.pl $1 $2
+
+@ and the perl code for the above:
+<<ldel.pl>>=
+<<subroutines>>
+
+$INPUT = $ARGV[0] && shift;
+$OUTPUT = $ARGV[0];
+if ($OUTPUT eq "") {
+  print "
+Usage is
+          ldel infile outfile              
+
+Removes manual comments from infile.\n";
+  exit;
+}
+
+open (INPUT) || die "Error: Can't find input file $INPUT: $!\n";
+open(OUTPUT,">$OUTPUT");
+
+while (<INPUT>) {
+  # The current line is either output or starts a manual comment
+  $preamble = 0;
+  if ( / *\/\*\{\\M/ || / *\/\*\{\\X/ ) {
+    # current line contains the begin of a manual comment
+    # we need to distinguish cases: if the manual comment is 
+    # Mpreamble then we proceed as in the manual extraction and
+    # otherwise we simply delete the manual comment.
+    if ( s/ *\/\*\{\\Mpreamble// ) {
+      $Mcomment = $_; 
+      $preamble = 1;
+    }
+    # we scan lines until we find the end of a manual comment
+    while ($_ && (! ( /\}\*\// ) ) ) {
+      if ($preamble == 1) { $Mcomment .= $_; }
+      $_ = <INPUT>; 
+    }
+    # the current line contains the end of a manual comment
+    if ($preamble == 1) {
+      s/\}\*\/ *//; 
+      $Mcomment .= $_;
+      &print_unit(&convert_to_LaTeX($Mcomment));
+    }
+  }
+  elsif ( / *\/\*.*Mkillcomment/ ) { 
+    while ($_ && (! ( /\*\// ))) {
+      $_ = <INPUT>; 
+    }
+  }
+  else {
+    print OUTPUT $_; 
+  }
+}
+  
+close(OUTPUT);
+
+@ On November 5, 96 I extendend delman. I added the possiblility to leave the
+manual comments in the code and to typeset them using LaTeX. 
+I use the following strategy. Whenever I see a comment of the form
+\verb-/*{\M ... }*/- or \verb-/*{\X ... }*/ which is followed by C-code
+I output 
+\begin{verbatim}
+@@ \semantics{ ... }
+@<<chunk@>>=
+\end{verbatim}
+
+where chunk is the currently defined chunk and whenever I see a comment of
+the form above which is followed by non-C-text, i.e., by [[@ ]] or
+by [[@<<chunkname@>>=]], I output
+\begin{verbatim}
+@@ \semantics{ ... }
+\end{verbatim}
+
+This is strategy is easily implemented by a finite automaton.  I read the input
+file line by line. Whenever I encounter a chunk definition line [[@<<....@>>=]] I
+remember the line. Whenever I find a comment I read the comment in full.  If it
+is a preamble comment I output it, if it is a text comment I ignore it and
+otherwise I output \verb-\semantics{...}-. I continue reading until I find the
+first non-empty line after the manual comment. If it begin with [[@ ]] or with
+[[@<<...@>>=]] I am in ground state again. If not I print the chunk definition
+line and continue.
+
+<<ext_ldel>>=
+perl $LEDAROOT/Manual/cmd/ext_ldel.pl $1 $2
+
+@ and the perl code for the above:
+<<ext_ldel.pl>>=
+
+<<subroutines>>
+$INPUT = $ARGV[0] && shift;
+$OUTPUT = $ARGV[0];
+
+if ($OUTPUT eq "") {
+  print "usage
+
+              ext_ldel infile outfile              
+
+removes manual comments from infile\n";
+  die;
+}
+
+$chunk_name = "";
+open (INPUT)  || die "Error: Can't find input file $INPUT: $!\n";
+open(OUTPUT,">$OUTPUT");
+
+while (<INPUT>) {
+  ground_state:
+ 
+    $Mpreamble = 0;
+    $Mignore = 0;
+    $Manpage = 0;
+
+    if (/\<\<.*\>\>=/) {  # we read a chunk name and remember it
+      $chunk_name = $_;
+      print OUTPUT $_;
+      next;
+    }
+        
+    if ( / *\/\*\{\\M/ || / *\/\*\{\\X/) {
+      # current line contains the begin of a manual comment
+      # we determine whether we are dealing with a preamble comment
+      # or a text comment
+      # and we delete the header of the comment
+      if ( /Mpreamble/ ) { $Mpreamble = 1; }
+      if ( /Mtext/ || /Manpage/ || /Mdefinition/ || /Mtypes/ || 
+           /Moperations/ ||/Mimplementation/ || /Mcreation/ || 
+	   /Moptions/ || /Msubst/ || /Mexample/ )    
+      { $Mignore = 1; }
+
+      if ( /Manpage/ ) { 
+        $Manpage = 1; 
+	$Manpageline = $_;
+
+	while ($_ && (! ( /\}\*\// ) ) ) {
+          $_ = <INPUT>;
+	  chop $Manpageline;
+          if (/\} +\*\//) {
+            &print_warning("encountered } */ in manual comment. Did you mean }*/ ?");}
+            $Manpageline .= $_;
+          }
+	  if (! $_){ die "Error: missing end comment\n"; }
+	  $_ = $Manpageline; 
+        }
+
+        s/ *\/\*\{\\\S*//;  # remove the manual comment 
+
+        if ($Manpage == 1) {
+           /\{([^\{\}]*)\}\s*\{([^\{\}]*)\}\s*\{([^\{\}]*)\}\s*\{([^\{\}]*)\}/;               
+           $Mtype = $1;
+           $par_list = $2;
+           $title = $3;
+           $Mvar = $4;
+           if ($par_list =~ /^ *$/) 
+           { $Mname = $Mtype; }
+           else 
+           { # remove excessive blanks in parlist
+             $par_list =~ s/ //g;
+             $Mname = $Mtype."<".$par_list.">";
+           } 
+	   $Manpage = 0;
+        }
+        $Mcomment = "";
+
+        # we scan lines until we find the end of a manual comment
+        while ($_ && (! ( /\}\*\// ) ) ) {
+          $Mcomment .= $_;
+          $_ = <INPUT>; 
+        }
+
+        # the current line contains the end of a manual comment 
+        s/\}\*\/ *//; 
+        $Mcomment .= $_;
+        &subst_vars(*Mcomment);
+        if ($Mpreamble == 1) {
+          &print_unit(&convert_to_LaTeX($Mcomment));
+          next;
+        }
+        if ($Mignore == 1) { next; }  # no output 
+         
+        # we are in the standard case and want to output the appropriate stuff
+        &print_unit("\@ \\semantics{".&convert_to_LaTeX($Mcomment)."}");
+
+        $_ = <INPUT>;
+        while ($_ && /^\s*$/) {  $_ = <INPUT>; }
+      
+        # we are in the first non-empty line after the manual comment
+
+        if (!(/^\@/ || /^\<\<.*\>\>=/)) # current chunk is continued
+        {  print OUTPUT $chunk_name, "\n"; }
+      
+        goto ground_state; 
+      }
+      print OUTPUT $_; 
+    }
+  
+close(OUTPUT);
+
+@ We also need a new manual macro.
+
+<<MANUAL.mac>>=
+\newlength{\semwidth}
+\setlength{\semwidth}{\textwidth}
+\newlength{\semindent}
+\settowidth{\semindent}{{\bf Semantics}:\ }
+\addtolength{\semindent}{\parindent}
+\addtolength{\semwidth}{-\semindent}
+
+\newcommand{\semantics}[1]{
+\nopagebreak%\hspace{\codemargin}
+{\bf Semantics}:\ \parbox[t]{\semwidth}{#1}
+\vspace{2ex}
+
+}
+
+@ \subsection{The lweave Command}
+
+Lweave converts an Lweb file into a tex file. It operates in three phases
+
+\begin{verbatim}
+
+foo.lw -----> foo.nw --------------> temp.tex --------> foo.tex
+       lw2nw         noweave -delay           emptyline
+
+\end{verbatim}
+The first phase takes care of unnamed code sections and quoted code and the
+third phase takes care of empty lines in code. The second phase calls
+noweave. The option delay means that we generate the preamble and postamble for
+LaTeX ourselves.
+
+<<lweave>>=
+#!/bin/sh -f
+if [ "$1" = "" ]; then
+  echo ""
+  echo "Usage is"
+  echo "          lweave foo[.lw] [noweave_options]"
+  echo ""
+  echo "Converts an Lweb file foo.lw into a LaTeX file foo.tex."
+  exit
+fi
+file=`basename $1 .lw`
+location=`dirname $1`
+name="$location/$file"
+if [ "$#" != "1" ]; then shift; fi
+if [ "$1" = "HTML" ]; then
+  mode=HTML 
+  if [ "$#" != "1" ]; then shift; fi
+  optarg='-latex+html'
+fi
+if [ "$1" = "Cdoc" ]; then
+  mode=Cdoc
+  if [ "$#" != "1" ]; then shift; fi
+fi
+
+if [ -f $name.lw ]; then
+  echo "Calling lw2nw $mode on $name.lw ..."
+  echo ""
+    lw2nw $name.lw $mode > $name.nw
+  shift
+  echo "Calling noweave -delay $optarg $@ on $name.nw ..."
+  echo ""
+    noweave -delay $optarg "$@" $name.nw > $name.tmp
+
+  echo "Treating empty lines in $name.tex ..."
+  echo ""
+    emptyline $name.tmp $mode > $name.tex
+else
+  echo "Error: File $name.lw does not exist."
+  echo ""
+  exit
+fi
+
+@ This script repairs some strange handling of noweave when used with
+the flags [[-latex+html]]. In emptyline.pl we enrich noweave output
+with some crosslabeling for HTML. In this phase we repair the
+crosslabeling due to a file modulization of l2h.
+<<correct_xlinks.pl>>=
+$project = $ARGV[0] && shift;
+# this piece creates correct crosslinks for the web like
+# chunk references as produced by emptyline
+
+  @files = glob("$project/*.html");
+  foreach $file (@files) {
+    my $fname = $file; $fname =~ s/.*\///; # basename
+    open(FILE,$file);
+    while (<FILE>) {
+      if (/<A NAME=\"HTMLDOC(.*?)\">/) 
+      { $labelfile{$1}=$fname; 
+        # print STDERR "$fname $& $1\n"; 
+      }
+    }
+    close(FILE);
+  }
+  foreach $file (@files) {
+    open(FILE,$file);
+    rename($file, $file.'.bak');
+    open(ARGVOUT, ">$file");
+    select(ARGVOUT);
+    while (<FILE>) {
+      s/<A HREF=\"\#HTMLDOC(.*?)\">/<A HREF=\"$labelfile{$1}\#$1\">/g;
+      s/<A NAME=\"HTMLDOC(.*?)\">/<A NAME=\"$1\">/g;
+    } continue {
+      print;
+    }
+    close(FILE);
+  }
+  select(STDOUT);
+
+
+<<lw2dvi>>=
+#! /bin/sh
+if [ "$1" = "" ]  
+then
+  echo ""
+  echo "Usage is"
+  echo "          lw2dvi foo[.lw]"
+  echo ""
+  echo "Converts an Lweb file foo.lw into a dvi file foo.dvi."
+  exit
+fi
+file=`basename $1 .lw`
+location=`dirname $1`
+name="$location/$file"
+if [ ! -f $name.lw ]
+then
+  echo "Error: File $name.lw does not exist."
+  echo ""
+  exit
+fi
+
+lweave $1
+
+echo "Calling latex..."
+echo ""
+latex $1.tex 
+
+rm $1.nw
+rm $1.temp
+
+<<lw2nw>>=
+#!/bin/sh -f
+perl $LEDAROOT/Manual/cmd/lw2nw.pl "$@"
+
+<<emptyline>>=
+#!/bin/sh -f
+perl $LEDAROOT/Manual/cmd/emptyline.pl "$@"
+
+@ [[lw2nw.pl]] has  to deal with unnamed code sections and quoted code. 
+An unnamed code section has the form 
+\begin{verbatim}
+ @c
+ Zeile 1
+   .
+   .
+   .
+ Zeile n
+ This empty line may or may not exist
+ @ No comes text...
+\end{verbatim}
+I replace it by
+\begin{verbatim}
+\begin{Lcode}
+[ [Zeile 1] ]
+      .
+      .
+      .
+[ [Zeile n] ]
+\end{Lcode}
+and now some text...
+\end{verbatim}
+where Lcode is a new environment. Lcode uses the corresponding noweb
+environment and ensures proper spacing to the text above and below. Also I set
+codemargin to parindent. This ensures that code and text is indented the same.
+This must be in a style file.
+
+<<Lweb.sty>>=
+
+<<MANUAL.pagesize>>
+<<Lbook.sty>>
+
+<<Lbook.sty>>=
+\usepackage{noweb}
+\setlength{\codemargin}{\parindent}
+<<redefinition of noweb parameters that control pagebreaks>>
+\def\nwendcode{\endtrivlist \endgroup }
+\nwcodepenalty=0 
+\let\nwdocspar=\par%\filbreak 
+\let\nowebsize=\small%selects small font for code
+%\nwcodetopsep = 3pt plus 1.2pt minus 1pt   so stehts im Orginal
+\nwcodetopsep = 10pt plus .5pt minus .5pt
+
+\newlength{\Lcodetopsep}
+\setlength{\Lcodetopsep}{-10pt plus 1.2pt minus 1pt}
+\newlength{\Lcodebotsep}
+\setlength{\Lcodebotsep}{-12pt plus 1.2pt minus 1pt}
+  
+<<MANUAL.mac>>
+
+\newcommand{\noeffect}{}
+
+\newenvironment{Lcode}{%
+%\addtolength{\topsep}{-8pt}% am 11. April zu 2.8 von 2.5ex geandert
+\vspace{\Lcodetopsep}
+\@begincode  
+}{\endtrivlist\vspace{\Lcodebotsep}
+%\vspace{0.3ex}  
+% Leerzeile ist wichtig?? am 11 April 99 zu 0.3 geaendert von 0.5
+}
+
+@ Let us see the details of [[lw2nw.pl]]
+
+In document chunks it applies [[convert_inline_code]] to each chunk.
+In unnamed program chunks it converts @c to begin\{Lcode\} and inserts the
+end\{Lcode\} at the end of the code. If there is an empty line at the end of
+the code I simply put it there. If there is no empty line I add it to the
+preceding line. In either case this does not corrupt the line count.
+
+Named code sections are converted to noweb style, i.e. @\< is replaced by \<\<
+and @\> is replaced by \>\>. Also += is replaced by =.
+
+Noweave does not like \_ in junk names, although notangle handles them without
+any problems. I therefore quote underscores in junk names.
+
+<<lw2nw.pl>>=
+#$debugging = "yes";
+$INPUT = $ARGV[0] && shift;
+$mode = $ARGV[0] && shift;
+if ($INPUT eq "") {
+  print "
+Usage is
+          lw2nw file [HTML|Cdoc]
+
+Converts foo.lw to foo.nw.\n";
+  exit;
+}
+
+$chunktext="";
+if ($mode eq "Cdoc") { $chunkenv="ccExampleCode"; $lkl=$rkl="";}
+elsif ( $mode =~ /HTML/ ) { $chunkenv="verbatim"; $lkl=$rkl=""; }
+else { $chunkenv="Lcode"; $lkl='[['; $rkl=']]'; }
+open (INPUT)  || die "Error: Can't find input file $INPUT: $!\n";
+while (<INPUT>) {
+  if (/^\@c/) { # unnamed code section
+    print &convert_chunk($chunktext);$chunktext="";
+    # I read with one line lookahead because I want to remove empty lines 
+    # at the end of codechunks.
+    $_ = <INPUT>; $previous = "\\begin{$chunkenv}";
+    if (!$_) { die "Error: File terminated without @ \\end{document}"; }      
+    while (!/^\@\s/) {
+      $current = $_;
+      print $previous . "\n";
+      chop($current);  # der reine Code ohne newline
+      if ($current =~ /\<\<(.*)\>\>/) {  # quote underscore in junk name
+        $junk_name = $1;
+        $cleft = $` . "<<";
+        $cright = ">>" .$';
+        $junk_name =~ s/_/\\_/g;
+        $current = $cleft .$junk_name . $cright;
+      }
+      $previous = $lkl.$current.$rkl;          
+      $_ = <INPUT>;
+      if (!$_) { die "Error: File terminated without @ \\end{document}"; }
+    }
+    # current line starts text after code
+    if ($previous =~ /$lkl\s*$rkl/) { print "\\end{$chunkenv}\n"; }
+    else  { print $previous . "\\end{$chunkenv}\n"; }
+  } # current line starts with @space (if condition applied)
+  s/^\@[\(\<](.*)\@> *\+ *=/\<\<$1\>\>=/;  
+    # named code section: Cweb-style convert to Noweb style 
+  s/(\<\<.*\>\>)\+ *=/$1=/;
+    # correct common mistake: replace >>+ = by  >>=
+  if (/^\<\<.*\>\>=/) {
+    print &convert_chunk($chunktext);$chunktext=""; 
+    while (!/^\@\s/) {
+      # I print line after treating applied occurrences
+      # of Cweb-chunks
+      s/\@\<(.*)\@\>/\<\<$1\>\>/;
+      if (/\<\<(.*)\>\>/) {  # quote underscore in junk name
+        $junk_name = $1;
+        $cleft = $` . "<<";
+        $cright = ">>" .$';
+        $junk_name =~ s/_/\\_/g;
+        $_ = $cleft .$junk_name . $cright;
+      }
+      print; 
+      $_ = <INPUT>;
+      if (!$_) 
+      { die "Error: file terminated without @ \\end{document}"; }
+    }
+  }
+  $chunktext .= $_;
+}
+print &convert_chunk($chunktext);$chunktext=""; 
+close(INPUT);
+ 
+<<subroutines>>
+sub convert_chunk {
+  local($text) = @_;
+  # current line is a text line.
+  if ( $mode =~ /HTML/ ) { return &convert_to_HTML($text); }
+  else                   { return &convert_to_LaTeX($text); }
+}
+
+@ \subsection{Empty lines in code sections and page breaks}
+
+Empty lines in code chunks generate empty vertical space that I find too big. I
+solve the problem with a postprocessor that works on the file generated by
+noweave.
+
+Empty line occur in two forms. In unnamed code sections they appear as
+\verb-{\tt{}\_\_\_\_}-. Unnamed code chunks start with \verb-\begin{Lcode}-.
+In named code chunks they appear as empty lines. Named code chunks start with
+nwbegincode.
+
+In a first attempt I simply replaced empty lines by negative vertical
+space. This has an undesirable side effect. Within code chunks noweb puts LateX
+in observeline mode. In this mode each line is a paragraph and hence an empty
+line was converted into a paragraph of negative height. If such a paragraph
+falls on a line break it is always put on the old page. This causes problems
+with the textheight. For example footnotes were printed on top of the last line
+of text.
+
+In my new solution I replace an emptyline by 
+\verb-\vspace{some positive value}-, 
+which I make a prefix of the subsequent line. This has the additional
+effect that the space does not appear at the top of a page. It however corrupts
+the line count. I correct the line count by adding an appropriate number of
+lines containing only \% after the code chuck.  Such lines have no effect with
+respect to LaTeX and restore the line count.  I have also tried to replace
+empty lines in code by \verb-\vspace{some positive value}%-; this does not work
+because \% is not treated as a LaTeX comment in code sections.  I have to be a
+bit careful where I insert the comment lines. I frequently define two code
+chucks right after another. I stay in code mode if the line containing
+nwendcode not also containes a nwbegincode.
+
+Noweb uses the following rule for page breaking. A code section together with
+the preceding document chunk are considered a unit. All attempts are made to
+keep them together. In other words, a unit is placed on a partially complete
+page only if it fits completely on the page. This rule generates a lot of pages
+that are only partially full. We need a more flexible rule for the book.
+
+Noweb implements this rule by issuing filbreak commands at appropriate places
+and by using a very high page breaking penalty within code sections. Filbreak
+commands are issued at the end of every code section and at the beginning of
+document chunks that start a new paragraph (i.e., start with @newline).
+
+It will not do to simply remove the filbreak command. Recall that every line of
+code is its own paragraph. Thus I will have many pagebreaks within code
+sections. I want no pagebreaks within the first three and the last three line
+of a code section. So I insert nobreak commands at these places. Also I do not
+discourage page breaks within code as much as noweb and therefore set penalty
+to lowpenalty. This does not work as I expected.
+
+Note that code is processed in obeylines environment. In this context each 
+newline is an implicite \tc{par}-command. Norman Ramsey redefines this
+command as 
+\begin{verbatim}
+\@@par
+\def\par{\leavevmode\null \@@par \penalty\nwcodepenalty}%
+\end{verbatim}
+i.e., a par-command expands to an old par command followed by a penalty as 
+given by nwcodepenalty. I set this value at the end of every code line: to a
+very high value for the first three and last three lines and to a low value for
+all other lines. The values are given by \tc{Lhighpen}\  and \tc{Llowpen}. After some experiments I settled for values 10000 and -30.
+
+I redefine three commands in noweb.sty. First the standard value of
+nwcodepenalty is set to 0 instead of highpenalty. This allows line breaks
+within code. Secondly I remove the filbreak command form nwendcode and
+nwdocspar and set nwdocspar to par.
+
+<<redefinition of noweb parameters that control pagebreaks>>=
+\def\nwendcode{\endtrivlist \endgroup } %\filbreak
+\nwcodepenalty=0  %\@highpenalty
+\let\nwdocspar=\par%\filbreak 
+
+<<emptyline.pl>>=
+$INPUT = $ARGV[0] && shift;
+if ($INPUT eq "") {
+  print "Usage is
+          emptyline filename\n";
+  exit;
+}
+$mode = $ARGV[0] && shift;
+
+if ($mode eq HTML) { #  now HTML
+  open(INPUT);
+  while (<INPUT>) {
+    s/\<\!.*\>//;   
+      # remove wrong html comment
+    s/(\\documentclass.*$)/$1\n\\usepackage\{html\}/;
+      # insert html package usage
+      # insert some linebreaks
+    if ( /(\<dfn\>\&lt\;)(.*)(\&gt\;\=\<\/dfn\>)/ ) {
+      $lkl = "$`$1"; #&clean_label($chunk)
+      my $chunk = $2;
+      $rkl = $3.$';
+      my $label = "HTMLDOC".&clean_label($chunk);
+      $_ = "$lkl<A NAME\=\"$label\">$chunk$rkl";
+    }
+    if ( /(<i>\&lt\;)(.*)(\&gt\;<\/i>)/ ) {
+      $lkl = $`.$1;
+      my $chunk = $2;
+      $rkl = $3.$';
+      my $label = "HTMLDOC".&clean_label($chunk);
+      $_ = "$lkl<A HREF=\"\#$label\">$chunk<\/A>$rkl";
+    }
+    s/(\\begin\{rawhtml\})(<pre>)/\n$1\n$2/;
+    s/(\\end\{rawhtml\})(\\par)/\n$1\n$2\n/;
+    s/\&quot\;/\"/g; 
+    print;
+  }
+  close(INPUT);
+} elsif ($mode ne "Cdoc") {
+  open (INPUT)  || die "Error: Can't find input file $INPUT: $!\n";
+  $anzahl = 0;
+  while (<INPUT>) {
+    $codechunk = ""; 
+    if (/nwbegincode/) {
+      $line = $_; chop($line);
+      print $line,"\\nwcodepenalty=\\Lhighpen\n"; 
+      $_ = <INPUT>;
+      # $anzahl = 0;           
+      while (!/nwendcode/ || /nwbegincode/) {
+        if (/\S/) { $codechunk .= $_; }
+        else { $codechunk .= "\\vspace{\\Lemptyline}"; $anzahl++; }         
+        $_ = <INPUT>;
+      }
+    }
+    if (/begin{Lcode}/) {
+      print;
+      $_ = <INPUT>; 
+      # $anzahl = 0;          
+      while (!/end{Lcode}/) {
+        if (/^\{\\Tt\{\}\}/)
+        { $codechunk .= "\\vspace{\\Lemptyline}"; $anzahl++; }
+        else { $codechunk .= $_; }         
+        $_ = <INPUT>;
+      }
+    }
+    if ($codechunk) {
+      $nlines = ($codechunk =~ tr/\n/\n/); $lcount = 0;
+      while ($codechunk =~ /^([^\n]*)\n/) {
+        $line = $1;  $lcount++;
+        $codechunk = $';
+        if ($lcount <= 2 || ($lcount >= $nlines - 2 && $lcount < $nlines)) 
+        # 3 changed to 2 by KM on March 22nd 99
+        { print $line, "\\nwcodepenalty=\\Lhighpen\n"; }
+        else { print $line , "\\nwcodepenalty=\\Llowpen\n"; }
+      }
+      print $codechunk;
+    }
+    
+    print;   # Prints text and nwendcode and end{Lcode} respectively.
+    while ($anzahl > 0) {print "\%\n"; $anzahl--;}
+  }
+  close(INPUT);
+} else {
+  open (INPUT)  || die "Error: Can't find input file $INPUT: $!\n";
+  while (<INPUT>) {
+    print;
+  }  
+  close(INPUT);
+}
+
+sub clean_label {
+  local($label) = @_;
+  $label =~ s/\\//g;
+  $label =~ s/\_//g;
+  $label =~ s/\$//g;
+  return $label;
+}
+
+@
+<<Lbook.sty>>=
+\newlength{\Lemptyline}
+%\setlength{\Lemptyline}{1ex} changed by KM for Book 99
+\setlength{\Lemptyline}{0.7ex plus 0.1ex minus 0.1ex} 
+\newcount\Lhighpen \Lhighpen=10000
+\newcount\Llowpen \Llowpen=-30
+
+@ \section{A Table for Crossref Extension in HTML}
+
+Just put in additional keywords outside the normal class types.
+The latters are produced by macros.
+<<namereplacementtable>>=
+b_pq_item               b_prio
+b_priority_queue        b_prio
+cmd_istream             stream
+cmd_ostream             stream
+d2_dic_item             d2_dictionary
+d_vertex                tree_collection
+edge                    graph
+dic_item                dictionary
+face                    planar_map
+file_istream            stream
+file_ostream            stream
+is_item                 interval_set
+list_item               list
+node                    graph
+p_dic_item              p_dictionary
+partition_item          partition
+pq_item                 p_queue
+ps_item                 point_set
+random_source           random
+seg_item                segment_set
+seq_item                sortseq
+slist_item              slist
+string_istream          string
+string_ostream          string
+@
+
+@ \section{Installation Remarks}
+
+To use this package you have to 
+\begin{enumerate}
+\item set [[LEDAROOT]] to the root directory of your actual LEDA installation.
+\item extend your path by [[\$LEDAROOT/Manual/cmd]]
+\item extend your TEXINPUTS by [[\$LEDAROOT/Manual/tex]]
+\end{enumerate}
+The tools are based on
+\begin{itemize}
+\item Perl >5.0
+\item Noweb
+\item LaTeX2HTML > 98.1
+\end{itemize}
+
+
+\section{Changes}
+I record the changes made after the end of the trial phase.
+\begin{itemize}
+\item July 10, 96: xdvi=no and latexruns >= 1 implies that the produced dvi-file
+is copied into T.dvi in the working directory. This required to add one statement.
+\verb+cp /tmp/... $owd/$basename.dvi+.
+\item July 10, 96: 
+\begin{verbatim}
+wir (Stefan und Christian) mussten um dynamic link libraries unter Windows
+    zu erzeugen 3 Macros in die Header einfuegen:
+    __exportC, __exportF, __exportD  sie koennen bei Klassen, Funktionen und
+    Variablen wie folgt auftauchen: 
+
+    class __exportC  A { ... };
+
+    type  __exportF  func()
+
+    type  __exportD  var;
+
+     In der Unix-Version wollen wir die Macros vor Auslieferung herausfiltern,
+     aber in unserer Arbeitsversion stehen sie drin, und insbesondere mit
+     dem __exportF kommt Lman natuerlich nicht zurecht.
+\end{verbatim}
+
+I use the following solution. Whenever a code unit has been built I
+remove all words in the list [[invisible_words]] from the code
+unit. This is done in section [[determine code unit]]. The list is
+also defined there.
+
+\item July 11, 96: discovered that Fman handles the filter opname
+incorrectly.  Corrected it.
+
+\item Every call of Lman starts from scratch. extracts the manual,
+calls latex, and finally xdvi. I introduce a directory /MANUAL/DVI
+where I store all dvi-files. The utility Mkdvi makes all
+dvi-files. Lman (with option xdvi=yes) first looks up whether the
+dvi-file exists and if so displays it.
+
+\item July 20, 96: I extended Fman to allow for approximate searching
+of opnames. I first do it in a very rudimentary way. I report any
+operation that contains the opname argument.
+
+\item July 23, 96: Michael Seel asks for three extensions.
+\begin{itemize}
+
+\item he wants to give options to noweave. I introduce noweave
+options.  They can only be set in the Ldoc.cfg file.
+
+\item Msubst is not gereral enough. He wants be able to replace
+[[CGAL_Integer_vector<RT>]] by [[ivector]]. Also replacements in create are not
+made at all. The first request is easily handled. I assumed that both sides of
+the substitution consist of aphanumeric characters only (\verb+\w+). I changed
+this to non-space. This still does not allow blanks in either side. So the
+solution is not perfect. I discussed the matter with Michael and we agreed on
+the following syntax. On either write -verb-S T- or \verb-S#T-. In the former
+case S and T are not allowed to contain blanks.
+\item he wants me to remove all temporary files.
+\end{itemize}
+
+I performed all three changes.
+
+\item August 2nd, 96: I noticed that paremeter lists look strange if
+one of the types is templeted, e.g., [[edge_array<edge>]] rev will
+have no blank between [[>]] and [[rev]]. I made one change in
+[[M_convert]]. When it treats template brackets I insert a space after
+a [[>]]. This change handles parameter lists correctly but not quoted
+code.
+
+\item August 20th, 96: I introduced the command Menum for the
+definition of enumeration types. I want the layout enum Typename(in
+roman) { list of alternatives in typewriter } text of body of enum.
+
+\item September 15th, 96: Michael suggested two changes, this one and
+the next.  [[> >]] in return type is treated incorrectly. I made two
+changes. When type is parsed I remove only beginning and trailing
+blanks but not interior blanks.  [[convert_M]] uses a more refined
+strategy to typeset template delimiters.  \item the warning uneven
+number of [[|]] is written into the tex-file and not on standard
+output. I changed this by using both CERR and CSTANDOUT.
+
+\item My correction for nested templates is incorrect. |stack<E> S|
+removes the blank before S. I use the following heuristics. If a
+string submitted to [[convert_M]] contains [[<]] and [[>]] then all
+occurrences of such symbols are assumed to be template brackets. If it
+does not then they are assumed to be less or greater symbols. In the
+latter cases I let latex do the spacing. In the former case I keep the
+spacing in the input.  I do not forsee a situation where I want to do
+both. Because one can always write something like [[$|stack<E> S| <5$]]
+instead of [[|stack<E> S < 5|]]. And I guess there is no way that
+a string involving template brackets and less than sign automatically.
+
+\item [[const&]] removal does not always work. An example is sort in
+list, namely [[sort( int (*cmp)(const E&, const E&))]]. The first pair
+is not removed.  The reason is that I insisted that the parameter
+starts with const. Together with the fact that I parse the parameter
+list only partially, i.e., do not discover that I deal with a nested
+parameter list this left the first const-ref pair undiscovered. I had
+to change two lines in [[@<<producing the manual entry@>>]].
+
+\item remove empty lines introduces lines starting with \% in code section. I
+made a small change in emptyline.pl: A line containig nwendcode and nwbegincode
+does not move me out of codemode.
+
+\item Need a way to document private functions. Also need the possiblity to
+have manual comments nicely typeset in the implementation part of documents.
+This is solved. October 96
+
+\item Need to produce html-type output. I talked to Joachim about the
+problem. He will look into it. This is solved. October 96.
+
+\item December 16th, 96. I forgot that a class can have more than one
+template argument. I added one line to correct this mistake (in the
+handling of code-unit). Now, I delete \verb-template *<[ ,\w]*> *-.
+
+\item have added a feature to produce very several outfiles
+
+\item changed the lauout of functions such that very long return types
+are handeled correctly.
+
+\item I added new formatting features for local typedefs in the class
+scope. There is a new section \verb-\Mtypes- which introduces locally
+defined types. There are three commands which can be used there
+\verb-\Menum-, and \verb-\Mtypemember-. The first can be used to
+document enum types, the second only declares the target type.
+
+\item I added a new formatting feature for local events in the class scope.
+There is a new section \verb-\Mevents- which introduces a section
+for events and a commdn \verb-\Mevent- for the corresponding semantic
+printout.
+\end{itemize}
+
+Changes with respect to version 2.3 in April 99:
+\begin{itemize}
+
+\item A major hopefully correct modularization of the code into
+subroutine, factoring out common code.
+
+\item Added an indexing scheme which allows the output of index
+information with respect to Mcommands. We trigger one entry when
+seeing a [[Manpage]] comment comprising the [[Mtype]] and one entry
+per prototype of functions, operations, local types and events. We
+ommit operators.
+
+\item Fman now shows text filtered in length and from dirty tex
+macros. This gives it a more user friendly look.
+\end{itemize}
+
+\section{Plans for changes}
+\begin{itemize}
+\item [[Fman two_tuple]] gives no output since the 
+h-file has a name different from the type name.
+\item computewidths should store the old values. Then
+restorewidths should restore them.
+\end{itemize}
+\end{document}

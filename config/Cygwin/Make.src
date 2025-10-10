@@ -1,0 +1,39 @@
+.SUFFIXES: .obj .lib .asm
+
+IPATH = $(LROOT)/incl
+SLIB  = $(LROOT)/$L.lib
+o     = .obj
+
+.asm.obj:
+	$(ASM) $(AFLAGS) -o $*.obj $*.asm
+
+.cpp.obj:
+	$(CC) $(CFLAGS) $(DFLAGS) $(WERR) -DLEDA_INSTALL -I$(IPATH) $*.cpp
+
+.c.obj:
+	$(PLAIN_C) $(CFLAGS) $(DFLAGS) $(WERR) -DLEDA_INSTALL -I$(IPATH) $*.c
+
+
+all: $(SLIB)
+	@true
+
+include Make.lst
+
+
+$(SLIB): $(OBJECTS)
+	@echo lib -nologo $(SLIB) $?
+	@if [ -f $(SLIB) ]; \
+	then lib -nologo $(SLIB) $?; \
+	else lib -nologo -out:$(SLIB) $?; \
+	fi
+
+obj: $(OBJECTS)
+	@true
+
+touch:
+	touch -c *.obj
+	@make
+
+clean:
+	rm -f $(OBJECTS)
+

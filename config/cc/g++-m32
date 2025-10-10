@@ -1,0 +1,12 @@
+compiler = g++
+
+CC      = g++$(VERS) -m32 -Wall -Wno-unused
+PLAIN_C = gcc$(VERS) -m32 -Wall
+CCLIB   = g++$(VERS) -m32 -shared
+LD      = g++$(VERS) -m32
+
+PIC     = -fpic
+
+CFLAGS  = -O2 -fno-strict-aliasing
+WERR    = -Werror
+

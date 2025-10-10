@@ -1,0 +1,6 @@
+PROGS = \
+Euler_demo$(e) \
+multiplication_times$(e) \
+real_demo1$(e) \
+real_demo2$(e) \
+braided_lines$(e)

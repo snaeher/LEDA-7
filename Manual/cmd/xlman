@@ -1,0 +1,41 @@
+#!/bin/sh -f
+
+if [ "$LEDAROOT" = "" ]; then
+  echo " "
+  echo xlman: LEDAROOT "(environment variable)" not defined.
+  echo " "
+  exit
+fi
+
+if [ ! -d $LEDAROOT/demo/xlman ]; then
+  echo " "
+  echo xlman: \"$LEDAROOT/demo/xlman\" is not a directory.
+  echo Please check your LEDAROOT environment variable.
+  echo " "
+  exit
+fi
+
+#if [ ! -d /usr/local/gravis -a "$GRAVIS" = "" ]; then
+  GRAVIS=/LEDA/gravis
+  export GRAVIS
+#fi
+
+cd $LEDAROOT/demo/xlman
+
+LD_LIBRARY_PATH=../..:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+
+
+if [ -x xlman ]
+then
+  echo " "
+  echo $LEDAROOT/demo/xlman/xlman $*
+  echo " "
+  ./xlman $*
+else
+  echo " "
+  echo xlman: Cannot execute $LEDAROOT/demo/xlman/xlman.
+  echo Please run \"make xlman\" in the LEDA root directory.
+  echo " "
+fi
+

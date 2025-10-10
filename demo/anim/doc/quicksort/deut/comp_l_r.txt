@@ -1,0 +1,5 @@
+Es wird durch einen Feldindex-Vergleich ueberprueft, ob l sich noch links von r 
+befindet. 
+
+Der Rekursionsaufruf wird im Fall \tt l \rm groesser gleich \tt r \rm beendet, da im Intervall 
+nichts zu ordnen ist.

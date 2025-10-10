@@ -1,0 +1,180 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[german]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+\setlength{\oddsidemargin}{-0.5cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textwidth}{17cm}
+\setlength{\textheight}{25cm}
+\setlength{\headsep}{1cm}
+\setlength{\topmargin}{-1.5cm}
+\setlength{\parindent}{0cm}
+
+\begin{document}
+
+\theoremstyle{plain}  \newtheorem{satz*}{Satz}[]
+
+\section*{Quicksort}
+
+Quicksort ist ein allgemeines Sortierverfahren vom Typ "<Teile und Herrsche">. 
+Es beruht auf dem Zerlegen eines zu sortierenden Feldes in zwei Teile und dem anschließenden 
+Sortieren der beiden Teile unabhängig voneinander. Der Algorithmus hat folgende Gestalt:
+
+\begin{verbatim}
+void quicksort (int A[], int l, int r)
+{
+  if(l >= r) return;  
+  int i = l;
+  int j = r+1;
+  int v = A[l];
+  for (;;)
+  {
+    while(A[++i] < v && i < r);
+    while(A[--j] > v);
+    if(i >= j) {
+      swap(A, l, j);    			
+      break;
+    }
+    swap(A, i, j);
+  }
+  quicksort(A, l, j-1);
+  quicksort(A, j+1, r);
+}
+\end{verbatim}
+\mbox{}\\[-1ex]
+Die Parameter {\tt l} und {\tt r} begrenzen das Teilfeld innerhalb des ursprünglichen Feldes, 
+welches zu sortieren ist; der Aufruf {\tt quicksort(A, 0, A.size()-1)} sortiert das gesamte Feld. 
+\\\\[-1ex]
+Das entscheidene Element der Methode ist der Programmcode innerhalb der unendlich Schleife 
+{\tt for(;;)}, der das Feld so umordnet, daß die folgenden Bedingungen erfüllt sind:
+
+\begin{enumerate}
+\item [i.]   Für ein beliebiges {\tt j} befindet sich das Element {\tt A[j]} an seinem 
+					   endgültigen Platz im Feld.
+\item [ii.]  Alle Elemente {\tt A[l],\ldots,A[j-1]} sind kleiner oder gleich {\tt A[j]}.
+\item [iii.] Alle Elemente {\tt A[j+1],\ldots,A[r]} sind größer oder gleich {\tt A[j]}.\\[-1ex]
+\end{enumerate}
+
+Im ersten Schritt wird das zerlegende Element {\tt v = A[l]} ausgewählt,
+das in seine endgültige Position gebracht werden soll. Jetzt beginnt die Suche von links, 
+bis ein Element gefunden wurde, welches größer als {\tt v} ist, anschließend startet die Suche
+von rechts, bis ein Element gefunden wurde, das kleiner als {\tt v} ist. \\
+Haben sich die Zeiger {\tt i} und {\tt j} noch nicht getroffen, dann werden die Elemente  
+{\tt A[i]} und {\tt A[j]} miteinander vertauscht, andernfalls wird durch einen weiteren Austausch
+die Beding- \linebreak ung i. sichergestellt und die unendlich Schleife durch ein {\tt break} verlassen. \\
+
+Im folgenden wird die Funktion für das linke Teilfeld und danach für das rechte Teilfeld
+rekursiv aufgerufen. Am Ende ist das Feld aufsteigend sortiert.\\
+
+\newpage 
+
+{\bf Korrektheit des Vefahrens}
+\begin{proof}
+\mbox{}\\
+Zu zeigen ist, daß in jedem Iterationsschritt gilt:\\[-2ex]
+\begin{center}
+{\tt A[l],\ldots A[i] $\leq$ A[j],\ldots,A[r]}.
+\end{center}
+\mbox{}\\
+{\em Induktionsanfang} \\[-2ex]
+
+Vor der ersten Interation ist {\tt i = l} und {\tt j = r+1}.\\
+
+{\em Induktionsschritt} \\[-2ex]
+
+D.h. der Übergang von {\tt i}$_{old} \to $ {\tt i}$_{new}$ und {\tt j}$_{old} \to $ {\tt j}$_{new}$.\\
+
+Nach Induktionsannahme gilt:\\[-2ex]
+\begin{center}
+{\tt A[l],\ldots,A[i$_{old}$] $\leq$ A[j$_{old}$],\ldots,A[r]}
+\end{center}
+\mbox{}\\
+Nach Konstruktion gilt:
+\begin{center}
+{\tt A[i$_{old}$+1],\ldots,A[i$_{new}$-1] $\leq$ A[j$_{new}$+1],\ldots,A[j$_{old}$+1]}
+\end{center}
+hieraus folgt
+\begin{center}
+{\tt A[l],\ldots,A[i$_{new}$-1] $\leq$ A[j$_{new}$+1],\ldots,A[r]}
+\end{center}
+weiter gilt:
+\begin{center}
+{\tt A[i$_{new}$] $\geq x $} und {\tt A[j$_{new}$] $\leq x $}
+\end{center}
+\mbox{}\\
+Nach Vertauschen von {\tt A[i$_{new}$]} mit {\tt A[j$_{new}$]} gilt:\\[-2ex]
+\begin{center}
+{\tt A[l],\ldots,A[i$_{new}$] $\leq$ A[j$_{new}$],\ldots,A[r]}
+\end{center}
+\end{proof}
+\mbox{}\\
+
+{\bf Laufzeitverhalten (worst-case)}\\[-1ex]
+
+Die Vermutung ist, daß ein schlimmster Fall eintritt, wenn Quicksort eine aufsteigend sortierte Liste
+sortieren soll. Dann fällt nämlich in jedem Rekursionsaufruf immer nur ein Element aus der Liste der noch 
+zu sortierenden Folge (siehe Animation). Die resultierende Laufzeit $T(n)$ hat die Komplexität
+
+\begin{align*}
+T(n)&=\text{$\cal O$}\;\left(\sum_{i=2}^n i + n \cdot c\right)\\
+    &=\text{$\cal O$}\;\left(n^2\right)\\
+\end{align*}
+
+\newpage
+
+\begin{proof}
+\mbox{}\\
+Allgemein gilt:
+\begin{align*}
+T(n) &=\max_{1\leq q \leq n-1} \{ T(q) + T(n-q) + c_1 \cdot n\}
+\intertext{Es wird nun gezeit, daß $T(n) \leq \left( c\cdot n^2\right)$ für $c\geq 
+\dfrac{c_1}{2}\cdot\dfrac{n_0}{n-1}$ für $n_0$ groß genug gilt.}
+T(n) &\leq\max_{1\leq q \leq n-1}\{T(q) + T(n-q) + c_1\cdot n\}\\
+     &\overset{\text{I.A.}}{\leq} \max_{1\leq q \leq n-1}\{c\cdot q^2 + c\cdot (n-q)^2 + c_1\cdot n\}\\
+     &= c \cdot \max_{1\leq q \leq n-1}\{ q + (n-q)^2 - 2q \cdot (n-q) \} + c_1 \cdot n\\
+     &= c \cdot n^2 - 2c \cdot \min_{1\leq q\leq n-1}\{q\cdot (n-q)\} + c_1\cdot n\\
+     &= c \cdot n^2 - 2c \cdot 1(n-1) + c_1 \cdot n\\
+\intertext{für $n$ groß genug folgt}
+T(n) &= c\cdot n - 2\cdot \frac{c_1}{2}\cdot\frac{n}{n-1} \cdot (n-1) + c_1\cdot n\\
+     &= c \cdot n^2
+\end{align*}
+\end{proof}
+\mbox{}\\
+In der Praxis kommt der Algorithmus sehr oft zum Einsatz, dies liegt unter anderem an der
+Laufzeit im Mittel, die im folgenden betrachtet wird.\\
+
+\begin{satz*}
+Quicksort benötigt im Mittel $2\log n + \Theta(1)$ viele Vergleiche. Durch randomisiertes
+Quicksort (zufälliges Vertauschen von zwei Elementen in dem noch zu sortierenden Feld) wird 
+der schlechteste Fall mit hoher Wahrscheinlichkeit vermieden.\\
+\end{satz*}
+
+\begin{proof}
+\begin{align*}
+QSA(n) = n + 2 + \frac{1}{n-1}\cdot&\sum_{1\leq q \leq n - 1} (QSA(q) + QSA(n-q)) 
+\intertext{mit}
+\sum_{1\leq q \leq n - 1} QSA(q) &=  \sum_{1\leq q \leq n - 1} QSA(n-q))
+\intertext{folgt}
+QSA(n) &= n + 2 + \frac{2}{n-1}\cdot\sum_{1\leq q \leq n - 1} QSA(q)\\\\
+(n-1)\cdot QSA(n) &= (n+2)\cdot(n-1) + 2 \cdot \sum_{1\leq q \leq n - 1} QSA(q) \qquad |- \\
+(n-2)\cdot QSA(n) &= (n+1)\cdot(n-2) + 2 \cdot \sum_{1\leq q \leq n - 1} QSA(q) \qquad  \\\\
+(n-1)\cdot QSA(n) - (n-2)\cdot QSA(n-1) &= \underbrace{(n+2)\cdot(n-1)}_{n^2-n + 2} 
+- \underbrace{(n+1)\cdot(n-2)}_{n^2+n - 2} + 2\cdot QSA(n-1)\\\\
+(n-1)\cdot QSA(n) &= 2\cdot n + n \cdot QSA(n-1) \qquad |: n\cdot(n-1)\\\\
+\frac{QSA(n)}{n} &= \frac{QSA(n-1)}{n-1} + \frac{2}{n-1}\\
+&= \frac{QSA(n-2)}{n-2} + \frac{2}{n-2} + \frac{2}{n-1}\\
+&= \frac{QSA(n-2)}{n-3} + \frac{2}{n-3} + \frac{2}{n-2} + \frac{2}{n-1}\\
+& \ldots\\\\
+\intertext{$QSA(k) = c$ für ein festes $k$ folgt}
+\frac{QSA(n)}{n} &= \Theta\left( c + 2 \cdot \sum_{i=1}^{n-1} \frac{1}{i}\right) \\
+                 &= 2 \log n + \Theta(1)\\
+                 &= \Theta\left(\log n\right)\\\\
+QSA(n) &= \Theta\left(n \log n\right)
+\end{align*}
+\end{proof}
+
+\end{document}

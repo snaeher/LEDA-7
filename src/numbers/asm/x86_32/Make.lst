@@ -1,0 +1,12 @@
+
+OBJECTS = \
+add$(o) \
+sub$(o) \
+mul$(o) \
+div$(o) \
+x86_add$(o) \
+x86_sub$(o) \
+x86_mul$(o) \
+x86_div$(o) \
+fpu$(o)
+

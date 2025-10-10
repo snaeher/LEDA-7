@@ -1,0 +1,11 @@
+
+OBJECTS =\
+TextLoader$(o) \
+dot$(o) \
+gw_view$(o) \
+stick$(o) \
+view_base$(o) \
+v_base$(o) \
+v_action$(o) \
+v_anim$(o)
+

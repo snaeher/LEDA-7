@@ -1,0 +1,5 @@
+Da die Zeiger sich noch nicht getroffen haben, muss nun ein Austausch der Schluessel 
+auf die \tt\blue2 i \rm \black und \tt\green2 j \rm \black zeigen, erfolgen, damit die Bedingungen:
+	a) alle Elemente in \tt A[l] ... \red v \black - 1 \rm sind kleiner oder gleich \red\tt v\rm\black und 
+	b) alle Elemente in \tt \red v \black + 1 ... A[r] \rm sind grösser oder gleich \red\tt v\rm\black ,
+erfuellt werden.

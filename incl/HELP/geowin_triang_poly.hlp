@@ -1,0 +1,12 @@
+\bf Polygon Triangulation\rm 
+
+This demo shows the result of the polygon triangulation algorithm.
+You can draw and edit a counter-clockwise oriented simple polygon.
+The output is a planar embedded graph whose edges are partitioned into
+three categories:\\n\\n
+- edges of the outer triangulation (grey)\\n
+- edges of the inner triangulation (red)\\n
+- polygon edges (black)
+
+
+

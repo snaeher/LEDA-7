@@ -1,0 +1,18 @@
+
+~\cyan 1:\grey1\bf void \tt quicksort \tt (\bf int\tt A[], \bf int \tt l, \bf int \tt r)
+\grey1 ~~~~~~{
+~\cyan 2:~~~\grey1\bf if  \tt (l >= r)\bf return;  
+~\cyan 3:~~~\grey1\bf int \tt i = l;
+~\cyan 4:~~~\grey1\bf int \tt j = r+1;
+~\cyan 5:~~~\grey1\bf int \tt v = A[l];
+~\cyan 6:~~~\grey1\bf for \tt (;;)
+\grey1 ~~~~~~~~~{
+~\cyan 7:~~~~~~\grey1\bf while\tt (A[++i] < v && i < r);
+~\cyan 8:~~~~~~\grey1\bf while\tt (A[--j] > v);
+~\cyan 9:~~~~~~\grey1\bf if \tt (i >= j) \bf break;
+\cyan 10:~~~~~~\grey1\tt swap(A, i, j);
+\grey1 ~~~~~~~~~}
+\cyan 11:~~~\grey1\tt swap(A, l, j);    
+\cyan 12:~~~\grey1\tt quicksort(A, l, j-1);
+\cyan 13:~~~\grey1\tt quicksort(A, j+1, r);
+\grey1 ~~~~~~}

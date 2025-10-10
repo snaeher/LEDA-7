@@ -1,0 +1,5 @@
+Die \tt while \rm - Schleife überprüft, ob der Vater (die Wurzel) eine linken
+Sohn hat. 
+
+Ist das nicht der Fall, so ist die Heapeigenschaft erfüllt und die Funktion
+\tt heapify \rm wird verlassen.

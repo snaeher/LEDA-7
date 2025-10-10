@@ -1,0 +1,7 @@
+OBJECTS = \
+_dlist$(o) \
+_partition$(o) \
+_random$(o) \
+_string$(o)
+
+

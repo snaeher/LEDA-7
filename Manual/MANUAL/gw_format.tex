@@ -1,0 +1,348 @@
+\section{The GraphWin (GW) File Format}
+
+The $gw$-format is the external graph format of {\em GraphWin}.
+It extends LEDA's graph format described in the previous section 
+by additional parameters and attributes for describing graph drawings.
+Note that the $gw$-format was not defined to be a readable or
+easy to extend file format (in contrast to the $GML$ format
+that is also supported by GraphWin).
+
+Each $gw$ file starts with a LEDA graph followed by a 
+(possibly empty) layout section. An empty layout section indicates
+that no drawing of the graph is known, e.g. in the input file
+of a layout algorithm. If a layout section is given, it consists of 
+three parts:
+\begin{enumerate}
+\item global parameters  
+\item node attributes
+\item edge attributes
+\end{enumerate}
+
+
+\paragraph{Global Parameters}\ \\
+
+The global parameter section consists of 7 lines (with an arbitrary
+number of inter-mixed comment-lines).
+
+\begin{enumerate}
+\item version line\\
+The version line specifies the version of of the gw-format. It consists
+of the string {\tt GraphWin} followed by a floating-point number
+($1.32$ for the current version of GraphWin).
+
+\item window parameters\\
+$scaling$ $wxmin$ $wymin$ $wxmax$ $wymax$\\
+This line consists of 5 floating-point numbers specifiying the
+scaling, minimal/maximal x- and y-coordinates of the window
+(see the $window$ class of LEDA).
+
+\item {node label font}\\
+$type$ $size$\\
+This line defines the font used for node labels. The $type$
+value of of type $int$. Possible values (see {\tt gw\_font\_type}) are\\
+0 ({\tt roman\_font})\\
+1 ({\tt bold\_font})\\
+2 ({\tt italic\_font})\\
+3 ({\tt fixed\_font}).
+The size value is of type $int$ and defines the size of the font
+in points.
+
+\item {edge label font}\\
+$type$ $size$
+as above, but defines the font used for edge labels.
+
+\item {node index format}\\
+$format$\\
+This line contains a printf-like format string used
+for constructing the index label of nodes (e.g. {\tt \%d}).
+
+\item {edge index format}\\
+$format$\\
+This line contains a printf-like format string used
+for constructing the index label of edges (e.g. {\tt \%d}).
+
+\item {multi-edge distance}\\
+$dist$\\
+This line contains a floating-point parameter $dist$ that
+defines the distance used to draw parallel edges.
+
+\end{enumerate}
+
+We close the description of the global parameter section
+with an example.
+
+\begin{verbatim}
+# version
+GraphWin 1.32
+# window parameters
+1.0 -10.0 -5.0 499.0 517.0
+# node font
+0 12
+# edge font
+0 12
+# node index string
+%d
+# edge index string
+%d
+# multi-edge distance
+4.0
+\end{verbatim}
+
+
+
+
+\paragraph{Node Attributes}\ \\
+
+The node attribute section contains for each node of the graph
+a line consisting of the following attributes (separated by blanks).
+More precisely, the $i$-th line in this section defines the attributes
+of the $i$-th node of the graph (see section~\htmlref{leda-format}{leda-format}).
+
+\begin{description}
+
+\item{x-coordinate}\\
+an attribute of type $double$ defining the x-coordinate of the center 
+of the node.
+
+\item{y-coordinate}\\
+an attribute of type $double$ defining the y-coordinate of the center 
+of the node.
+
+\item{shape}\\
+an attribute of type {\tt int} 
+defining the shape of the node.
+Possible values are  (see {\tt gw\_node\_shape} of GraphWin)\\
+0 ({\tt circle\_node})\\
+1 ({\tt ellipse\_node})\\
+2 ({\tt square\_node})\\
+3 ({\tt rectangle\_node}.
+
+
+\item{border color}\\
+an attribute of type int defining the color used to draw the boundary line 
+of the node. Possible values are (see the LEDA {\tt color} type)\\
+ -1 ($invisible$)\\
+\ 0 ($black$)\\ 
+\ 1 ($white$)\\ 
+\ 2 ($red$)\\ 
+\ 3 ($green$)\\ 
+\ 4 ($blue$)\\ 
+\ 5 ($yellow$)\\ 
+\ 6 ($violet$)\\ 
+\ 7 ($orange$)\\
+\ 8 ($cyan$)\\ 
+\ 9 ($brown$)\\ 
+ 10 ($pink$)\\ 
+ 11 ($green2$)\\ 
+ 12 ($blue2$)\\ 
+ 13 ($grey1$)\\ 
+ 14 ($grey2$)\\ 
+ 15 ($grey3$)\\
+ 16 ($ivory$).
+
+
+\item{border width}\\
+an attribute of type $double$ defining the width of the  border line 
+of the node. 
+
+\item{radius1}\\
+an attribute of type $double$ defining the horizontal radius of the node
+
+\item{radius2}\\
+an attribute of type $double$ defining the vertical radius of the node
+
+\item{color}\\
+an attribute of type $int$ defining the color used 
+to fill the interior of the node. See the LEDA $color$ type for
+possible values.
+
+\item{label type}\\
+an attribute of type int specifying the label type.
+Possible values (see {\tt gw\_label\_type} of GraphWin) are\\
+0 ({\tt no\_label})\\ 
+1 ({\tt user\_label})\\
+2 ({\tt data\_label})\\
+3 ({\tt index\_label}). 
+
+\item{label color}\\
+an attribute of type $int$ defining the color used to draw the label of 
+the node. See the LEDA $color$ type for possible values.
+
+\item{label position}\\
+an attribute of type $int$ defining the label position.
+Possible values (see {gw\_position} of GraphWin) are\\ 
+0 ({\tt central\_pos})\\
+1 ({\tt northwest\_pos})\\
+2 ({\tt north\_pos})\\
+3 ({\tt northeast\_pos})\\
+4 ({\tt east\_pos})\\
+5 ({\tt southeast\_pos})\\
+6 ({\tt south\_pos})\\
+7 ({\tt southwest\_pos})\\
+8 ({\tt west\_pos}).
+
+
+\item{user label}\\
+an attribute of type {\tt string} defining the user 
+label of the node.
+ 
+\end{description}
+
+We close this section with an example of a node attribute line
+that describes a circle node at position $(189,260)$ with
+border color $black$, border width $0.5$, horizontal and
+vertical radius $12$, interior color $ivory$, label type
+$index\_label$, label position $east\_pos$, and
+an empty user label.
+\begin{verbatim}
+# x   y     shape b-clr b-width radius1 radius2   clr l-type l-clr l-pos l-str
+189.0 260.0 0     1     0.5     12.0    12.0      16  3      -1    4
+\end{verbatim}
+
+
+
+
+
+\paragraph{Edge Attributes:}\ \\
+
+The edge attribute section contains for each edge of the graph
+a line consisting of the following attributes (separated by blanks).
+More precisely, the $i$-th line in this section defines the attributes
+of the $i$-th edge of the graph (see section~\htmlref{leda-format}{leda-format}).
+
+\begin{description}
+
+\item{width}\\
+an attribute of type {\tt double} defining the width of the edge.
+
+\item{color}\\
+an attribute of type {\tt color} defining the color of the edge.
+
+\item{shape}\\
+an attribute of type $int$ defining the shape of the edge. 
+Possible values (see {\tt gw\_edge\_shape} of GraphWin) are\\
+0 ({\tt poly\_edge})\\
+1 ({\tt circle\_edge})\\
+2 ({\tt bezier\_edge})\\
+3 ({\tt spline\_edge}).
+
+
+\item{style}\\
+an attribute of type $int$ defining the line style of the edge.
+Possible values (see the LEDA {\tt line\_style} type) are\\
+o ({\tt solid})\\
+1 ({\tt dashed})\\
+2 ({\tt dotted})\\
+3 ({\tt dashed\_dotted}).
+
+\item{direction}\\
+an attribute of type $int$ defining whether the edge is 
+drawn as a directed or an undirected edge. 
+Possible values (see {\tt gw\_edge\_dir} of GraphWin) are\\
+0 ({\tt undirected\_edge})\\
+1 ({\tt directed\_edge})\\
+2 ({\tt redirected\_edge})\\
+3 ({\tt bidirected\_edge}).
+
+
+
+\item{label type}\\
+an attribute of type $int$ defining the label type of the edge.
+Possible values (see {\tt gw\_label\_type}  of GraphWin) are\\
+0 ({\tt no\_label})\\
+1 ({\tt user\_label})\\
+2 ({\tt data\_label})\\
+3 ({\tt index\_label}).
+
+
+\item{label color}\\
+an attribute of type $int$ defining the color of the edge label.
+See the LEDA $color$ type for possible values.
+
+
+\item{label position}\\
+an attribute of type $int$ defining the position of the label. 
+Possible values (see {gw\_position} of GraphWin) are\\ 
+0 ({\tt central\_pos})\\
+4 ({\tt east\_pos})\\
+8 ({\tt west\_pos $blue$ }).
+
+\item{polyline}\\
+an attribute of type $list<point>$ defining the polyline used to
+draw the edge. The list is represented by the number $n$ of elements
+followed by $n$ points $(x_i,y_i)$ for $i=1\ldots n$. The first
+element of the list is the point where the edge leaves the
+interior of the source node, the last element is the point where
+the edge enters the interior of the target node. The remaining
+elements give the sequence of bends (or control points
+in case of a bezier or spline edge). 
+
+
+\item{user label}\\
+an attribute of type {\tt string} defining the user 
+label of the edge.
+
+\end{description}
+
+We close this section with an example of an edge attribute line
+that describes a blue solid polygon edge of width $0.5$ drawn directed
+from source to target, with a black user-defined label "my label"
+at position $east\_pos$, centered source and target anchors,
+and with a bend at position $(250,265)$.
+\begin{verbatim}
+# width clr shape style dir ltype lclr lpos sanch tanch poly lstr
+  0.5   4   0     0     1   1     1    4    (0,0) (0,0) 3 (202.0,262.0) (250.0,265.0) (328.0,274.0)  my label
+\end{verbatim}
+
+\subsection{A complete example}
+\begin{verbatim}
+LEDA.GRAPH
+void
+void
+5
+|{}|
+|{}|
+|{}|
+|{}|
+|{}|
+7
+1 2 0 |{}|
+1 3 0 |{}|
+2 3 0 |{}|
+3 4 0 |{}|
+3 5 0 |{}|
+4 5 0 |{}|
+5 1 0 |{}|
+# version string
+GraphWin 1.320000
+# scaling  wxmin  wymin  wxmax  wymax
+1.117676 -10 -5.6875 499.8828 517.6133
+# node label font and size
+0 13.6121
+# edge label font and size
+0 11.79715
+# node index format
+%d
+# edge index format
+%d
+# multi-edge distance
+4.537367
+# 
+# node infos
+# x y shape bclr bwidth r1 r2 clr ltype lclr lpos lstr
+189.4805 260.8828 0 1 0.544484 12.70463 12.70463 16 4 -1 4 
+341.5508 276.0898 0 1 0.544484 12.70463 12.70463 16 4 -1 4 
+384.4883 175.9023 0 1 0.544484 12.70463 12.70463 16 4 -1 4 
+294.1406 114.1797 0 1 0.544484 12.70463 12.70463 16 4 -1 4 
+186.7969 114.1797 0 1 0.544484 12.70463 12.70463 16 4 -1 4 
+# 
+# edge infos
+# width clr shape style dir ltype lclr lpos sanch tanch poly lstr
+0.9074733 1 0 0 1 1 1 5 (0,0) (0,0) 2 (202.122,262.147) (328.9092,274.8257) 
+0.9074733 1 0 0 1 1 1 5 (0,0) (0,0) 2 (201.1272,255.8074) (372.8415,180.9778) 
+0.9074733 1 0 0 1 1 1 5 (0,0) (0,0) 2 (346.5554,264.4124) (379.4837,187.5797) 
+0.9074733 1 0 0 1 1 1 5 (0,0) (0,0) 2 (373.998,168.7357) (304.6309,121.3463) 
+0.9074733 1 0 0 1 1 1 5 (0,0) (0,0) 2 (372.361,172.116) (198.9242,117.966) 
+0.9074733 1 0 0 1 1 1 5 (0,0) (0,0) 2 (281.436,114.1797) (199.5015,114.1797) 
+0.9074733 1 0 0 1 1 1 5 (0,0) (0,0) 2 (187.0292,126.8822) (189.2481,248.1803) 
+\end{verbatim}

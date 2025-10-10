@@ -1,0 +1,15 @@
+
+OBJECTS = \
+_d2_spring$(o) \
+_d3_spring$(o) \
+_d3_sp_draw$(o) \
+_embed1$(o) \
+_embed2$(o) \
+_ortho$(o) \
+_ortho_map$(o) \
+_ortho_draw$(o) \
+_spring$(o) \
+_sp_draw$(o) \
+_tutte$(o) \
+_visrep$(o)
+

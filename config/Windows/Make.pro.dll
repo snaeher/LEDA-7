@@ -1,0 +1,35 @@
+
+INCL = $(LROOT)\incl
+LLIB = $(LROOT)\leda.lib
+
+
+.c.obj:
+	$(PLAIN_C) $(CFLAGS) -DLEDA_DLL $(DFLAGS) $(WFLAGS) $(IFLAGS) -I$(INCL) $*.c
+
+.cpp.obj:
+	$(CC) $(CFLAGS) -DLEDA_DLL $(DFLAGS) $(WFLAGS) $(IFLAGS) -I$(INCL) $*.cpp
+
+.obj.exe:
+	$(LD) $(LFLAGS) -DLEDA_DLL $*.obj $(DOSLIB1) $(LLIB)
+
+.c.exe:
+	$(CC) $(CFLAGS) -DLEDA_DLL $(DFLAGS) $(WFLAGS) $(IFLAGS) -I$(INCL) $*.c
+	$(LD) $(LFLAGS) $*.obj $(DOSLIB1) $(LLIB)
+
+.cpp.exe:
+	$(CC) $(CFLAGS) -DLEDA_DLL $(DFLAGS) $(WFLAGS) $(IFLAGS) -I$(INCL) $*.cpp
+	$(LD) $(LFLAGS) $*.obj $(DOSLIB1) $(LLIB)
+
+e=.exe
+
+include Make.lst
+
+all: $(PROGS)
+
+clean:
+	del *.obj
+
+del:
+	del *.obj
+	del $(PROGS)
+

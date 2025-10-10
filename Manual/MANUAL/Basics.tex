@@ -1,0 +1,748 @@
+\chapter{Basics}
+\label{Basics}
+
+\noindent
+{\small An extended version of this chapter is available as chapter Foundations
+of \cite{LEDAbook}}
+
+\section{Getting Started}
+
+\label{A First Example}
+Please use your favourite text editor to create a file {\em prog.c} with the
+following program:
+
+\begin{verbatim}
+#include <LEDA/core/d_array.h>
+#include <LEDA/core/string.h>
+#include <iostream>
+
+
+using std::cin;
+using std::cout;
+using std::endl;
+using leda::string;
+using leda::d_array;
+
+int main()
+{
+  d_array<string,int> N(0);
+  string s;
+  while (cin >> s) N[s]++;
+  forall_defined (s,N) 
+    cout << s << " " << N[s] << endl;
+
+  return 0;
+}
+\end{verbatim}
+
+\noindent
+If you followed the installation guidelines (see Chapter
+\htmlref{TechnicalInformation}{TechnicalInformation} ff.),
+you can compile and link it with LEDA's library $\mathit{libleda}$
+(cf. Section \htmlref{Libraries}{Libraries}).  For example, on a Unix machine where g{\tt ++}
+is installed you can type
+
+\begin{verbatim}
+g++ -o prog prog.c -lleda -lX11 -lm
+\end{verbatim}
+
+When executed it reads a sequence of strings from the standard input and then 
+prints the number of occurrences of each string on the standard output. More 
+examples of LEDA programs can be found throughout this manual.
+
+
+The program above uses the parameterized data type dictionary array 
+(\texttt{d\_array<I,E>}) from the library. This is expressed by the include
+statement (cf. Section \htmlref{Header Files}{Header Files} for more details). The specification
+of the data type {\it d\_array} can be found in Section 
+\htmlref{Dictionary Arrays}{Dictionary Arrays}.  We use it also as a running example to discuss the
+principles underlying LEDA in the following sections.
+
+
+\section{The LEDA Manual Page (the type specification)} 
+\label{LEDA Manual Page}\index{Manual Page}
+
+\label{Specifications}
+In general the specification of a LEDA data type consists of five parts: a
+definition of the set of objects comprising the (parameterized) abstract data
+type, a list of all local types of the data type, a description of how to create an object of the data type, the definition
+of the operations available on the objects of the data type, and finally,
+information about the implementation. The five parts appear under the headers
+\textbf{definition}, \textbf{types}, \textbf{creation}, \textbf{operations}, and 
+\textbf{implementation}, respectively.  Sometimes there is also a fifth part 
+showing an \textbf{example}.
+
+\begin{itemize}
+\item{\bf Definition}
+
+\smallskip
+This part of the specification defines the objects (also called instances or
+elements) comprising the data type using standard mathematical concepts and 
+notation. 
+
+{\bf Example}
+
+The generic data type dictionary array:
+
+An object $a$ of type \texttt{d\_array<I,E>} is an injective function from
+the data type $I$ to the set of variables of data type $E$. The types $I$ and
+$E$ are called the index and the element type, respectively. $a$ is called a
+dictionary array from $I$ to $E$.
+
+Note that the types $I$ and $E$ are parameters in the definition above.
+Any built-in, pointer, item, or user-defined class type $T$ can be used 
+as actual type parameter of a parameterized data type. Class types however 
+have to provide several operations listed in Chapter 
+\htmlref{User Defined Parameter Types}{User Defined Parameter Types}.
+
+
+\item {\bf Types}
+
+This section gives the list of all local types of the data type. For example,
+\begin{tabbing}
+{\tt d\_array<I,E>::item}\hspace{2.5cm}\=the item type.\\
+{\tt d\_array<I,E>::index\_type}       >the index type.\\
+{\tt d\_array<I,E>::element\_type}     >the element type.\\
+\end{tabbing}
+
+
+
+\item {\bf Creation}
+
+A variable of a data type is introduced by a \CC{} variable declaration. 
+For all LEDA data types variables are initialized at the time of declaration. 
+In many cases the user has to provide arguments used for the initialization 
+of the variable.  In general a declaration
+
+\begin{verbatim}
+XYZ<t1, ... ,tk>  y(x1, ... ,xt);
+\end{verbatim}
+
+introduces a variable $y$ of the data type \texttt{XYZ< t1, ... ,tk
+>} and uses the arguments $x1$, ... ,$x$t to initialize it. For example,
+
+\begin{verbatim}
+h_array<string,int> A(0);
+\end{verbatim}
+
+introduces $A$ as a dictionary array from strings to integers, and initializes
+$A$ as follows: an injective function $a$ from $string$ to the set of unused
+variables of type $int$ is constructed, and is assigned to $A$. Moreover, all
+variables in the range of $a$ are initialized to 0.  The reader may wonder how
+LEDA handles an array of infinite size. The solution is, of course, that only
+that part of $A$ is explicitly stored which has been accessed already.
+
+For all data types, the assignment operator ($=$) is available for variables of
+that type. Note however that assignment is in general not a constant time
+operation, e.g., if $L1$ and $L2$ are variables of type \texttt{list<T>}
+then the assignment $L1 = L2$ takes time proportional to the length of the
+list $L2$ times the time required for copying an object of type $T$.
+
+{\bf Remark}: For most of the complex data types of LEDA, e.g., dictionaries,
+lists, and priority queues, it is convenient to interpret a variable name as
+the name for an object of the data type which evolves over time by means of the
+operations applied to it. This is appropriate, whenever the operations on a
+data type only ``modify'' the values of variables, e.g., it is more natural to
+say an operation on a dictionary $D$ modifies $D$ than to say that it takes the
+old value of $D$, constructs a new dictionary out of it, and assigns the new
+value to $D$. Of course, both interpretations are equivalent.  From this more
+object-oriented point of view, a variable declaration, e.g., 
+\texttt{dictionary<string,int> D}, is creating a new dictionary
+object with name $D$ rather than introducing a new variable of type 
+\texttt{dictionary<string,int>;} hence the name ``Creation'' for this
+part of a specification.
+ 
+\item {\bf Operations}
+
+\smallskip
+In this section the operations of the data types are described. For each 
+operation the description consists of two parts
+
+\begin{enumerate}
+\item 
+The interface of the operation is defined using the \CC{} function declaration
+syntax. In this syntax the result type of the operation ($void$ if there is 
+no result) is followed by the operation name and an argument list specifying 
+the type of each argument. For example,
+
+\begin{verbatim}
+list_item   L.insert (E x, list_item it, int dir = leda::after)
+\end{verbatim}
+
+defines the interface of the insert operation on a list $L$ of elements of type
+$E$ (cf. Section \htmlref{Linear Lists}{Linear Lists}). Insert takes as arguments an element $x$
+of type $E$, a {\it list\_item} $it$ and an optional relative position
+argument $dir$. It returns a {\it list\_item} as result.
+
+\begin{verbatim}
+E&  A[I x]
+\end{verbatim}
+
+defines the interface of the access operation on a dictionary array $A$. It
+takes an element $x$ of type $I$ as an argument and returns a variable of type
+$E$.
+
+\item  
+The effect of the operation is defined.  Often the arguments have to 
+fulfill certain preconditions. If such a condition is violated the effect 
+of the operation is undefined. Some, but not all, of these cases result 
+in error messages and abnormal termination of the program (see also 
+Section \htmlref{Error Handling}{Error Handling}). For the insert operation on lists this 
+definition reads:
+\begin{quote}
+A new item with contents $x$ is inserted after (if $dir$ = 
+\textit{leda::after}) or before (if $dir$ = \textit{leda::before}) item $it$ 
+into $L$. The new item is returned.\\
+{\it Precondition}: item $it$ must be in $L$.
+\end{quote}
+
+For the access operation on dictionary arrays the definition reads:
+\begin{quote}
+returns the variable $A(x)$. 
+\end{quote}
+
+\end{enumerate}
+
+\item {\bf Implementation}
+
+\smallskip
+The implementation section lists the (default) data structures used to 
+implement the data type and gives the time bounds for the operations and 
+the space requirement. For example,
+
+Dictionary arrays are implemented by randomized search trees (\cite{AS89}). 
+Access operations $A[x]$ take time $O$(log dom($A$)).
+The space requirement is $O$(dom($A$)).
+\end{itemize}
+
+\section{User Defined Parameter Types} 
+\label{User Defined Parameter Types}
+
+If a user defined class type $T$ shall be used as actual type parameter
+in a container class, it has to provide the following operations:
+
+\begin{tabular}{ll}
+a) a constructor taking no arguments & $T::T()$ \\
+b) a copy constructor                & $T::T(\mathit{const} T\&)$ \\
+c) an assignment operator            & 
+     $T\&\ T::\mathbf{operator}=(\mathit{const} T\&)$ \\
+d) an input operator  & 
+     $\mathit{istream}\&\ \mathbf{operator}>>(\mathit{istream}\&,T\&)$ \\
+e) an output operator &
+     $\mathit{ostream}\&\ \mathbf{operator}<<(\mathit{ostream}\&, 
+      \mathit{const}\ T\&)$\\
+\\
+\multicolumn{2}{c}{and if required by the parameterized data type}\\
+\\
+f) a compare function &
+     $\mathit{int}\ \mathbf{compare}(\mathit{const}\ T\&, \mathit{const}\ T\&)$\\
+g) a hash function &
+     $\mathit{int}\ \mathbf{Hash}(\mathit{const}\ T\&)$\\
+\end{tabular}
+\index{User defined parameter types!Hash(\ldots)}
+\index{User defined parameter types!compare(\ldots)}
+\index{User defined parameter types!operator>>}
+\index{User defined parameter types!operator<<}
+\index{User defined parameter types!copy constructor}
+\index{User defined parameter types!default constructor}
+\index{Hash(\ldots)|see{User defined parameter types}}
+\index{compare(\ldots)|see{User defined parameter types}}
+\index{operator<<|see{User defined parameter types}}
+\index{operator>>|see{User defined parameter types}}
+
+\bigskip\noindent
+{\bf Notice: Starting with version 4.4 of LEDA, the operations 
+"compare" and "Hash" for a user defined type need to be defined
+inside the \texttt{"namespace leda"}!}
+
+\bigskip\noindent
+In the following two subsections we explain the background of the required
+compare and hash function. Section \htmlref{Implementation Parameters}{Implementation Parameters} concerns a very
+special parameter type, namely implementation parameters.
+
+
+\subsection{Linear Orders} \label{Linear Orders}
+\index{Linear Orders|see{User defined parameter types}}
+\index{Linear Orders|see{dictionary}}
+\index{Linear Orders|see{sortseq}}
+
+Many data types, such as dictionaries, priority queues, and sorted sequences
+require linearly ordered parameter types. Whenever a type $T$ is used in such a
+situation, e.g. in \texttt{dictionary<T,...>} the function
+
+\begin{verbatim}
+int   compare(const T&, const T&)
+\end{verbatim}
+
+must be declared and must define a linear order on the data type $T$.
+
+A binary relation $rel$ on a set $T$ is called a linear order on $T$ if for all
+$x$,$y$,$z$ in $T$:
+
+\smallskip
+1) $x$ $\mathit{rel}$ $x$\\
+2) $x$ $\mathit{rel}$ $y$ and $y$ $\mathit{rel}$ $z$ implies $x$ $\mathit{rel}$ $z$\\
+3) $x$ $\mathit{rel}$ $y$ or  $y$ $\mathit{rel}$ $x$\\
+4) $x$ $\mathit{rel}$ $y$ and $y$ $\mathit{rel}$ $x$ implies $x = y$
+
+\medskip
+A function \textit{ int compare(const $T\&$, const $T\&$)}
+defines the linear order {\it rel} on $T$ if
+
+\begin{center}
+\begin{makeimage}
+\begin{displaymath}
+\mathrm{compare}(x,y)\ \ 
+\cases{ < 0, &if $x$ {\it rel} $y$  and  $x \ne y$\cr 
+        = 0, &if $x = y$\cr 
+        > 0, &if $y$ {\it rel} $x$  and  $x \ne y$} 
+\end{displaymath}
+\end{makeimage}
+\end{center}
+
+For each of the data types {\it char}, {\it short}, {\it int}, \
+{\it long}, {\it float}, {\it double}, {\it integer}, {\it rational}, 
+{\it bigfloat}, {\it real}, {\it string}, and {\it point} a function 
+{\it compare} is predefined and defines the so-called default ordering 
+on that type. The default ordering is the usual $\le$ - order for 
+the built-in numerical types, the lexicographic ordering for 
+{\it string}, and for {\it point} the lexicographic ordering of the 
+cartesian coordinates.  For all other types $T$ there is no default 
+ordering, and the user has to provide a {\it compare} function whenever 
+a linear order on $T$ is required.
+
+
+{\bf Example}: Suppose pairs of double numbers shall be used as keys 
+in a dictionary with the lexicographic order of their components.
+First we declare class {\it pair} as the type of pairs of double numbers, 
+then we define the I/O operations {\it operator}$>>${} and 
+{\it operator}$<<${} and the lexicographic order on {\it pair} by 
+writing an appropriate {\it compare} function.
+
+\begin{verbatim}
+class pair {
+  double  x;
+  double  y;
+
+public:
+ pair() { x = y = 0; }
+ pair(const pair& p) { x = p.x; y = p.y; }
+ pair& operator=(const pair& p)
+ {
+   if(this != &p) 
+   { x = p.x; y = p.y; }
+   return *this;
+ }
+     
+
+ double get_x() {return x;}
+ double get_y() {return y;}
+
+ friend istream& operator>> (istream& is, pair& p) 
+ { is >> p.x >> p.y; return is; }
+ friend ostream& operator<< (ostream& os, const pair& p) 
+ { os << p.x << " " << p.y; return os; }
+};
+
+namespace leda {
+int compare(const pair& p, const pair& q)
+{
+  if (p.get_x() < q.get_x()) return  -1;
+  if (p.get_x() > q.get_x()) return   1; 
+  if (p.get_y() < q.get_y()) return  -1;
+  if (p.get_y() > q.get_y()) return   1;
+  return 0;
+}
+};
+\end{verbatim}
+
+\smallskip
+Now we can use dictionaries with key type {\it pair}, e.g.,
+
+\begin{verbatim}
+dictionary<pair,int> D;
+\end{verbatim}
+
+Sometimes, a user may need additional linear orders on a data type $T$ which
+are different from the order defined by {\it compare}. In the following example
+a user wants to order points in the plane by the lexicographic ordering of
+their cartesian coordinates and by their polar coordinates. The former ordering
+is the default ordering for points. The user can introduce an alternative
+ordering on the data type {\it point} (cf. Section
+\htmlref{Basic Data Types for Two-Dimensional Geometry}{Basic Data Types for Two-Dimensional Geometry}) by defining
+an appropriate compare function (in namespace leda)
+\begin{verbatim}
+int   pol_cmp(const point& x, const point& y)
+{ /* lexicographic ordering on polar coordinates */ }
+\end{verbatim}
+Now she has several possibilities: 
+
+\begin{enumerate}
+\item First she can call the macro 
+\begin{verbatim}
+DEFINE_LINEAR_ORDER(point, pol_cmp, pol_point)
+\end{verbatim}
+After this call {\it pol\_point} is a new data type which is equivalent to the
+data type {\it point}, with the only exception that if {\it pol\_point} is used
+as an actual parameter e.g. in \texttt{dictionary<pol\_point,...>}, the
+resulting data type is based on the linear order defined by {\it pol\_cmp}.
+Now, dictionaries based on either ordering can be used.
+
+\begin{verbatim}
+dictionary<point,int>     D0; // default ordering
+dictionary<pol_point,int> D1; // polar ordering
+\end{verbatim}
+
+In general the macro call
+\begin{verbatim}
+DEFINE_LINEAR_ORDER(T, cmp, T1)  
+\end{verbatim}
+introduces a new type $T1$ equivalent to type $T$ with the linear order defined
+by the compare function {\it cmp}.
+
+\item
+As a new feature all order based data types like dictionaries, priority queues,
+and sorted sequences offer a constructor which allows a user to set the
+internally used ordering at construction time.
+\begin{verbatim}
+dictionary<point,int> D0;          // default ordering
+dictionary<point,int> D1(pol_cmp); // polar ordering
+\end{verbatim}
+This alternative handles the cases where two or more different orderings
+are needed more elegantly. 
+
+
+\item Instead of passing a compare function 
+$\mathit{cmp}(\mathit{const}\ T\&, \mathit{const}\ T\&)$ 
+to the sorted type one can also pass an object (a so-called \emph{compare
+object}) of a class that is derived from the class
+$\mathit{leda{\_}cmp{\_}base}$ and that overloads the function-call operator
+$\mathit{int}\ \mathit{operator}()(\mathit{const}\ T\&, \mathit{const}\ T\&)$
+to define a linear order for $T$.
+
+This variant is helpful when the compare function depends on a global
+parameter. We give an example. More examples can be found in several sections
+of the LEDA book \cite{LEDAbook}.  Assume that we want to compare edges of a
+graph $\mathit{GRAPH}<\mathit{point},\mathit{int}>$ (in this type every node
+has an associated point in the plane; the point associated with a node $v$ is
+accessed as $G[v]$) according to the distance of their endpoints. We write
+\begin{verbatim}
+using namespace leda;
+
+class cmp_edges_by_length: public leda_cmp_base<edge> { 
+  const GRAPH<point,int>& G;
+public:
+  cmp_edges_by_length(const GRAPH<point,int>& g): G(g){}
+
+  int operator()(const edge& e, const edge& f) const
+  { point pe = G[G.source(e)]; point qe = G[G.target(e)];
+    point pf = G[G.source(f)]; point qf = G[G.target(f)];
+    return compare(pe.sqr_dist(qe),pf.sqr_dist(qf));
+  } 
+};
+ 
+int main(){
+  GRAPH<point,int> G;
+  cmp_edges_by_length cmp(G);
+  list<edge> E = G.all_edges();
+  E.sort(cmp);
+
+  return 0;
+}
+\end{verbatim}
+The class $\mathit{cmp{\_}edges{\_}by{\_}length}$ has a function operator that takes
+two edges $e$ and $f$ of a graph $G$ and compares them according to their
+length. The graph $G$ is a parameter of the constructor. In the main program we
+define $\mathit{cmp}(G)$ as an instance of $\mathit{cmp{\_}edges{\_}by{\_}length}$
+and then pass $\mathit{cmp}$ as the compare object to the sort function of
+\texttt{list<edge>}. In the implementation of the sort function a
+comparison between two edges is made by writing $\mathit{cmp}(e,f)$, i.e., for
+the body of the sort function there is no difference whether a function or a
+compare object is passed to it.
+\end{enumerate}
+
+
+\subsection{Hashed Types} \label{Hashed Types}
+\index{Hashed Types|see{User defined parameter types}}
+\index{Hashed Types|see{h\_array}}
+\index{Hashed Types|see{map}}
+\index{Hashed Types|see{map2}}
+
+
+LEDA also contains parameterized data types requiring a {\em hash function} and
+an {\em equality test} (operator==) for the actual type parameters.  Examples
+are dictionaries implemented by hashing with chaining (
+\texttt{dictionary<K,I,ch\_hashing>} ) or hashing arrays
+( \texttt{h\_array<I,E>} ).  Whenever a type $T$ is used in such a context,
+e.g., in \texttt{h\_array<T,...>} there must be defined
+
+\begin{enumerate}
+\item a hash function $\mathit{int}\ \mathbf{Hash}(\mathit{const}\ T\&)$
+\item the equality test $\mathit{bool}\ \mathbf{operator}==$
+$(\mathit{const}\  T\&$, $\mathrm{const} T\&)$
+\end{enumerate}
+
+{\it Hash} maps the elements of type $T$ to integers. It is not
+required that {\it Hash} is a perfect hash function, i.e., it has not to be
+injective. However, the performance of the underlying implementations
+very strongly depends on the ability of the function to keep different
+elements of $T$ apart by assigning them different integers.
+Typically, a search operation in a hashing implementation takes time
+linear in the maximal size of any subset whose elements are assigned the
+same hash value.  For each of the simple numerical data types char, short, 
+int, long there is a predefined {\it Hash} function: the identity function.
+
+We demonstrate the use of {\it Hash} and a data type based on hashing
+by extending the example from the previous section. Suppose we
+want to associate information with values of the {\it pair} class
+by using a hashing array \texttt{h\_array<pair,int> A}. We first
+define a hash function that assigns each pair $(x,y)$
+the integral part of the first component $x$
+\begin{verbatim}
+namespace leda {
+int  Hash(const pair& p) { return int(p.get_x()); }
+};
+\end{verbatim}
+
+and then we  can use a hashing array with index type {\it pair}
+\begin{verbatim}
+h_array<pair, int>  A;
+\end{verbatim}
+
+
+\section{Arguments}
+
+\label{Arguments}
+\begin{itemize}
+\item{\bf Optional Arguments}
+
+\smallskip
+The trailing arguments in the argument list of an operation may be optional.
+If these trailing arguments are missing in a call of an operation the default 
+argument values given in the specification are used. For
+example, if the relative position argument in the list insert operation
+is missing it is assumed to have the value {\it leda::after}, i.e.,
+$L$.insert($it,y$) will insert the item <$y>${} after item $it$ into $L$.
+
+\item{\bf Argument Passing}
+
+\smallskip
+There are two kinds of argument passing in \CC, by value and by reference.  An
+argument $x$ of type {\it type} specified by ``{\it type} $x$'' in the 
+argument list of an operation or user defined function will be passed \
+by value, i.e., the operation or function is provided with a copy of $x$.  
+The syntax for specifying an argument passed by reference is 
+``{\it type}\& $x$''.  In this case the operation or function works 
+directly on $x$ ( the variable $x$ is passed not its value).
+
+Passing by reference must always be used if the operation is to change the
+value of the argument. It should always be used for passing large objects
+such as lists, arrays, graphs and other LEDA data types to functions.
+Otherwise a complete copy of the actual argument is made, which takes time
+proportional to its size, whereas  passing by reference always takes constant
+time. 
+
+
+\item{\bf Functions as Arguments}
+
+\smallskip
+Some operations take functions as arguments. For instance the bucket sort 
+operation on lists requires a function which maps the elements of the list into
+an interval of integers. We use the \CC{} syntax to define the type of a 
+function argument $f$:
+
+\begin{verbatim}
+T  (*f)(T1, T2, ..., Tk)
+\end{verbatim}
+
+declares $f$ to be a function taking $k$ arguments of the data types $T1$,
+\dots, $Tk$, respectively, and returning a result of type $T$, i.e,
+
+$$ f: T1 \times \dots \times Tk \longrightarrow T$$
+\end{itemize}
+
+
+\section{Items}
+\index{item}
+
+\label{Items}
+Many of the advanced data types in LEDA (dictionaries, priority queues, 
+graphs, \dots), are defined in terms of so-called items. 
+An item is a container which can hold an object
+relevant for the data type. For example, in the case of dictionaries a
+{\it dic\_item} contains a pair consisting of a key and an information.
+A general definition of items is given at the end of this section. 
+
+{\bf Remark:} Item types are, like  all other types, functions,
+constants, ..., defined in the \texttt{"namespace leda"} in LEDA--4.5. 
+
+We now discuss the role of items for the dictionary example in some detail. 
+A popular specification of dictionaries defines a dictionary as a partial
+function from some type $K$ to some other type $I$, or alternatively, as a
+set of pairs from $K \times I$, i.e., as the graph of the function. In an
+implementation each pair $(k,i)$ in the dictionary is stored in some location
+of the memory. Efficiency dictates that the pair $(k,i)$ cannot only be
+accessed through the key $k$ but sometimes also through the location where it
+is stored, e.g., we might want to lookup the information $i$ associated with
+key $k$ (this involves a search in the data structure), then compute with the
+value $i$ a new value $i$', and finally associate the new value with $k$.
+This either involves another search in the data structure or, if the lookup
+returned the location where the pair $(k,i)$ is stored, can be done by direct
+access. Of course, the second solution is more efficient and we therefore
+wanted to provide it in LEDA.
+
+In LEDA items play the role of positions or locations in data structures. Thus
+an object of type \texttt{dictionary<K,I>}, where $K$ and $I$ are types, is
+defined as a collection of items (type {\it dic\_item}) where each item
+contains a pair in $K \times I$. We use <$k,i>$ to denote an item with key
+$k$ and information $i$ and require that for each $k$ in $K$ there is at most
+one $i$ in $I$ such that <$k,i>$ is in the dictionary. In mathematical terms
+this definition may be rephrased as follows: A dictionary $d$ is a partial
+function from the set {\it dic\_item} to the set $K \times I$. Moreover, 
+for each $k$ in $K$ there is at most one $i$ in $I$ such that the pair 
+$(k,i)$ is in $d$.
+
+The functionality of the operations 
+
+\begin{verbatim}
+dic_item  D.lookup(K k)
+I         D.inf(dic_item it)
+void      D.change_inf(dic_item it, I i')
+\end{verbatim}
+
+is now as follows: $D.\mathit{lookup}(K\ k)$ returns an item $it$ with contents $(k,i)$,
+$D.\mathit{inf}(it)$ extracts $i$ from $it$, and a new value $i'$ can be associated
+with $k$ by $D.\mathit{change{\_}inf}(it,i')$.
+
+Let us have a look at the insert operation for dictionaries next:
+
+\begin{verbatim}
+dic_item  D.insert(K k, I i)
+\end{verbatim}
+
+There are two cases to consider. If $D$ contains an item $it$ with contents
+$(k,i')$ then $i'$ is replaced by $i$ and $it$ is returned. If $D$ contains no
+such item, then a new item, i.e., an item which is not contained in any
+dictionary, is added to $D$, this item is made to contain $(k,i)$ and is
+returned. In this manual (cf. Section \htmlref{Dictionaries}{Dictionaries}) all of this is
+abbreviated to
+\smallskip
+
+\begin{latexonly}
+\newlength{\thiscallwidth} 
+\settowidth{\thiscallwidth}{%
+$\mathit{dic\_item}$\quad$D.$insert$(K\ k, I\ i)$\quad\quad}
+\addtolength{\thiscallwidth}{-\textwidth} 
+\begin{tabular}{lll}
+$\mathit{dic\_item}$ & $D.$insert$(K\ k, I\ i)$ &
+\parbox[t]{-\thiscallwidth}{
+associates the information $i$ with the key $k$. If there is an
+item <$k,j>$ in $D$ then $j$ is replaced by i, else a new item 
+<$k,i$> is added to $D$. In both cases the item is returned.}
+\end{tabular}
+\end{latexonly}
+\begin{htmlonly}
+\begin{tabular}{lll}
+dic\_item & D.insert(K k, I i) &
+associates the information $i$ with the key $k$. If there is an
+item <$k,j$>{} in $D$ then $j$ is replaced by i, else a new item 
+<$k,i$>{} is added to $D$. In both cases the item is returned.
+\end{tabular}
+\end{htmlonly}
+\smallskip
+
+We now turn to a general discussion. With some LEDA types $XYZ$ there is an
+associated type {\it XYZ\_item} of items. Nothing is known about the objects of
+type {\it XYZ\_item} except that there are infinitely many of them. The only
+operations available on {\it XYZ\_items} besides the one defined in the
+specification of type $XYZ$ is the equality predicate ``=='' and the assignment
+operator ``='' . The objects of type $XYZ$ are defined as sets or sequences of
+{\it XYZ\_items} containing objects of some other type $Z$. In this situation
+an {\it XYZ\_item} containing an object $z$ in $Z$ is denoted by <$z$>. A new
+or unused {\it XYZ\_item} is any {\it XYZ\_item} which is not part of any
+object of type $XYZ$.
+
+{\bf Remark}: For some readers it may be useful to interpret a {\it dic\_item}
+as a pointer to a variable of type $K \times  I$. The differences are that
+the assignment to the variable contained in a {\it dic\_item} is restricted,
+e.g., the $K$-component cannot be changed, and that in return for this
+restriction the access to {\it dic\_items} is more flexible than for ordinary
+variables, e.g., access through the value of the $K$-component is possible.
+
+
+\section{Iteration}
+\index{iteration!macros}
+
+\label{Iteration}
+For many (container) types LEDA provides iteration macros. These macros can be
+used to iterate over the elements of lists, sets and dictionaries or the nodes
+and edges of a graph.  Iteration macros can be used similarly to the \CC{}
+{\bf for} statement. Examples are
+
+\begin{itemize}
+\item for all item based data types:
+
+{\bf forall\_items}($it,D$) 
+\{ the items of $D$ are successively assigned to variable $it$ \}
+
+{\bf forall\_rev\_items}($it,D$) 
+\{ the items of $D$ are assigned to $it$ in reverse order \}
+
+\item for lists and sets:
+
+{\bf forall}($x,L$)
+\{ the elements of $L$ are successively assigned to $x$\}
+
+{\bf forall\_rev}($x,L$)
+\{ the elements of $L$ are assigned to $x$ in reverse order\}
+
+\item for graphs:
+
+{\bf forall\_nodes}($v,G$)
+\{ the nodes of $G$ are successively assigned to $v$\}
+
+{\bf forall\_edges}($e,G$)
+\{ the edges of $G$ are successively assigned to $e$\}
+
+{\bf forall\_adj\_edges}($e,v$)
+\{ all edges adjacent to $v$ are successively assigned to $e$\}
+\end{itemize}
+
+PLEASE NOTE:\\
+{\bf Inside the body of a forall loop insertions into or deletions from the
+corresponding container are not allowed}, with one exception,
+the current item or object of the iteration may be removed, as in  
+\begin{verbatim}
+forall_edges(e,G) {
+  if (source(e) == target(e)) G.del_edge(e);
+} // remove self-loops
+\end{verbatim}
+
+The item based data types \verb!list!, \verb!array!, and \verb!dictionary!
+provide now also an STL compatible iteration scheme. The following example
+shows STL iteration on lists. Note that not all LEDA supported compilers allow
+the usage of this feature. 
+\index{iteration!STL iterators}\index{STL|see{iteration}}
+\begin{verbatim}
+using namespace leda;
+using std::cin;
+using std::cout;
+using std::endl;
+
+list<int> L;
+// fill list somehow
+list<int>::iterator it;
+for ( it = L.begin(); it != L.end(); it++ )
+  cout << *it << endl;
+\end{verbatim} 
+\verb!list<int>::iterator! defines the iterator type, \verb!begin()! delivers
+access to the first list item via an iterator. \verb!end()! is the past the end
+iterator and serves as an end marker. The increment operator \verb!++! moves 
+the iterator one position to the next item, and \verb!*it! delivers the
+content of the item to which the iterator is pointing. For more information
+on STL please refer to the standard literature about STL. 
+
+For a more flexible access to the LEDA graph data type there are graph
+iterators which extent the STL paradigm to more complex container types.
+To make use of these features please refer to \htmlref{Graph Iterators}{Graph Iterators}.
+\index{iteration!Graph iterator}

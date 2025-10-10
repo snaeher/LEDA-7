@@ -1,0 +1,23 @@
+PROGS = \
+graphwin$(e) \
+gw_action$(e) \
+gw_agd$(e) \
+gw_bintree$(e) \
+gw_chart$(e) \
+gw$(e) \
+gw_explore$(e) \
+gw_gabriel$(e) \
+gw_gabriel1$(e) \
+gw_handler$(e) \
+gw_many$(e) \
+gw_mcmflow$(e) \
+gw_menu$(e) \
+gw_observer$(e) \
+gw_plandemo$(e) \
+gw_plandemo_kurt$(e) \
+gw_planets$(e) \
+gw_stickview$(e) \
+gw_tooltip$(e) \
+gw_transclosure$(e) \
+gw_xpm$(e) 
+

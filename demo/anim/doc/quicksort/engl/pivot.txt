@@ -1,0 +1,5 @@
+The variable \tt\red v \rm\black is used for storing the splitting element.
+
+It is also called pivot element.
+
+

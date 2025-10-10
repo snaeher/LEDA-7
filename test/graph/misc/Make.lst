@@ -1,0 +1,37 @@
+
+PROGS = \
+git_example$(e) \
+array_test$(e) \
+biconnected$(e) \
+closure_test$(e) \
+dijkstra$(e) \
+dijkstra1$(e) \
+dijkstra2$(e) \
+dimacs$(e) \
+embed_test$(e) \
+euler_test$(e) \
+flow_test$(e) \
+gengrid$(e) \
+gml2leda$(e) \
+graph_io$(e) \
+graph_read$(e) \
+graph_write$(e) \
+join$(e) \
+kura_test$(e) \
+leda2gml$(e) \
+match_test$(e) \
+mcb_matching$(e) \
+map_test$(e) \
+mc_flow_test$(e) \
+mf_test$(e) \
+mwm_test$(e) \
+plan_test$(e) \
+planar_map$(e) \
+pq_test$(e) \
+scc_test$(e) \
+scc_test1$(e) \
+short$(e) \
+short_test$(e) \
+span_test$(e) \
+speed_test$(e) \
+testall$(e)

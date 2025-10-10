@@ -1,0 +1,9 @@
+PROGS = \
+copy_graph$(e) \
+quicksort$(e) \
+sw$(e) \
+sweep$(e) \
+sweep_gen$(e) \
+sweep_segments$(e) \
+sweep_voro$(e) \
+sync_test$(e)

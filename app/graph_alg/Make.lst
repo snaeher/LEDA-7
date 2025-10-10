@@ -1,0 +1,5 @@
+PROGS = \
+depth_first_search$(e) \
+mc_matching$(e) \
+mincost_maxflow$(e) \
+shortest_paths$(e)

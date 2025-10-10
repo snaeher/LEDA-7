@@ -1,0 +1,6 @@
+PROGS = \
+d3_delaunay$(e) \
+d3_hull_demo$(e) \
+d3_hull_anim$(e) \
+d3_voro$(e) \
+delaunay_hull_demo$(e) 

@@ -1,0 +1,5 @@
+Since the pointers have not yet met, the keys that index \tt\blue2 i \rm\black and index \tt\green2 j
+\rm \black are pointing to must be exchanged. This ensures the conditions:
+
+	a) all elements in \tt A[l] ... \red v \black -1 \rm are smaller or equal to \red\tt v\rm\black, and
+	b) all elements in \tt \red v \black + 1 ... A[r] \rm are greater than or equal to \red\tt v\rm\black .

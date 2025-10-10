@@ -1,0 +1,23 @@
+~\cyan 1:\grey1\bf void \tt heapify \tt (\bf int \tt A[], \bf int \tt k, \bf int \tt N )
+\grey1 ~~~~~~{
+~\cyan 2:~~~\grey1\bf while \tt (2*k <= N) 
+\grey1 ~~~~~~~~~{	
+~\cyan 3:~~~~~~\grey1\bf int \tt j = 2*k;
+~\cyan 4:~~~~~~\grey1\bf if \tt (j < N && A[j] < A[j+1]) j++;
+~\cyan 5:~~~~~~\grey1\bf if \tt (A[k] >= A[j]) \bf break;
+~\cyan 6:~~~~~~\grey1\tt swap(A, k, j);
+~\cyan 7:~~~~~~\grey1\tt k = j;
+\grey1 ~~~~~~~~~}	
+\grey1 ~~~~~~}	
+
+
+~\cyan 8:\grey1\bf void \tt heapsort \tt (\bf int \tt A[], \bf int \tt N )
+\grey1 ~~~~~~{
+~\cyan 9:~~~\grey1\bf for \tt ( \bf int \tt i= N/2; i >= 1; i-- )
+\cyan 10:~~~~~~\grey1\tt heapify(A, i, N);
+\cyan 11:~~~\grey1\bf while \tt (N > 1) 
+\grey1 ~~~~~~~~{		
+\cyan 12:~~~~~~\grey1\tt swap(A, N, 1);
+\cyan 13:~~~~~~\grey1\tt heapify(A, 1, --N);
+\grey1 ~~~~~~~~~}	
+\grey1 ~~~~~~}	

@@ -1,0 +1,5 @@
+OBJECTS = \
+_int_sort$(o) \
+_select$(o)
+
+

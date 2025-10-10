@@ -1,0 +1,5 @@
+
+OBJECTS = \
+digmul$(o)\
+fpu$(o)
+

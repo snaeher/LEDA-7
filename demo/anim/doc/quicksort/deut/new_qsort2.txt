@@ -1,0 +1,5 @@
+Die Funktion wird nun fuer das Intervall \tt \green2 j \black + 1 ... r \rm aufgerufen. 
+
+
+
+

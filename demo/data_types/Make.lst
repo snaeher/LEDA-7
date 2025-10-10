@@ -1,0 +1,16 @@
+PROGS = \
+array_sort_times$(e) \
+checked_p_queue_demo$(e) \
+dic_performance_demo$(e) \
+giant_component_demo$(e) \
+priority_queues_demo$(e) \
+random_variate_demo$(e) \
+runlength$(e) \
+sort_merge_times$(e) \
+sortseq_merge_sort$(e) \
+sortseq_sort$(e) \
+sortseq_split$(e) \
+sortseq_merge$(e) \
+stack_demo$(e)
+
+

@@ -1,0 +1,13 @@
+#!/bin/sh -f
+
+if [ "$1" = "" ]; then
+echo usage: $0 name
+exit
+fi
+
+#perl -I$LEDAROOT/Manual/cmd ext.pl Lman $1 xdvi=no
+perl -S -I$LEDAROOT/Manual/cmd ext.pl Lman $1 xdvi=no
+
+dvips $1.dvi
+
+

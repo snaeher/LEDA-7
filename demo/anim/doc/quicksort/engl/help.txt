@@ -1,0 +1,18 @@
+The following animation shows the functioning of Quicksort.
+
+In the animation window an array is shown that is to be sorted by Quicksort.
+
+The window \tt <Source Code> \rm shows the algorithm. In each step of the algorithm 
+the actual line of code is highlighted by a different color.
+
+Button \tt <Goto> \rm allows to execute the animation automatically up to the 
+corresponding line of code.
+
+The speed of the animation can be adjusted by the button \tt <Delay>.
+
+In the window \tt <State of the Variables> \rm the actual values of the variables
+are shown.
+
+The animation can be stopped at any time in the single step mode by pressing 
+button \tt <Cancel>.
+

@@ -1,0 +1,6 @@
+PROGS = \
+gzip$(e) \
+gunzip$(e) \
+zip$(e) \
+unzip$(e)
+

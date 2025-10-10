@@ -1,0 +1,5 @@
+In dieser Programmzeile wird ueberprueft, ob sich die Zeiger \tt\blue2 i\rm\black und \tt\green2 j\rm\black getroffen hab-
+en und gegebenenfalls die zerlegende Schleife \tt for(;;) \rm verlassen.
+
+
+

@@ -1,0 +1,9 @@
+#!/bin/sh -f
+
+if [ "$1" != "" ]; then 
+  file=$1; shift; args="indexing=yes includefile=yes xdvi=no"; 
+  if [ -d $file ]; then rm -rf $file; fi
+fi
+
+perl -S -I$LEDAROOT/Manual/cmd ext.pl HTMLman $file $args "$@"
+
