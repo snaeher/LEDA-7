@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  real_triangle.h
@@ -17,7 +17,7 @@
 #define LEDA_REAL_TRIANGLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721138
+#define LEDA_ROOT_INCL_ID 722138
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -245,7 +245,7 @@ inline istream& operator>>(istream& in, real_triangle& T)
   return in; 
 }
 
-#if LEDA_ROOT_INCL_ID == 721138
+#if LEDA_ROOT_INCL_ID == 722138
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

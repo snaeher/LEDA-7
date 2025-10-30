@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  interval_set.h
@@ -17,7 +17,7 @@
 #define LEDA_INTERVAL_SET_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721084
+#define LEDA_ROOT_INCL_ID 722084
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -131,7 +131,7 @@ take time $O(1)$, and clear $O(n\log n)$. Here $n$ is always the
 current size of the interval set. The space requirement is $O(n\log n)$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721084
+#if LEDA_ROOT_INCL_ID == 722084
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

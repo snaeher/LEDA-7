@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  random_point.h
@@ -18,7 +18,7 @@
 #define LEDA_RANDOM_REAL_POINT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721151
+#define LEDA_ROOT_INCL_ID 722151
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -30,7 +30,7 @@
 
 #include <LEDA/geo/kernel_names_undef.h>
 
-#if LEDA_ROOT_INCL_ID == 721151
+#if LEDA_ROOT_INCL_ID == 722151
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

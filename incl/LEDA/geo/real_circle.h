@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  real_circle.h
@@ -18,7 +18,7 @@
 #define LEDA_REAL_CIRCLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721111
+#define LEDA_ROOT_INCL_ID 722111
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -290,7 +290,7 @@ inline ostream& operator<<(ostream& out, const real_circle& c)
 
 inline const char* leda_tname(const real_circle*) { return "real_circle"; }
 
-#if LEDA_ROOT_INCL_ID == 721111
+#if LEDA_ROOT_INCL_ID == 722111
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

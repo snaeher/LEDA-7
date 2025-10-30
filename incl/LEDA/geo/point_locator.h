@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  point_locator.h
@@ -18,7 +18,7 @@
 #define LEDA_POINT_LOCATOR_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721109
+#define LEDA_ROOT_INCL_ID 722109
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -34,7 +34,7 @@
 #include <LEDA/geo/kernel_names_undef.h>
 
 
-#if LEDA_ROOT_INCL_ID == 721109
+#if LEDA_ROOT_INCL_ID == 722109
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_ray.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_RAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721089
+#define LEDA_ROOT_INCL_ID 722089
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -218,7 +218,7 @@ inline istream& operator>>(istream& in, d3_ray& r)
  return in;
 }
 
-#if LEDA_ROOT_INCL_ID == 721089
+#if LEDA_ROOT_INCL_ID == 722089
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

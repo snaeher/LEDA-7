@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  edge_slot.h
@@ -17,7 +17,7 @@
 #define LEDA_EDGE_SLOT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721175
+#define LEDA_ROOT_INCL_ID 722175
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -163,7 +163,7 @@ bool use_edge_data(const graph_t&) { return true; }
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721175
+#if LEDA_ROOT_INCL_ID == 722175
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

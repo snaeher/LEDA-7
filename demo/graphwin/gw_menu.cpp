@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  gw_menu.c
@@ -114,7 +114,7 @@ int main()
 
   // we delete some of the standard menus
   gw.set_default_menu(M_COMPLETE 
-                      & ~M_LAYOUT &  ~M_OPTIONS & ~M_HELP & ~M_WINDOW);
+                      & ~M_LAYOUT &  ~M_SETTINGS & ~M_HELP & ~M_WINDOW);
 
   // add two simple function calls
   gw.add_simple_call(dfs_num,   "dfsnum");

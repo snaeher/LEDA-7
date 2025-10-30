@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  date.h
@@ -17,7 +17,7 @@
 #define LEDA_DATE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721171
+#define LEDA_ROOT_INCL_ID 722171
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -527,7 +527,7 @@ inline bool operator <  (const date& d1, const date& d2)
 inline bool operator >  (const date& d1, const date& d2)
 { return date::cmp(d1, d2) > 0; }
 
-#if LEDA_ROOT_INCL_ID == 721171
+#if LEDA_ROOT_INCL_ID == 722171
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

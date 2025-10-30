@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  param_types.h
@@ -16,7 +16,7 @@
 #define LEDA_PARAM_TYPES_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721154
+#define LEDA_ROOT_INCL_ID 722154
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -429,7 +429,7 @@ inline void leda_init_default(double& x) { x=0; }
 
 
 
-#if LEDA_ROOT_INCL_ID == 721154
+#if LEDA_ROOT_INCL_ID == 722154
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

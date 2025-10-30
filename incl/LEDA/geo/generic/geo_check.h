@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  geo_check.t
@@ -17,7 +17,7 @@
 #define LEDA_GEO_CHECK_T
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721134
+#define LEDA_ROOT_INCL_ID 722134
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -186,7 +186,7 @@ bool Is_CW_Weakly_Convex_Face_Cycle(const geo_graph& G, const edge& e)
 }
 
 
-#if LEDA_ROOT_INCL_ID == 721134
+#if LEDA_ROOT_INCL_ID == 722134
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

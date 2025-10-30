@@ -17,7 +17,7 @@
 #define LEDA_DIMACS_GRAPH_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721240
+#define LEDA_ROOT_INCL_ID 722240
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -631,7 +631,7 @@ void write_dimacs_mat(ostream& out, const graph_t& G,
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721240
+#if LEDA_ROOT_INCL_ID == 722240
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

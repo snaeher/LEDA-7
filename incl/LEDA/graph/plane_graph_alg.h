@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  plane_graph_alg.h
@@ -19,7 +19,7 @@
 
 /*
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721185
+#define LEDA_ROOT_INCL_ID 722185
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 */

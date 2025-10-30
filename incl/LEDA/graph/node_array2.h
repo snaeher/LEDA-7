@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_array2.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_ARRAY2_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721188
+#define LEDA_ROOT_INCL_ID 722188
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -98,7 +98,7 @@ bool use_node_data(const graph_t&) { return true; }
 
 
 
-#if LEDA_ROOT_INCL_ID == 721188
+#if LEDA_ROOT_INCL_ID == 722188
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

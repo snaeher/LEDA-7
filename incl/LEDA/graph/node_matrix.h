@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_matrix.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_MATRIX_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721203
+#define LEDA_ROOT_INCL_ID 722203
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -123,7 +123,7 @@ for later added nodes are not allowed.}*/
 
 
 
-#if LEDA_ROOT_INCL_ID == 721203
+#if LEDA_ROOT_INCL_ID == 722203
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

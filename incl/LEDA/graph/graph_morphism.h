@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +  graph_morphism.h
 +
@@ -16,7 +16,7 @@
 #define GRAPH_MORPHISM_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721191
+#define LEDA_ROOT_INCL_ID 722191
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -1051,7 +1051,7 @@ demo program.
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721191
+#if LEDA_ROOT_INCL_ID == 722191
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

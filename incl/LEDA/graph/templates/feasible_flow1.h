@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  feasible_flow1.h
@@ -14,7 +14,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721223
+#define LEDA_ROOT_INCL_ID 722223
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -500,7 +500,7 @@ void statistics(ostream& out)
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721223
+#if LEDA_ROOT_INCL_ID == 722223
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

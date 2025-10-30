@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  real_rectangle.h
@@ -17,7 +17,7 @@
 #define LEDA_REAL_RECTANGLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721103
+#define LEDA_ROOT_INCL_ID 722103
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -308,7 +308,7 @@ extern __exportF real_rectangle BoundingBox(const real_circle& c);
 extern __exportF real_rectangle BoundingBox(const real_polygon& P);
 extern __exportF real_rectangle BoundingBox(const real_gen_polygon& P);
 
-#if LEDA_ROOT_INCL_ID == 721103
+#if LEDA_ROOT_INCL_ID == 722103
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

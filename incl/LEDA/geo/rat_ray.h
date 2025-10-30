@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_ray.h
@@ -18,7 +18,7 @@
 #define LEDA_RAT_RAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721140
+#define LEDA_ROOT_INCL_ID 722140
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -255,7 +255,7 @@ inline bool parallel(const rat_ray& r1, const rat_ray& r2)
 
 inline const char* leda_tname(const rat_ray*) { return "rat_ray"; }
 
-#if LEDA_ROOT_INCL_ID == 721140
+#if LEDA_ROOT_INCL_ID == 722140
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

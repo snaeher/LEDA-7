@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  b_prio.h
@@ -17,7 +17,7 @@
 #define LEDA_BPRIO_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721052
+#define LEDA_ROOT_INCL_ID 722052
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -141,7 +141,7 @@ worst case). clear takes time $O(b-a+n)$ and the space requirement is
 $O(b-a+n)$, where $n$ is the current size of the queue.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721052
+#if LEDA_ROOT_INCL_ID == 722052
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

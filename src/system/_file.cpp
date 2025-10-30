@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  _file.c
@@ -1034,16 +1034,6 @@ void play_sound(string fname) {
 
 // console functions
 
-char read_console(int msec)
-{ char c = 0;
-  if (fd_poll(0,msec)) read(0,&c,1);
-  return c;
-}
-
-bool peek_console(int msec) { return fd_poll(0,msec); }
-
-void flush_console() { }
-
 bool fd_poll(int fd, int msec)
 {
   timeval polltime;
@@ -1060,6 +1050,17 @@ bool fd_poll(int fd, int msec)
   return select(fd+1,&rdset,&wrset,&xset,&polltime) > 0;
 }
 
+bool peek_console(int msec) { return fd_poll(0,msec); }
+
+char read_console(int msec)
+{ if (fd_poll(0,msec))
+  { char c = 0;
+    if (read(0,&c,1) == 1) return c;
+   }
+  return 0;
+}
+
+void flush_console() { }
 
 
 #endif
@@ -1107,7 +1108,7 @@ size_t size_of_file(string fname)
 }
 
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__APPLE__)
 unsigned long long size_of_file64(string fname)
 { struct stat64 stat_buf;
   if (stat64(fname,&stat_buf) != 0) 

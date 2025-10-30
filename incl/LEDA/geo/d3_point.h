@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_point.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_POINT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721149
+#define LEDA_ROOT_INCL_ID 722149
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -212,6 +212,14 @@ d3_point polar_to_cartesian() const;
 
 bool operator==(const d3_point& q) const;
 bool operator!=(const d3_point& q)  const { return !operator==(q);}
+
+bool operator<(const d3_point& q)  const 
+{ if (xcoord() < q.xcoord()) return true;
+  if (xcoord() > q.xcoord()) return false;
+  if (ycoord() < q.ycoord()) return true;
+  if (ycoord() > q.ycoord()) return false;
+  return zcoord() < q.zcoord();
+}
 
 vector operator-(const d3_point& q)  const
 { return vector(xcoord()-q.xcoord(),
@@ -446,7 +454,7 @@ extern __exportF d3_point point_on_positive_side(const d3_point& a, const d3_poi
 inline const char* leda_tname(const d3_point*) { return "d3_point"; }
 
 
-#if LEDA_ROOT_INCL_ID == 721149
+#if LEDA_ROOT_INCL_ID == 722149
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

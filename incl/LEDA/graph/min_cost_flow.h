@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  min_cost_flow.h
@@ -18,7 +18,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721228
+#define LEDA_ROOT_INCL_ID 722228
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -174,7 +174,7 @@ MIN\_COST\_MAX\_FLOW returns the total flow from $s$ to $t$.
 \bigskip
 }*/
 
-#if LEDA_ROOT_INCL_ID == 721228
+#if LEDA_ROOT_INCL_ID == 722228
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

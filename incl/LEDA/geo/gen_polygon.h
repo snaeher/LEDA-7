@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  gen_polygon.h
@@ -18,7 +18,7 @@
 #define LEDA_GEN_POLYGON_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721107
+#define LEDA_ROOT_INCL_ID 722107
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -37,7 +37,7 @@ inline const char* leda_tname(const gen_polygon*) { return "gen_polygon"; }
 #include <LEDA/geo/kernel_names_undef.h>
 
 
-#if LEDA_ROOT_INCL_ID == 721107
+#if LEDA_ROOT_INCL_ID == 722107
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

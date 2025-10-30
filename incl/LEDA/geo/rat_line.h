@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_line.h
@@ -18,7 +18,7 @@
 #define LEDA_RAT_LINE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721101
+#define LEDA_ROOT_INCL_ID 722101
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -321,7 +321,7 @@ extern __exportF rat_line p_bisector(const rat_point& p, const rat_point& q);
 
 inline const char* leda_tname(const rat_line*) { return "rat_line"; }
 
-#if LEDA_ROOT_INCL_ID == 721101
+#if LEDA_ROOT_INCL_ID == 722101
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

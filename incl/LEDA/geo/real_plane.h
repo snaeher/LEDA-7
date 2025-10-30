@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  real_plane.h
@@ -17,7 +17,7 @@
 #define LEDA_REAL_PLANE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721114
+#define LEDA_ROOT_INCL_ID 722114
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -32,7 +32,7 @@
 #include <LEDA/geo/real_rectangle.h>
 #include <LEDA/geo/real_triangle.h>
 
-#if LEDA_ROOT_INCL_ID == 721114
+#if LEDA_ROOT_INCL_ID == 722114
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

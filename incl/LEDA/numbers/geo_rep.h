@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  geo_rep.h
@@ -17,7 +17,7 @@
 #define LEDA_GEO_REP_H 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721269
+#define LEDA_ROOT_INCL_ID 722269
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -68,7 +68,7 @@ LEDA_MEMORY(geo_rep)
 };
 
 
-#if LEDA_ROOT_INCL_ID == 721269
+#if LEDA_ROOT_INCL_ID == 722269
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

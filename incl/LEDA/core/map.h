@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  map.h
@@ -17,7 +17,7 @@
 #define LEDA_MAP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721051
+#define LEDA_ROOT_INCL_ID 722051
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -242,7 +242,7 @@ const E& inf(item it) const { return LEDA_CONST_ACCESS(E,ch_map::inf(it)); }
 };
 
 
-#if LEDA_ROOT_INCL_ID == 721051
+#if LEDA_ROOT_INCL_ID == 722051
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

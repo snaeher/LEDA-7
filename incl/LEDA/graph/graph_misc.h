@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  graph_misc.h
@@ -17,7 +17,7 @@
 #define LEDA_GRAPH_MISC_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721232
+#define LEDA_ROOT_INCL_ID 722232
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -217,7 +217,7 @@ inline void eliminate_parallel_edges(graph& G) { Make_Simple(G); }
 
 
 
-#if LEDA_ROOT_INCL_ID == 721232
+#if LEDA_ROOT_INCL_ID == 722232
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

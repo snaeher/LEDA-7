@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  geo_graph.h
@@ -17,7 +17,7 @@
 #define LEDA_GEO_GRAPH_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721279
+#define LEDA_ROOT_INCL_ID 722279
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -215,7 +215,7 @@ public:
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721279
+#if LEDA_ROOT_INCL_ID == 722279
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

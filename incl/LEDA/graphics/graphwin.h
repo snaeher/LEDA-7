@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  graphwin.h
@@ -17,7 +17,7 @@
 #define LEDA_GRAPHWIN_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721286
+#define LEDA_ROOT_INCL_ID 722286
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -3228,7 +3228,7 @@ inline int gw_add_member_call(GraphWin& gw, void (GraphWin::*f)(), string l,
 
 
 
-#if LEDA_ROOT_INCL_ID == 721286
+#if LEDA_ROOT_INCL_ID == 722286
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

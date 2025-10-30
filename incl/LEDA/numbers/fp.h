@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  fp.h
@@ -17,7 +17,7 @@
 #define LEDA_FP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721253
+#define LEDA_ROOT_INCL_ID 722253
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -317,7 +317,7 @@ inline LEDA_UINT fp::is_nan(VOLATILE_FP double x) {
 
 
 
-#if LEDA_ROOT_INCL_ID == 721253
+#if LEDA_ROOT_INCL_ID == 722253
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

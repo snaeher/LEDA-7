@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  residual.h
@@ -17,7 +17,7 @@
 #define LEDA_RESIDUAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721261
+#define LEDA_ROOT_INCL_ID 722261
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -912,7 +912,7 @@ inline double residual::smod::div
 
 
 
-#if LEDA_ROOT_INCL_ID == 721261
+#if LEDA_ROOT_INCL_ID == 722261
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

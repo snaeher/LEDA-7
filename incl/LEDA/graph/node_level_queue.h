@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_level_queue.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_LEVEL_QUEUE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721192
+#define LEDA_ROOT_INCL_ID 722192
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -100,7 +100,7 @@ void clear() {
 };
 
 
-#if LEDA_ROOT_INCL_ID == 721192
+#if LEDA_ROOT_INCL_ID == 722192
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

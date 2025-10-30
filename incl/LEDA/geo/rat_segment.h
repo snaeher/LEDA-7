@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_segment.h
@@ -17,7 +17,7 @@
 #define LEDA_RAT_SEGMENT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721123
+#define LEDA_ROOT_INCL_ID 722123
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -443,7 +443,7 @@ inline int parallel(const rat_segment& s1, const rat_segment& s2)
 
 inline const char* leda_tname(const rat_segment*) { return "rat_segment"; }
 
-#if LEDA_ROOT_INCL_ID == 721123
+#if LEDA_ROOT_INCL_ID == 722123
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

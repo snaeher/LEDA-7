@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  mwb_matching.h
@@ -15,7 +15,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721212
+#define LEDA_ROOT_INCL_ID 722212
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -855,7 +855,7 @@ list<edge> MWMCB_MATCHING_T(graph& G,
   return M;
 }
 
-#if LEDA_ROOT_INCL_ID == 721212
+#if LEDA_ROOT_INCL_ID == 722212
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

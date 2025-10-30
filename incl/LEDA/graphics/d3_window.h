@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_window.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_WINDOW_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721276
+#define LEDA_ROOT_INCL_ID 722276
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -396,7 +396,7 @@ node_array<vector>& get_position_array() { return pos1; }
 };
 
 
-#if LEDA_ROOT_INCL_ID == 721276
+#if LEDA_ROOT_INCL_ID == 722276
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

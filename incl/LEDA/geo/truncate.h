@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  truncate.h
@@ -17,7 +17,7 @@
 #define LEDA_TRUNCATE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721082
+#define LEDA_ROOT_INCL_ID 722082
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -43,7 +43,7 @@ Calls the function above for the resulting list of points. Converts every
 |point| $q$ in the result list to a point by calling the 
 constructor |rat_point(q)|. }*/
 
-#if LEDA_ROOT_INCL_ID == 721082
+#if LEDA_ROOT_INCL_ID == 722082
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

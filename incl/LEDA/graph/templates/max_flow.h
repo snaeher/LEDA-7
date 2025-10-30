@@ -1,6 +1,6 @@
 /******************************************************************************r
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  max_flow9.h
@@ -18,7 +18,7 @@
 #define _LEDA_MAX_FLOW_T
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721213
+#define LEDA_ROOT_INCL_ID 722213
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -1449,7 +1449,7 @@ bool CHECK_MAX_FLOW_T(const graph& G, node s, node t,
 LEDA_END_NAMESPACE
 
 
-#if LEDA_ROOT_INCL_ID == 721213
+#if LEDA_ROOT_INCL_ID == 722213
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

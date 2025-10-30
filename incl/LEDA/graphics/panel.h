@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  panel.h
@@ -17,7 +17,7 @@
 #define LEDA_PANEL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721281
+#define LEDA_ROOT_INCL_ID 722281
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -97,7 +97,7 @@ int open(window& W, int x=window::center, int y=window::center)
 };
 
 
-#if LEDA_ROOT_INCL_ID == 721281
+#if LEDA_ROOT_INCL_ID == 722281
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

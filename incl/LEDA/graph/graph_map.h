@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  graph_map.h
@@ -17,7 +17,7 @@
 #define LEDA_GRAPH_MAP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721207
+#define LEDA_ROOT_INCL_ID 722207
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -543,7 +543,7 @@ friend istream& operator>>(istream& istr, graph_map<graph_t>&)
 };
 
 
-#if LEDA_ROOT_INCL_ID == 721207
+#if LEDA_ROOT_INCL_ID == 722207
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

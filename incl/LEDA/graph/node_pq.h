@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_pq.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_PQ_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721242
+#define LEDA_ROOT_INCL_ID 722242
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -183,7 +183,7 @@ $m$ is the size of $Q$. The space requirement is $O(n)$, where $n$ is the
 number of nodes of $G$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721242
+#if LEDA_ROOT_INCL_ID == 722242
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

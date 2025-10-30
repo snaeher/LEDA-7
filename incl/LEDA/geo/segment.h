@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  segment.h
@@ -17,7 +17,7 @@
 #define LEDA_SEGMENT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721088
+#define LEDA_ROOT_INCL_ID 722088
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -353,7 +353,7 @@ inline bool parallel(const segment& s1, const segment& s2)
 
 inline const char* leda_tname(const segment*) { return "segment"; }
 
-#if LEDA_ROOT_INCL_ID == 721088
+#if LEDA_ROOT_INCL_ID == 722088
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_slot.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_SLOT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721187
+#define LEDA_ROOT_INCL_ID 722187
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -135,7 +135,7 @@ if (!use_node_data(G,x))
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721187
+#if LEDA_ROOT_INCL_ID == 722187
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

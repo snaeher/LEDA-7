@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  edge_data.h
@@ -17,7 +17,7 @@
 #define LEDA_EDGE_DATA_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721229
+#define LEDA_ROOT_INCL_ID 722229
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -30,7 +30,7 @@ LEDA_BEGIN_NAMESPACE
 
 
 
-#if LEDA_ROOT_INCL_ID == 721229
+#if LEDA_ROOT_INCL_ID == 722229
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

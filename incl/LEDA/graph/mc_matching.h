@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  mc_matching.h
@@ -61,7 +61,7 @@ are odd, hence the name.
 
 extern __exportF list<edge> MAX_CARD_MATCHING_EDMONDS(const graph& G, 
                                                   node_array<int>& OSC, 
-                                                  int heur=1);
+                                                  int heur=0);
 /*{\Mfunc computes a maximum cardinality matching $M$ in a general graph $G$ 
 and returns it as a list of edges. The original algorithm was developed
 by Edmond in \cite{E65}. An efficient implementation was presented
@@ -72,15 +72,15 @@ An odd-set cover that proves the maximality of $M$ is returned in |OSC|.
 }*/
 
 extern __exportF list<edge> MAX_CARD_MATCHING_KECECIOGLU(const graph& G, 
-                                                      node_array<int>& OSC, 
-                                                      int heur=1);
+                                                      node_array<int>& OSC,
+                                                      int heur=0);
 /*{\Mfunc a variant of Gabow/Edmond's algorithm using an heuristic
  proposed by J. Kececioglu and J. Pecquer. }*/
 
 
 extern __exportF list<edge> MAX_CARD_MATCHING_KECECIOGLU1(const graph& G, 
                                                       node_array<int>& OSC, 
-                                                      int heur=1);
+                                                      int heur=0);
 
 
 inline list<edge> MAX_CARD_MATCHING_GABOW(const graph& G, node_array<int>& OSC)

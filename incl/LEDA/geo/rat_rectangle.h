@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_rectangle.h
@@ -17,7 +17,7 @@
 #define LEDA_RAT_RECTANGLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721105
+#define LEDA_ROOT_INCL_ID 722105
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -305,7 +305,7 @@ extern __exportF rat_rectangle BoundingBox(const rat_line& l);
 extern __exportF rat_rectangle BoundingBox(const rat_polygon& P);
 extern __exportF rat_rectangle BoundingBox(const rat_gen_polygon& P);
 
-#if LEDA_ROOT_INCL_ID == 721105
+#if LEDA_ROOT_INCL_ID == 722105
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

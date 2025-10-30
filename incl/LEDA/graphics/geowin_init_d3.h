@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  geowin_init_d3.h
@@ -30,10 +30,8 @@
 #include <LEDA/geo/d3_rat_ray.h>
 #include <LEDA/geo/d3_hull.h>
 
-#if (__LEDA__ >= 420)
 #include<LEDA/geo/d3_triangle.h>
 #include<LEDA/geo/d3_rat_triangle.h>
-#endif
 
 
 LEDA_BEGIN_NAMESPACE
@@ -1125,8 +1123,6 @@ void geowin_generate_objects(GeoWin& gw, list<d3_simplex>& L){ }
 void geowin_generate_objects(GeoWin& gw, list<d3_rat_simplex>& L){ }
 
 
-#if (__LEDA__ >= 420)
-
 // d3_triangle / d3_rat_triangle
 
 void d3_triangles_d3(const list<d3_triangle>& L,d3_window& W, GRAPH<d3_point,int>& H)
@@ -1636,7 +1632,6 @@ void geowin_generate_objects(GeoWin& gw, list<d3_rat_polygon>& L){ }
 */
 
 
-#endif
 
 
 // d3_sphere / d3_rat_sphere

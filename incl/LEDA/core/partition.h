@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  partition.h
@@ -17,7 +17,7 @@
 #define LEDA_Partition_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721056
+#define LEDA_ROOT_INCL_ID 722056
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -252,7 +252,7 @@ void reset(partition_item it) { return partition::reset(it);  }
 
 
 
-#if LEDA_ROOT_INCL_ID == 721056
+#if LEDA_ROOT_INCL_ID == 722056
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

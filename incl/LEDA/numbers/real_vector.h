@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  real_vector.h
@@ -17,7 +17,7 @@
 #define LEDA_REAL_VECTOR_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721270
+#define LEDA_ROOT_INCL_ID 722270
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -220,7 +220,7 @@ time. The space requirement depends on the size of the representations of the co
 }*/
 
 
-#if LEDA_ROOT_INCL_ID == 721270
+#if LEDA_ROOT_INCL_ID == 722270
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

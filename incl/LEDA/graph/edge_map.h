@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  edge_map.h
@@ -17,7 +17,7 @@
 #define LEDA_EDGE_MAP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721176
+#define LEDA_ROOT_INCL_ID 722176
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -199,7 +199,7 @@ edge_map(const graph_t& G, const E& x) { use_edge_data(G,x); }
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721176
+#if LEDA_ROOT_INCL_ID == 722176
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

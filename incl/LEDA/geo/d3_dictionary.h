@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_dictionary.h
@@ -18,7 +18,7 @@
 #define LEDA_d3_dictionary_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721112
+#define LEDA_ROOT_INCL_ID 722112
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -134,7 +134,7 @@ const type3& key3(dic3_item x)   { return LEDA_CONST_ACCESS(type3,x->key(2)); }
 #define forall_dic3_items(x,T)  (T).init_iteration(); forall(x,(T).L )
 
 
-#if LEDA_ROOT_INCL_ID == 721112
+#if LEDA_ROOT_INCL_ID == 722112
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

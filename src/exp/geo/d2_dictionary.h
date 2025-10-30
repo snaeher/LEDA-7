@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d2_dictionary.h
@@ -18,7 +18,7 @@
 #define LEDA_d2_dictionary_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721003
+#define LEDA_ROOT_INCL_ID 722003
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -205,7 +205,7 @@ Here $n$ is the current size of the dictionary. The space requirement is
 $O(n\log n)$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721003
+#if LEDA_ROOT_INCL_ID == 722003
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  line.h
@@ -17,7 +17,7 @@
 #define LEDA_LINE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721085
+#define LEDA_ROOT_INCL_ID 722085
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -320,7 +320,7 @@ extern __exportF line p_bisector(const point& p, const point& q);
 
 inline const char* leda_tname(const line*) { return "line"; }
 
-#if LEDA_ROOT_INCL_ID == 721085
+#if LEDA_ROOT_INCL_ID == 722085
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

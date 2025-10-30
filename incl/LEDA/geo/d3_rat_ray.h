@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_rat_ray.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_RAT_RAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721137
+#define LEDA_ROOT_INCL_ID 722137
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -218,7 +218,7 @@ inline istream& operator>>(istream& in, d3_rat_ray& r)
  return in;
 }
 
-#if LEDA_ROOT_INCL_ID == 721137
+#if LEDA_ROOT_INCL_ID == 722137
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

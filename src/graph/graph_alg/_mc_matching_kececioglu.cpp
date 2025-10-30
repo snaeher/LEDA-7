@@ -3,7 +3,7 @@
 +  LEDA 7.0  
 +
 +
-+  _mc_matching_new.c
++  _mc_matching_kececioglu.cpp
 +
 +
 +  Copyright (c) 1995-2023
@@ -92,7 +92,7 @@ void scan(const graph& G, node v, node v0, stack<node>& SN, stack<edge>& SE, nod
 
 list<edge> MAX_CARD_MATCHING_KECECIOGLU(const graph& G, node_array<int>& OSC,
                                                         int heur)
-{ 
+{
     node_array<node> mate(G,nil);
     node_partition base(G);    // now base(v) = v for all nodes v
 
@@ -105,7 +105,8 @@ list<edge> MAX_CARD_MATCHING_KECECIOGLU(const graph& G, node_array<int>& OSC,
     node_array<int>  DFSNUM(G);
     int DFSCount = 0;
 
-    if( heur == 1){
+    if (heur == 1)
+    { // greedy heuristic (slow !)
       edge e;
       forall_edges(e,G){
 	node v = G.source(e); node w = G.target(e);

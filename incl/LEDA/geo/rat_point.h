@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_point.h
@@ -18,7 +18,7 @@
 #define LEDA_RAT_POINT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721106
+#define LEDA_ROOT_INCL_ID 722106
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -573,7 +573,7 @@ inline const char* leda_tname(const rat_point*) { return "rat_point"; }
 
 
 
-#if LEDA_ROOT_INCL_ID == 721106
+#if LEDA_ROOT_INCL_ID == 722106
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

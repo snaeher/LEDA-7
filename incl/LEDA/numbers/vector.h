@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  vector.h
@@ -17,7 +17,7 @@
 #define LEDA_VECTOR_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721260
+#define LEDA_ROOT_INCL_ID 722260
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -230,7 +230,7 @@ the test |b == M * x| evaluates to true. The types |integer_vector| and |integer
 }*/
 
 
-#if LEDA_ROOT_INCL_ID == 721260
+#if LEDA_ROOT_INCL_ID == 722260
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

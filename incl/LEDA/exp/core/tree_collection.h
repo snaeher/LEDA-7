@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  tree_collection.h
@@ -17,7 +17,7 @@
 #define LEDA_TREE_COLLECTION_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721247
+#define LEDA_ROOT_INCL_ID 722247
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -198,7 +198,7 @@ binary tree (see \cite{T83}). All operations take amortized time $O(\log n)$
 where $n$ is the number of maketree operations.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721247
+#if LEDA_ROOT_INCL_ID == 722247
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

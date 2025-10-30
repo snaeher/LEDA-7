@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  mw_matching.h
@@ -14,7 +14,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721215
+#define LEDA_ROOT_INCL_ID 722215
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -4992,7 +4992,7 @@ template<class NT>
       #undef _SST_APPROACH
       #undef MWM_INIT_PQ_SZ
 
-      #if LEDA_ROOT_INCL_ID == 721215
+      #if LEDA_ROOT_INCL_ID == 722215
       #undef LEDA_ROOT_INCL_ID
       #include <LEDA/internal/POSTAMBLE.h>
       #endif

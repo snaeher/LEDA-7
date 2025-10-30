@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  mcf_cost_scaling8.h
@@ -14,7 +14,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721211
+#define LEDA_ROOT_INCL_ID 722211
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -1736,7 +1736,7 @@ void statistics(ostream& out) const
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721211
+#if LEDA_ROOT_INCL_ID == 722211
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

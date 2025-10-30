@@ -1,6 +1,6 @@
 /******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  growing_array.h
@@ -17,7 +17,7 @@
 #define LEDA_GROWING_ARRAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721063
+#define LEDA_ROOT_INCL_ID 722063
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -102,7 +102,7 @@ private:
 	index_type Size, Capacity;
 };
 
-#if LEDA_ROOT_INCL_ID == 721063
+#if LEDA_ROOT_INCL_ID == 722063
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

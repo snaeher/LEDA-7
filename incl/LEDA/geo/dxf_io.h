@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  dxf_io.h
@@ -17,7 +17,7 @@
 #define DXF_IO_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721133
+#define LEDA_ROOT_INCL_ID 722133
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -188,7 +188,7 @@ private: // output related
 	string Layer;
 };
 
-#if LEDA_ROOT_INCL_ID == 721133
+#if LEDA_ROOT_INCL_ID == 722133
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

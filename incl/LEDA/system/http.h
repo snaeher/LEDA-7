@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  http.h
@@ -17,7 +17,7 @@
 #define LEDA_HTTP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721173
+#define LEDA_ROOT_INCL_ID 722173
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -123,7 +123,7 @@ extern __exportF int wget(string url, string fname, int timeout=10);
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721173
+#if LEDA_ROOT_INCL_ID == 722173
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

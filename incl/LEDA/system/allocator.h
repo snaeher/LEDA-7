@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  allocator.h
@@ -17,7 +17,7 @@
 #define LEDA_ALLOCATOR_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721159
+#define LEDA_ROOT_INCL_ID 722159
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -123,7 +123,7 @@ of modern compiler technology like member templates, partial specialization
 etc. It runs only on a subset of LEDA's general supported platforms like
 |g++ > 2.95|, |SGI CC > 7.3|.}*/
 
-#if LEDA_ROOT_INCL_ID == 721159
+#if LEDA_ROOT_INCL_ID == 722159
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

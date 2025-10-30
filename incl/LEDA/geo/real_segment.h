@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  real_segment.h
@@ -17,7 +17,7 @@
 #define LEDA_REAL_SEGMENT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721152
+#define LEDA_ROOT_INCL_ID 722152
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -342,7 +342,7 @@ inline bool parallel(const real_segment& s1, const real_segment& s2)
 
 inline const char* leda_tname(const real_segment*) { return "real_segment"; }
 
-#if LEDA_ROOT_INCL_ID == 721152
+#if LEDA_ROOT_INCL_ID == 722152
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  basic.h
@@ -17,13 +17,13 @@
 #define LEDA_BASIC_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721167
+#define LEDA_ROOT_INCL_ID 722167
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
 // define LEDA version macro
 
-#define __LEDA__ 721
+#define __LEDA__ 722
 
 
 // enable stl-style iterators
@@ -61,7 +61,7 @@
 
 
 
-#if LEDA_ROOT_INCL_ID == 721167
+#if LEDA_ROOT_INCL_ID == 722167
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

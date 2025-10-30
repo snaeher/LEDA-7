@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  edge_array.h
@@ -17,7 +17,7 @@
 #define LEDA_EDGE_ARRAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721202
+#define LEDA_ROOT_INCL_ID 722202
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -216,7 +216,7 @@ maps (cf. section \ref{Edge Maps}). }*/
 };
 
 
-#if LEDA_ROOT_INCL_ID == 721202
+#if LEDA_ROOT_INCL_ID == 722202
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

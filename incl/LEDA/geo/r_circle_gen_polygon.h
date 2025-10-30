@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  r_circle_gen_polygon.h
@@ -18,7 +18,7 @@
 #define LEDA_R_CIRCLE_GEN_POLYGON_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721095
+#define LEDA_ROOT_INCL_ID 722095
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -567,7 +567,7 @@ $\{$ ``the boundary polygons of $P$ are successively assigned to
 #endif
 
 
-#if LEDA_ROOT_INCL_ID == 721095
+#if LEDA_ROOT_INCL_ID == 722095
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

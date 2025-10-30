@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  mw_matching0.h
@@ -14,7 +14,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721224
+#define LEDA_ROOT_INCL_ID 722224
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 // Guido Schäfer, 11/2003 made some modifications
@@ -4714,7 +4714,7 @@ bool CHECK_MIN_WEIGHT_PERFECT_MATCHING_T(const graph &G,
 LEDA_END_NAMESPACE
 
 
-#if LEDA_ROOT_INCL_ID == 721224
+#if LEDA_ROOT_INCL_ID == 722224
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

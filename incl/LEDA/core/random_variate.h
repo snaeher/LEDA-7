@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  random_variate.h
@@ -17,7 +17,7 @@
 #define LEDA_RANDOM_VARIATE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721048
+#define LEDA_ROOT_INCL_ID 722048
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -206,7 +206,7 @@ public:
 
 };
 
-#if LEDA_ROOT_INCL_ID == 721048
+#if LEDA_ROOT_INCL_ID == 722048
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

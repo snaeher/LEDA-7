@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  sortseq.h
@@ -17,7 +17,7 @@
 #define LEDA_SORTSEQ_H 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721059
+#define LEDA_ROOT_INCL_ID 722059
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -634,7 +634,7 @@ Further examples can be found in section Sorted Sequences of
 
 }*/
 
-#if LEDA_ROOT_INCL_ID == 721059
+#if LEDA_ROOT_INCL_ID == 722059
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +  graph_morphism_checker.h
 +
@@ -16,7 +16,7 @@
 #define GRAPH_MORPHISM_CHECKER_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721177
+#define LEDA_ROOT_INCL_ID 722177
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -215,7 +215,7 @@ bool graph_morphism_checker<graph_t>::is_graph_monomorphism(
 LEDA_END_NAMESPACE
 
 
-#if LEDA_ROOT_INCL_ID == 721177
+#if LEDA_ROOT_INCL_ID == 722177
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

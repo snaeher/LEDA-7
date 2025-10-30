@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_rat_sphere.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_RAT_SPHERE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721113
+#define LEDA_ROOT_INCL_ID 722113
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -169,7 +169,7 @@ inline istream& operator>>(istream& in, d3_rat_sphere& T)
 
 
 
-#if LEDA_ROOT_INCL_ID == 721113
+#if LEDA_ROOT_INCL_ID == 722113
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1
++  LEDA 7.2.2
 +
 +
 +  base_window.h
@@ -17,7 +17,7 @@
 #define LEDA_BASE_WINDOW_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721274
+#define LEDA_ROOT_INCL_ID 722274
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -1455,7 +1455,7 @@ BASE_WINDOW* get_status_window() { return status_win; }
 
 
 
-#if LEDA_ROOT_INCL_ID == 721274
+#if LEDA_ROOT_INCL_ID == 722274
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

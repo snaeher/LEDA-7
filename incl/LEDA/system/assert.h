@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  assert.h
@@ -17,7 +17,7 @@
 #define LEDA_ASSERT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721162
+#define LEDA_ROOT_INCL_ID 722162
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -42,7 +42,7 @@ int assert_error(const char* cond, const char* fname, int line);
 
 #endif
 
-#if LEDA_ROOT_INCL_ID == 721162
+#if LEDA_ROOT_INCL_ID == 722162
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

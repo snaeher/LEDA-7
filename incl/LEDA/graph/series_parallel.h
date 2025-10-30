@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  series_parallel.h
@@ -17,7 +17,7 @@
 #define LEDA_SERIES_PARALLEL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721181
+#define LEDA_ROOT_INCL_ID 722181
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -143,7 +143,7 @@ inline bool Is_Series_Parallel(const graph& G, spq_tree& spqt)
 
 
 
-#if LEDA_ROOT_INCL_ID == 721181
+#if LEDA_ROOT_INCL_ID == 722181
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

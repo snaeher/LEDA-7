@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  array.h
@@ -17,7 +17,7 @@
 #define LEDA_ARRAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721061
+#define LEDA_ROOT_INCL_ID 722061
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -603,7 +603,7 @@ inline void array<int>::sort() { INTSORT(vec,sz); }
 
 
 
-#if LEDA_ROOT_INCL_ID == 721061
+#if LEDA_ROOT_INCL_ID == 722061
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

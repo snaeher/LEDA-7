@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  b_node_pq.h
@@ -18,7 +18,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721193
+#define LEDA_ROOT_INCL_ID 722193
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -157,7 +157,7 @@ int dijkstra(const GRAPH<int,int>& g, node s, node t)
 
 
 
-#if LEDA_ROOT_INCL_ID == 721193
+#if LEDA_ROOT_INCL_ID == 722193
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

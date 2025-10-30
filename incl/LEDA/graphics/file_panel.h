@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  file_panel.h
@@ -17,7 +17,7 @@
 #define LEDA_FILE_PANEL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721277
+#define LEDA_ROOT_INCL_ID 722277
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -197,7 +197,7 @@ public:
 
 };
 
-#if LEDA_ROOT_INCL_ID == 721277
+#if LEDA_ROOT_INCL_ID == 722277
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

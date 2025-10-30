@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  face_map.h
@@ -17,7 +17,7 @@
 #define LEDA_FACE_MAP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721205
+#define LEDA_ROOT_INCL_ID 722205
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -127,7 +127,7 @@ time $O(1)$.
 
 
 
-#if LEDA_ROOT_INCL_ID == 721205
+#if LEDA_ROOT_INCL_ID == 722205
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

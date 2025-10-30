@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  IO_interface.h
@@ -17,7 +17,7 @@
 #define LEDA_IO_INTERFACE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721054
+#define LEDA_ROOT_INCL_ID 722054
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -220,7 +220,7 @@ void write_demo(const string& mes)
 
 
 
-#if LEDA_ROOT_INCL_ID == 721054
+#if LEDA_ROOT_INCL_ID == 722054
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

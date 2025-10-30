@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  menu.h
@@ -17,7 +17,7 @@
 #define LEDA_MENU_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721275
+#define LEDA_ROOT_INCL_ID 722275
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -99,7 +99,7 @@ void set_graphwin(GraphWin* p) { grawin_ptr = p; }
 };
 
 
-#if LEDA_ROOT_INCL_ID == 721275
+#if LEDA_ROOT_INCL_ID == 722275
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

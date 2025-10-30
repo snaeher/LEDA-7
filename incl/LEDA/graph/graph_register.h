@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  graph_register.h
@@ -17,7 +17,7 @@
 #define LEDA_GRAPH_REGISTER_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721184
+#define LEDA_ROOT_INCL_ID 722184
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -103,7 +103,7 @@ void unregister_map(map_ptr M)
 LEDA_END_NAMESPACE
 
 
-#if LEDA_ROOT_INCL_ID == 721184
+#if LEDA_ROOT_INCL_ID == 722184
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

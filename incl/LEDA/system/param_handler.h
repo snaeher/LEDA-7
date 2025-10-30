@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  param_handler.h
@@ -17,7 +17,7 @@
 #define PARAM_HANDLER_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721160
+#define LEDA_ROOT_INCL_ID 722160
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -265,7 +265,7 @@ A call of \texttt{foo -h} will display all possible flags of the
 program including the init values.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721160
+#if LEDA_ROOT_INCL_ID == 722160
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  delaunay_sweep.c
@@ -771,7 +771,8 @@ void WaveFrontRep::plotter(window& w, point p, double y0, double y1,
   w.draw_spline(poly, 4, col);
   w.set_line_width(lw);  
 
-  w.set_node_width(2);
+  //w.set_node_width(2);
+  w.set_node_width(1);
   w.draw_filled_node(poly.back(),col);
 
 }

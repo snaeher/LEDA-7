@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  hash.h
@@ -17,7 +17,7 @@
 #define LEDA_HASH_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721248
+#define LEDA_ROOT_INCL_ID 722248
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -81,7 +81,7 @@ hash(int s, int (*f)(const ktype&)) : ch_hash(s) { hash_ptr=f;}
 
 
 
-#if LEDA_ROOT_INCL_ID == 721248
+#if LEDA_ROOT_INCL_ID == 722248
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

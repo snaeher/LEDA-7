@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  iteration.h
@@ -17,7 +17,7 @@
 #define LEDA_ITERATION_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721158
+#define LEDA_ROOT_INCL_ID 722158
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -173,7 +173,7 @@ const_iterator begin() const { return const_iterator(this,first_item()); }\
 const_iterator end()   const { return const_iterator(this,this->stl_next_item(last_item()));   }
 
 
-#if LEDA_ROOT_INCL_ID == 721158
+#if LEDA_ROOT_INCL_ID == 722158
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

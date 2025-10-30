@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  member_array.h
@@ -17,7 +17,7 @@
 #define LEDA_MEMBER_ARRAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721234
+#define LEDA_ROOT_INCL_ID 722234
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -88,7 +88,7 @@ public:
   
 */
 
-#if LEDA_ROOT_INCL_ID == 721234
+#if LEDA_ROOT_INCL_ID == 722234
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

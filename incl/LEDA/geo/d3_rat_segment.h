@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_rat_segment.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_RAT_SEGMENT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721124
+#define LEDA_ROOT_INCL_ID 722124
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -209,7 +209,7 @@ is assigned to |p| and the result is true, otherwise the result is false.}*/
 inline unsigned long ID_Number(const d3_rat_segment& s){ return s.ptr()->id; }
 inline const char* leda_tname(const d3_rat_segment*){ return "d3_rat_segment"; }
 
-#if LEDA_ROOT_INCL_ID == 721124
+#if LEDA_ROOT_INCL_ID == 722124
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  real_ray.h
@@ -17,7 +17,7 @@
 #define LEDA_REAL_RAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721132
+#define LEDA_ROOT_INCL_ID 722132
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -259,7 +259,7 @@ inline bool parallel(const real_ray& r1, const real_ray& r2)
 
 inline const char* leda_tname(const real_ray*) { return "real_ray"; }
 
-#if LEDA_ROOT_INCL_ID == 721132
+#if LEDA_ROOT_INCL_ID == 722132
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  _ch_map.c
@@ -20,7 +20,8 @@ LEDA_BEGIN_NAMESPACE
 
 ch_map::~ch_map() 
 { if (old_table) delete[] old_table;
-  delete[] table; 
+  //cout << "delete table: table = " << table << endl;
+  if (table) delete[] table; 
 }  
 
 
@@ -31,6 +32,8 @@ void ch_map::init_table(int T)
   table = new ch_map_elem[T + T/2];
   free = table + T;
   table_end = table + T + T/2;      
+
+  //cout << "init_table: T = " <<  T << "  table = " << table << endl;
 
   for (ch_map_item p = table; p < free; p++) 
   { p->succ = &STOP; 

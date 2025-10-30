@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rational.h
@@ -18,7 +18,7 @@
 #define LEDA_RATIONAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721257
+#define LEDA_ROOT_INCL_ID 722257
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -228,7 +228,7 @@ numbers which represent the numerator and the denominator. The sign
 is represented by the sign of the numerator.}*/
 
 #ifndef NO_LEDA
-#if LEDA_ROOT_INCL_ID == 721257
+#if LEDA_ROOT_INCL_ID == 722257
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

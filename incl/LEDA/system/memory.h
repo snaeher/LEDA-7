@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  memory.h
@@ -17,7 +17,7 @@
 #define LEDA_MEMORY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721170
+#define LEDA_ROOT_INCL_ID 722170
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -124,7 +124,7 @@ leda::std_memory_mgr.clear();
 
 
 
-#if LEDA_ROOT_INCL_ID == 721170
+#if LEDA_ROOT_INCL_ID == 722170
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

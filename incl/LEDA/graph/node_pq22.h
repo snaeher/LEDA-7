@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_pq22.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_PQ22_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721208
+#define LEDA_ROOT_INCL_ID 722208
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -225,7 +225,7 @@ node del_min(prio_t& p, const dist_array& dist)
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721208
+#if LEDA_ROOT_INCL_ID == 722208
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

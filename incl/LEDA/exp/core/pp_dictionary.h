@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  pp_dictionary.h
@@ -17,7 +17,7 @@
 #define LEDA_PP_DICTIONARY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721243
+#define LEDA_ROOT_INCL_ID 722243
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -277,7 +277,7 @@ Here $n$ is the number of items in the version of the dictionary to which the
 operation is applied.
 The expected space requirement is $O(1)$ for each update operation.}*/
 
-#if LEDA_ROOT_INCL_ID == 721243
+#if LEDA_ROOT_INCL_ID == 722243
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

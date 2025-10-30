@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  gw_test.c
@@ -414,7 +414,6 @@ void gw_test_planar(GraphWin& gw)
                break;
 
       case  3: // left side of K33
-               //gw.set_shape(v,rectangle_node);
                gw.set_shape(v,circle_node);
                gw.set_label_type(v,no_label);
                gw.set_width(v,40);
@@ -423,7 +422,8 @@ void gw_test_planar(GraphWin& gw)
                break;
 
       case -3: // right side of K33
-               gw.set_shape(v,circle_node);
+               gw.set_shape(v,rectangle_node);
+               //gw.set_shape(v,circle_node);
                gw.set_label_type(v,no_label);
                gw.set_width(v,40);
                gw.set_height(v,40);
@@ -445,7 +445,8 @@ void gw_test_planar(GraphWin& gw)
   edge e;
   forall_edges(e,G) 
   { gw.set_style(e,solid_edge);
-    gw.set_color(e,grey1);
+    //gw.set_color(e,grey1);
+    gw.set_color(e,grey2);
     gw.set_width(e,1);
    }
         
@@ -458,7 +459,7 @@ void gw_test_planar(GraphWin& gw)
    }
 
   if (gw.wait(string("\\bf This graph is \\red not planar\\black - it contains")
-                + " a\\red " + kname + "\\black Kuratowski Subdivision."))
+                + " a\\red " + kname + "\\black Kuratowski-Subdivision."))
   { gw.restore_node_attributes();
     gw.restore_edge_attributes();
    }

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  logo.c
@@ -238,17 +238,16 @@ void draw_logo(window& W, int dist, double scale)
 void draw_copyright(window& W)
 { W.start_buffering();
 
-  if (true)
-  { if (getenv("LEDA_OPEN_MAXIMIZED"))
-      W.set_font("I25");
-    else
-      W.set_font("I30");
-  }
+  if (getenv("LEDA_OPEN_MAXIMIZED"))
+    W.set_font("I25");
+  else
+    W.set_font("I30");
+  
 
   if (window::display_type() == "x11") W.set_font("I22");
 
-//string text = "LEDA Logo (c) sn 1995.";
-  string text = "LEDA Logo (sn 1995)";
+//string text = "LEDA Logo (sn 1995)";
+  string text = "LEDA Logo (c) 1995 by SN";
 
   double xt = W.xmin() + W.pix_to_real(8);
   double yt = W.ymin() + W.text_height(text) + W.pix_to_real(4);
@@ -287,7 +286,8 @@ void animation(window& W, float delay=0)
 
   draw_logo(W,distance,fmax);
 
-  leda::sleep(delay/2);
+  //leda::sleep(delay/2);
+  leda::sleep(delay);
   draw_copyright(W);
 }
 

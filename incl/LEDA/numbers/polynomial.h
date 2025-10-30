@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1
++  LEDA 7.2.2
 +
 +
 +  polynomial.h
@@ -18,7 +18,7 @@
 #define _LEDA_POLYNOMIAL_H    
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721252
+#define LEDA_ROOT_INCL_ID 722252
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -852,7 +852,7 @@ bool possible_common_roots(polynomial<T>& P, polynomial<T>& Q)
 #undef PACKAGE_SCOPE
 #undef LEDA_VECTOR
 
-#if LEDA_ROOT_INCL_ID == 721252
+#if LEDA_ROOT_INCL_ID == 722252
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

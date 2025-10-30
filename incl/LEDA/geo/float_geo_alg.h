@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  float_geo_alg.h
@@ -18,7 +18,7 @@
 #define LEDA_FLOAT_GEO_ALG_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721125
+#define LEDA_ROOT_INCL_ID 722125
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -887,7 +887,7 @@ LEDA_END_NAMESPACE
 #endif
 
 
-#if LEDA_ROOT_INCL_ID == 721125
+#if LEDA_ROOT_INCL_ID == 722125
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_point_set.h
@@ -18,7 +18,7 @@
 #define LEDA_RAT_POINT_SET_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721096
+#define LEDA_ROOT_INCL_ID 722096
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -31,7 +31,7 @@
 #include <LEDA/geo/kernel_names_undef.h>
 
 
-#if LEDA_ROOT_INCL_ID == 721096
+#if LEDA_ROOT_INCL_ID == 722096
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

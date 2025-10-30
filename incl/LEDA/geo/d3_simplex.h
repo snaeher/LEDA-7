@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_simplex.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_SIMPLEX_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721097
+#define LEDA_ROOT_INCL_ID 722097
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -189,7 +189,7 @@ inline istream& operator>>(istream& in, d3_simplex& T)
  return in; 
 }
 
-#if LEDA_ROOT_INCL_ID == 721097
+#if LEDA_ROOT_INCL_ID == 722097
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

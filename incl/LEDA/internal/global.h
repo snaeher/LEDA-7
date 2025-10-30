@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  global.h
@@ -17,7 +17,7 @@
 #define LEDA_GLOBAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721156
+#define LEDA_ROOT_INCL_ID 722156
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -47,7 +47,7 @@
 
 
 #define	LEDA_PI   3.14159265358979323846
-#define	LEDA_PI_2 1.57079632679489721156
+#define	LEDA_PI_2 1.57079632679489722156
 
 #ifndef nil
 //#define nil nullptr
@@ -120,7 +120,7 @@ extern __exportF int   trace_stack(char**);
 LEDA_END_NAMESPACE
 
 
-#if LEDA_ROOT_INCL_ID == 721156
+#if LEDA_ROOT_INCL_ID == 722156
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

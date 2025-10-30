@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_rat_line.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_RAT_LINE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721144
+#define LEDA_ROOT_INCL_ID 722144
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -205,7 +205,7 @@ inline unsigned long ID_Number(const d3_rat_line& l){ return l.ptr()->id; }
 inline const char* leda_tname(const d3_rat_line*){ return "d3_rat_line"; }
 
 
-#if LEDA_ROOT_INCL_ID == 721144
+#if LEDA_ROOT_INCL_ID == 722144
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

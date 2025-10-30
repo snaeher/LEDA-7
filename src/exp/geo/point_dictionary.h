@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  point_dictionary.h
@@ -17,7 +17,7 @@
 #define LEDA_POINT_DICTIONARY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721004
+#define LEDA_ROOT_INCL_ID 722004
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -160,7 +160,7 @@ A nearest\_neighbor query takes time $O(n)$. Here $n$ is the current size of
 the point set. The space requirement is $O(n\log n)$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721004
+#if LEDA_ROOT_INCL_ID == 722004
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

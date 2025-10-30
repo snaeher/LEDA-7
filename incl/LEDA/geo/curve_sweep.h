@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  curve_sweep.h
@@ -17,7 +17,7 @@
 #define LEDA_CURVE_SWEEP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721094
+#define LEDA_ROOT_INCL_ID 722094
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -276,7 +276,7 @@ extern window* TraceWinForCompatification;
 #endif
 
 
-#if LEDA_ROOT_INCL_ID == 721094
+#if LEDA_ROOT_INCL_ID == 722094
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

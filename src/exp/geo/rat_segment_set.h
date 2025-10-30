@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_segment_set.h
@@ -17,7 +17,7 @@
 #define LEDA_RAT_SEGMENT_SET_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721002
+#define LEDA_ROOT_INCL_ID 722002
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -183,7 +183,7 @@ the set. The space requirement is $O(n\log n)$.}*/
 
  
 
-#if LEDA_ROOT_INCL_ID == 721002
+#if LEDA_ROOT_INCL_ID == 722002
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

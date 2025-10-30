@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_slot1.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_SLOT1_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721178
+#define LEDA_ROOT_INCL_ID 722178
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -160,7 +160,7 @@ bool use_node_data(const graph_t&) { return true; }
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721178
+#if LEDA_ROOT_INCL_ID == 722178
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

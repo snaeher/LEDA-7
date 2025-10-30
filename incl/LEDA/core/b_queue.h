@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  b_queue.h
@@ -17,7 +17,7 @@
 #define LEDA_BQUEUE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721062
+#define LEDA_ROOT_INCL_ID 722062
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -231,7 +231,7 @@ $\{$ ``the elements of $Q$ are successively assigned to $x$'' $\}$
 Bounded queues are implemented by circular arrays. All operations take 
 time $O(1)$. The space requirement is $O(n)$.}*/
 
-#if LEDA_ROOT_INCL_ID == 721062
+#if LEDA_ROOT_INCL_ID == 722062
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

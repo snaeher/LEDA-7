@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  window.h
@@ -17,7 +17,7 @@
 #define LEDA_WINDOW_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721287
+#define LEDA_ROOT_INCL_ID 722287
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -166,11 +166,11 @@ is necessary, e.g., if the shape of the window is changed or previously
 hidden parts of it become visible. 
 
 \item
-The {\em window delete handler} parameter is a pointer to a function of type 
+The {\em window close handler} parameter is a pointer to a function of type 
 void ($*$F)(window$*$). It is called with a pointer to the corresponding window
 as argument when the window is to be closed by the window manager (e.g. by
 pressing the $\times$-button on Windows-NT systems). The default
-window delete handler closes the window and terminates the program.
+window close handler closes the window and terminates the program.
 
 \item
 The {\em buttons per line} parameter (default $\infty$) defines
@@ -2588,7 +2588,7 @@ int __stdcall WinMain(void*,void*,char*,int) { return main_tmp(); }
 
 
 
-#if LEDA_ROOT_INCL_ID == 721287
+#if LEDA_ROOT_INCL_ID == 722287
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

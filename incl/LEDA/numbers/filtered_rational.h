@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  filtered_rational.h
@@ -17,7 +17,7 @@
 #define LEDA_FILTERED_RATIONAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721264
+#define LEDA_ROOT_INCL_ID 722264
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -234,7 +234,7 @@ inline int compare(const filtered_rational& x,
 numbers which represent the numerator and the denominator.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721264
+#if LEDA_ROOT_INCL_ID == 722264
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

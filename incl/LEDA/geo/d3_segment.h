@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_segment.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_SEGMENT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721076
+#define LEDA_ROOT_INCL_ID 722076
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -210,7 +210,7 @@ inline unsigned long ID_Number(const d3_segment& s){ return s.ptr()->id; }
 inline const char* leda_tname(const d3_segment*){ return "d3_segment"; }
 
 
-#if LEDA_ROOT_INCL_ID == 721076
+#if LEDA_ROOT_INCL_ID == 722076
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

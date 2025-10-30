@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_triangle.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_TRIANGLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721153
+#define LEDA_ROOT_INCL_ID 722153
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -173,7 +173,7 @@ inline istream& operator>>(istream& in, d3_triangle& T)
   return in; 
  }
 
-#if LEDA_ROOT_INCL_ID == 721153
+#if LEDA_ROOT_INCL_ID == 722153
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  graphwin.c
@@ -92,8 +92,8 @@ int main(int argc, char** argv) {
   string rc_file = home_dir + "/.graphwinrc";
 
   if (is_file(rc_file))
-   { gw.message("Loading Options from\\blue " + rc_file);
-     leda_wait(1.2);
+   { gw.message("Loading Settings from\\blue " + rc_file);
+     leda_wait(2.0);
      gw.read_defaults();
     }
 /*
@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
 
 
   int but = 0;
-  int def_choice = 0;
+  int settings_choice = 0;
   bool do_save = false;
 
 
@@ -158,34 +158,25 @@ int main(int argc, char** argv) {
     P.text_item("\\bf\\blue Exit GraphWin");
     P.text_item("");
 
-/*
-    P.choice_item("Settings",def_choice,"keep","write","reset");
+    P.choice_item("Local Settings",settings_choice,"save","discard","reset");
 
     if (gw.unsaved_changes())
     { P.text_item("\\bf Graph not written since last change.\\n");
-      //P.button("save",3);
-      //P.button("save gml",4);
       P.bool_item("Save Graph",do_save);
      }
-*/
 
     P.text_item("");
     P.button("cancel",0);
     P.fbutton("ok",1);
 
+    //but = P.open();
     but = gw.open_panel(P);
-
-/*
-    if (but == 3) gw_save_handler(gw);
-    if (but == 4) gw_save_gml_handler(gw);
-*/
-
    }
 
    if (do_save) gw_save_handler(gw);
 
-   if (def_choice == 1) gw.save_defaults();
-   if (def_choice == 2) gw.reset_defaults();
+   if (settings_choice == 0) gw.save_defaults();
+   if (settings_choice == 2) gw.reset_defaults();
 
   if (fname == "CURRENT_GRAPH.gw") delete_file(fname);
 

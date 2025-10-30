@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  logo_anim.c
@@ -326,15 +326,18 @@ void draw_title(window& W, bool anim=false)
 
 void draw_copyright(window& W)
 { 
-  //W.set_font(string("I%d",W.real_to_pix(0.085));
-  W.set_font("I30");
+  if (getenv("LEDA_OPEN_MAXIMIZED"))
+    W.set_font("I25");
+  else
+    W.set_font("I30");
 
-  string text = "LEDA Logo  (sn 1995)";
+  //string text = "LEDA Logo  (sn 1995)";
+  string text = "LEDA Logo (c) 1995 by SN";
 
-  double xt = W.xmin() + W.pix_to_real(10);
-  double yt = W.ymin() + W.text_height(text) + W.pix_to_real(10);
-  W.draw_text(xt,yt,text,0x333333);
-  W.flush_buffer();
+  double xt = W.xmin() + W.pix_to_real(8);
+  double yt = W.ymin() + W.text_height(text) + W.pix_to_real(4);
+  W.draw_text(xt,yt,text,0x555555);
+  //W.flush_buffer();
 }
 
 
@@ -436,7 +439,8 @@ W.set_text_mode(opaque);
     draw_circles(W,true);
     fill_logo(W,true);
     draw_copyright(W);
-  
+
+    W.flush_buffer();
     W.stop_buffering();
 
     do { but = W.read_mouse();

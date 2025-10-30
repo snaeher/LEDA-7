@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  gml_graph.h
@@ -17,7 +17,7 @@
 #define LEDA_GML_GRAPH_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721231
+#define LEDA_ROOT_INCL_ID 722231
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -360,7 +360,7 @@ inherits from gml\_parser which uses gml\_object, gml\_objecttree,
 and gml\_pattern. gml\_pattern uses dictionaries.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721231
+#if LEDA_ROOT_INCL_ID == 722231
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

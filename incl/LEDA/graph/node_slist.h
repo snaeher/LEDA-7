@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_slist.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_SLIST_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721174
+#define LEDA_ROOT_INCL_ID 722174
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -183,7 +183,7 @@ struct node_slist : public base_node_slist<graph, node_array<node> >
 
 
 
-#if LEDA_ROOT_INCL_ID == 721174
+#if LEDA_ROOT_INCL_ID == 722174
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

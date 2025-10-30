@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_triangle.h
@@ -17,7 +17,7 @@
 #define LEDA_RAT_TRIANGLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721127
+#define LEDA_ROOT_INCL_ID 722127
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -245,7 +245,7 @@ inline istream& operator>>(istream& in, rat_triangle& T)
  }
 
 
-#if LEDA_ROOT_INCL_ID == 721127
+#if LEDA_ROOT_INCL_ID == 722127
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  bigfloat.h
@@ -17,7 +17,7 @@
 #define LEDA_BIGFLOAT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721266
+#define LEDA_ROOT_INCL_ID 722266
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -710,7 +710,7 @@ inline bigfloat sqrt(const bigfloat& x,
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721266
+#if LEDA_ROOT_INCL_ID == 722266
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

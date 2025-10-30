@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_bucket_queue.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_BUCKET_QUEUE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721235
+#define LEDA_ROOT_INCL_ID 722235
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -131,7 +131,7 @@ void move(node v, int i, node u)
 for(v = PQ.first(i); v != PQ.sentinel(); v = PQ.next(v))
 
 
-#if LEDA_ROOT_INCL_ID == 721235
+#if LEDA_ROOT_INCL_ID == 722235
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

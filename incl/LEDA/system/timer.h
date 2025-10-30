@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  timer.h
@@ -17,7 +17,7 @@
 #define LEDA_TIMER_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721161
+#define LEDA_ROOT_INCL_ID 722161
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -194,7 +194,7 @@ int main()
 \end{verbatim}
 }*/
 
-#if LEDA_ROOT_INCL_ID == 721161
+#if LEDA_ROOT_INCL_ID == 722161
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

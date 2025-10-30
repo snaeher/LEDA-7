@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  _x_basic.c
@@ -784,6 +784,18 @@ inline void bigpix(xx_win* win, int x, int y)
 inline void bigpix1(xx_win* win, int x, int y)
 { x_image* canv = win->canvas;
   canv->bigpix1(x,y,win->LINEWIDTH,win->COLOR,win->MODE);
+}
+
+inline void bigpix_ellipse(xx_win* win, double xc, double yc, 
+                                        double x, double y)
+{ x_image* canv = win->canvas;
+
+  //double phi = M_PI/4;
+  double phi = 0;
+  double dx = x * cos(phi) - y * sin(phi);
+  double dy = x * sin(phi) + y * cos(phi);
+  canv->bigpix(int(xc+dx+0.5),int(yc+dy+0.5),win->LINEWIDTH,win->COLOR,
+                                                            win->MODE);
 }
 
 inline void hline(xx_win* win, int x0, int x1, int y)
@@ -2097,6 +2109,7 @@ static void draw_ellipse(xx_win* win, int x0, int y0, int a, int b, bool fill)
 
   double d1 = ry_2 + rx_2*(0.25 - b); 
    
+
   while (rx_2*(y - 0.5) > ry_2*(x+1))
   { if (d1 < 0)
       d1 += ry_2*(2*x + 3);
@@ -2107,15 +2120,30 @@ static void draw_ellipse(xx_win* win, int x0, int y0, int a, int b, bool fill)
 
     x++;
 
+/*
+double phi = M_PI/4;
+double dx = x * cos(phi) - y * sin(phi);
+double dy = x * sin(phi) + y * cos(phi);
+x = dx;
+y = dy;
+*/
+
     if (fill)
     { hline(win,int(xc-x),int(xc+x),int(yc+y));
       hline(win,int(xc-x),int(xc+x),int(yc-y));
      }
     else
-    { bigpix(win,int(xc+x),int(yc+y));
+    { 
+      bigpix_ellipse(win,xc,yc,+x,+y);
+      bigpix_ellipse(win,xc,yc,-x,+y);
+      bigpix_ellipse(win,xc,yc,+x,-y);
+      bigpix_ellipse(win,xc,yc,-x,-y);
+/*
+      bigpix(win,int(xc+x),int(yc+y));
       bigpix(win,int(xc-x),int(yc+y));
       bigpix(win,int(xc+x),int(yc-y));
       bigpix(win,int(xc-x),int(yc-y));
+*/
      }
   }
 
@@ -2131,15 +2159,29 @@ static void draw_ellipse(xx_win* win, int x0, int y0, int a, int b, bool fill)
 
     y--;
 
+/*
+double phi = M_PI/4;
+double dx = x * cos(phi) - y * sin(phi);
+double dy = x * sin(phi) + y * cos(phi);
+x = dx;
+y = dy;
+*/
+
     if (fill)
     { hline(win,int(xc-x),int(xc+x),int(yc+y));
       hline(win,int(xc-x),int(xc+x),int(yc-y));
      }
     else
-    { bigpix(win,int(xc+x),int(yc+y));
+    { bigpix_ellipse(win,xc,yc,+x,+y);
+      bigpix_ellipse(win,xc,yc,-x,+y);
+      bigpix_ellipse(win,xc,yc,+x,-y);
+      bigpix_ellipse(win,xc,yc,-x,-y);
+/*
+      bigpix(win,int(xc+x),int(yc+y));
       bigpix(win,int(xc-x),int(yc+y));
       bigpix(win,int(xc+x),int(yc-y));
       bigpix(win,int(xc-x),int(yc-y));
+*/
      }
   }
 
@@ -2159,7 +2201,8 @@ static void fill_ellipse(xx_win* win, int xc, int yc, int a, int b)
 
   for(int x = xmin; x <= xmax; x++)
     for(int y = ymin; y <= ymax; y++)
-      if (INSIDE_ELLIPSE(xc,yc,x,y,a,b))
+      //if (INSIDE_ELLIPSE(xc,yc,x,y,a,b))
+      if (INSIDE_ELLIPSE(x,y,xc,yc,a,b))
           canvas->setpix(x,y,win->COLOR,win->MODE);
 }
 
@@ -3958,7 +4001,9 @@ int x_open_display()
   root_win->y1 = root_win->height-1;
 
   root_win->bg_clr = ROOT_COLOR;
+/*
   if (getenv("LEDA_OPEN_MAXIMIZED"))  root_win->bg_clr = 0xdddddd;
+*/
 
   root_win->border_clr = black;
   root_win->border_w = 1;

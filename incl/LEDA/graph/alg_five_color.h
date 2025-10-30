@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  graph_alg_c.h
@@ -17,7 +17,7 @@
 #define LEDA_GRAPHALG_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721230
+#define LEDA_ROOT_INCL_ID 722230
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -50,7 +50,7 @@ class __exportC alg_five_color {
 extern __exportD alg_five_color FIVE_COLOR;
 
 
-#if LEDA_ROOT_INCL_ID == 721230
+#if LEDA_ROOT_INCL_ID == 722230
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -125,7 +125,7 @@ if [ $sys == Cygwin ]; then
    ls msc*
    cd ../..
 else
-   echo "known compilers: g++ clang msc cc sunpro"
+   echo "known compilers: g++ clang++ msc cc sunpro"
 fi
    echo ""
    exit
@@ -275,7 +275,7 @@ rm Make.src Make.pro
 
 echo
 
-cd src/numbers/asm > /dev/null
+cd ./src/numbers/asm > /dev/null
 
 if [ $sys = Linux -o $sys = Darwin ]; then
   asm_dir=x86_64

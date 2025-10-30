@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  max_flow.h
@@ -17,7 +17,7 @@
 #define LEDA_MAXFLOW
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721183
+#define LEDA_ROOT_INCL_ID 722183
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -205,7 +205,7 @@ extern __exportF void max_flow_gen_AMO(GRAPH<int,int>& G, node& s, node& t,
 /*{\Mfunc A generator suggested by Ahuja, Magnanti, and Orlin.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721183
+#if LEDA_ROOT_INCL_ID == 722183
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  matrix.h
@@ -18,7 +18,7 @@
 #define LEDA_MATRIX_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721256
+#define LEDA_ROOT_INCL_ID 722256
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -196,7 +196,7 @@ the test |b == M * b| evaluates to true. The types |integer_vector| and |integer
 inline const char* leda_tname(const matrix*) { return "matrix"; }
 
 
-#if LEDA_ROOT_INCL_ID == 721256
+#if LEDA_ROOT_INCL_ID == 722256
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

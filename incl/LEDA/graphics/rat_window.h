@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_window.h
@@ -17,7 +17,7 @@
 #define LEDA_RAT_WINDOW_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721288
+#define LEDA_ROOT_INCL_ID 722288
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -104,7 +104,7 @@ extern __exportF window& operator<<(window& W, const rat_triangle & t);
 /*{\Mbinopfunc   diplays triangle $t$ at window $W$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721288
+#if LEDA_ROOT_INCL_ID == 722288
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

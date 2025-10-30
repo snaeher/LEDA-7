@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  plane_graph.h
@@ -17,7 +17,7 @@
 #define LEDA_PLANE_GRAPH_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721093
+#define LEDA_ROOT_INCL_ID 722093
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -27,7 +27,7 @@
 #include <LEDA/graph/graph.h>
 
 
-#if LEDA_ROOT_INCL_ID == 721093
+#if LEDA_ROOT_INCL_ID == 722093
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

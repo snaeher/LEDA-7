@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  handle_types.h
@@ -17,7 +17,7 @@
 #define LEDA_HANDLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721155
+#define LEDA_ROOT_INCL_ID 722155
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -109,7 +109,7 @@ handle_base() { PTR = 0; }
 LEDA_END_NAMESPACE
 
 
-#if LEDA_ROOT_INCL_ID == 721155
+#if LEDA_ROOT_INCL_ID == 722155
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

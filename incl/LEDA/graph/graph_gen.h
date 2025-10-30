@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  graph_gen.h
@@ -17,7 +17,7 @@
 #define LEDA_GRAPH_GEN_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721204
+#define LEDA_ROOT_INCL_ID 722204
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -310,7 +310,7 @@ extern __exportF void random_sp_graph(graph&G, int n, int m);
 
 
 
-#if LEDA_ROOT_INCL_ID == 721204
+#if LEDA_ROOT_INCL_ID == 722204
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

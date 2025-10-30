@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  gw_many.c
@@ -67,7 +67,8 @@ int main()
 
     if (wp) {
       GraphWin* gwptr = wp->get_graphwin();
-      if (gwptr) gwptr->edit_loop(e,wp,but,x,y);
+      //if (gwptr) gwptr->edit_loop(e,wp,but,x,y);
+      if (gwptr) gwptr->edit_loop(e,but,x,y);
     }
 
 

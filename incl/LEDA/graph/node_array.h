@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_array.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_ARRAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721200
+#define LEDA_ROOT_INCL_ID 722200
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -220,7 +220,7 @@ maps (cf. section \ref{Node Maps}). }*/
 };
 
 
-#if LEDA_ROOT_INCL_ID == 721200
+#if LEDA_ROOT_INCL_ID == 722200
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

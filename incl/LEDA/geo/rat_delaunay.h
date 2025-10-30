@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_delaunay.h
@@ -17,7 +17,7 @@
 #define LEDA_RAT_DELAUNAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721083
+#define LEDA_ROOT_INCL_ID 722083
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -27,7 +27,7 @@
 #include <LEDA/geo/generic/POINT_SET.h>
 #include <LEDA/geo/kernel_names_undef.h>
 
-#if LEDA_ROOT_INCL_ID == 721083
+#if LEDA_ROOT_INCL_ID == 722083
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

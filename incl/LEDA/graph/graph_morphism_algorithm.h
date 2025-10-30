@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +  graph_morphism_algorithm.h
 +
@@ -16,7 +16,7 @@
 #define GRAPH_MORPHISM_ALGORITHM_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721186
+#define LEDA_ROOT_INCL_ID 722186
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -486,7 +486,7 @@ typename graph_morphism_algorithm<graph_t>::edge_compat graph_morphism_algorithm
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721186
+#if LEDA_ROOT_INCL_ID == 722186
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

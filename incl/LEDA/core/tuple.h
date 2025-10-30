@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  tuple.h
@@ -17,7 +17,7 @@
 #define _LEDA_TUPLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721066
+#define LEDA_ROOT_INCL_ID 722066
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -440,7 +440,7 @@ M[my_qu(2,2,nil,nil)] = 5;
 
 
 
-#if LEDA_ROOT_INCL_ID == 721066
+#if LEDA_ROOT_INCL_ID == 722066
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

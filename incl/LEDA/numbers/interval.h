@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  interval.h
@@ -17,7 +17,7 @@
 #define LEDA_INTERVAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721268
+#define LEDA_ROOT_INCL_ID 722268
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -2203,7 +2203,7 @@ inline int INTERVAL::sign() const
 
 typedef interval_bound_absolute interval;
 
-#if LEDA_ROOT_INCL_ID == 721268
+#if LEDA_ROOT_INCL_ID == 722268
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

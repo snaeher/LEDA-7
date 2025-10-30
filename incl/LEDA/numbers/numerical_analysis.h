@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  numerical_analysis.h
@@ -17,7 +17,7 @@
 #define LEDA_NUMERICAL_ANALYSIS_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721259
+#define LEDA_ROOT_INCL_ID 722259
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -289,7 +289,7 @@ double tol)
  }
 
 
-#if LEDA_ROOT_INCL_ID == 721259
+#if LEDA_ROOT_INCL_ID == 722259
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

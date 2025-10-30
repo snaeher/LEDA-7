@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  gw_dfs.c
@@ -21,23 +21,23 @@
 using namespace leda;
 
 string msg = " \
-Nodes are labeled with\\blue\\bf dfs\\black\\rm and \
-\\blue\\bf completion\\black\\rm numbers.\\n \
-Edges are drawn with different colors.\\10 \
-\\black\\bf  --- Tree-Edges\\rm\\black\\n \
-\\blue2\\bf  --- Forward-Edges\\rm\\black\\n \
-\\red\\bf    --- Backward-Edges\\rm\\black\\n  \
-\\green2\\bf --- Cross-Edges\\rm\\black\\n ";
+Nodes are labeled with their\\blue\\bf dfs\\black\\rm and \
+\\blue\\bf completion\\black\\rm number.\\10 \
+Edges are drawn in different colors\\5 \
+\\black\\bf  ----- Tree-Edges\\rm\\black\\n \
+\\blue2\\bf  ----- Forward-Edges\\rm\\black\\n \
+\\red\\bf    ----- Backward-Edges\\rm\\black\\n  \
+\\green2\\bf ----- Cross-Edges\\rm\\black\\n ";
 
 void about_dfs(GraphWin& gw) 
 { window& W = gw.get_window();
  
   panel P(3*W.width()/4,-1);
  
-  P.text_item("\\bf Depth First Search\\rm\\10");
+  P.text_item("\\bf Depth First Search\\rm\\5");
   P.text_item("This demo illustrates depth-first search on a directed graph. ");
   P.text_item("Please enter a graph - after every update operation ");
-  P.text_item("the result of DFS is shown.\\15 ");
+  P.text_item("the result of DFS is shown.\\10 ");
   P.text_item(msg);
 
   P.button("continue");
@@ -90,7 +90,7 @@ void display_dfs(GraphWin& gw)
   // tree edges
   forall(e,T) {
     gw.set_color(e,black);
-    gw.set_width(e,3);
+    //gw.set_width(e,3);
   }
 
   gw.redraw();
@@ -113,6 +113,7 @@ int main()
 
   gw.display();
 
+
   int h_menu = gw.get_menu("Help");
 
   cout << "h_menu = " << h_menu << endl;
@@ -124,12 +125,26 @@ int main()
 
   gw.set_directed(true);
 
-  gw.set_node_shape(rectangle_node);
-  gw.set_node_label_type(user_label);
-  gw.set_node_label_color(blue);
 
+/*
+  gw.set_node_shape(rectangle_node);
   gw.set_node_width(124);
   gw.set_node_height(62);
+*/
+
+  int dpi = window::screen_dpi();
+
+  gw.set_node_shape(ellipse_node);
+/*
+  gw.set_node_width(2*dpi/3);
+  gw.set_node_height(dpi/3);
+*/
+
+  gw.set_node_width(int(dpi/1.5));
+  gw.set_node_height(int(dpi/2.5));
+
+  gw.set_node_label_type(user_label);
+  gw.set_node_label_color(blue);
 
 
   gw.message("Please edit a graph.");

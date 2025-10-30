@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_polygon.h
@@ -18,7 +18,7 @@
 #define LEDA_RAT_POLYGON_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721146
+#define LEDA_ROOT_INCL_ID 722146
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -43,7 +43,7 @@ inline const char* leda_tname(const rat_polygon*) { return "rat_polygon"; }
 
 #include <LEDA/geo/kernel_names_undef.h>
 
-#if LEDA_ROOT_INCL_ID == 721146
+#if LEDA_ROOT_INCL_ID == 722146
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

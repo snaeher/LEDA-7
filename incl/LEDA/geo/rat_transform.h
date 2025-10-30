@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_transform.h
@@ -18,7 +18,7 @@
 #define LEDA_RAT_TRANSFORM_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721145
+#define LEDA_ROOT_INCL_ID 722145
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -43,7 +43,7 @@ inline const char* leda_tname(const rat_transform*)
 
 #include <LEDA/geo/kernel_names_undef.h>
 
-#if LEDA_ROOT_INCL_ID == 721145
+#if LEDA_ROOT_INCL_ID == 722145
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

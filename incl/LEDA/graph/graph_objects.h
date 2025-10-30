@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  graph_objects.h
@@ -17,7 +17,7 @@
 #define LEDA_GRAPH_OBJECTS_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721225
+#define LEDA_ROOT_INCL_ID 722225
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -101,7 +101,7 @@ inline int leda_type_id(const edge_struct**) { return PTR_TYPE_ID; }
 inline int leda_type_id(const face_struct**) { return PTR_TYPE_ID; }
 
 
-#if LEDA_ROOT_INCL_ID == 721225
+#if LEDA_ROOT_INCL_ID == 722225
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

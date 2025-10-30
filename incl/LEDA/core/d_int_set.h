@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d_int_set.h
@@ -17,7 +17,7 @@
 #define LEDA_D_INT_SET_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721057
+#define LEDA_ROOT_INCL_ID 722057
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -242,7 +242,7 @@ Iterating over all elements (with the iteration macro) requires time $O(b-a+1)$
 plus the time spent in the body of the loop.
 }*/
 
-#if LEDA_ROOT_INCL_ID == 721057
+#if LEDA_ROOT_INCL_ID == 722057
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  _mc_matching_gabow.c
@@ -44,8 +44,13 @@ bool G_card_matching::phase_1() {
     else
       T.del_item(it);
     list < node > dunions;
-    while (2 * Delta <= n) {
-      while ((e = PQ.delete_at_Delta(Delta)) != nil) {
+
+/* Correction by KM  10/16/2025)
+   "while (2 * Delta <= n)" replaced by "while (Delta <= n)"
+*/
+
+    while (Delta <= n)
+    { while ((e = PQ.delete_at_Delta(Delta)) != nil) {
         node x = G.source(e), y = G.target(e); // one of the endpoints must be even, none odd
         if (label[base(x)] != EVEN) swap(x, y);
         if (y == mate[x] || base(x) == base(y) || label[base(y)] == ODD) continue;
@@ -138,6 +143,7 @@ bool G_card_matching::phase_1() {
       } // see section 3.4 Construction of H
       Delta++;
     } // end Delta-Loop
+
     return false; // no augmenting path found
   }
 

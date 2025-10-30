@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  geowin_init.h
@@ -17,7 +17,7 @@
 #define LEDA_GEOWIN_ADDITIONAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721272
+#define LEDA_ROOT_INCL_ID 722272
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -414,7 +414,7 @@ GeoEditScene<T>* geowin_init_basic_type(T* t,string str, F d3_f)
 
 GEOWIN_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721272
+#if LEDA_ROOT_INCL_ID == 722272
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

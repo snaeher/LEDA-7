@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  moore.h
@@ -14,7 +14,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721216
+#define LEDA_ROOT_INCL_ID 722216
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -72,7 +72,7 @@ void  MOORE_T(const graph& g, node s, const edge_array<NT>& cost,
   }
 }
 
-#if LEDA_ROOT_INCL_ID == 721216
+#if LEDA_ROOT_INCL_ID == 722216
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

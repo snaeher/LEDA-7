@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  edge_slot1.h
@@ -17,7 +17,7 @@
 #define LEDA_EDGE_SLOT1_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721201
+#define LEDA_ROOT_INCL_ID 722201
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -141,7 +141,7 @@ E& operator[](edge e)
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721201
+#if LEDA_ROOT_INCL_ID == 722201
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

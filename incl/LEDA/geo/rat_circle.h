@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  rat_circle.h
@@ -18,7 +18,7 @@
 #define LEDA_RAT_CIRCLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721102
+#define LEDA_ROOT_INCL_ID 722102
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -267,7 +267,7 @@ friend __exportF istream& operator>>(istream& in, rat_circle& c);
 
 inline const char* leda_tname(const rat_circle*) { return "rat_circle"; }
 
-#if LEDA_ROOT_INCL_ID == 721102
+#if LEDA_ROOT_INCL_ID == 722102
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

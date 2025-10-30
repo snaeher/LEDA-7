@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  real_window.h
@@ -17,7 +17,7 @@
 #define LEDA_REAL_WINDOW_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721282
+#define LEDA_ROOT_INCL_ID 722282
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -159,7 +159,7 @@ extern __exportF window& draw_filled(window& W, const r_circle_gen_polygon& p, c
 /*{\Mbinopfunc   displays |p| in the window $W$ filled with color $c$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721282
+#if LEDA_ROOT_INCL_ID == 722282
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

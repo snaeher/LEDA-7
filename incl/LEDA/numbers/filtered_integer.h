@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  filtered_integer.h
@@ -17,7 +17,7 @@
 #define LEDA_FILTERED_INTEGER_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721263
+#define LEDA_ROOT_INCL_ID 722263
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -386,7 +386,7 @@ inline filtered_integer& filtered_integer::operator=(const filtered_integer& x)
 
 
 
-#if LEDA_ROOT_INCL_ID == 721263
+#if LEDA_ROOT_INCL_ID == 722263
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

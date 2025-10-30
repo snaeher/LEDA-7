@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  shortest_path.h
@@ -14,7 +14,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721221
+#define LEDA_ROOT_INCL_ID 722221
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -859,7 +859,7 @@ bool NEAR_SHORTEST_PATHS_UNRESTRICTED(graph& G, node s, node t, int m, const edg
 	return true;
 }
 
-#if LEDA_ROOT_INCL_ID == 721221
+#if LEDA_ROOT_INCL_ID == 722221
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 

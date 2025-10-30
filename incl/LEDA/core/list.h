@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  list.h
@@ -17,7 +17,7 @@
 #define LEDA_LIST_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721060
+#define LEDA_ROOT_INCL_ID 722060
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -1014,7 +1014,7 @@ where $e$ is the time complexity of $f$.
 $n$ is always the current length of the list.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721060
+#if LEDA_ROOT_INCL_ID == 722060
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

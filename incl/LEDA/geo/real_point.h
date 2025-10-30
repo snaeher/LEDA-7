@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  real_point.h
@@ -18,7 +18,7 @@
 #define LEDA_REAL_POINT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721081
+#define LEDA_ROOT_INCL_ID 722081
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -457,7 +457,7 @@ extern __exportF bool contained_in_affine_hull(const array<real_point>& A,
 inline const char* leda_tname(const real_point*) { return "real_point"; }
 
 
-#if LEDA_ROOT_INCL_ID == 721081
+#if LEDA_ROOT_INCL_ID == 722081
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

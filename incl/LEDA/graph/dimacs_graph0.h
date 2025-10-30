@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  dimacs_graph0.h
@@ -17,7 +17,7 @@
 #define LEDA_DIMACS_GRAPH0_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721194
+#define LEDA_ROOT_INCL_ID 722194
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -223,7 +223,7 @@ string read_dimacs_graph0(istream& is,
 }
 
 
-#if LEDA_ROOT_INCL_ID == 721194
+#if LEDA_ROOT_INCL_ID == 722194
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

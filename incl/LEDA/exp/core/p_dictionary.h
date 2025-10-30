@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  p_dictionary.h
@@ -17,7 +17,7 @@
 #define LEDA_P_DICTIONARY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721244
+#define LEDA_ROOT_INCL_ID 722244
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -230,7 +230,7 @@ empty, size and change\_inf take time $O(1)$. The space requirement is
 $O(1)$ for each update operation.}*/
  
 
-#if LEDA_ROOT_INCL_ID == 721244
+#if LEDA_ROOT_INCL_ID == 722244
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

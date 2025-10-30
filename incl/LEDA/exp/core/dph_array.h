@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  dph_array.h
@@ -17,7 +17,7 @@
 #define LEDA_DPHARRAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721246
+#define LEDA_ROOT_INCL_ID 722246
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -86,7 +86,7 @@ itype inf(slist_item it) const { return LEDA_CONST_ACCESS(itype,def_list[it]); }
 
 
 
-#if LEDA_ROOT_INCL_ID == 721246
+#if LEDA_ROOT_INCL_ID == 722246
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

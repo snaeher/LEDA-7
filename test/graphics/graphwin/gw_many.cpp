@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2  
++  LEDA 7.2.2  
 +
 +
 +  gw_many.c
@@ -38,7 +38,7 @@ int main()
     int e = read_event(wp,but,x,y);
 
     if (wp == &gw1.get_window()) 
-    { gw1.edit_loop(e,wp,but,x,y);
+    { gw1.edit_loop(e,but,x,y);
       if (e == button_press_event) 
       { int res = gw1.get_edit_result();
         if (res == 0) break; //exit
@@ -48,7 +48,7 @@ int main()
     }
 
     if (wp == &gw2.get_window()) 
-    { gw2.edit_loop(e,wp,but,x,y);
+    { gw2.edit_loop(e,but,x,y);
       if (e == button_press_event) 
       { int res = gw2.get_edit_result();
         if (res == 0) break; //exit

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  node_set.h
@@ -17,7 +17,7 @@
 #define LEDA_NODE_SET_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721189
+#define LEDA_ROOT_INCL_ID 722189
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -117,7 +117,7 @@ take constant time, except for clear which takes time $O(|S|)$. The space
 requirement is $O(n)$, where $n$ is the number of nodes of $G$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721189
+#if LEDA_ROOT_INCL_ID == 722189
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

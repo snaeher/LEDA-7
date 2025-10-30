@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  p_queue.h
@@ -17,7 +17,7 @@
 #define LEDA_PRIORITY_QUEUE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721067
+#define LEDA_ROOT_INCL_ID 722067
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -244,7 +244,7 @@ size of |\Mvar|. The space requirement is $O(n)$.}*/
 Dijkstra's Algorithm (cf. section \ref{Graph and network algorithms})}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721067
+#if LEDA_ROOT_INCL_ID == 722067
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

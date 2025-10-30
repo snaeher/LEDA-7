@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  dynamic_trees.h
@@ -17,7 +17,7 @@
 #define LEDA_DYNAMIC_TREES_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721245
+#define LEDA_ROOT_INCL_ID 722245
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -231,7 +231,7 @@ class __exportC vertex_struct            // one vertex on a dynamic path
 path concatenate(path p, path q, double x, void* e_inf=nil);
 
 
-#if LEDA_ROOT_INCL_ID == 721245
+#if LEDA_ROOT_INCL_ID == 722245
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

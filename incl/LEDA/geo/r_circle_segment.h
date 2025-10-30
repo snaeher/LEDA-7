@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  r_circle_segment.h
@@ -18,7 +18,7 @@
 #define LEDA_R_CIRCLE_SEGMENT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721148
+#define LEDA_ROOT_INCL_ID 722148
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -419,7 +419,7 @@ __exportF void SWEEP_SEGMENTS_SC(const list<r_circle_segment>& S,
 __exportF void INTERSECT_SEGMENTS_BRUTE_FORCE(const list<r_circle_segment>& S, 
 											  GRAPH<r_circle_point,r_circle_segment>& G);
 
-#if LEDA_ROOT_INCL_ID == 721148
+#if LEDA_ROOT_INCL_ID == 722148
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

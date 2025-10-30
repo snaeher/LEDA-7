@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_window_stream.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_WINDOW_STREAM_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721271
+#define LEDA_ROOT_INCL_ID 722271
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -1514,7 +1514,7 @@ void d3_window_stream::insert_graph(const GRAPH<d3_point,int>& G_in, \
 } 
 
 
-#if LEDA_ROOT_INCL_ID == 721271
+#if LEDA_ROOT_INCL_ID == 722271
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

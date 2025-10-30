@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_line.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_LINE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721108
+#define LEDA_ROOT_INCL_ID 722108
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -208,7 +208,7 @@ in  three-dimensional space.
 inline unsigned long ID_Number(const d3_line& l){ return l.ptr()->id; }
 inline const char* leda_tname(const d3_line*){ return "d3_line"; }
 
-#if LEDA_ROOT_INCL_ID == 721108
+#if LEDA_ROOT_INCL_ID == 722108
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

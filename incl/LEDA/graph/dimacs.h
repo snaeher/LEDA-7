@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  dimacs.h
@@ -17,7 +17,7 @@
 #define LEDA_DIMACS_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721198
+#define LEDA_ROOT_INCL_ID 722198
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -157,7 +157,7 @@ extern __exportF void Write_Dimacs_MAT(ostream& os, const graph& G,
 /*{\Mopl   as above for double cost values. }*/
 
 
-#if LEDA_ROOT_INCL_ID == 721198
+#if LEDA_ROOT_INCL_ID == 722198
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

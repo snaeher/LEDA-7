@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_rat_plane.h
@@ -17,7 +17,7 @@
 #define LEDA_D3_RAT_PLANE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721117
+#define LEDA_ROOT_INCL_ID 722117
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -248,7 +248,7 @@ inline unsigned long ID_Number(const d3_rat_plane& p) { return p.ptr()->id; }
 inline const char* leda_tname(const d3_rat_plane*) { return "d3_rat_plane"; }
 
 
-#if LEDA_ROOT_INCL_ID == 721117
+#if LEDA_ROOT_INCL_ID == 722117
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

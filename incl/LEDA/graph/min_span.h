@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  min_span.h
@@ -18,7 +18,7 @@
 
 /*
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721196
+#define LEDA_ROOT_INCL_ID 722196
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 */

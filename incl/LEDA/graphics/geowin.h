@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  geowin.h
@@ -17,7 +17,7 @@
 #define LEDA_GEOWIN_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721283
+#define LEDA_ROOT_INCL_ID 722283
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -6925,7 +6925,7 @@ GEOWIN_END_NAMESPACE
 #endif
 
 
-#if LEDA_ROOT_INCL_ID == 721283
+#if LEDA_ROOT_INCL_ID == 722283
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

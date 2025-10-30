@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  d3_rat_point.h
@@ -19,7 +19,7 @@
 #define LEDA_D3_RAT_POINT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721115
+#define LEDA_ROOT_INCL_ID 722115
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -687,7 +687,7 @@ inline void random_points_on_segment(int n, int maxc, list<d3_rat_point>& L)
 
 
 
-#if LEDA_ROOT_INCL_ID == 721115
+#if LEDA_ROOT_INCL_ID == 722115
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

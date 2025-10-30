@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  real_gen_polygon.h
@@ -18,7 +18,7 @@
 #define LEDA_REAL_GEN_POLYGON_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721119
+#define LEDA_ROOT_INCL_ID 722119
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -38,7 +38,7 @@ inline const char* leda_tname(const real_gen_polygon*) { return "real_gen_polygo
 #include <LEDA/geo/kernel_names_undef.h>
 
 
-#if LEDA_ROOT_INCL_ID == 721119
+#if LEDA_ROOT_INCL_ID == 722119
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  random_source.h
@@ -17,7 +17,7 @@
 #define LEDA_RANDOM_SOURCE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721070
+#define LEDA_ROOT_INCL_ID 722070
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -281,7 +281,7 @@ extern __exportD random_source_mt rand_int;   // standard random input stream
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 721070
+#if LEDA_ROOT_INCL_ID == 722070
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

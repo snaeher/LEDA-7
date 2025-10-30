@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  int_set.h
@@ -17,7 +17,7 @@
 #define LEDA_INTSET_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721058
+#define LEDA_ROOT_INCL_ID 722058
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -168,7 +168,7 @@ member, min and max take constant time. All other operations
 take time $O(b-a+1)$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721058
+#if LEDA_ROOT_INCL_ID == 722058
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

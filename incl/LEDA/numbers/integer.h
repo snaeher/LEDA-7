@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  integer.h
@@ -17,7 +17,7 @@
 #define LEDA_INTEGER_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721254
+#define LEDA_ROOT_INCL_ID 722254
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -422,7 +422,7 @@ inline int compare(const integer& a, const integer& b)
 
 
 
-#if LEDA_ROOT_INCL_ID == 721254
+#if LEDA_ROOT_INCL_ID == 722254
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

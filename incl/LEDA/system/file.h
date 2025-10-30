@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  file.h
@@ -17,7 +17,7 @@
 #define __LEDA_FILE__
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721163
+#define LEDA_ROOT_INCL_ID 722163
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -160,7 +160,7 @@ extern __exportF list<string> get_disk_drives();
 /*{\Mfuncl     returns the list of all disk drives of the system. }*/
 
 
-#if LEDA_ROOT_INCL_ID == 721163
+#if LEDA_ROOT_INCL_ID == 722163
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

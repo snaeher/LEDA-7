@@ -1,6 +1,6 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.1  
++  LEDA 7.2.2  
 +
 +
 +  queue.h
@@ -17,7 +17,7 @@
 #define LEDA_QUEUE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 721050
+#define LEDA_ROOT_INCL_ID 722050
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -131,7 +131,7 @@ $O(1)$, except clear which takes time $O(n)$, where $n$ is the size of the
 queue.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 721050
+#if LEDA_ROOT_INCL_ID == 722050
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif
