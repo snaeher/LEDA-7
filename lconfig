@@ -28,15 +28,21 @@ fi
 
 cmd=yasm
 cmd_path=$(command -v $cmd)
+mach=`uname -m` 
 
 if [ "$cmd_path" != "" ]; then
   echo
   echo \'$cmd\' found: $cmd_path
 else
-  echo
-  echo "'$cmd' not found."
-  echo "Please install the '$cmd' assembler package."
-  exit
+  if [ "$mach" = "arm64" ]; then
+    echo
+    echo "'$cmd' not found, but not required on Apple Silicon (arm64). Proceeding..."
+  else
+    echo
+    echo "'$cmd' not found."
+    echo "Please install the '$cmd' assembler package."
+    exit 1
+  fi
 fi
 
 : '
@@ -79,7 +85,6 @@ fi
 
 sys=`uname`
 ver=`uname -r`
-mach=`uname -m`       
 
 case $sys in
 
@@ -111,6 +116,26 @@ case $name in
       msc*) comp=msc
             ;;
 esac
+
+# --- macOS XQuartz Check ---
+if [ "$sys" = "Darwin" ]; then
+  if [ ! -d "/opt/X11" ]; then
+    echo
+    echo "ERROR: XQuartz is not installed or not found at /opt/X11."
+    echo "LEDA requires XQuartz for X11/Xft headers and libraries on macOS."
+    echo "Please install it via Homebrew by running:"
+    echo
+    echo "    brew install --cask xquartz"
+    echo
+    echo "Important: Please restart your Mac after the installation!"
+    echo
+    exit 1
+  else
+    echo
+    echo "'XQuartz' found at /opt/X11"
+  fi
+fi
+# ---------------------------
 
 
 
@@ -200,8 +225,14 @@ elif [ $sys = Cygwin-g++ ]; then
 elif [ $sys = Darwin32 ]; then
   ASM="ASM = yasm -f macho32 --prefix=_"
 
-elif [ $sys = Darwin ]; then
-  ASM="ASM = yasm -m amd64 -f macho64 --prefix=_"
+elif [ "$sys" = "Darwin" ]; then
+  if [ "$mach" = "arm64" ]; then
+    # no x86 assembler code on arm64 CPU
+    ASM="ASM ="
+  else
+    # use default command on Intel Macs
+    ASM="ASM = yasm -m amd64 -f macho64 --prefix=_"
+  fi
 
 elif [ $sys = Linux32 ]; then
   ASM="ASM = yasm -m x86 -f elf"
@@ -233,6 +264,17 @@ if [ $sys = Cygwin-g++ ]; then
 elif [ $sys = Cygwin ]; then
 
    echo "XLIB = user32.lib gdi32.lib msimg32.lib comdlg32.lib shell32.lib advapi32.lib wsock32.lib" >> Make.pro
+
+elif [ $sys = Darwin ]; then
+
+   # --- macOS (Apple Silicon / Intel) Fixes (XQuartz) ---
+   echo "XLIB = -L/opt/X11/lib -lX11 -lXft" >> Make.pro
+
+   echo "CC += -I/opt/X11/include -I/opt/X11/include/freetype2" >> Make.src
+   echo "PLAIN_C += -I/opt/X11/include -I/opt/X11/include/freetype2" >> Make.src
+
+   echo "LD += -L/opt/X11/lib" >> Make.src
+   echo "LD += -L/opt/X11/lib" >> Make.pro
 
 else
 
@@ -277,8 +319,16 @@ echo
 
 cd ./src/numbers/asm > /dev/null
 
-if [ $sys = Linux -o $sys = Darwin ]; then
+if [ "$sys" = "Linux" ]; then
   asm_dir=x86_64
+elif [ "$sys" = "Darwin" ]; then
+  # Apple Silicon Check!
+  if [ "$mach" = "arm64" ]; then
+    echo "Apple Silicon (arm64) detected. Disabling x86 assembly."
+    asm_dir=none
+  else
+    asm_dir=x86_64
+  fi
 else
 #  echo Platform =  $Platform
   if [ "$Platform" != "x64" ]; then
