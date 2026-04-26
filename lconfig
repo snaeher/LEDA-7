@@ -270,8 +270,8 @@ elif [ $sys = Darwin ]; then
    # --- macOS (Apple Silicon / Intel) Fixes (XQuartz) ---
    echo "XLIB = -L/opt/X11/lib -lX11 -lXft" >> Make.pro
 
-   echo "CC += -I/opt/X11/include -I/opt/X11/include/freetype2" >> Make.src
-   echo "PLAIN_C += -I/opt/X11/include -I/opt/X11/include/freetype2" >> Make.src
+   echo "CC += -I/opt/X11/include -I/opt/X11/include/freetype2 -Dstat64=stat" >> Make.src
+   echo "PLAIN_C += -I/opt/X11/include -I/opt/X11/include/freetype2 -Dstat64=stat" >> Make.src
 
    echo "LD += -L/opt/X11/lib" >> Make.src
    echo "LD += -L/opt/X11/lib" >> Make.pro
