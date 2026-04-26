@@ -1110,8 +1110,8 @@ size_t size_of_file(string fname)
 
 #if defined(__linux__) || defined(__APPLE__)
 unsigned long long size_of_file64(string fname)
-{ struct stat64 stat_buf;
-  if (stat64(fname,&stat_buf) != 0) 
+{ struct stat stat_buf;
+  if (stat(fname,&stat_buf) != 0) 
   { perror("STAT ERROR: ");
     return 0;
    }
