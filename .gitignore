@@ -14,6 +14,11 @@ build.sh
 prog
 res
 
+!config/**/Make.src
+!config/**/Make.pro
+!config/**/shared.mk
+!config/**/static.mk
+
 # Spezifische lconfig-Ordner und Symlinks
 src/numbers/asm/x86/
 incl/AGD
