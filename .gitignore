@@ -1,0 +1,60 @@
+# ==========================================
+# LEDA Build & Config Ignore List
+# ==========================================
+
+# 1. Konfigurationsdateien (generiert durch ./lconfig)
+.lconfig
+Make.src
+Make.pro
+*/Make.src
+*/Make.pro
+shared.mk
+static.mk
+build.sh
+prog
+res
+
+!config/**/Make.src
+!config/**/Make.pro
+!config/**/shared.mk
+!config/**/static.mk
+
+# Spezifische lconfig-Ordner und Symlinks
+src/numbers/asm/x86/
+incl/AGD
+
+# 2. Kompilierte Objektdateien
+**/*.o
+
+# 3. Kompilierte Bibliotheken (statisch & dynamisch)
+libleda.a
+libleda.so
+libleda.dylib
+libleda.sl
+libleda.lib
+leda.dll
+leda.lib
+lib.tmp/
+
+# 4. macOS / OS & Editor spezifische Dateien
+.DS_Store
+*~
+*.swp
+*.out
+
+# 5. Kompilierte Apps und Demos (ohne Endung) ignorieren
+# Ignoriere erstmal pauschal alles in den App/Demo-Ordnern:
+app/*/*
+demo/*/*
+test/*/*
+
+# ... ABER behalte den Quellcode und die Makefiles!
+!app/*/*.cpp
+!app/*/*.h
+!app/*/Makefile
+!demo/*/*.cpp
+!demo/*/*.h
+!demo/*/Makefile
+!test/*/*.cpp
+!test/*/*.h
+!test/*/Makefile
