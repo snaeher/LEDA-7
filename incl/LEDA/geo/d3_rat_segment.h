@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  d3_rat_segment.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_D3_RAT_SEGMENT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722124
+#define LEDA_ROOT_INCL_ID 723107
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -209,7 +209,7 @@ is assigned to |p| and the result is true, otherwise the result is false.}*/
 inline unsigned long ID_Number(const d3_rat_segment& s){ return s.ptr()->id; }
 inline const char* leda_tname(const d3_rat_segment*){ return "d3_rat_segment"; }
 
-#if LEDA_ROOT_INCL_ID == 722124
+#if LEDA_ROOT_INCL_ID == 723107
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

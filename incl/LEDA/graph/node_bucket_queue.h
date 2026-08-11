@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  node_bucket_queue.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_NODE_BUCKET_QUEUE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722235
+#define LEDA_ROOT_INCL_ID 723244
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -131,7 +131,7 @@ void move(node v, int i, node u)
 for(v = PQ.first(i); v != PQ.sentinel(); v = PQ.next(v))
 
 
-#if LEDA_ROOT_INCL_ID == 722235
+#if LEDA_ROOT_INCL_ID == 723244
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -6,7 +6,7 @@
 +  dimacs_graph.h
 +
 +
-+  copyright (c) 1995-2025
++  copyright (c) 1995-2026
 +  by algorithmic solutions software gmbh
 +  all rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_DIMACS_GRAPH_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722240
+#define LEDA_ROOT_INCL_ID 723282
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -631,7 +631,7 @@ void write_dimacs_mat(ostream& out, const graph_t& G,
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 722240
+#if LEDA_ROOT_INCL_ID == 723282
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

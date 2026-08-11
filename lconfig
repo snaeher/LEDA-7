@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 
 CDPATH=0
@@ -22,46 +22,6 @@ if  [ ! -f lconfig ]; then
   echo lconfig must be started in LEDA root directory.
   exit
 fi
-
-
-#check if yasm is available
-
-cmd=yasm
-cmd_path=$(command -v $cmd)
-
-if [ "$cmd_path" != "" ]; then
-  echo
-  echo \'$cmd\' found: $cmd_path
-else
-  echo
-  echo "'$cmd' not found."
-  echo "Please install the '$cmd' assembler package."
-  exit
-fi
-
-: '
-
-# check whether libX11 and libXft are installed
-
-libX11=$(ldconfig -p | grep libX11x.so)
-if [ "$libX11" == "" ]; then
-  echo
-  echo "Missing X11 Library: libX11.so."
-  echo "Please install the 'X11' development package."
-  exit
-fi
-
-libXft=$(ldconfig -p | grep libXftx.so)
-if [ "$libXft" == "" ]; then
-  echo
-  echo "Missing X11 Library: libXft.so."
-  echo "Please install the 'Xft' development package."
-  exit
-fi
-
-'
-
-
 
 
 name=$1
@@ -102,7 +62,11 @@ comp=$name
 case $name in
      *g++*) comp=g++
             ;;
+      gdb*) comp=g++
+            ;;
        CC*) comp=sunpro
+            ;;
+    clang*) comp=clang
             ;;
       xlc*) comp=xlc
             ;;
@@ -132,10 +96,97 @@ fi
 fi
 
 
+#------------------------------------------------------------------------------
+
+# check dependencies (not for cygwin)
+
+if [ $sys != Cygwin ]; then
+
+echo
+echo Checking dependencies ...
+echo
+
+cd config
+
+missing_dep=0
+
+if [ "$mach" != "arm64" ]; then
+
+if [ $missing_dep == 1 ]; then echo; fi
+echo -n "yasm assembler  package (yasm): "
+
+yasm_path=$(command -v yasm)
+
+if [ "$yasm_path" != "" ]; then
+  echo "$yasm_path"
+else
+  echo NOT FOUND.
+  echo "Please install the yasm assembler package 'yasm'."
+  missing_dep=1
+fi
+
+fi
+
+
+if [ $missing_dep == 1 ]; then echo; fi
+echo -n "X11 development package (libx11-dev): "
+
+$comp$cvers x11.cpp -lX11 >& /dev/null
+
+if [ $? == 0 ]; then
+  echo ok
+else
+  echo NOT FOUND.
+  echo "Please install the X11 development package 'libx11-dev'."
+  missing_dep=1
+fi
+
+
+if [ $missing_dep == 1 ]; then echo; fi
+echo -n "Xft development package (libxft-dev): "
+
+$comp$cvers -I/usr/include/freetype2 -I/usr/local/include/freetype2 xft.cpp -lX11 -lXft >& /dev/null
+
+if [ $? == 0 ]; then
+  echo ok
+else
+  echo NOT FOUND.
+  echo "Please install the Xft development package 'libxft-dev'."
+  missing_dep=1
+fi
+
+
+if [ "$sys" = "Darwin" ]; then
+
+echo
+echo -n "XQuartz package (xquartz): "
+
+  if [ -d "/opt/X11" ]; then
+    echo "/opt/X11"
+  else
+    echo NOT FOUND.
+    echo "Please install xquartz via homebrew: brew install --cask xquartz"
+    echo "and restart your computer."
+    missing_dep=1
+  fi
+
+fi
+
+
+if [ $missing_dep == 1 ]; then
+  exit 1
+fi
+
+cd ..
+
+fi
+
+
+#------------------------------------------------------------------------------
+
 if [ $sys = Cygwin -a $comp = g++ ]; then
   sys=Cygwin-g++
 fi
-
 
 echo
 echo Configuring makefiles for $name $Platform and $lib libraries on $sys / $mach
@@ -195,7 +246,7 @@ if [ $sys = Cygwin ]; then
   fi
 
 elif [ $sys = Cygwin-g++ ]; then
-  ASM="ASM = nasm -Dwin32 -f win32"
+  ASM="ASM = yasm -m amd64 -f win64"
 
 elif [ $sys = Darwin32 ]; then
   ASM="ASM = yasm -f macho32 --prefix=_"
@@ -277,27 +328,36 @@ echo
 
 cd ./src/numbers/asm > /dev/null
 
-if [ $sys = Linux -o $sys = Darwin ]; then
-  asm_dir=x86_64
-else
-#  echo Platform =  $Platform
-  if [ "$Platform" != "x64" ]; then
-    asm_dir=x86_32
-  else
-    asm_dir=none
-  fi
+
+asm_dir=none
+
+if [ "$sys" = "Linux" ]; then
+   asm_dir=x86_64
+fi
+
+if [ "$sys" = "Darwin" -a "$mach" != "arm64" ]; then
+   asm_dir=x86_64
+fi
+
+if [ "$sys" = "Cygwin" -a "$Platform" = "x86" ]; then
+   asm_dir=x86_32
+fi
+
+if [ $sys = Cygwin-g++ ]; then
+   asm_dir=x86_64
 fi
 
 
+
 if [ $asm_dir != none ]; then
-  echo Use Assembler in  src/numbers/asm/$asm_dir
+  echo Use assembler code in src/numbers/asm/$asm_dir
   mkdir -p x86
   cp $asm_dir/*.asm x86 
   cp $asm_dir/Make* x86 
 else
   rm -r -f x86
   mkdir x86
-  echo  NO ASSEMBLER for x64
+  echo  NO ASSEMBLER for x64 and arm64
 fi
 
 cd ../../..

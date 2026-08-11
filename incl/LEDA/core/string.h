@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  string.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -19,7 +19,7 @@
 #define LEDA_STRING_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722053
+#define LEDA_ROOT_INCL_ID 723169
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -134,11 +134,17 @@ string& operator=(const string& x)
 
 /*{\Moperations 2. 4.7 }*/
 
-// conversion
+// conversion to const char*
+
+// explicit with (~ operator or c_str() method)
 const char* operator~() const { return ptr()->s; }
-operator const char*()  const { return ptr()->s; }
-char* cstring()         const { return ptr()->s; }
 const char* c_str()     const { return ptr()->s; }
+
+// implicit
+operator const char*()  const { return ptr()->s; }
+
+// makes a copy
+char* cstring() const { return str_dup(ptr()->s); }
 
 int length() const  { return (int)ptr()->len; }
 /*{\Mop        returns the length of string $s$.}*/
@@ -156,7 +162,8 @@ char  operator[](int i) const { return char_at(i); }
 
 
 char& operator[](int i)
-{ if (refs() > 1) *this = cstring();    //disconnect
+{ //if (refs() > 1) *this = cstring();
+  if (refs() > 1) *this = c_str();    //disconnect
   return ptr()->s[i];
 }
 /*{\Marrop     returns a reference to the character at position $i$.\\ 
@@ -335,7 +342,7 @@ double atof() const;
               (zero if it is not the representation of a double). }*/ 
 
 bool equals(const string& x) const
-{ return string::cmp(cstring(),x.cstring()) == 0; }
+{ return string::cmp(c_str(),x.c_str()) == 0; }
 /*\Mop        returns true iff |\Mvar| and $x$ are equal. }*/ 
 
 
@@ -415,43 +422,43 @@ friend string operator+(const string& x, char c)
 
 
 friend bool operator==(const string& x, const string& y)
-{ return string::cmp(x.cstring(),y.cstring())==0; }
+{ return string::cmp(x.c_str(),y.c_str())==0; }
 /*{\Mbinopfunc     true iff $x$ and $y$ are equal.}*/
 
 friend bool operator==(const string& x, const char* y)
-{ return string::cmp(x.cstring(),y)==0; }
+{ return string::cmp(x.c_str(),y)==0; }
 
 friend bool operator==(const char* x, const string& y)
-{ return string::cmp(x,y.cstring())==0; }
+{ return string::cmp(x,y.c_str())==0; }
 
 
 
 friend bool operator!=(const string& x, const string& y)
-{ return string::cmp(x.cstring(),y.cstring())!=0; }
+{ return string::cmp(x.c_str(),y.c_str())!=0; }
 /*{\Mbinopfunc     true iff $x$ and $y$ are not equal.}*/
 
 friend bool operator!=(const string& x, const char* y)
-{ return string::cmp(x.cstring(),y)!=0; }
+{ return string::cmp(x.c_str(),y)!=0; }
 
 friend bool operator!=(const char* x, const string& y)
-{ return string::cmp(x,y.cstring())!=0; }
+{ return string::cmp(x,y.c_str())!=0; }
 
 
 
 friend bool operator< (const string& x, const string& y)
-{ return string::cmp(x.cstring(),y.cstring())<0; }
+{ return string::cmp(x.c_str(),y.c_str())<0; }
 /*{\Mbinopfunc     true iff $x$ is lexicographically smaller than $y$.}*/
 
 friend bool operator> (const string& x, const string& y)
-{ return string::cmp(x.cstring(),y.cstring())>0; }
+{ return string::cmp(x.c_str(),y.c_str())>0; }
 /*{\Mbinopfunc     true iff $x$ is lexicographically greater than $y$.}*/
 
 friend bool operator<=(const string& x, const string& y)
-{ return string::cmp(x.cstring(),y.cstring())<=0; }
+{ return string::cmp(x.c_str(),y.c_str())<=0; }
 /*{\Mbinopfunc     returns $(x < y)\ \Lvert \ (x == y)$.}*/
 
 friend bool operator>=(const string& x, const string& y)
-{ return string::cmp(x.cstring(),y.cstring())>=0; }
+{ return string::cmp(x.c_str(),y.c_str())>=0; }
 /*{\Mbinopfunc     returns $(x > y)\ \Lvert \ (x == y)$.}*/
 
 
@@ -479,7 +486,7 @@ friend istream& operator>>(istream& is, line_string& s)
 
 COMPARE_DECL_PREFIX
 inline int  compare(const string& x, const string& y) 
-{ return string::cmp(x.cstring(),y.cstring()); }
+{ return string::cmp(x.c_str(),y.c_str()); }
 
 unsigned long ID_Number(const string& x);
 
@@ -539,7 +546,7 @@ string& operator<<(string& str, const T& x)
 
 
 
-#if LEDA_ROOT_INCL_ID == 722053
+#if LEDA_ROOT_INCL_ID == 723169
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

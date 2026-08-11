@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  zoom.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -85,6 +85,7 @@ void GraphWin::zoom_area(double x0, double y0, double x1, double y1)
      wy1 += dy1;
      window_init(wx0,wx1,wy0);
      W.flush_buffer();
+     W.get_event(); // allow interaction
     }
 
    W.stop_buffering();
@@ -99,6 +100,9 @@ void GraphWin::zoom_area(double x0, double y0, double x1, double y1)
    hide_labels = false;
 
    redraw();
+
+   W.get_event(); // allow interaction
+
    set_flush(save_flush);
 }
 

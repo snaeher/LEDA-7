@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _string.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -184,8 +184,8 @@ string::string(const char* format, ...)
 
 
 string& string::operator+=(const string& x) 
-{ const char* p = cstring(); 
-  const char* q = x.cstring();
+{ const char* p = c_str(); 
+  const char* q = x.c_str();
   *this = string(new string_rep(p,q));
   return *this; 
  }
@@ -202,7 +202,7 @@ istream& operator>>(istream& in, string& x)
 
 
 ostream& operator<<(ostream& out, const string& x) 
-{ return out << x.cstring(); }
+{ return out << x.c_str(); }
 
 
 string string::substring(int first, int stop) const
@@ -218,7 +218,7 @@ string string::substring(int first, int stop) const
   if (len <= 0)  return string("");
 
   char* buf = new char[len+1];
-  strncpy(buf,cstring()+first,len);
+  strncpy(buf,c_str()+first,len);
   buf[len] = '\0';
 
   string result(buf);
@@ -235,8 +235,8 @@ int string::index(string x, int i) const
 
   if (x_len == 0 || i < 0 || i >= s_len) return -1;
 
-  char* sp = cstring();
-  char* xp = x.cstring();
+  const char* sp = c_str();
+  const char* xp = x.c_str();
 
 /*
   int result = -1;
@@ -259,15 +259,15 @@ int string::index(char c, int i) const
   return (i<len) ? i : -1;
 */
 
-  const char* p = cstring();
+  const char* p = c_str();
   const char* q = strchr(p+i,c);
   return q ? int(q-p) : -1;
  }
 
 int string::last_index(string x, int i) const
 {
-  char* sp = cstring();
-  char* xp = x.cstring();
+  const char* sp = c_str();
+  const char* xp = x.c_str();
 
   int s_len = length();
   int x_len = x.length();
@@ -286,7 +286,7 @@ int string::last_index(string x, int i) const
 
 int string::last_index(char c, int i) const
 { if (i < 0 || i >= length()) return -1;
-  const char* p = cstring();
+  const char* p = c_str();
   const char* q = strrchr(p+i,c);
   return q ? int(q-p) : -1;
  }
@@ -361,7 +361,7 @@ string string::replace(const string& s1, const string& s2, int n) const
 
 string string::format(string f) const
 { char buf[512];
-  sprintf(buf,~f,cstring());
+  sprintf(buf,~f,c_str());
   return string(buf);
  }
 
@@ -390,7 +390,8 @@ string string::expand_tabs(int tab_w) const
 { 
   int k = count_words('\t');
 
-  if (k <= 1) return *this;
+  //if (k <= 1) return *this;
+  if (k < 1) return *this;
 
   string* A = new string[k];
 
@@ -548,8 +549,8 @@ string string::iso8859_to_utf() const
 
 // parse and return integer
 
-int    string::atoi() const { return std::atoi(cstring()); }
-double string::atof() const { return std::atof(cstring()); }
+int    string::atoi() const { return std::atoi(c_str()); }
+double string::atof() const { return std::atof(c_str()); }
 
 
 

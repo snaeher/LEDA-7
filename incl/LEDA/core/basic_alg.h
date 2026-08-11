@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  basic_alg.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_BASIC_ALG_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722074
+#define LEDA_ROOT_INCL_ID 723182
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -37,7 +37,7 @@ extern __exportF double SELECT(double*,double*,int);
 extern __exportF void INTSORT(int* A, int n);
 
 
-#if LEDA_ROOT_INCL_ID == 722074
+#if LEDA_ROOT_INCL_ID == 723182
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

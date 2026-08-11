@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  leda_vs_gmp.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 #include <LEDA/system/stream.h>
 #include <assert.h>
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 #include <gmp.h>
 #endif
 
@@ -137,7 +137,7 @@ string integer_test(const integer_t& A, const integer_t& B, int n)
 }
 
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 string gmp_integer_test(const mpz_t& A, const mpz_t& B, int n)
 {
    int i;
@@ -283,7 +283,7 @@ int main(int argc, char** argv)
 
   string s0 = integer_test(A,B,n);
 
-#if defined(__unix)
+#if defined(__unix__) || defined(__APPLE__)
   cout << endl;
   cout << endl;
   cout << "GMP " << gmp_version  << endl;

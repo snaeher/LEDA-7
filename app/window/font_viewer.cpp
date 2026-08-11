@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  font.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -89,9 +89,27 @@ void draw_char(window& W, int c)
   double xt = W.xmax() - W.text_width(s) - 20*pix;
   double yt = W.ymax() - 10*pix;
 
+/*
+  double xt = W.xmax() - W.text_width(s) - 20*pix;
+  double yt = W.ymax() - 50*pix;
+*/
+
   W.draw_text(xt,yt,s);
 
-  char* prect = W.get_pixrect(xt,yt,xt+(width-1)*pix,yt-(height-1)*pix);
+  double xt1 = xt + (width-1)*pix;
+  double yt1 = yt - (height-1)*pix;
+
+/*
+
+  cout << string("get_pixrect: [%d,%d,%d,%d]",
+           W.xpix(xt), W.ypix(yt), W.xpix(xt1), W.ypix(yt1)) << endl;
+  int pix_w = W.xpix(xt1) - W.xpix(xt) + 1;
+  int pix_h = W.ypix(yt1) - W.ypix(yt) + 1;
+  cout << string("pix_w = %d  pix_h = %d",pix_w,pix_h) << endl;
+*/
+
+  char* prect = W.get_pixrect(xt,yt,xt1,yt1);
+
   unsigned int* bgra = (unsigned int*)W.pixrect_to_bgra(prect);
 
   int char_w = W.get_pixrect_width(prect);
@@ -200,6 +218,8 @@ int main()
 
   window W("Font Viewer");
 
+  //W.set_precision(16);
+
   W.set_clear_on_resize(false);
   W.set_redraw(redraw);
 
@@ -281,6 +301,7 @@ int main()
       for(int i=0; i<128; i++) {
         current_char = i;
         redraw(&W);
+out << endl;
       }
 
       out << "};" << endl;

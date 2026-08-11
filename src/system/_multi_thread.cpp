@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  multi-thread.cpp
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -22,9 +22,11 @@
 
 #include <windows.h>
 
+/*
 STDAPI VarCmp(tagVARIANT*, tagVARIANT*, unsigned long, unsigned long) {
     return 0;
 }
+*/
 
 LEDA_BEGIN_NAMESPACE
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  assert.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_ASSERT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722162
+#define LEDA_ROOT_INCL_ID 723188
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -42,7 +42,7 @@ int assert_error(const char* cond, const char* fname, int line);
 
 #endif
 
-#if LEDA_ROOT_INCL_ID == 722162
+#if LEDA_ROOT_INCL_ID == 723188
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

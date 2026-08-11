@@ -254,12 +254,6 @@ int main()
     run_tests(i,gen,n,m,true);
   }
 
-  cout << endl;
-  cout << "FINISHED" << endl;
-  cout << endl;
- 
-
   return 0;
-
 }
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  array2.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_ARRAY2_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722049
+#define LEDA_ROOT_INCL_ID 723165
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -159,7 +159,7 @@ take time $O(1)$, the space requirement is $O(|I|* sizeof(E))$.
 }*/
 
 
-#if LEDA_ROOT_INCL_ID == 722049
+#if LEDA_ROOT_INCL_ID == 723165
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -6,7 +6,8 @@ D = x11
 L = leda
 
 force: 
-	@touch *.cpp
+	@$(MAKE) all
+	@touch *.o
 	@$(MAKE) all
 
 

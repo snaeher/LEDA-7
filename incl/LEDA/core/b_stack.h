@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  b_stack.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_BSTACK_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722071
+#define LEDA_ROOT_INCL_ID 723158
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -125,7 +125,7 @@ Bounded stacks are implemented by \CC vectors. All operations take
 time $O(1)$. The space requirement is $O(n)$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 722071
+#if LEDA_ROOT_INCL_ID == 723158
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

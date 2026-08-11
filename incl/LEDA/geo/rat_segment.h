@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  rat_segment.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_RAT_SEGMENT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722123
+#define LEDA_ROOT_INCL_ID 723081
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -443,7 +443,7 @@ inline int parallel(const rat_segment& s1, const rat_segment& s2)
 
 inline const char* leda_tname(const rat_segment*) { return "rat_segment"; }
 
-#if LEDA_ROOT_INCL_ID == 722123
+#if LEDA_ROOT_INCL_ID == 723081
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

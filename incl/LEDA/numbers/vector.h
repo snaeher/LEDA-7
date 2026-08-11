@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  vector.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_VECTOR_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722260
+#define LEDA_ROOT_INCL_ID 723130
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -230,7 +230,7 @@ the test |b == M * x| evaluates to true. The types |integer_vector| and |integer
 }*/
 
 
-#if LEDA_ROOT_INCL_ID == 722260
+#if LEDA_ROOT_INCL_ID == 723130
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

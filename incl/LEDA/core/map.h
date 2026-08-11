@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  map.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_MAP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722051
+#define LEDA_ROOT_INCL_ID 723163
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -242,7 +242,7 @@ const E& inf(item it) const { return LEDA_CONST_ACCESS(E,ch_map::inf(it)); }
 };
 
 
-#if LEDA_ROOT_INCL_ID == 722051
+#if LEDA_ROOT_INCL_ID == 723163
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

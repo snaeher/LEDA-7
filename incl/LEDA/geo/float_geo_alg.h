@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  float_geo_alg.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 #define LEDA_FLOAT_GEO_ALG_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722125
+#define LEDA_ROOT_INCL_ID 723105
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -887,7 +887,7 @@ LEDA_END_NAMESPACE
 #endif
 
 
-#if LEDA_ROOT_INCL_ID == 722125
+#if LEDA_ROOT_INCL_ID == 723105
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

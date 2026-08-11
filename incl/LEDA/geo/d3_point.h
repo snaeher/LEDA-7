@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  d3_point.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_D3_POINT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722149
+#define LEDA_ROOT_INCL_ID 723065
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -454,7 +454,7 @@ extern __exportF d3_point point_on_positive_side(const d3_point& a, const d3_poi
 inline const char* leda_tname(const d3_point*) { return "d3_point"; }
 
 
-#if LEDA_ROOT_INCL_ID == 722149
+#if LEDA_ROOT_INCL_ID == 723065
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

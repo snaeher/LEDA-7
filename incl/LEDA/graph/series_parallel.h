@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  series_parallel.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_SERIES_PARALLEL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722181
+#define LEDA_ROOT_INCL_ID 723246
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -143,7 +143,7 @@ inline bool Is_Series_Parallel(const graph& G, spq_tree& spqt)
 
 
 
-#if LEDA_ROOT_INCL_ID == 722181
+#if LEDA_ROOT_INCL_ID == 723246
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

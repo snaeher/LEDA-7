@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  geowin.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_GEOWIN_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722283
+#define LEDA_ROOT_INCL_ID 723209
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -2263,6 +2263,8 @@ private:
   window* separate_menu_win;
   bool win_created; // was main window created by GeoWin constructor ??
 
+  bool show_menu_bar;
+
   public :
 
   void init_quick_access_window(); // initialize quick access window ...
@@ -2955,9 +2957,7 @@ values: |GEOWIN_MOVE_SELECTED| (moves the selected objects of the scene) and |GE
   double get_ymax() const;
   /*{\Mopl returns the maximal y-coordinate of the drawing area.}*/  
 
-  void display(int x,int y, bool frame);
-
-  void display(int x=window::center ,int y=window::center){ display(x,y,true); }
+  void display(int x=window::center, int y=window::center);
   /*{\Mop opens |\Mvar| at |(x,y)|. }*/
   
   window& get_window() const { return *Wp; }
@@ -2994,6 +2994,9 @@ values: |GEOWIN_MOVE_SELECTED| (moves the selected objects of the scene) and |GE
   /*{\Mopl  display a status window ($b$={\it true}) or not ($b$={\it false}).
   The operation should be called before the first $display$ - operation of |\Mvar|.  }*/
   { bool prev = show_status; show_status = b; return prev; }
+
+  void hide_menu_bar() { show_menu_bar = false; }
+  /*{\Mop hide main menu bar. }*/
   
 /*{
 \Mtext
@@ -3958,6 +3961,7 @@ The class |geowin_text| has the following constructors:
            currently active scene fill the window. }*/
 
   void zoom_undo();
+
 
   void reset_window();
   /*{\Mopl resets the visible range to the values that where current when constructing |\Mvar|.}*/
@@ -5164,7 +5168,7 @@ inline void geowin_window_object_input(window& w, GeoObj& t)
 // overload ...
 inline void geowin_window_object_input(window& w, gen_polygon& t)
 {
-  w.set_tmp_label(">> gen_polygon: holes in clockwise order, Quit-Middle mouse button");
+  w.set_frame_label(">> gen_polygon: holes in clockwise order, Quit-Middle mouse button");
   w.read(t); 
   w.reset_frame_label();
 }
@@ -5172,7 +5176,7 @@ inline void geowin_window_object_input(window& w, gen_polygon& t)
 inline void geowin_window_object_input(window& w, rat_gen_polygon& t)
 {
   gen_polygon g;
-  w.set_tmp_label(">> rat_gen_polygon: holes in clockwise order, Quit-Middle mouse button");
+  w.set_frame_label(">> rat_gen_polygon: holes in clockwise order, Quit-Middle mouse button");
   w.read(g);
   t = rat_gen_polygon(g);
   w.reset_frame_label();
@@ -6925,7 +6929,7 @@ GEOWIN_END_NAMESPACE
 #endif
 
 
-#if LEDA_ROOT_INCL_ID == 722283
+#if LEDA_ROOT_INCL_ID == 723209
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

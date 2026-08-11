@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  rational.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 #define LEDA_RATIONAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722257
+#define LEDA_ROOT_INCL_ID 723135
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -228,7 +228,7 @@ numbers which represent the numerator and the denominator. The sign
 is represented by the sign of the numerator.}*/
 
 #ifndef NO_LEDA
-#if LEDA_ROOT_INCL_ID == 722257
+#if LEDA_ROOT_INCL_ID == 723135
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  r_circle_polygon.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 #define LEDA_R_CIRCLE_POLYGON_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722122
+#define LEDA_ROOT_INCL_ID 723121
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -464,7 +464,7 @@ leda::LedaForallVerticesNextItem((P),vert_loop_var))
 #define forall_segments(s,P)  forall(s,(P).segments())
 #endif
 
-#if LEDA_ROOT_INCL_ID == 722122
+#if LEDA_ROOT_INCL_ID == 723121
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

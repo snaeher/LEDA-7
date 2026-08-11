@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  window.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_WINDOW_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722287
+#define LEDA_ROOT_INCL_ID 723215
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -887,11 +887,24 @@ void draw_circle(const point& p, double r, color c=window::fgcol);
 void draw_circle(const circle& C, color c=window::fgcol);
 /*{\Mopl     draws circle $C$.}*/
 
+
 void draw_ellipse(double x, double y, double r1, double r2, color c=window::fgcol);
 /*{\Mopl     draws the ellipse with center $(x,y)$ and radii $r_1$ and $r_2$.}*/
 
 void draw_ellipse(const point& p, double r1, double r2, color c=window::fgcol);
 /*{\Mopl     draws the ellipse with center $p$ and radii $r_1$ and $r_2$.}*/
+
+// rotated ellipses
+
+/*
+void draw_ellipse(double x, double y, double r1, double r2, double phi, color c=window::fgcol);
+*/
+/*{\Mopl     draws the ellipse with center $(x,y)$ and radii $r_1$ and $r_2$ rotated by angle $phi$ around $p$.}*/
+
+/*
+void draw_ellipse(const point& p, double r1, double r2, double phi, color c=window::fgcol);
+*/
+/*{\Mopl     draws the ellipse with center $p$ and radii $r_1$ and $r_2$ rotated by angle $phi$ round $p$.}*/
 
 
 
@@ -925,8 +938,20 @@ void draw_filled_circle(const circle& C, color c=window::fgcol)
 void draw_filled_ellipse(double x, double y, double r1, double r2, color c=window::fgcol);
 /*{\Mopl  draws a filled ellipse with center $(x,y)$ and radii $r_1$ and $r_2$.}*/
 
+
+/*
+void draw_filled_ellipse(double x, double y, double r1, double r2, double phi, color c=window::fgcol);
+*/
+/*{\Mopl  draws a filled ellipse with center $(x,y)$ and radii $r_1$ and $r_2$ rotated by angle $phi$ around $(x,y)$.}*/
+
+
 void draw_filled_ellipse(const point& p, double r1, double r2, color c=window::fgcol);
 /*{\Mopl  draws a filled ellipse with center $p$ and radii $r_1$ and $r_2$.}*/
+
+/*
+void draw_filled_ellipse(const point& p, double r1, double r2, double phi, color c=window::fgcol);
+*/
+/*{\Mopl  draws a filled ellipse with center $p$ and radii $r_1$ and $r_2$ rotated by angle $phi$ around $p$.}*/
 
 
 //polygons 
@@ -1366,13 +1391,13 @@ void flush_buffer(double x0, double y0, double x1, double y1)
 { BASE_WINDOW::flush_buffer(x0,y0,x1,y1); }
 /*{\Mopl  copies the contents of rectangle $(x0,y0,x1,y1)$ of the
           buffer pixrect into the corresponding rectangle of the
-          drawin area. }*/
+          window area. }*/
 
 void flush_buffer(double dx,double dy,double x0,double y0,double x1,double y1) 
 { BASE_WINDOW::flush_buffer(dx,dy,x0,y0,x1,y1); }
 /*{\Mopl  copies the contents of rectangle $(x0,y0,x1,y1)$ of the
           buffer pixrect into the corresponding rectangle of the
-          drawin area translated by vector $(dx,dy)$. }*/
+          window area translated by vector $(dx,dy)$. }*/
 
 
 void stop_buffering() { BASE_WINDOW::stop_buffering(); }
@@ -1622,8 +1647,21 @@ int  read_event()
 { int val; double x,y; return BASE_WINDOW::read_event(val,x,y); }
 /*{\Mopl   waits for next event in window $W$ and returns it. }*/
 
+int  read_event(int timeout)
+{ int val; double x,y; unsigned long t;
+  return BASE_WINDOW::read_event(val,x,y,t,timeout); }
+/*{\Mopl   waits for next event in window $W$ for $timeout$ msec and 
+           returns it if no event occured $no\_event$ is returned. }*/
+
+
 int  get_event(int& val, double& x, double& y)
 { return BASE_WINDOW::get_event(val,x,y); }
+/*{\Mopl   if there is an event for window $W$ in the event queue a 
+           $W.read\_event$ operation is performed, otherwise the integer 
+           constant $no\_event$ is returned. }*/
+
+int  get_event()
+{ int val; double x,y; return BASE_WINDOW::get_event(val,x,y); }
 /*{\Mopl   if there is an event for window $W$ in the event queue a 
            $W.read\_event$ operation is performed, otherwise the integer 
            constant $no\_event$ is returned. }*/
@@ -1663,14 +1701,19 @@ The operations listed in this section are useful for simple input of
 strings, numbers, and Boolean values.
 }*/
 
+
+/*{\Moptions nextwarning=no}*/
+void    acknowledge(string s);
+/*{\Mopl     displays string $s$ and asks for acknowledgement.}*/
+
+
 bool    confirm(string s);
 /*{\Mop      displays string $s$ and asks for confirmation. 
 	     Returns true iff the answer was ``yes''.}*/
 
-/*{\Moptions nextwarning=no}*/
-void    notice(string s);
-void    acknowledge(string s);
-/*{\Mopl     displays string $s$ and asks for acknowledgement.}*/
+
+void    toast(string s, double duration=2.0);
+/*{\Mopl     displays string $s$ for $duration$ seconds.}*/
 
 
 int     read_panel(string h, int n, string* S);
@@ -2588,7 +2631,7 @@ int __stdcall WinMain(void*,void*,char*,int) { return main_tmp(); }
 
 
 
-#if LEDA_ROOT_INCL_ID == 722287
+#if LEDA_ROOT_INCL_ID == 723215
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

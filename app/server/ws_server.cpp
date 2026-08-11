@@ -2,6 +2,8 @@
 #include <LEDA/system/file.h>
 #include <LEDA/core/list.h>
 
+#include <assert.h>
+
 
 
 #if defined(__win32__)
@@ -48,97 +50,83 @@ void log_child(string msg) {
 }
 
 
-
-
-int exec_program(string prog, string arg, string env)
+int exec_program(string prog, const list<string>& L_arg, 
+                              const list<string>& L_env)
 {
-  string path = "./" + prog;
+  string s;
+  string path;
+
+  if (prog.starts_with("/")) 
+    path = prog;
+  else
+    path = "./" + prog;
 
   string cwd = get_directory();
-
-/*
-  string cmd = "env " + env + " " + path;
-  if (arg != "") cmd += " " + arg;
-  int stat = system(cmd);
-  if (stat == -1) {
-      log_child(string("system: errno=%d %s", errno, strerror(errno)));
-  }
-  return stat;
-*/
-
-
-/*
-  // do not fork again
-
-  if (fork() != 0) // parent
-  { int stat = 0;
-    wait(&stat); // wait for the child to terminate
-    if (WIFEXITED(stat)) stat = WEXITSTATUS(stat);
-    return stat;
-   }
-*/
 
   // child
 
   log_child("exec " + path);
-  log_child("arg: " + arg);
-  log_child("cwd: " + get_directory());
+  log_child("cwd: " + cwd);
 
-  string A[16];
-  int n = env.split(A,16);
+  const char* argv[] = {0,0,0,0,0,0,0,0,0,0};
+  assert(L_arg.length() < 10);
 
-  char** envp = new char*[n+1];
-  for(int i=0; i<n; i++) {
-    log_child("env: " + A[i]);
-    envp[i] = A[i].cstring();
-  }
-  envp[n] = 0;
-
-//execle(~path,~prog,NULL,(char* const*)envp);
-
-  const char* argv[] = {0,0,0};
   argv[0] = prog;
-  if (arg != "") argv[1] = arg;
 
-  execve(~path,(char* const*)argv,(char* const*)envp);
+  int i = 1;
+  forall(s,L_arg) {
+    log_child("arg: " + s);
+    argv[i++] = s.cstring();
+  }
+
+
+  const char* envp[] = {0,0,0,0,0,0,0,0,0,0};
+  assert(L_env.length() < 10);
+
+  int j = 0;
+  forall(s,L_env) {
+    log_child("env: " + s);
+    envp[j++] = s.cstring();
+  }
+
+  execve(path,(char* const*)argv,(char* const*)envp);
 
   // execve only returns in case of error
   log_child(string("EXECVE ERROR(%d): %s", errno, strerror(errno)));
-
-  delete[] envp;
 
   return 0;
 }
 
 
 
-void start_program(string prog, string arg, string ip, int fd, bool full)
+void start_program(string prog, string arg, string ip, int fd, bool maximized)
 {
-  demo_log << time_string()      << " ";
-  demo_log << ip.format("%-16s") << " ";
-  demo_log << prog               << " ";
-
-  if (arg != "") demo_log << arg << " ";
-  if (full) demo_log << "F";
-
-  demo_log << endl;
+  demo_log << time_string()      << " " 
+           << ip.format("%-16s") << " " 
+           << prog << " " << arg << " "
+           << "maximized = " << maximized  << endl;
 
   string home = getenv("HOME");
 
-  string env = "WS_SOCK_FD=" + string("%d",fd);
-  env += " WS_CLIENT=" + ip;
-  env += " HOME=" + home;
-  env += " LD_LIBRARY_PATH=.";
-  env += " TERM=xterm";
-  env += " LEDAROOT=/home/naeher/leda";
+  list<string> L_arg;
+  if (arg != "") L_arg.append(arg);
 
-  if (full) env += " LEDA_OPEN_MAXIMIZED=1";
+  list<string> L_env;
+  L_env.append("WS_SOCK_FD=" + string("%d",fd));
+  L_env.append("WS_CLIENT=" + ip);
+  L_env.append("HOME=" + home);
+  L_env.append("LD_LIBRARY_PATH=.");
+  L_env.append("TERM=xterm");
+  L_env.append("LEDAROOT=/home/naeher/leda");
 
-  int status = exec_program(prog,arg,env);
+  if (maximized) {
+    L_env.append("LEDA_OPEN_MAXIMIZED=1");
+  }
+
+  int status = exec_program(prog,L_arg,L_env);
 
   // never reached (exec_program does not return)
   log_child(string("EXIT STATUS = %d",status));
-
 }
   
 
@@ -153,21 +141,23 @@ int main(int argc, char** argv)
   ws_log << "---------------------------------------------------" << endl;
 
   signal(SIGUSR1,SIG_IGN); // SIGUSR1 only kills apps not server
+
   signal(SIGCHLD,SIG_IGN); // do not wait for child processes 
 
 
   leda_socket sock;
   sock.set_port(port);
 
+  log(string("LISTEN: port = %d",port));
+
   if (!sock.listen())
   { log(string("Listen Error: ") + sock.get_error());
     return 1;
    }
 
-
   for (;;)  
   {
-    //log("Waiting for connection ...");
+    //log("ACCEPT: waiting for connection ...");
 
     if (!sock.accept())
     { log("Accept Error: " + sock.get_error());
@@ -207,18 +197,15 @@ int main(int argc, char** argv)
 
         if (msg.starts_with("start")) 
         { 
-          bool full = msg.starts_with("start_full");
+          bool maximized = msg.starts_with("start_max");
 
           int p = msg.index(":");
           string prog = msg.substring(p+1).trim();
 
-          string arg = "";
-          if (msg.starts_with("start_terminal"))
-          { arg = prog;
-            prog = "window/terminal";
-           }
-
-          start_program(prog,arg,client_ip,sock_fd,full);
+          if (msg.starts_with("start_terminal") || prog.starts_with("/"))
+            start_program("window/terminal",prog,client_ip,sock_fd,maximized);
+          else
+            start_program(prog,"",client_ip,sock_fd,maximized);
 
           break;
          }

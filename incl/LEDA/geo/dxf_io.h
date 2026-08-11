@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  dxf_io.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define DXF_IO_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722133
+#define LEDA_ROOT_INCL_ID 723077
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -188,7 +188,7 @@ private: // output related
 	string Layer;
 };
 
-#if LEDA_ROOT_INCL_ID == 722133
+#if LEDA_ROOT_INCL_ID == 723077
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

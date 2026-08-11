@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  agd_client.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -52,14 +52,14 @@ static void agd_error(GraphWin& gw)
 bool GraphWin::socket_connect()
 { window& W = get_window();
 
-  W.set_tmp_label("Trying to connect to " + sock.get_host());
+  W.set_frame_label("Trying to connect to " + sock.get_host());
   if (!sock.connect(5))
   { LEDA_EXCEPTION(0,"Could not connect to AGD-Server");
     return false;
    }
   sock.send_string(GraphWin::version_str());
   sock.wait("ok");
-  W.set_tmp_label("Connected to " + sock.client_ip());
+  W.set_frame_label("Connected to " + sock.client_ip());
   return true;
 }
 

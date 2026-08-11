@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  ray.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_RAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722143
+#define LEDA_ROOT_INCL_ID 723086
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -278,7 +278,7 @@ inline bool parallel(const ray& r1, const ray& r2)
 
 inline const char* leda_tname(const ray*) { return "ray"; }
 
-#if LEDA_ROOT_INCL_ID == 722143
+#if LEDA_ROOT_INCL_ID == 723086
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -264,7 +264,7 @@ bool websocket::server_handshake()
     cout << answer << endl;
   }
 
-  sock->send((char*)answer.cstring(),answer.length());
+  sock->send((char*)answer.c_str(),answer.length());
 
   return true;
 }
@@ -540,11 +540,14 @@ void websocket::send_frame(unsigned char opcode, unsigned char* buf, size_t len)
    }
    else
    { // ws server
+/*
+     sock->send((char*)frame,p-frame);
+     sock->send((char*)buf,len);
+*/
      for(size_t i=0; i<len; i++) *p++ = buf[i];
     }
 
    assert(p == frame+frame_sz);
-
    sock->send((char*)frame,frame_sz);
  
    delete[] frame;
@@ -555,7 +558,7 @@ void websocket::send_frame(unsigned char opcode, unsigned char* buf, size_t len)
 
 void websocket::send_text(string text)
 { //cout << "SEND TEXT FRAME: " << text << endl;
-  send_frame(OPCODE_TEXT,(unsigned char*)text.cstring(),text.length());
+  send_frame(OPCODE_TEXT,(unsigned char*)text.c_str(),text.length());
 }
 
 

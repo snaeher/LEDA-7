@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  menu.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_MENU_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722275
+#define LEDA_ROOT_INCL_ID 723202
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -99,7 +99,7 @@ void set_graphwin(GraphWin* p) { grawin_ptr = p; }
 };
 
 
-#if LEDA_ROOT_INCL_ID == 722275
+#if LEDA_ROOT_INCL_ID == 723202
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

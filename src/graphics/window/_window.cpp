@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _window.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -491,6 +491,22 @@ void window::draw_filled_ellipse(double x,double y,double r1,double r2,color c)
 
 void window::draw_filled_ellipse(const point& p, double r1, double r2, color c)
 { BASE_WINDOW::draw_filled_ellipse(p.xcoord(),p.ycoord(),r1,r2,c); }
+
+/*
+// rotated ellipses
+
+void window::draw_ellipse(double x,double y,double r1,double r2,double phi, color c)
+{ BASE_WINDOW::draw_ellipse(x,y,r1,r2,phi,c); }
+
+void window::draw_ellipse(const point& p, double r1, double r2, double phi, color c)
+{ BASE_WINDOW::draw_ellipse(p.xcoord(),p.ycoord(),phi,r1,r2,c); }
+
+void window::draw_filled_ellipse(double x,double y,double r1,double r2,double phi,color c)
+{ BASE_WINDOW::draw_filled_ellipse(x,y,r1,r2,phi,c); }
+
+void window::draw_filled_ellipse(const point& p, double r1, double r2, double phi,color c)
+{ BASE_WINDOW::draw_filled_ellipse(p.xcoord(),p.ycoord(),r1,r2,phi,c); }
+*/
 
 
 
@@ -1692,10 +1708,13 @@ list<point> window::read_polygon()
 
   p = first;
 
-  drawing_mode save = set_mode(xor_mode);
+  drawing_mode dm = set_mode(xor_mode);
+  //int lw = set_line_width(1);
 
   while (read_mouse_seg(p.xcoord(),p.ycoord(),x,y) == MOUSE_BUTTON(1))
   { 
+    set_mode(src_mode);
+
     if (!shift_key_down()) 
       { point q(x,y);
         draw_segment(p,q);
@@ -1708,7 +1727,12 @@ list<point> window::read_polygon()
          draw_segment(pl.tail(),l);
          p = pl.tail();
         }
+
+     set_mode(xor_mode);
   }
+
+  set_mode(dm);
+  //set_line_width(lw);
 
   //draw_segment(first,p);
 
@@ -1717,8 +1741,6 @@ list<point> window::read_polygon()
   { list_item it1 = pl.succ(it);
     if (it1 ) draw_segment(pl[it],pl[it1]);
    }
-
-  set_mode(save);
 
   if (buf) start_buffering();
 
@@ -1909,14 +1931,14 @@ window& window::read_arc(point& src, point& tgt, point& middle)
 
 
 window& window::operator>>(point& p)    
-{ set_tmp_label(">> POINT");
+{ set_frame_label(">> POINT");
   read(p); 
   reset_frame_label();
   return *this; 
  }
 
 window& window::operator>>(segment& s)  
-{ set_tmp_label(">> SEGMENT");
+{ set_frame_label(">> SEGMENT");
   read(s); 
   reset_frame_label();
   return *this; 
@@ -1924,28 +1946,28 @@ window& window::operator>>(segment& s)
 
 
 window& window::operator>>(ray& r)  
-{ set_tmp_label(">> RAY");
+{ set_frame_label(">> RAY");
   read(r); 
   reset_frame_label();
   return *this; 
  }
 
 window& window::operator>>(line& l)     
-{ set_tmp_label(">> LINE");
+{ set_frame_label(">> LINE");
   read(l); 
   reset_frame_label();
   return *this; 
  }
 
 window& window::operator>>(circle& C)   
-{ set_tmp_label(">> CIRCLE");
+{ set_frame_label(">> CIRCLE");
   read(C); 
   reset_frame_label();
   return *this; 
  }
 
 window& window::operator>>(polygon& P)  
-{ set_tmp_label(">> POLYGON");
+{ set_frame_label(">> POLYGON");
   read(P); 
   reset_frame_label();
   return *this; 
@@ -1960,7 +1982,7 @@ window& window::operator>>(gen_polygon& P)
 */
 
 window& window::operator>>(gen_polygon& P)
-{ set_tmp_label(">> GEN_POLYGON");
+{ set_frame_label(">> GEN_POLYGON");
   read(P); 
   reset_frame_label();
   return *this;
@@ -1968,19 +1990,18 @@ window& window::operator>>(gen_polygon& P)
 
 
 window& window::operator>>(rectangle& r) 
-{ set_tmp_label(">> RECTANGLE");
+{ set_frame_label(">> RECTANGLE");
   read(r);
   reset_frame_label();
   return *this;
 }
 
 window& window::operator>>(triangle& t) 
-{ set_tmp_label(">> TRIANGLE");
+{ set_frame_label(">> TRIANGLE");
   read(t);
   reset_frame_label();
   return *this;
 }
-
 bool window::confirm(string s)
 { panel p;
   p.text_item("");
@@ -1992,6 +2013,39 @@ bool window::confirm(string s)
 }
 
 
+void window::toast(string msg, double duration)
+{ 
+  string fnt = "B37";
+  color fg_clr = grey3;
+  color bg_clr = ivory;
+
+  int width,height;
+  window::font_size(fnt,msg,width,height);
+  width = int(1.25*width);
+  height = int(2.0*height);
+ 
+  window w(width,height);
+  w.set_bg_color(bg_clr);
+  w.display(*this, window::center,window::center);
+  w.set_font(fnt);
+  w.draw_ctext(msg,fg_clr);
+
+  leda_wait(duration);
+
+/*
+  double x,y;
+  unsigned long t;
+  int val;
+  int msec = int(1000*duration);
+  window* wp;
+  while (read_event(wp,val,x,y,t,msec) != no_event) {}
+// BASE_WINDOW::read_event((BASE_WINDOW*&)wp,val,x,y,t,msec)
+*/
+
+  w.close();
+}
+
+
 void window::acknowledge(string s)
 { panel p;
   p.text_item("");
@@ -2000,8 +2054,6 @@ void window::acknowledge(string s)
   p.fbutton("ok");
   p.open(*this);
 }
-
-void window::notice(string s) { acknowledge(s); }
 
 
 int  window::read_panel(string header, int n, string* L)
@@ -2022,23 +2074,32 @@ int  window::read_vpanel(string header, int n, string* L)
 
 void  window::panel_read(string prompt, string& x)
 { panel P("STRING INPUT PANEL");
-  P.string_item(prompt,x);
+  P.text_item("");
+  panel_item it = P.string_item(prompt,x);
   P.fbutton("continue");
-  P.open(*this);
+  P.display(*this);
+  P.activate_item(it);
+  P.read();
  }
 
 void  window::panel_read(string prompt, int& x)
 { panel P("INT INPUT PANEL");
-  P.int_item(prompt,x);
+  P.text_item("");
+  panel_item it = P.int_item(prompt,x);
   P.fbutton("continue");
-  P.open(*this);
+  P.display(*this);
+  P.activate_item(it);
+  P.read();
 }
 
 void  window::panel_read(string prompt, double& x)
 { panel P("DOUBLE INPUT PANEL");
-  P.real_item(prompt,x);
+  P.text_item("");
+  panel_item it = P.real_item(prompt,x);
   P.fbutton("continue");
-  P.open(*this);
+  P.display(*this);
+  P.activate_item(it);
+  P.read();
  }
 
 
@@ -2967,14 +3028,12 @@ int window::string_edit(double x0, double y1, string& s, int& curs_pos,
   //if (val == KEY_RETURN) return -1;
   if (val == KEY_ESCAPE) return -1;
 
-  char c    = (char)val;
-  int  j    = curs_pos;
+  //char c    = (char)val;
+  int c = val;
+  int j = curs_pos;
             
-#if defined(__BORLANDC__)
+//if (!iscntrl(c))
   if (isprint(c))
-#else
-  if (!iscntrl(c))
-#endif
   { s = s.insert(j,string(c));
     j++;
    }
@@ -2982,10 +3041,10 @@ int window::string_edit(double x0, double y1, string& s, int& curs_pos,
   { 
     switch (c) {
 
-case KEY_RETURN:    s = s.insert(j++,"\n");
-                    break;
+     case KEY_RETURN:    s = s.insert(j++,"\n");
+                         break;
 
-     case KEY_DOWN:    s = s.insert(j++,"\n");
+     case KEY_DOWN:      s = s.insert(j++,"\n");
                          break;
 
      case KEY_BACKSPACE: if (j > 0) s = s.del(--j);

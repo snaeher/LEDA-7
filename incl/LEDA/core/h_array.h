@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  h_array.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_H_ARRAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722064
+#define LEDA_ROOT_INCL_ID 723156
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -176,7 +176,7 @@ Hashing arrays are implemented by hashing with chaining. Access operations
 take expected time $O(1)$. In many cases, hashing arrays are more efficient 
 than dictionary arrays (cf. \ref{Dictionary Arrays}).}*/
 
-#if LEDA_ROOT_INCL_ID == 722064
+#if LEDA_ROOT_INCL_ID == 723156
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

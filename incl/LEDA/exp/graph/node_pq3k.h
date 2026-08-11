@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  node_pq3k.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_NODE_PQ2k_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722250
+#define LEDA_ROOT_INCL_ID 723154
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -264,7 +264,7 @@ node del_min(prio_t& p, const dist_array& dist)
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 722250
+#if LEDA_ROOT_INCL_ID == 723154
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

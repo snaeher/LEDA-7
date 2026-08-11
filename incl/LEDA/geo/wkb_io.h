@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  wkb_io.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define WKB_IO_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722118
+#define LEDA_ROOT_INCL_ID 723116
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -128,7 +128,7 @@ private:
 	ostream* Output;
 };
 
-#if LEDA_ROOT_INCL_ID == 722118
+#if LEDA_ROOT_INCL_ID == 723116
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  r_circle_point.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 #define LEDA_R_CIRCLE_POINT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722104
+#define LEDA_ROOT_INCL_ID 723102
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -281,7 +281,7 @@ __exportF istream& operator>>(istream& is, r_circle_point& p);
 inline const char* leda_tname(const r_circle_point*) { return "r_circle_point"; }
 
 
-#if LEDA_ROOT_INCL_ID == 722104
+#if LEDA_ROOT_INCL_ID == 723102
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

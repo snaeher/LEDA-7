@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  graph.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_GRAPH_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722233
+#define LEDA_ROOT_INCL_ID 723278
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -2228,7 +2228,7 @@ LEDA_END_NAMESPACE
 
 
 
-#if LEDA_ROOT_INCL_ID == 722233
+#if LEDA_ROOT_INCL_ID == 723278
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

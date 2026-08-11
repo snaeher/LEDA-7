@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  filtered_rational.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_FILTERED_RATIONAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722264
+#define LEDA_ROOT_INCL_ID 723141
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -234,7 +234,7 @@ inline int compare(const filtered_rational& x,
 numbers which represent the numerator and the denominator.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 722264
+#if LEDA_ROOT_INCL_ID == 723141
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  rat_triangle.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_RAT_TRIANGLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722127
+#define LEDA_ROOT_INCL_ID 723117
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -245,7 +245,7 @@ inline istream& operator>>(istream& in, rat_triangle& T)
  }
 
 
-#if LEDA_ROOT_INCL_ID == 722127
+#if LEDA_ROOT_INCL_ID == 723117
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

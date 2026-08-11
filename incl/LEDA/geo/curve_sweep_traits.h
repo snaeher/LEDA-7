@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  curve_sweep_traits.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_CURVE_SWEEP_TRAITS_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722086
+#define LEDA_ROOT_INCL_ID 723119
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -295,7 +295,7 @@ private:
 	COORD Infinity;
 }; // eof curve_sweep_traits_rat_segment
 
-#if LEDA_ROOT_INCL_ID == 722086
+#if LEDA_ROOT_INCL_ID == 723119
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  dimacs_graph0.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_DIMACS_GRAPH0_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722194
+#define LEDA_ROOT_INCL_ID 723284
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -223,7 +223,7 @@ string read_dimacs_graph0(istream& is,
 }
 
 
-#if LEDA_ROOT_INCL_ID == 722194
+#if LEDA_ROOT_INCL_ID == 723284
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

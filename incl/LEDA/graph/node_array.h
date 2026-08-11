@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  node_array.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_NODE_ARRAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722200
+#define LEDA_ROOT_INCL_ID 723221
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -220,7 +220,7 @@ maps (cf. section \ref{Node Maps}). }*/
 };
 
 
-#if LEDA_ROOT_INCL_ID == 722200
+#if LEDA_ROOT_INCL_ID == 723221
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

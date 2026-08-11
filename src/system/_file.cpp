@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _file.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,6 +17,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+
 
 #include <sys/stat.h>
 
@@ -31,7 +32,11 @@
 #endif
 
 #include <windows.h>
+
+#if !defined(__GNUC__)
 #include <conio.h>
+#endif
+
 #endif
 
 
@@ -52,6 +57,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 
 #if defined(__APPLE__)
 /*
@@ -101,7 +107,10 @@ void remove_trailing_directory_delimiter(string& dir)
 
 
 
+/*
 #if defined(__unix__) && !defined(__win32__)
+*/
+#if defined(__unix__) || defined(__CYGWIN__)
 
 #ifndef P_tmpdir
 #define P_tmpdir "/tmp"
@@ -210,8 +219,8 @@ string get_home_directory()
 
 bool create_directory(string fname)
 { string fn = fname.replace_all(" ","\\ ");
-  struct stat stat_buf;
-  if (stat(fname,&stat_buf) == 0) return false;
+  struct stat sb;
+  if (stat(fname,&sb) == 0) return false;
 /*
   if (system("mkdir " + fn) & 0xFF) return false;
   return is_directory(fname);
@@ -220,15 +229,20 @@ bool create_directory(string fname)
 }
 
 bool is_directory(string fname)
-{ struct stat stat_buf;
-  if (stat(fname,&stat_buf) != 0) return false;
-  return (stat_buf.st_mode & S_IFMT) == S_IFDIR;
+{ struct stat sb;
+  if (stat(fname,&sb) != 0) return false;
+  return (sb.st_mode & S_IFMT) == S_IFDIR;
 }
 
 bool is_file(string fname)
-{ struct stat stat_buf;
-  if (stat(fname,&stat_buf) != 0) return false;
-  return (stat_buf.st_mode & S_IFMT) == S_IFREG;
+{ struct stat sb;
+  if (stat(fname,&sb) != 0) return false;
+  return (sb.st_mode & S_IFMT) == S_IFREG;
+}
+
+bool is_executable(string fname)
+{ struct stat sb;
+  return (stat(fname,&sb) == 0 && (sb.st_mode & S_IXUSR));
 }
 
 
@@ -239,29 +253,29 @@ bool create_link(string path, string link)
 
 
 bool is_link(string fname)
-{ struct stat stat_buf;
-  if (lstat(fname,&stat_buf) != 0) return false;
-  return (stat_buf.st_mode & S_IFMT) == S_IFLNK;
+{ struct stat sb;
+  if (lstat(fname,&sb) != 0) return false;
+  return (sb.st_mode & S_IFMT) == S_IFLNK;
 }
 
 
 /*
 size_t size_of_file(string fname)
-{ struct stat stat_buf;
-  if (stat(fname,&stat_buf) != 0) 
+{ struct stat sb;
+  if (stat(fname,&sb) != 0) 
      LEDA_EXCEPTION(1,"size_of_file: file does no exist");
-  return stat_buf.st_size);
+  return sb.st_size);
 }
 */
 
 
 /*
 time_t time_of_file(string fname)
-{ struct stat stat_buf;
-  if (stat(fname,&stat_buf) != 0) 
+{ struct stat sb;
+  if (stat(fname,&sb) != 0) 
      LEDA_EXCEPTION(1,"time_of_file: cannot access file.");
   // time of last modification
-  return stat_buf.st_mtime;
+  return sb.st_mtime;
 }
 */
 
@@ -286,7 +300,7 @@ string set_directory(string new_dir)
 }
 
 static void read_directory(string dir_name, int what, list<string>& L, 
-                                                           char* pat=0)
+                                                      const char* pat=0)
 { // what == 0: all files
   // what == 1: regular files 
   // what == 2: sub-directories
@@ -413,7 +427,7 @@ bool open_file(string fname)
 #endif
 
 
-#if defined(__win32__) || defined(__win64__)
+#if (defined(__win32__) || defined(__win64__)) && !defined(__CYGWIN__)
 
 static string LastErrorMessage(const char* function) 
 { 
@@ -502,31 +516,37 @@ bool is_file(string name)
   if (att == 0xFFFFFFFF) return false;
   return !(att & FILE_ATTRIBUTE_DIRECTORY); 
   //WIN32_FIND_DATA fd;
-  //HANDLE ha = FindFirstFile(name.cstring(),&fd);
+  //HANDLE ha = FindFirstFile(name.c_str(),&fd);
   //return (ha && (ha != (HANDLE)0xffffffff);
  }
+
+bool is_executable(string fname)
+{  DWORD bin_type = 0;
+   return GetBinaryTypeA(fname,&bin_type) != 0;
+}
 
 
 bool create_link(string path, string link)
 { 
+  bool result = false;
+
 #if !defined(__GNUC__) 
+
   int flags = 0;
 #if _MSC_VER >= 1920
-  // >= vs studio 2019
   flags |= SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
 #endif
   if (is_directory(path)) flags |= SYMBOLIC_LINK_FLAG_DIRECTORY;
 
   path = path.replace_all("/","\\");
   // link --> path
-  //bool b =  CreateSymbolicLinkA(link,path,flags);
-  bool b =  CreateSymbolicLinkA(link,path,flags) == TRUE;
-  if (!b) {
+  result =  CreateSymbolicLinkA(link,path,flags) == TRUE;
+  if (!result) {
     LEDA_EXCEPTION(0,LastErrorMessage("create_link"));
   }
-  return b;
 #endif
-  return false;
+
+  return result;
 }
 
 bool is_link(string) { return false; }
@@ -535,7 +555,7 @@ bool is_link(string) { return false; }
 int size_of_file(string fname)
 { 
   WIN32_FIND_DATA fd;
-  HANDLE ha = FindFirstFile(fname.cstring(),&fd);
+  HANDLE ha = FindFirstFile(fname.c_str(),&fd);
   //if (ha == NULL || ha == (HANDLE)0xffffffff)
   if (ha == NULL)
      LEDA_EXCEPTION(1,"size_of_file: file does no exist");
@@ -576,7 +596,7 @@ string get_directory()
 string set_directory(string new_dir)
 { string old_dir = get_directory();
   if (is_directory(new_dir))
-    SetCurrentDirectory(new_dir.cstring());
+    SetCurrentDirectory(new_dir.c_str());
   else
     LEDA_EXCEPTION(1,string("set_directory: %s is not a directory.",~new_dir));
   return old_dir;
@@ -585,7 +605,7 @@ string set_directory(string new_dir)
 
 
 static void read_directory(string dir_name, int what, list<string>& L, 
-                                                             char* pat = 0)
+                                                      const char* pat = 0)
 { 
   L.clear();
 
@@ -722,8 +742,41 @@ bool open_url(string url)
 
 
 bool open_file(string fname)
-{
-  return ShellExecute(0,0,fname,0,0,SW_SHOW) != NULL;
+{ 
+  string cmd = string("notepad.exe ") + fname;
+
+  cout << cmd << endl;
+
+  ReleaseCapture();
+  SetFocus(NULL);
+
+  //if (ShellExecute(0,0,fname,0,0,SW_SHOW) != NULL)
+  //if (ShellExecute(GetDesktopWindow(),"open",fname,NULL,NULL,SW_SHOW) != NULL)
+  //if (create_process_wait(cmd,true))
+
+  if (create_process(cmd,true))
+  { // go to end of text file
+    sleep(1.5);
+    cout << "send ctrl-end" << endl;
+    const int KEY_DOWN = 0x0000;
+    const int KEY_UP = 0x0002;
+    keybd_event(VK_CONTROL,0,KEY_DOWN,0);
+    keybd_event(VK_END,0,KEY_DOWN,0);
+    keybd_event(VK_END,0,KEY_UP,0);
+    keybd_event(VK_CONTROL,0,KEY_UP,0);
+
+
+/*
+    keybd_event(VK_RETURN,0,KEY_DOWN,0);
+    keybd_event(VK_RETURN,0,KEY_UP,0);
+*/
+
+    return true;
+   }
+
+   cout << LastErrorMessage(cmd) << endl;
+
+  return false;
 }
 
 
@@ -747,7 +800,7 @@ list<string> get_files(string dir)
 
 list<string> get_files(string dir, string pattern)
 { list<string> L;
-  read_directory(dir,1,L,pattern.cstring());
+  read_directory(dir,1,L,pattern.c_str());
   return L;
  }
 
@@ -759,7 +812,7 @@ list<string> get_directories(string dir)
 
 list<string> get_directories(string dir, string pattern)
 { list<string> L;
-  read_directory(dir,2,L,pattern.cstring());
+  read_directory(dir,2,L,pattern.c_str());
   return L;
  }
 
@@ -795,9 +848,41 @@ string first_file_in_path(string fname, string path, char sep)
 /*
 bool create_process(string cmd, bool show)
 { int flag = show ? SW_SHOW : SW_HIDE;
-  return WinExec(cmd.cstring(),flag) > 31; 
+  return WinExec(cmd.c_str(),flag) > 31; 
 }
 */
+
+
+BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM param)
+{
+  DWORD id = GetWindowThreadProcessId(hwnd,NULL);
+
+  //cout << "param = " << (DWORD)param << "  id = " << id << endl;
+
+  char text[256];
+  GetWindowText(hwnd,text,256);
+
+  if (string(text).index("Notepad") != -1) {
+    cout << text << " id = " << id << " param = " << param << endl;
+    SetFocus(hwnd);
+    const int KEY_DOWN = 0x0000;
+    const int KEY_UP = 0x0002;
+    keybd_event(VK_CONTROL,0,KEY_DOWN,0);
+    keybd_event(VK_END,0,KEY_DOWN,0);
+    keybd_event(VK_END,0,KEY_UP,0);
+    keybd_event(VK_CONTROL,0,KEY_UP,0);
+    return false;
+  }
+
+/*
+  if (id == (DWORD)param) {
+    cout << "FOUND: id = " << id << endl;
+    return false;
+  }
+*/
+
+  return true;
+}
 
 bool create_process(string cmd, bool show)
 { 
@@ -812,7 +897,9 @@ bool create_process(string cmd, bool show)
   if (!CreateProcess(NULL,(LPTSTR)~cmd,NULL,NULL,false,0,0,0,&si,&pi)) 
     return false;
     
+/*
   WaitForSingleObject(pi.hProcess,0);
+*/
 
 /*
   DWORD res;
@@ -820,6 +907,11 @@ bool create_process(string cmd, bool show)
 */
 
   CloseHandle(pi.hThread);
+
+/*
+  sleep(3.0);
+  EnumWindows(&EnumWindowsProc,pi.dwThreadId);
+*/
 
   return true;
 }
@@ -900,23 +992,42 @@ bool battery_status(int& ac_status, int& percent, int& minutes)
 void play_sound(string fname)
 {
 /*
-  PlaySound(fname.cstring(),NULL,SND_FILENAME|SND_ASYNC);
+  PlaySound(fname.c_str(),NULL,SND_FILENAME|SND_ASYNC);
 */
 }
 
 // console functions
 
-
-void init_console()
-{ HANDLE hstdin = GetStdHandle(STD_INPUT_HANDLE);
-  DWORD mode_old;
-  GetConsoleMode(hstdin,&mode_old);
-  DWORD mode = mode_old ^ (ENABLE_MOUSE_INPUT | ENABLE_WINDOW_INPUT);
-  SetConsoleMode(hstdin,mode);
+bool con_size(int& rows, int& cols)
+{ CONSOLE_SCREEN_BUFFER_INFO csbi;
+  if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),&csbi))
+  { rows = csbi.srWindow.Bottom - csbi.srWindow.Top  + 1;
+    cols = csbi.srWindow.Right  - csbi.srWindow.Left + 1;
+    return true;
+   }
+  return false;
 }
 
 
-char read_console(int msec)
+
+void con_init()
+{ HANDLE hstdin = GetStdHandle(STD_INPUT_HANDLE);
+  DWORD mode_old;
+  GetConsoleMode(hstdin,&mode_old);
+
+  // disable mouse and window events and ctrl-c handling
+  DWORD mode = mode_old;
+  mode ^= ENABLE_MOUSE_INPUT; 
+  mode ^= ENABLE_WINDOW_INPUT;
+  mode ^= ENABLE_PROCESSED_INPUT;
+
+  SetConsoleMode(hstdin,mode);
+
+  //SetConsoleCtrlHandler(0,TRUE);
+}
+
+
+char con_read(int msec)
 {
   char c = 0;
 
@@ -940,7 +1051,7 @@ char read_console(int msec)
 }
 
 
-bool peek_console(int msec)
+bool con_peek(int msec)
 { bool result = false;
 
   HANDLE h_stdin = GetStdHandle(STD_INPUT_HANDLE);
@@ -964,7 +1075,7 @@ bool peek_console(int msec)
   return result;
 }
 
-void flush_console() {
+void con_flush() {
   HANDLE h_stdin = GetStdHandle(STD_INPUT_HANDLE);
   FlushConsoleInputBuffer(h_stdin);
 }
@@ -1034,6 +1145,17 @@ void play_sound(string fname) {
 
 // console functions
 
+void con_init() {}
+ 
+bool con_size(int& rows, int& cols) 
+{ winsize ws;
+  ioctl(0,TIOCGWINSZ,&ws);
+  rows = ws.ws_row;
+  cols = ws.ws_col;
+  return true;
+ }
+
+
 bool fd_poll(int fd, int msec)
 {
   timeval polltime;
@@ -1050,9 +1172,9 @@ bool fd_poll(int fd, int msec)
   return select(fd+1,&rdset,&wrset,&xset,&polltime) > 0;
 }
 
-bool peek_console(int msec) { return fd_poll(0,msec); }
+bool con_peek(int msec) { return fd_poll(0,msec); }
 
-char read_console(int msec)
+char con_read(int msec)
 { if (fd_poll(0,msec))
   { char c = 0;
     if (read(0,&c,1) == 1) return c;
@@ -1060,7 +1182,7 @@ char read_console(int msec)
   return 0;
 }
 
-void flush_console() { }
+void con_flush() { }
 
 
 #endif
@@ -1098,44 +1220,57 @@ size_t size_of_file(string fname)
 */
 
 size_t size_of_file(string fname)
-{ struct stat stat_buf;
-  if (stat(fname,&stat_buf) != 0) 
+{ struct stat sb;
+  if (stat(fname,&sb) != 0) 
   { perror("STAT ERROR: ");
     return 0;
    }
-  //off_t sz = stat_buf.st_size;
-  return (size_t)stat_buf.st_size;
+  //off_t sz = sb.st_size;
+  return (size_t)sb.st_size;
 }
 
 
-#if defined(__linux__) || defined(__APPLE__)
+//#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__)
 unsigned long long size_of_file64(string fname)
-{ struct stat64 stat_buf;
-  if (stat64(fname,&stat_buf) != 0) 
+{ struct stat64 sb;
+  if (stat64(fname,&sb) != 0) 
   { perror("STAT ERROR: ");
     return 0;
    }
-  return stat_buf.st_size;
+  return sb.st_size;
+}
+#else
+//#if defined(__CYGWIN__)
+#if defined(__CYGWIN__) || defined(__APPLE__)
+unsigned long long size_of_file64(string fname)
+{ struct stat sb;
+  if (stat(fname,&sb) != 0) 
+  { perror("STAT ERROR: ");
+    return 0;
+   }
+  return sb.st_size;
 }
 #else
 unsigned long long size_of_file64(string fname)
-{ struct __stat64 stat_buf;
-  if (_stat64(fname,&stat_buf) != 0) 
+{ struct __stat64 sb;
+  if (_stat64(fname,&sb) != 0) 
   { perror("STAT ERROR: ");
     return 0;
    }
-  return stat_buf.st_size;
+  return sb.st_size;
 }
+#endif
 #endif
 
 
 
 time_t time_of_file(string fname)
-{ struct stat stat_buf;
-  if (stat(fname,&stat_buf) != 0) 
+{ struct stat sb;
+  if (stat(fname,&sb) != 0) 
      return 0;
   else
-     return stat_buf.st_mtime;
+     return sb.st_mtime;
 }
 
 

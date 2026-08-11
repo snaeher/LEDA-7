@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  setup.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -958,8 +958,10 @@ static void display_setup_panel(panel& P, window& W)
   int xleft,xright,ytop,ybot;
   W.frame_box(xleft,ytop,xright,ybot);
 
+  if (ytop < 10) ytop = 10;
+
   int screen_width = window::screen_width();
-  
+
   if (xleft+xright > screen_width)
     P.display(-(xleft-1),ytop);
   else

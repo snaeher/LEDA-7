@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _version.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -20,8 +20,8 @@ LEDA_BEGIN_NAMESPACE
 const char* compile_date  =  __DATE__ ;
 const char* compile_time  =  __TIME__;
 
-const char* version_string  = "LEDA 7.2.2";
-const char* copyright_string= "LEDA 7.2.2 (c) 1995-2025 Algorithmic Solutions";
+const char* version_string  = "LEDA 7.2.3";
+const char* copyright_string= "LEDA 7.2.3 (c) 1995-2026 Algorithmic Solutions";
 
 // The string "copyright_window_string" is used to print a
 // notice into the lower right corner of every LEDA window. 

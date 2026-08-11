@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _file_view.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -335,8 +335,16 @@ void LedaFileViewer(const list<string>& L, int lines, int cols, string label)
 {
   if (cols == 0) cols = 80;
 
-  int w = int(cols*window::screen_dpi()/10.35);
-  int h = int(1.2*w);
+  //int w = int(cols*window::screen_dpi()/10.35);
+
+  int font_w, font_h;
+  window::font_size("F","H",font_w,font_h);
+
+  cout << "font: " << font_h << " x " << font_w << endl;
+
+  int w = cols*font_w;
+  int h = int(1.1*w);
+
 
   menu file_menu;
   file_menu.button("&Load File",file_load,file_handler);
@@ -366,9 +374,11 @@ void LedaFileViewer(const list<string>& L, int lines, int cols, string label)
 
   W.set_fixed_font();
 
+/*
   w = W.real_to_pix(80*W.text_width("H")) + 10;
   h = int(1.15*w);
   W.resize(W.xpos(),W.ypos(),w,h);
+*/
 
   dname = get_directory();
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  shortest_path.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -14,7 +14,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722221
+#define LEDA_ROOT_INCL_ID 723234
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -859,7 +859,7 @@ bool NEAR_SHORTEST_PATHS_UNRESTRICTED(graph& G, node s, node t, int m, const edg
 	return true;
 }
 
-#if LEDA_ROOT_INCL_ID == 722221
+#if LEDA_ROOT_INCL_ID == 723234
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _ws.cpp
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -14,8 +14,9 @@
 
 #include <LEDA/core/string.h>
 #include <LEDA/core/list.h>
+#include <LEDA/core/h_array.h>
 #include <LEDA/core/d_array.h>
-#include <LEDA/core/impl/ch_hash.h>
+
 
 #if defined(TLS_SOCKET)
 #include <LEDA/system/tls_socket.h>
@@ -58,8 +59,9 @@ extern void CLOSE_DISPLAY();
 extern void UPDATE_DISPLAY(unsigned int* pixels, int w, int h, 
                            int x0, int y0, int x1, int y1, int x, int y);
 
-extern int  NEXT_EVENT(string& s, int& v, int& x, int& y, unsigned long& t,
-                                                          int timeout);
+extern int  NEXT_EVENT(string& s, int& v1, int& v2, int& x, int& y, 
+                                                            unsigned long& t,
+                                                            int timeout);
 extern void SET_CURSOR(int id);
 
 extern void SEND_TEXT(string txt);
@@ -89,14 +91,30 @@ static websocket* wsp = 0;
 static int format = RGB;
 static int compression = 1;  // off(0) on(1) auto(2)
 
-/*
 static unsigned long bytes_total = 0;
 static unsigned long bytes_sent = 0;
-*/
+
 
 static int cursor_id = -1;
 
+static int display_width = 0;
+static int display_height = 0;
+
 static unsigned int* buffer_pixels = 0; 
+static int buffer_sz = 0;
+
+
+static void init_buffer(int width, int height) 
+{ 
+  if (width == display_width && height == display_height) return;
+
+  buffer_sz = width*height;
+  if (buffer_pixels) delete[] buffer_pixels;
+  buffer_pixels = new unsigned int[buffer_sz];
+  for(int i=0; i<buffer_sz; i++) buffer_pixels[i] = 0xff000000;  // undefined
+  display_width = width;
+  display_height = height;
+}
 
 
 inline unsigned int result_pixel(unsigned int* pixels, int i, bool write)
@@ -105,15 +123,19 @@ inline unsigned int result_pixel(unsigned int* pixels, int i, bool write)
   // return pixels[i] if they are different and 0x00000001 if equal
   // set buffer_pixels[i] = pixels[i] if write = true
 
+  assert(i < buffer_sz);
+
   unsigned int pix1 = pixels[i] & 0xffffff;
   unsigned int pix2 = buffer_pixels[i];
+
   if (write) buffer_pixels[i] = pix1;
+
   // alpha = 0 in result !
   return (pix1 == pix2) ? 0x00000001 : pix1;
 }
 
 
-inline int send_buffer(unsigned char* buf, int buf_sz)
+static int send_buffer(unsigned char* buf, int buf_sz)
 { // do not compress first byte (format) and set compression bit
   int bytes = buf_sz;
   if (compression == 1 || (compression == 2 && buf_sz > COMPRESSION_LIMIT)) 
@@ -131,7 +153,8 @@ inline int send_buffer(unsigned char* buf, int buf_sz)
 
 
 static void signal_handler(int sig) {
-  cout << string("WS: SIGNAL(%d) %s",sig,sys_siglist[sig]) << endl;
+  //cout << string("WS: SIGNAL(%d) %s",sig,sys_siglist[sig]) << endl;
+  cout << string("WS: SIGNAL(%d)",sig) << endl;
   cout << "WS: SERVER DISCONNECT  --> CLOSE & EXIT" << endl;
   CLOSE_DISPLAY();
   exit(0);
@@ -158,29 +181,10 @@ void CLOSE_DISPLAY()
 }
 
 
-
-int OPEN_DISPLAY(int& width, int& height, int& depth, int& dpi)
+static int ws_connect()
 {
-  // return socket fd (-1 on error)
-
-  if (wsp) {
-    // display opened already
-    return  wsp->sock_fd();
-  }
-
-  string prog_name = program_invocation_name;
-
-  cout << endl;
-  cout << "OPEN DISPLAY: prog = " << prog_name << endl;
-  cout << endl;
-
-  signal(SIGUSR1,signal_handler);
-  signal(SIGTERM,signal_handler);
-
-/*
   bytes_total = 0;
   bytes_sent = 0;
-*/
 
 #if !defined(TLS_SOCKET)
   sockp = new leda_socket; 
@@ -237,14 +241,14 @@ int OPEN_DISPLAY(int& width, int& height, int& depth, int& dpi)
     if (!wsp->listen()) {
       cout << "WEBSOCKET: listen failed" << endl; 
       cout << wsp->get_error() << endl;
-      return -1;
+      return 0;
     }
   
     cout << "ws: waiting for connection" << endl;
     if (!wsp->accept()) 
     { cout << "WEBSOCKET: accept failed" << endl; 
       cout << sockp->get_error() << endl;
-      return -1;
+      return 0;
     }
   
     sock_fd = wsp->sock_fd();
@@ -253,7 +257,7 @@ int OPEN_DISPLAY(int& width, int& height, int& depth, int& dpi)
     if (!wsp->server_handshake()) 
     { cout << "WEBSOCKET: server_handshake failed" << endl; 
       cout << wsp->get_error() << endl;
-      return -1;
+      return 0;
     }
 
     cout << "ws: detach from socket endpoint" << endl;
@@ -268,23 +272,47 @@ int OPEN_DISPLAY(int& width, int& height, int& depth, int& dpi)
   cout << string("connected to %s  port = %d  fd = %d  msg = %s",
                                    ~client_ip, ws_port, sock_fd, ~msg) << endl;
 
+  return wsp->sock_fd();
+}
+
+
+int OPEN_DISPLAY(int& width, int& height, int& depth, int& dpi)
+{
+  // return socket fd (-1 on error)
+
+  if (wsp) {
+    // display opened already
+    return  wsp->sock_fd();
+  }
+
+  signal(SIGUSR1,signal_handler);
+  signal(SIGTERM,signal_handler);
+  
+  string prog_name = program_invocation_name;
+
+  cout << endl;
+  cout << "OPEN DISPLAY: prog = " << prog_name << endl;
+  cout << endl;
+
+  int sock_fd = ws_connect();
+
   wsp->send_text("open: " + prog_name);
 
   cout << "waiting for display event" << endl;
 
   string event;
-  int e,val,x,y;
+  int e,val1,val2,x,y;
   unsigned long t;
-  while ((e = NEXT_EVENT(event,val,x,y,t,0)) != display_event) {
+  while ((e = NEXT_EVENT(event,val1,val2,x,y,t,0)) != display_event) {
     cout << "skip: " << e << "  " << event_name[e] << endl;
   }
 
   // set display parameters
 
-  width  = x;
-  height = y;
+  width  = x - 2;
+  height = y - 2;
   depth  = 24;
-  dpi    = val;
+  dpi    = val1;
 
   format = t & 0x0f;
   compression = (t>>4) & 0x0f;
@@ -293,11 +321,7 @@ int OPEN_DISPLAY(int& width, int& height, int& depth, int& dpi)
                  width,height,dpi,format_name[format],compression) << endl;
   cout << endl;
 
-  // create pixel buffer
-
-  int sz = width*height;
-  buffer_pixels = new unsigned int[sz];
-  for(int i=0; i<sz; i++) buffer_pixels[i] = 0xff000000;  // undefined clr
+  init_buffer(width,height);
 
   return sock_fd;
 }
@@ -314,7 +338,10 @@ static unsigned char* write_header(unsigned char* buf, unsigned char format,
   *p++ = h;
   *p++ = t_sz;
 
-  return (unsigned char*)p;
+  unsigned char* q = (unsigned char*)p;
+  assert(q-buf == HEADER_SZ);
+
+  return q;
 }
 
 
@@ -400,8 +427,6 @@ void UPDATE_DISPLAY(unsigned int* pixels, int w, int h,
   { 
     // extract rgba pixels from (x0,y0,x1,y1) into char buffer
 
-    // double t = cpu_time();
-
     unsigned char* rgba = new unsigned char[4*num_pixels];
     unsigned char* q = rgba;
   
@@ -452,8 +477,11 @@ void UPDATE_DISPLAY(unsigned int* pixels, int w, int h,
 
   assert(format == RLE);
 
+
   // RLE (Run Lengh Encoding)
   // use alpha-byte for encoding number of consecutive pixels of the same color
+
+  double t = cpu_time();
 
   unsigned char* buf = 0;
 
@@ -461,10 +489,15 @@ void UPDATE_DISPLAY(unsigned int* pixels, int w, int h,
   int buf_sz = 0;
   int rle_sz = 0;
 
+
+/*
+
+  // too slow ?
+
   unsigned int color_table[256];
 
 //d_array<int,int> color_map(0);
-  d_array<int,int,ch_hash> color_map(0);
+  h_array<int,int> color_map(0,1024);
 
   for (int j = y0; j <= y1; j++)
   { for(int i = x0; i <= x1; i++)
@@ -477,7 +510,6 @@ void UPDATE_DISPLAY(unsigned int* pixels, int w, int h,
        }
      }
    }
-
 
   if (table_sz < 256)
   { 
@@ -494,12 +526,11 @@ void UPDATE_DISPLAY(unsigned int* pixels, int w, int h,
     int num_bits = 16 - clr_bits;
     int max_count =  (1 << num_bits) - 1;
 
-/*
-    cout << "table_sz = " << table_sz << " ";
-    cout << "clr_bits = " << clr_bits << " ";
-    cout << "num_bits = " << num_bits << " ";
-    cout << "max_count = " << max_count << endl;
-*/
+    //cout << endl;
+    //cout << "table_sz = " << table_sz << " ";
+    //cout << "clr_bits = " << clr_bits << " ";
+    //cout << "num_bits = " << num_bits << " ";
+    //cout << "max_count = " << max_count << endl;
 
     // 2 bytes (unsigned short) per pixel + 
     // 4 bytes for each table entry + header
@@ -544,18 +575,44 @@ void UPDATE_DISPLAY(unsigned int* pixels, int w, int h,
     assert(buf_sz == 4*table_sz + 2*rle_sz + HEADER_SZ);
   }
   else
+*/
+
   { // 256 colors or more
     // pixel layout:  rgba  (a = #repeating rgb pixels)
 
     buf_sz = 4*num_pixels + HEADER_SZ; // 4 bytes per pixel + header 
     buf = new unsigned char[buf_sz];
 
+    unsigned current_clr = result_pixel(pixels,y0*w+x0,false);
+
+    int count = 0;
+
     unsigned char* p = write_header(buf,RLE,xpos,ypos,width,height,0); 
 
-    unsigned char* q = p;
+#if 1
 
-    unsigned current_clr = result_pixel(pixels,y0*w+x0,false);
-    int count = 0;
+    unsigned int* q = (unsigned int*)p;
+
+    for (int j = y0; j <= y1; j++)
+    { int i_start = j*w + x0;
+      int i_stop = i_start + width;
+      for(int i = i_start; i < i_stop; i++)
+      { unsigned int clr = result_pixel(pixels,i,true);
+        if (clr == current_clr && count < 255)
+          count++;
+        else
+        { *q++ = (count << 24) | current_clr;
+          current_clr = clr;
+          count = 1;
+         }
+      }
+    }
+
+    *q++ = (count << 24) | current_clr;
+
+    buf_sz = ((unsigned char*)q)-buf;
+
+#else
 
     for (int j = y0; j <= y1; j++)
     { for(int i = x0; i <= x1; i++)
@@ -563,25 +620,28 @@ void UPDATE_DISPLAY(unsigned int* pixels, int w, int h,
         if (clr == current_clr && count < 255)
           count++;
         else
-        { *(unsigned int*)q = (count << 24) | current_clr;
-          q += 4;
+        { *(unsigned int*)p = (count << 24) | current_clr;
+          p += 4;
           current_clr = clr;
           count = 1;
          }
       }
     }
 
-    *(unsigned int*)q = (count << 24) | current_clr;
-    q += 4;
+    *(unsigned int*)p = (count << 24) | current_clr;
+    p += 4;
+
+    buf_sz = p-buf;
+
+#endif
+
+    rle_sz = buf_sz - HEADER_SZ;
+
 /*
     int sum_alpha = 0;
     for(unsigned char* p = buf; p < q; p+=4) sum_alpha += p[3];
     assert(sum_alpha = num_pixels);
 */
-    buf_sz = q-buf;
-    rle_sz = (q-p)/4;
-
-    assert(buf_sz == 4*rle_sz + HEADER_SZ);
   }
 
   int sbytes = send_buffer(buf,buf_sz);
@@ -593,10 +653,10 @@ void UPDATE_DISPLAY(unsigned int* pixels, int w, int h,
   float p3 = (100.0*sbytes)/(3*num_pixels);
 
   cout << string("%4dx%4d %3d %7d", width,height,table_sz,num_pixels);
-
   cout << string(" --->%6d %5.2f %%", rle_sz,p1);
   cout << string(" --->%6d %5.2f %%", buf_sz,p2);
   cout << string(" --->%6d %5.2f %%", sbytes,p3);
+  cout << string("  %.6f s",cpu_time(t)) << endl;
   cout << endl;
 */
 
@@ -608,13 +668,19 @@ void UPDATE_DISPLAY(unsigned int* pixels, int w, int h,
 // event handling
 //------------------------------------------------------------------------------
 
-int NEXT_EVENT(string& event,int& val,int& x,int& y,unsigned long& t,int msec)
+int NEXT_EVENT(string& arg,int& val1,int& val2,int& x,int& y,unsigned long& t,
+                                                               int msec)
 {
   // msec > 0: msec timeout
   // msec = 0: blocking / no timeout
   // msec < 0: non-blocking (check)
 
-  int e = no_event;
+  arg = "";
+  val1 = 0;
+  val2 = 0;
+  x = 0;
+  y = 0;
+  t = 0;
 
   if (msec < 0) {
     // non blocking (set timeout to 1 msec)
@@ -642,10 +708,7 @@ int NEXT_EVENT(string& event,int& val,int& x,int& y,unsigned long& t,int msec)
   }
 
   if (msg == "keep_alive") { 
-    //cout << "WS: KEEP ALIVE" << endl;
-    val = 0;
-    x = 0;
-    y = 0;
+    cout << "WS: KEEP ALIVE" << endl;
     return no_event;
   }
 
@@ -656,16 +719,21 @@ int NEXT_EVENT(string& event,int& val,int& x,int& y,unsigned long& t,int msec)
 
   msg = msg.replace("event:","").trim();
 
-  string A[5];
-  int num = msg.break_into_words(A,5);
+  string A[6];
+  int num = msg.break_into_words(A,6);
 
-  assert(num == 5);
+  assert(num == 6);
 
-  event = A[0];
-  val = atoi(A[1]);
-  x = atoi(A[2]);
-  y = atoi(A[3]);
-  t = atol(A[4]);
+  string event = A[0];
+
+  arg = A[1];
+  val1 = atoi(A[2]);
+  val2 = 0;
+  x = atoi(A[3]);
+  y = atoi(A[4]);
+  t = atol(A[5]);
+
+  int e = no_event;
 
   if (event == "exit") {
     cout << "WS: EXIT EVENT --> DESTROY" << endl;
@@ -676,61 +744,61 @@ int NEXT_EVENT(string& event,int& val,int& x,int& y,unsigned long& t,int msec)
 */
   }
 
-  if (event == "display")   e = display_event;
+  if (event == "display") 
+  { e = display_event;
+    // resize buffer if (size has changed)
+    init_buffer(x,y);
+   }
 
+  if (event == "exposure")  e = exposure_event;
+  if (event == "upload")    e = upload_file_event;
   if (event == "mousedown") e = button_press_event;
   if (event == "mouseup")   e = button_release_event;
   if (event == "mousemove") e = motion_event;
+  if (event == "keydown")   e = key_press_event;
+  if (event == "keyup")     e = key_release_event;
 
-  if (event == "keydown" || event == "keyup")
-  { 
-    if (event == "keydown") 
-      e = key_press_event;
-    else
-      e = key_release_event;
-    
-    if (val > 255)
-    { //special key
-      switch (val & 0xff) {
-          case  8: val = KEY_BACKSPACE;
-                   break;
-          case  9: val = KEY_TAB;
-                   break;
-          case 13: val = KEY_RETURN;
-                   break;
-          case 27: val = KEY_ESCAPE;
-                   break;
-          case 33: val = KEY_PAGE_UP;
-                   break;
-          case 34: val = KEY_PAGE_DOWN;
-                   break;
-          case 35: val = KEY_END;
-                   break;
-          case 36: val = KEY_HOME;
-                   break;
-          case 37: val = KEY_LEFT;
-                   break;
-          case 38: val = KEY_UP;
-                   break;
-          case 39: val = KEY_RIGHT;
-                   break;
-          case 40: val = KEY_DOWN;
-                   break;
-          case 44: val = KEY_PRINT;
-                   break;
-          case 45: val = KEY_INSERT;
-                   break;
-          case 46: val = KEY_DELETE;
-                   break;
-       }
+  if ((event == "keydown" || event == "keyup") && val1 > 255)
+  { //special key
+    switch (val1 & 0xff) {
+        case  8: val1 = KEY_BACKSPACE;
+                 break;
+        case  9: val1 = KEY_TAB;
+                 break;
+        case 13: val1 = KEY_RETURN;
+                 break;
+        case 27: val1 = KEY_ESCAPE;
+                 break;
+        case 33: val1 = KEY_PAGE_UP;
+                 break;
+        case 34: val1 = KEY_PAGE_DOWN;
+                 break;
+        case 35: val1 = KEY_END;
+                 break;
+        case 36: val1 = KEY_HOME;
+                 break;
+        case 37: val1 = KEY_LEFT;
+                 break;
+        case 38: val1 = KEY_UP;
+                 break;
+        case 39: val1 = KEY_RIGHT;
+                 break;
+        case 40: val1 = KEY_DOWN;
+                 break;
+        case 44: val1 = KEY_PRINT;
+                 break;
+        case 45: val1 = KEY_INSERT;
+                 break;
+        case 46: val1 = KEY_DELETE;
+                 break;
     }
-
   }
 
 /*
   cout << event_name[e] << " "; 
-  cout << "val: " << val << " x: " << x << " y: " << y << " t: " << t << endl;
+  cout << "val1: " << val1 << " x: " << x << " y: " << y << " t: " << t << endl;
 */
+
   return e;
 }
 

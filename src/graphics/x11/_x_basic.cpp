@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _x_basic.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -67,7 +67,7 @@ static Display* display = NULL;
 static Visual* visual = NULL;
 static int screen = 0;
 static int depth = 0;
-static int display_dpi = 96;
+static int display_dpi = 192;
 
 static Window root_window;
 static Window top_window;
@@ -185,15 +185,26 @@ printf("\n");
 
 static XftFont* x_load_xft_font(const char* fname, int* sz_ptr = 0)
 {
-  int  sz = 0;
+  int dip_sz = 0;
+
   if (isdigit(fname[1]))
   { for(int i=1; fname[i]!=0; i++) 
-       sz = 10*sz + fname[i] - '0';
+       dip_sz = 10*dip_sz + fname[i] - '0';
    }
 
-  sz = int(0.9*sz);
 
-  if (sz_ptr) *sz_ptr = sz;
+  double f = 0.85 * display_dpi/192.0;
+
+  if (fname[0] == 'I') f *= 1.048;
+
+  int pix_sz = int(f*dip_sz);
+
+  if (sz_ptr) *sz_ptr = pix_sz;
+
+/*
+  printf("xft load_xft_font: %s  sz = %d  dpi = %d\n",fname,pix_sz,display_dpi);
+  fflush(stdout);
+*/
 
   int i = tmp_font_count-1;
   while (i >= 0 && strcmp(fname,tmp_font_name[i]) != 0) i--;
@@ -244,9 +255,12 @@ static XftFont* x_load_xft_font(const char* fname, int* sz_ptr = 0)
 
   char buf[256];
   sprintf(buf,"%s:pixelsize=%d:weight=%s:slant=%s:antialias=%s",
-                                           fn,sz,weight,slant,antialias);
+                                           fn,pix_sz,weight,slant,antialias);
 
-  //fprintf(stderr,"Load Xft font %s\n",buf);
+/*
+  printf("Load Xft Font: %s\n",buf);
+  fflush(stdout);
+*/
 
   XftFont* fp = XftFontOpenName(display,screen,buf);
   if (!fp) { 
@@ -424,19 +438,22 @@ int x_open_display()
   int disp_w = DisplayWidth(display,screen);  
   int millis = DisplayWidthMM(display,screen);  
 
+  //cout << "millis = " << millis << endl;
+
   display_dpi = int(0.5 + (25.4*disp_w)/millis);
+
+
   char* p = getenv("LEDA_DPI");
   if (p != 0) display_dpi = atoi(p);
- 
-  int sz = int(display_dpi/5.5);
 
-//printf("xft font: sz = %d  dpi = %d\n",sz,display_dpi);
+  //int sz = 32; // default font size
+  int sz = 40; // default font size
 
-  xft_text_font   = x_load_xft_font(string("T%2d",sz),  &xft_text_sz);
-  xft_italic_font = x_load_xft_font(string("I%2d",sz),  &xft_italic_sz);
-  xft_bold_font   = x_load_xft_font(string("B%2d",sz-1),&xft_bold_sz);
-  xft_fixed_font  = x_load_xft_font(string("F%2d",sz-2),&xft_fixed_sz);
-  xft_button_font = x_load_xft_font(string("T%2d",sz),  &xft_button_sz);
+  xft_text_font   = x_load_xft_font(string("T%d",sz), &xft_text_sz);
+  xft_italic_font = x_load_xft_font(string("I%d",sz), &xft_italic_sz);
+  xft_fixed_font  = x_load_xft_font(string("F%d",sz-4), &xft_fixed_sz);
+  xft_bold_font   = x_load_xft_font(string("B%d",sz-2), &xft_fixed_sz);
+  xft_button_font = x_load_xft_font(string("T%d",sz-1), &xft_button_sz);
 
 
 /*
@@ -550,8 +567,10 @@ void x_close_display()
   }
   wcount = 0;
 
+/*
   XCloseDisplay(display); 
   display = 0; 
+*/
 }
 
 
@@ -2584,7 +2603,7 @@ void x_set_border_color(int w, int col)
 }
  
  
-void x_set_label(int w, const char* label)
+void x_set_frame_label(int w, const char* label)
 { x11_win* wp = wlist[w];
   if (wp->win_save)
     XStoreName(display,wp->win_save,label); 
@@ -2641,10 +2660,10 @@ int x_set_color(int w, int col)
 { x11_win* wp = wlist[w];
   int save = wp->COLOR;
   wp->COLOR = col;
-  if (wp->MODE == xor_mode) 
-    wp->gc_val.foreground = wp->COLOR ^ 0xffffff;
-  else
-    wp->gc_val.foreground = wp->COLOR;
+  wp->gc_val.foreground = col;
+/*
+  if (wp->MODE == xor_mode) wp->gc_val.foreground = col ^ 0xffffff;
+*/
   XChangeGC(display,wp->gc,GCForeground,&(wp->gc_val));
   return save;
 }
@@ -2680,7 +2699,6 @@ drawing_mode x_set_mode(int w, drawing_mode m)
   if (wp->MODE == m) return m;
 
   drawing_mode save = wp->MODE;
-
   wp->MODE = m;
 
   wp->gc_val.foreground = wp->COLOR;
@@ -2688,12 +2706,16 @@ drawing_mode x_set_mode(int w, drawing_mode m)
   switch (m)  {
    case src_mode: wp->gc_val.function = GXcopy;
                    break;
-   case or_mode:  wp->gc_val.function = GXxor;
+   case or_mode:  wp->gc_val.function = GXor;
                   break;
    case and_mode: wp->gc_val.function = GXand;
                   break;
-   case xor_mode: wp->gc_val.function = GXor;
-                  wp->gc_val.foreground ^= 0xffffff;
+
+   case xor_mode: wp->gc_val.function = GXequiv;
+/*
+                  wp->gc_val.function = GXxor;
+                  wp->gc_val.foreground = wp->COLOR ^ 0xffffff;
+*/
                   break;
    default: break;
   }
@@ -2718,6 +2740,7 @@ int x_set_join_style(int w, int js)
   return save;
  }
 
+void x_set_rotation(int w, int x, int y, double phi) {}
 
 
 int x_set_line_width(int w, int lw)
@@ -3174,7 +3197,9 @@ static int handle_event(int& w, int& x, int& y, int& val1, int&val2,
 
                    if (c == char(-1) || kind == destroy_event) break;
 
+
                    val1 = c;
+
   
                    if (event.type == KeyPress) 
                      kind = key_press_event;
@@ -3701,8 +3726,9 @@ void x_stop_timer(int) {}
 
 void x_set_read_gc(int w)
 { XGCValues gc_val;
-  gc_val.function = GXxor; 
-  gc_val.foreground = BlackPixel(display,screen); 
+  gc_val.function = GXequiv;
+  //gc_val.function = GXxor;
+  gc_val.foreground = black;
   gc_val.line_style = LineSolid;
   gc_val.line_width = 1;
   XChangeGC(display,wlist[w]->gc,
@@ -3993,8 +4019,10 @@ void x_clip_mask_polygon(int w, int n, int* xcoord, int* ycoord, int mode)
     XFreeGC(display,gc_clear);
 
     // xor pixmap am into clipmask
+
     gc_val.foreground = 1;
-    gc_val.function   = GXxor;
+    gc_val.function = GXxor;
+
     GC gc_xor = XCreateGC(display,pm,GCForeground | GCFunction, &gc_val);
     XCopyArea(display, am, pm, gc_xor, 0, 0, wi, he, 0, 0);
     XFreeGC(display,gc_xor);
@@ -4189,7 +4217,7 @@ char* x_text_from_clipboard(int) {
 
 // not implemented
 
-void x_send_text(const char*) {}
+void x_send_cmd(const char*) {}
 
 void  x_set_alpha(int,int)  { }
 

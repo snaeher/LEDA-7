@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  panel_demo.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -77,8 +77,8 @@ int main()
     //P.load_button_font("lucidasans-12");
 
     string text;
-    text += " The panel section of a window is used for displaying text";
-    text += " and for updating the values of variables. It consists";
+    text += " The panel section of a window is used to display text";
+    text += " and to update the values of variables. It consists";
     text += " of a list of panel items and a list of buttons.";
     text += " All operations adding panel items or buttons to the panel";
     text += " section of a window have to be called before";
@@ -115,6 +115,11 @@ int main()
     P.text_item("");
     P.text_item("\\bf\\blue String Items");
     P.string_item("Name ",s);
+/*
+    string sx;
+    panel_item it = P.string_item("Secret ",sx);
+    P.set_secret(it,true);
+*/
   //P.string_item("String Menu",file,M1);
     P.string_item("String Menu",file,M1,8);
 
@@ -130,13 +135,15 @@ int main()
     P.text_item("");
     P.text_item("\\bf\\blue Buttons");
 
-    int but_num = 4;
+    int but_num = 3;
 
     for(int i=0; i < but_num; i++) P.button(string("button %d",i+1));
     P.fbutton("exit",but_num);
 
   
+
   P.display();
+
 
   for(;;) {
     int but = P.read();

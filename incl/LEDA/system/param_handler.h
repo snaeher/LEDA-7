@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  param_handler.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define PARAM_HANDLER_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722160
+#define LEDA_ROOT_INCL_ID 723193
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -265,7 +265,7 @@ A call of \texttt{foo -h} will display all possible flags of the
 program including the init values.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 722160
+#if LEDA_ROOT_INCL_ID == 723193
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

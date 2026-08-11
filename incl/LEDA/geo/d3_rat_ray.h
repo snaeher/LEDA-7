@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  d3_rat_ray.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_D3_RAT_RAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722137
+#define LEDA_ROOT_INCL_ID 723051
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -218,7 +218,7 @@ inline istream& operator>>(istream& in, d3_rat_ray& r)
  return in;
 }
 
-#if LEDA_ROOT_INCL_ID == 722137
+#if LEDA_ROOT_INCL_ID == 723051
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

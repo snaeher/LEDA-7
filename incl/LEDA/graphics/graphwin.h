@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  graphwin.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_GRAPHWIN_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722286
+#define LEDA_ROOT_INCL_ID 723211
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -444,7 +444,7 @@ gw_edge_dir   = { undirected_edge, directed_edge, bidirected_edge, rdirected_edg
     window *win_p;			// window
     window *menu_p;			// menu window
 
-    bool open_frameless;
+    bool show_menu_bar;
 
     int status_win_height;
     
@@ -2527,8 +2527,8 @@ void set_window(window& W);
 void set_graph(graph& G);
 /*{\Mop makes |G| the graph of |\Mvar|. }*/
 
-void set_frameless(bool b) { open_frameless = b; }
-/*{\Mop set open frameless mode to $b$. }*/
+void hide_menu_bar() { show_menu_bar = false; }
+/*{\Mop hide main menu bar. }*/
 
 
 void new_shape(const polygon& pol,
@@ -3228,7 +3228,7 @@ inline int gw_add_member_call(GraphWin& gw, void (GraphWin::*f)(), string l,
 
 
 
-#if LEDA_ROOT_INCL_ID == 722286
+#if LEDA_ROOT_INCL_ID == 723211
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,13 +1,13 @@
 
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  st_matching.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 #define LEDA_ST_MATCHING
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722195
+#define LEDA_ROOT_INCL_ID 723256
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -94,7 +94,7 @@ $InputB$ resp. $InputA$.\\
 There are no multiple occurences of an element in the same such list.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 722195
+#if LEDA_ROOT_INCL_ID == 723256
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

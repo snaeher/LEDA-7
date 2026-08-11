@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  logo.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -32,6 +32,11 @@ static color line_clr = 0x333333;
 
 static bool show_lines = true;
 static bool show_arrows = true;
+
+
+static void exit_handler(window* wp) {
+  exit(0);
+}
 
 
 static double compute_strip_width(double D,double r)
@@ -195,7 +200,15 @@ void draw_logo(window& W, int dist, double scale)
   W.set_line_width(1);
 
   W.start_buffering();
+
   W.clear();
+
+/*
+  double phi = LEDA_PI/32;
+  double cx = (W.xmax() - W.xmin())/2;
+  double cy = (W.ymax() - W.ymin())/2;
+  W.set_rotation(cx,cy,phi);
+*/
 
   fill_logo(W,c1,c2,c3,c4,w,d,d_mid);
 
@@ -238,16 +251,12 @@ void draw_logo(window& W, int dist, double scale)
 void draw_copyright(window& W)
 { W.start_buffering();
 
-  if (getenv("LEDA_OPEN_MAXIMIZED"))
-    W.set_font("I25");
-  else
-    W.set_font("I30");
-  
+  W.set_font("I30");
 
   if (window::display_type() == "x11") W.set_font("I22");
 
 //string text = "LEDA Logo (sn 1995)";
-  string text = "LEDA Logo (c) 1995 by SN";
+  string text = "LEDA Logo (c) sn 1995";
 
   double xt = W.xmin() + W.pix_to_real(8);
   double yt = W.ymin() + W.text_height(text) + W.pix_to_real(4);
@@ -257,27 +266,63 @@ void draw_copyright(window& W)
   W.stop_buffering();
 }
 
+void draw_version(window& W)
+{ W.start_buffering();
+
+  W.set_font("T40");
+
+  string text = string("Version %.1f",__LEDA__/100.0);
+  //string text = string("Version %.2f",__LEDA__/100.0);
+
+  double xt = (W.xmin() + W.xmax())/2;
+
+  double yt = W.ymin() + 0.7*W.text_height(text);
+
+  if (getenv("LEDA_OPEN_MAXIMIZED")) {
+   yt = W.ymin() + 0.5*W.text_height(text);
+  }
+
+  W.draw_ctext(xt,yt,text,0x333333);
+  W.set_text_font();
+  W.flush_buffer();
+  W.stop_buffering();
+}
+
+
+void draw_footer(window& W)
+{ 
+  //if (getenv("LEDA_OPEN_MAXIMIZED"))
+  if (true)
+    draw_version(W);
+  else
+    draw_copyright(W);
+}
+
 
 void redraw() {
   window* wp = window::get_call_window();
   draw_logo(*wp,distance,1);
-  draw_copyright(*wp);
+  draw_footer(*wp);
 }
 
 void update(int) {
   window* wp = window::get_call_window();
   draw_logo(*wp,distance,1);
-  draw_copyright(*wp);
+  draw_footer(*wp);
 }
 
 
 void animation(window& W, float delay=0)
 { draw_logo(W,distance,0);
   leda::sleep(delay);
+
   double fmax = width/100.0;
-  double d = fmax/100;
-//if (window::display_type() == "xx") d *= 4;
-  if (window::display_type() == "xx") d *= 3.5;
+
+  double d = fmax/400;
+
+  d *= W.width()/1000.0;
+
+  if (window::display_type() == "xx") d *= 10;
 
   for(double f=d; f < fmax; f += d)
   { draw_logo(W,distance,f);
@@ -286,9 +331,8 @@ void animation(window& W, float delay=0)
 
   draw_logo(W,distance,fmax);
 
-  //leda::sleep(delay/2);
   leda::sleep(delay);
-  draw_copyright(W);
+  draw_footer(W);
 }
 
 
@@ -325,7 +369,8 @@ int main()
   P.button("quit",2);
 
 
-  string title("LEDA - %.1f",float(__LEDA__)/100);
+  //string title = version_string;
+  string title = string("LEDA %.1f",0.1*(__LEDA__/10));
 
 /*
   title += "   (";
@@ -335,23 +380,17 @@ int main()
   title += ")";
 */
 
-  //int w = 6*dpi;
-  int w = int(6.5*dpi);
+  //int w = int(6.0*dpi);
+  int w = int(5.5*dpi);
+
   int wmax = int(0.9*window::screen_width());
   if (w > wmax) w = wmax;
-
   int h = w/2;
-
-  if (getenv("LEDA_OPEN_MAXIMIZED"))
-  { w = window::screen_width() + 1;
-    h = window::screen_height() + 1;
-    //w = 0;
-    //h = 0;
-   }
 
   window W(w,h,title);
 
   W.enable_close_button(true);
+  W.set_window_close_handler(exit_handler);
 
   W.set_bg_color(bg_clr);
 
@@ -372,17 +411,15 @@ int main()
   W.make_menu_bar(4);
 */
 
-  if (getenv("LEDA_OPEN_MAXIMIZED"))
-    W.display(W,window::center,window::center); // frameless
-  else
-    W.display(window::center,window::center);
+
+  W.display(window::center,window::center);
 
   double xmax = 2.8;
-  double ymin = -1.5*h/w;
+  double ymin = -1.6*h/w;
+
+  if (getenv("LEDA_OPEN_MAXIMIZED")) ymin = -1.25*h/w;
 
   W.init(-xmax,xmax,ymin);
-
-//W.set_clear_on_resize(false);
 
   bool anim = true;
 

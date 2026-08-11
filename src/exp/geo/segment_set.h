@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  segment_set.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_SEGMENT_SET_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722001
+#define LEDA_ROOT_INCL_ID 723288
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -190,7 +190,7 @@ the set. The space requirement is $O(n\log n)$.}*/
 
  
 
-#if LEDA_ROOT_INCL_ID == 722001
+#if LEDA_ROOT_INCL_ID == 723288
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

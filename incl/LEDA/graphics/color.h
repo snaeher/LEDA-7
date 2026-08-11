@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  color.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_COLOR_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722289
+#define LEDA_ROOT_INCL_ID 723200
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -160,7 +160,7 @@ extern __exportF istream& operator>>(istream& in, color& c);
 extern __exportF ostream& operator<<(ostream& out, const color& c);
 
 
-#if LEDA_ROOT_INCL_ID == 722289
+#if LEDA_ROOT_INCL_ID == 723200
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

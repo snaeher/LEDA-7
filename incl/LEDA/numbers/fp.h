@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  fp.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_FP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722253
+#define LEDA_ROOT_INCL_ID 723127
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -27,6 +27,7 @@
 
 #include <LEDA/system/basic.h>
 #include <float.h> 
+#include <stdint.h> 
 
 #if FLT_RADIX == 2 && DBL_MANT_DIG == 53 && DBL_MAX_EXP == 1024
 #define IEEE_BASIC_FORMAT
@@ -54,19 +55,25 @@
 #endif // FP_BASIC_H 
 
 
+/*
+#if defined(WORD_LENGTH_64)
+typedef uint64_t LEDA_UINT;
+#else
+typedef uint32_t LEDA_UINT;
+#endif
+*/
+
 #if defined(WORD_LENGTH_64)
 // we need a type that is a large as a double
 // on most 64-bit machines, this is unsigned long
-    #if !defined(__win64__)
-    typedef unsigned long LEDA_UINT;
-    #else
-    typedef __int64 LEDA_UINT;
-    #endif
-// this will change for Windows 64!!!
+#if !defined(__win64__)
+  typedef unsigned long LEDA_UINT;
+#else
+  typedef __uint64_t LEDA_UINT;
+#endif
 #else
 typedef unsigned long LEDA_UINT;
 #endif
-
 
 LEDA_BEGIN_NAMESPACE
 
@@ -317,7 +324,7 @@ inline LEDA_UINT fp::is_nan(VOLATILE_FP double x) {
 
 
 
-#if LEDA_ROOT_INCL_ID == 722253
+#if LEDA_ROOT_INCL_ID == 723127
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  triangle.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_TRIANGLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722110
+#define LEDA_ROOT_INCL_ID 723071
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -237,7 +237,7 @@ inline istream& operator>>(istream& in, triangle& T)
   return in; 
 }
 
-#if LEDA_ROOT_INCL_ID == 722110
+#if LEDA_ROOT_INCL_ID == 723071
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

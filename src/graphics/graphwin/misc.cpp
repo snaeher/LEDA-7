@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  misc.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -98,9 +98,6 @@ void GraphWin::set_font(gw_font_type font_t, double size, string fn_user)
 { 
   // size: real coordinate (not pixel)
 
-  if (window::display_type() == "x11") size = 0.75 * size;
-
-  size /= window::screen_dpi_scaling();
   int sz = win_p->real_to_pix(size);
 
   string font_name;

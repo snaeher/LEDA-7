@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  rat_vector.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722265
+#define LEDA_ROOT_INCL_ID 723131
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -350,7 +350,7 @@ for linear hull, rank and independence have the cubic costs of the
 used matrix operations.  The space requirement is $O(|v.dim()|)$.  }*/
 
 
-#if LEDA_ROOT_INCL_ID == 722265
+#if LEDA_ROOT_INCL_ID == 723131
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

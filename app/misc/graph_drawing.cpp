@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  gw.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -25,7 +25,7 @@ static void exit_handler(window* wp) {
 
 int main()
 {
-  bool interactive = getenv("LEDA_OPEN_MAXIMIZED")==0;
+  bool interactive = !getenv("LEDA_OPEN_MAXIMIZED");
 
   int n = 10;
   int m = 25;
@@ -35,7 +35,7 @@ int main()
   gw.set_animation_steps(120);
   gw.set_show_status(false);
 
-  if (!interactive) gw.set_frameless(true);
+  if (!interactive) gw.hide_menu_bar();
 
   gw.display();
 

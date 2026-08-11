@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  handle_types.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_HANDLE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722155
+#define LEDA_ROOT_INCL_ID 723143
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -109,7 +109,7 @@ handle_base() { PTR = 0; }
 LEDA_END_NAMESPACE
 
 
-#if LEDA_ROOT_INCL_ID == 722155
+#if LEDA_ROOT_INCL_ID == 723143
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

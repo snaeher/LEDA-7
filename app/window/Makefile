@@ -10,8 +10,3 @@ DOSLIB1 = ..\\..\\GeoWin.lib
 
 include ../Make.pro
 
-install: all
-	@dir=~/htdocs/leda/demos/app/window;\
-	mkdir -p $$dir;\
-	for x in $(PROGS);do echo $$dir/$$x; cp $$x $$dir; done;
-

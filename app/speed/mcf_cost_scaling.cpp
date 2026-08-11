@@ -112,7 +112,8 @@ int main(int argc, char** argv)
   double c = mcf.total_cost(G,cost,flow);
 
   if (feasible)
-  { //cout << string("time: %6.2f cost: %14.0f  a = %d  af = %.0f (%.0f)  rf = %d  rs = %d",
+  { 
+/*
     cout << string("time: %6.2f  cost: %12.0f  a = %d  af = %.0f (%.0f)  rf = %d  rs = %d",
                                             mcf.cpu_time(), 
                                             c,
@@ -120,7 +121,12 @@ int main(int argc, char** argv)
                                             mcf.af(), 
                                             mcf.af_start(), 
                                             mcf.refines(),
-                                            mcf.restarts()) << endl;
+                                            mcf.restarts()
+                                            ) << endl;
+*/
+
+     cout << string("time: %6.2f  cost: %12.0f", mcf.cpu_time(), c) << endl;
+
      mcf.statistics(cout);
 
      if (do_check)

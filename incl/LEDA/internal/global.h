@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  global.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_GLOBAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722156
+#define LEDA_ROOT_INCL_ID 723146
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -37,7 +37,8 @@
 #define MAXDOUBLE std::numeric_limits<double>::max()
 #endif
 
-#if LONG_BIT == 64 || defined(__ia64__) || defined(_LONG64) || defined(__amd64) || defined(__WIN64__)
+#if LONG_BIT == 64 || defined(__ia64__) || defined(_LONG64) || defined(__amd64)
+/* || defined(_WIN64) */
 #define WORD_LENGTH_64
 #define WORD_LENGTH_LOG 6
 #else
@@ -47,7 +48,7 @@
 
 
 #define	LEDA_PI   3.14159265358979323846
-#define	LEDA_PI_2 1.57079632679489722156
+#define	LEDA_PI_2 1.57079632679489723146
 
 #ifndef nil
 //#define nil nullptr
@@ -120,7 +121,7 @@ extern __exportF int   trace_stack(char**);
 LEDA_END_NAMESPACE
 
 
-#if LEDA_ROOT_INCL_ID == 722156
+#if LEDA_ROOT_INCL_ID == 723146
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

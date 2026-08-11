@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  param_types.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -16,7 +16,7 @@
 #define LEDA_PARAM_TYPES_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722154
+#define LEDA_ROOT_INCL_ID 723145
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -429,7 +429,7 @@ inline void leda_init_default(double& x) { x=0; }
 
 
 
-#if LEDA_ROOT_INCL_ID == 722154
+#if LEDA_ROOT_INCL_ID == 723145
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

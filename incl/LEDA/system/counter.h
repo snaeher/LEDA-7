@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  counter.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_COUNTER_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722169
+#define LEDA_ROOT_INCL_ID 723190
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -133,7 +133,7 @@ int main()
 \end{verbatim}
 }*/
 
-#if LEDA_ROOT_INCL_ID == 722169
+#if LEDA_ROOT_INCL_ID == 723190
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

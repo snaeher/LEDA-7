@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _leda.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -278,7 +278,7 @@ return;
   if (addr <= (unsigned long)A) fname = s;
 #endif
 
-  strcpy(func_name,fname.cstring());
+  strcpy(func_name,fname.c_str());
 
 }
 
@@ -324,7 +324,7 @@ int trace_stack(char** trace_lines)
 
     string str("#%02d at 0x%08x in %s",j,A[i],func_name);
     trace_lines[j] = new char[str.length()+1];
-    strcpy(trace_lines[j],str.cstring());
+    strcpy(trace_lines[j],str.c_str());
     j++;
 
     if (string(func_name).tail(4) == "main") break;
@@ -354,7 +354,7 @@ int trace_stack(char** trace_lines)
  { find_function((void**)stack_ptr[1],func_name);
    string str("#%02d at 0x%08x in %s",i,stack_ptr[1],func_name);
    trace_lines[i] = new char[str.length()+1];
-   strcpy(trace_lines[i],str.cstring());
+   strcpy(trace_lines[i],str.c_str());
    stack_ptr = (volatile void**)stack_ptr[0] + 14;
   }
   return i;

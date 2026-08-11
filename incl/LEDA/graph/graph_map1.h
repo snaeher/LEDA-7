@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  graph_map.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_GRAPH_MAP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722226
+#define LEDA_ROOT_INCL_ID 723249
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -536,7 +536,7 @@ friend istream& operator>>(istream& istr, graph_map<graph_t>&)
 };
 
 
-#if LEDA_ROOT_INCL_ID == 722226
+#if LEDA_ROOT_INCL_ID == 723249
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

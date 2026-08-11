@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  int_set.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_INTSET_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722058
+#define LEDA_ROOT_INCL_ID 723168
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -168,7 +168,7 @@ member, min and max take constant time. All other operations
 take time $O(b-a+1)$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 722058
+#if LEDA_ROOT_INCL_ID == 723168
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

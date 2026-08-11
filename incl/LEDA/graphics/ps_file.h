@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  ps_file.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_PS_FILE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722280
+#define LEDA_ROOT_INCL_ID 723217
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -434,7 +434,7 @@ public:
 
 };  // End class ps_file
 
-#if LEDA_ROOT_INCL_ID == 722280
+#if LEDA_ROOT_INCL_ID == 723217
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

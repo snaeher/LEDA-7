@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _real_window.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -136,7 +136,7 @@ window& read(window& W, r_circle_segment& cs)
 
 window& operator>>(window& W, r_circle_segment& cs)
 {
-        W.set_tmp_label(">> r_circle_segment");
+        W.set_frame_label(">> r_circle_segment");
         read(W, cs);
         W.reset_frame_label();
         return W;
@@ -289,7 +289,7 @@ window& read(window& W, r_circle_polygon& p)
 
 window& operator>>(window& W, r_circle_polygon& p)
 {
-        W.set_tmp_label(">> r_circle_polygon");
+        W.set_frame_label(">> r_circle_polygon");
         read(W, p);
         W.reset_frame_label();
         return W;
@@ -440,7 +440,7 @@ window& read(window& W, r_circle_gen_polygon& gp)
 
 window& operator>>(window& W, r_circle_gen_polygon& gp)
 {
-        W.set_tmp_label(">> r_circle_gen_polygon");
+        W.set_frame_label(">> r_circle_gen_polygon");
         read(W, gp);
         W.reset_frame_label();
         return W;

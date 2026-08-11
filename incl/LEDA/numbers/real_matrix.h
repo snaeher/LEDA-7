@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  real_matrix.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 #define LEDA_REAL_MATRIX_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722255
+#define LEDA_ROOT_INCL_ID 723137
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -189,7 +189,7 @@ The space requirement is $O(nm)$ plus the space for the $nm$ entries of type
 inline const char* leda_tname(const real_matrix*) { return "real_matrix"; }
 
 
-#if LEDA_ROOT_INCL_ID == 722255
+#if LEDA_ROOT_INCL_ID == 723137
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  gml_gwgraph.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_GMLGWGRAPH_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722285
+#define LEDA_ROOT_INCL_ID 723207
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 //------------------------------------------------------------------- //
@@ -179,7 +179,7 @@ __exportF bool write_gml(GraphWin& GW, ostream& out,
            when using the callbacks.
 }*/
 
-#if LEDA_ROOT_INCL_ID == 722285
+#if LEDA_ROOT_INCL_ID == 723207
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

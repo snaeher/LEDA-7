@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  edge_set.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_EDGE_SET_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722210
+#define LEDA_ROOT_INCL_ID 723261
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -116,7 +116,7 @@ take constant time, except for clear which takes time $O(|S|)$. The space
 requirement is $O(n)$, where $n$ is the number of edges of $G$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 722210
+#if LEDA_ROOT_INCL_ID == 723261
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

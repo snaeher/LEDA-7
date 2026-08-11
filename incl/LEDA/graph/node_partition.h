@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  node_partition.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_NODE_PARTITION_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722236
+#define LEDA_ROOT_INCL_ID 723277
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -139,7 +139,7 @@ cost of the blocks dismantled. The space requirement is $O(n)$, where $n$
 is the number of nodes of $G$. }*/
 
 
-#if LEDA_ROOT_INCL_ID == 722236
+#if LEDA_ROOT_INCL_ID == 723277
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

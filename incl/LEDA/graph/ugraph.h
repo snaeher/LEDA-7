@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  ugraph.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_UGRAPH_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722241
+#define LEDA_ROOT_INCL_ID 723222
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -134,7 +134,7 @@ see section \ref{Parameterized Graphs}.
 }*/
 
 
-#if LEDA_ROOT_INCL_ID == 722241
+#if LEDA_ROOT_INCL_ID == 723222
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

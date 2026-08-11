@@ -25,7 +25,7 @@ V char* x_root_pixrect(int,int,int,int) XXX;
 
 // cloud (websocket)
 
-V void  x_send_text(const char*) XXX;
+V void  x_send_cmd(const char*) XXX;
 
 
 // windows
@@ -58,7 +58,7 @@ V void  x_window_frame(int win, int&, int&, int&, int&) XXX;
 V int   x_window_minimized(int win) XXX;
 
 V int  x_set_cursor(int win, int cursor_id) XXX;
-V void x_set_label(int win, const char* label) XXX;
+V void x_set_frame_label(int win, const char* label) XXX;
 V void x_set_icon_label(int win, const char* label) XXX;
 V void x_set_border_width(int win, int w) XXX;
 V void x_set_border_color(int win, int c) XXX;
@@ -190,6 +190,7 @@ V int x_text_height(int win, const char* s) XXX;
 
 // drawing parameters
 
+
 V int           x_set_color(int win, int col) XXX;
 V int           x_set_bg_color(int win, int col) XXX;
 V char*         x_set_bg_pixmap(int win, char* p) XXX;
@@ -200,6 +201,8 @@ V drawing_mode  x_set_mode(int win, drawing_mode m) XXX;
 V text_mode     x_set_text_mode(int win, text_mode tm) XXX;
 V line_style    x_set_line_style(int win, line_style ls) XXX;
 V void          x_set_stipple(int win, char* bits, int s) XXX;
+
+V void          x_set_rotation(int win, int x, int y, double phi) XXX;
 
 V int           x_get_color(int win) XXX;
 V int           x_get_line_width(int win) XXX;

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  defcolor.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -35,13 +35,15 @@ void redraw(window* wp)
 
   W.set_color(clr.text_color());
 
-  //W.draw_ctext(clr.get_string());
+/*
+  W.draw_ctext(clr.get_string());
+*/
 
   double tw = W.text_width("#000000");
   double th = W.text_height("#000000");
 
-  double x = (W.xmax() - tw)/2;
-  double y = W.ymax() - (W.ymax() - th)/2;
+  double x = (W.xmin() + W.xmax() - tw)/2;
+  double y = (W.ymin() + W.ymax() + 1.4*th)/2;
   W.draw_text(x,y,clr.get_string());
 
 
@@ -79,10 +81,12 @@ int main()
   int r,g,b;
   clr.get_rgb(r,g,b);
 
+/*
   W.text_item("\\bf RGB Values");
-  W.int_item("Red   ",r,0,255,update_red);
-  W.int_item("Green ",g,0,255,update_green);
-  W.int_item("Blue  ",b,0,255,update_blue);
+*/
+  W.int_item("red   ",r,0,255,update_red);
+  W.int_item("green ",g,0,255,update_green);
+  W.int_item("blue  ",b,0,255,update_blue);
 
   W.set_redraw(redraw);
   W.set_bg_color(clr);

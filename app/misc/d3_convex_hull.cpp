@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  d3_hull_anim.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -449,24 +449,20 @@ static void generate_input(int n, int input, int maxc, list<d3_rat_point>& L)
 
 int main()
 {
-//int n = 150;
   int n = 200;
 
-//int input = 5;
   int input = 1;
 
-
   if (getenv("LEDA_OPEN_MAXIMIZED"))
-  { W.display(W,window::center,window::center); // frameless
-    W.init(-2.5*maxcoord,2.5*maxcoord,-1.15*maxcoord);
+  { W.init(-2.5*maxcoord,2.5*maxcoord,-1.15*maxcoord);
     anim_speed = 15;
    }
   else
-  { W.display(window::center,window::center);
-    W.init(-1.5*maxcoord,1.5*maxcoord,-1.65*maxcoord);
+  { W.init(-1.5*maxcoord,1.5*maxcoord,-1.65*maxcoord);
     anim_speed = 20;
    }
 
+  W.display(window::center,window::center);
 
 
   GRAPH<d3_rat_point,int> H;

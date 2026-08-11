@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  file.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define __LEDA_FILE__
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722163
+#define LEDA_ROOT_INCL_ID 723196
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -38,9 +38,11 @@ extern __exportF int get_number_of_cores();
 
 extern __exportF bool fd_poll(int fd, int msec);
 
-extern __exportF char read_console(int msec);
-extern __exportF bool peek_console(int msec);
-extern __exportF void flush_console();
+extern __exportF void con_init();
+extern __exportF bool con_size(int& rows, int& cols);
+extern __exportF char con_read(int msec);
+extern __exportF bool con_peek(int msec);
+extern __exportF void con_flush();
 
 
 
@@ -110,6 +112,11 @@ extern __exportF bool is_link(string fname);
 /*{\Mfuncl     returns true if |fname| is the path name of a symbolic link
                and false otherwise. }*/
 
+extern __exportF bool is_executable(string fname);
+/*{\Mfuncl     returns true if |fname| is the path name of an executable
+               file and false otherwise. }*/
+
+
 extern __exportF unsigned long long size_of_file64(string fname);
 
 extern __exportF size_t size_of_file(string fname);
@@ -160,7 +167,7 @@ extern __exportF list<string> get_disk_drives();
 /*{\Mfuncl     returns the list of all disk drives of the system. }*/
 
 
-#if LEDA_ROOT_INCL_ID == 722163
+#if LEDA_ROOT_INCL_ID == 723196
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

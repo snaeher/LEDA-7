@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  rat_ray.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 #define LEDA_RAT_RAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722140
+#define LEDA_ROOT_INCL_ID 723093
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -255,7 +255,7 @@ inline bool parallel(const rat_ray& r1, const rat_ray& r2)
 
 inline const char* leda_tname(const rat_ray*) { return "rat_ray"; }
 
-#if LEDA_ROOT_INCL_ID == 722140
+#if LEDA_ROOT_INCL_ID == 723093
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

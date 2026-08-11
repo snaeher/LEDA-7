@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  queue.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_QUEUE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722050
+#define LEDA_ROOT_INCL_ID 723177
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -131,7 +131,7 @@ $O(1)$, except clear which takes time $O(n)$, where $n$ is the size of the
 queue.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 722050
+#if LEDA_ROOT_INCL_ID == 723177
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

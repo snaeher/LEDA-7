@@ -1,0 +1,15 @@
+
+- handle resizing/zooming of browser window
+  adjust buffer size
+  send window resize events to all open windows
+  redraw all windows
+
+
+- handle program crashes
+  show hotifiacation in browser
+
+- problem with special_event_data
+  lets 'open' followed by 'upload' crash
+
+- abgeschnittene panel windows
+

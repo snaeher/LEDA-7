@@ -1,0 +1,5 @@
+PROGS = \
+fileview$(e) \
+graphwin$(e) \
+xlman$(e) \
+xlman_msg$(e)

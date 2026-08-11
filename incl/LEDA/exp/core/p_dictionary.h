@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  p_dictionary.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_P_DICTIONARY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722244
+#define LEDA_ROOT_INCL_ID 723147
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -230,7 +230,7 @@ empty, size and change\_inf take time $O(1)$. The space requirement is
 $O(1)$ for each update operation.}*/
  
 
-#if LEDA_ROOT_INCL_ID == 722244
+#if LEDA_ROOT_INCL_ID == 723147
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  gw_tutte.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -67,9 +67,17 @@ void move_node_handler(GraphWin& GW, node v) {
   if (GW.get_color(v) == red) update_drawing(GW);
 }
 
-void del_node_handler(GraphWin& GW)         { update_drawing(GW); }
-void new_edge_handler(GraphWin& GW, edge e) { update_drawing(GW); }
-void del_edge_handler(GraphWin& GW)         { update_drawing(GW); }
+void del_node_handler(GraphWin& GW) { update_drawing(GW); }
+void del_edge_handler(GraphWin& GW) { update_drawing(GW); }
+
+void new_edge_handler(GraphWin& GW, edge e) { 
+   graph& G = GW.get_graph();
+   // update only if both endpoints have at least degree 2
+   node u = G.source(e);
+   node v = G.target(e);
+   if (G.degree(u) > 1 && G.degree(v) > 1) update_drawing(GW); 
+}
+
 
 
 void about(GraphWin& GW)
@@ -122,7 +130,8 @@ int main()
   gw_add_simple_call(GW,about,"About Tutte Demo",h_menu);
 
   about(GW);
-  GW.edit();
+
+  while (GW.edit()) update_drawing(GW);
 
   return 0;
 }

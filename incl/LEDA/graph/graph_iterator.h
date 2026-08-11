@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  graph_iterator.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -68,7 +68,7 @@
 #define LEDA_GRAPHIT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722239
+#define LEDA_ROOT_INCL_ID 723267
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -7509,7 +7509,7 @@ inline bool GIT_toposort(leda::graph& G, leda::node_array<int>& ord) {
     set(da_indegree,ai,indeg(v)); }
   return GIT_toposort_count(da_indegree,da_ord,nl,ai,it_n); 
 }
-#if LEDA_ROOT_INCL_ID == 722239
+#if LEDA_ROOT_INCL_ID == 723267
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

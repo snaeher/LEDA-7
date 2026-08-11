@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  gw_shortest_path.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -47,7 +47,7 @@ void display_shortest_path(GraphWin& gw)
   // reset edge attributes
   edge e; 
   forall_edges(e,G) {
-    gw.set_color(e,grey3);
+    gw.set_color(e,grey2);
     gw.set_width(e,2);
     //gw.set_user_label(e,string("%d",G[e]));
   }
@@ -56,16 +56,19 @@ void display_shortest_path(GraphWin& gw)
   node v;
   forall_nodes(v,G) 
   { if (type[v] > 0 )
-    { gw.set_color(v,grey3);
+    { gw.set_color(v,grey2);
       gw.set_user_label(v,"+oo");
+      gw.set_label_color(v,white);
     }
     if (type[v] == 0 )
     { gw.set_color(v,(v == s)? green2 : blue2);
       gw.set_user_label(v,string("%d",dist[v]));
+      gw.set_label_color(v,white);
     }
     if (type[v] < 0 )
     { gw.set_color(v,yellow);
       gw.set_user_label(v,"-oo");
+      gw.set_label_color(v,black);
     }
     
   }
@@ -140,7 +143,11 @@ void start_edge_slider_handler(GraphWin& gw, edge e, double f)
 
 void edge_slider_handler(GraphWin& gw, edge e, double f)
 { // moving slider: update G[e] (cost of e)
-  G[e] = int(min_cost + (max_cost - min_cost) * f);
+  int c = int(min_cost + (max_cost - min_cost) * f);
+  if (c != G[e]) 
+  { G[e] = c;
+    display_shortest_path(gw); 
+   }
 }
 
 void end_edge_slider_handler(GraphWin& gw, edge e, double f)
@@ -215,9 +222,9 @@ int main()
   // show graph edge data G[e] as label 
   gw.set_edge_label_type(data_label);
 
-  gw.set_start_edge_slider_handler(start_edge_slider_handler);
+  //gw.set_start_edge_slider_handler(start_edge_slider_handler);
   gw.set_edge_slider_handler(edge_slider_handler);
-  gw.set_end_edge_slider_handler(end_edge_slider_handler);
+  //gw.set_end_edge_slider_handler(end_edge_slider_handler);
 
   gw.message("Please construct a graph.");
 

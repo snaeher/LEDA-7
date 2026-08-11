@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  real_vector.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_REAL_VECTOR_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722270
+#define LEDA_ROOT_INCL_ID 723123
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -220,7 +220,7 @@ time. The space requirement depends on the size of the representations of the co
 }*/
 
 
-#if LEDA_ROOT_INCL_ID == 722270
+#if LEDA_ROOT_INCL_ID == 723123
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

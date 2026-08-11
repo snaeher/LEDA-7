@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  d3_hull.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_D3_HULL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722147
+#define LEDA_ROOT_INCL_ID 723099
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -75,7 +75,7 @@ inline void CONVEX_HULL(const list<d3_point>& L,GRAPH<d3_point,int>& H)
 extern __exportF bool CHECK_HULL(const GRAPH<d3_point,int>& H);
 /*{\Mfuncl a checker for floating-point convex hulls. }*/
 
-#if LEDA_ROOT_INCL_ID == 722147
+#if LEDA_ROOT_INCL_ID == 723099
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

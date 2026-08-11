@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  basic_graph_alg.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_BASIC_GRAPHALG_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722199
+#define LEDA_ROOT_INCL_ID 723224
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -200,7 +200,7 @@ extern __exportF void MAKE_TRANSITIVELY_REDUCED(graph& G);
 by removing edges.
 }*/
 
-#if LEDA_ROOT_INCL_ID == 722199
+#if LEDA_ROOT_INCL_ID == 723224
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

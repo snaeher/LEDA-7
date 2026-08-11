@@ -22,8 +22,13 @@ lib: .lconfig
 	if [ -f shared.mk ]; then $(MAKE) shared; \
 	elif [ -f static.mk ]; then $(MAKE) static; fi; fi
 
+core: .lconfig
+	@if [ -f .lconfig ]; then $(MAKE) -C src core_lib; \
+	if [ -f shared.mk ]; then $(MAKE) shared; \
+	elif [ -f static.mk ]; then $(MAKE) static; fi; fi
+
 touch: .lconfig
-	@if [ -f .lconfig]; then $(MAKE) -C src touch; fi
+	@if [ -f .lconfig ]; then $(MAKE) -C src touch; fi
 	@if [ -f shared.mk ]; then $(MAKE) shared; \
 	elif [ -f static.mk ]; then $(MAKE) static; fi
 
@@ -38,8 +43,12 @@ mswin: .lconfig
 	$(MAKE) -C src/graphics/mswin 
 
 xx: .lconfig
-	$(MAKE) -C src/graphics/xx install
-	$(MAKE) -C app install
+	$(MAKE) -C src/graphics/xx xx
+	$(MAKE) -C app xx
+	$(MAKE) -C app/server install
+
+ws: .lconfig
+	$(MAKE) -C app/server install
 
 shared: .lconfig
 	@$(MAKE) -f shared.mk

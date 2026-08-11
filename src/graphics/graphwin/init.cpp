@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  init.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -129,20 +129,20 @@ void gw_LEDA_EXCEPTION(int i, const char* s)
 //----------------------------------------------------------------------------
 
 
-void GraphWin::init(graph* G, window* W) 
+void GraphWin::init(graph* G, window* wp) 
 {
   gr_p  = G;
-  win_p = W;
+  win_p = wp;
   win_p->grawin_ptr = this;
 
-  if (W->display_fd() == -1) return;
+  if (wp->display_fd() == -1) return;
 
   if (create_flag & CR_WIN) 
      menu_p = win_p;
   else
    { string win_label("%s %.1f",DefWindowLabel,version());
-     if (W->is_open())
-        menu_p = new window(W->width(),30,win_label);
+     if (wp->is_open())
+        menu_p = new window(wp->width(),30,win_label);
      else
         menu_p = new panel(DefWindowLabel);
      menu_p->grawin_ptr = this;
@@ -154,11 +154,12 @@ void GraphWin::init(graph* G, window* W)
 
   init_graph();
 
-  win_width = W->width();
+  win_width = wp->width();
 
-  W->set_fixed_font();
+  wp->set_fixed_font();
 
-  status_win_height = (int)(1.4*W->text_height("H"));
+  //status_win_height = int(1.4*wp->text_height("H"));
+  status_win_height = int(1.3*wp->text_height("H"));
 }
 
 
@@ -170,6 +171,8 @@ void GraphWin::init(graph* G, int win_w, int win_h, string win_label)
 //----------------------------------------------------------------------------
 
 void GraphWin::init_once() {
+
+  show_menu_bar = true;
 
   sub_menu_counter = 0;
 
@@ -252,7 +255,6 @@ void GraphWin::init_once() {
 
   labelBoxEnabled = false;
 
-  open_frameless = false;
   frame_actions_enabled = true;
 
   gw_undo = nil;
@@ -384,7 +386,6 @@ void GraphWin::init_default() {
   edge_label_user_font = "";
 
 
-  //gw_dirname=".";
   gw_dirname= get_directory();
   graph_name=DefGraphName;
 
@@ -882,8 +883,9 @@ static void special_event_handler(void* w_ptr, const char* event,
         leda_wait(1.5);
         gwp->del_messages();
        }
-      else
-        gwp->message("Cannot open " + fname);
+      else { 
+        gwp->message(get_directory() + " : cannot open\\blue " + fname);
+      }
     }
     else
     {
@@ -984,11 +986,7 @@ void GraphWin::init_window(int x, int y)
     { x = window::center;
       y = window::center;
      }
-    if (open_frameless) 
-    { win_p->clear_panel();
-      win_p->display(*win_p,x,y);
-     }
-    else
+     if (!show_menu_bar) win_p->clear_panel();
      win_p->display(x,y);
    }
 

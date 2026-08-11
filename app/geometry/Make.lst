@@ -1,4 +1,6 @@
 PROGS = \
+frechet_distance$(e) \
+frechet_segments$(e) \
 geowin$(e) \
 geowin_voronoi$(e) \
 intersect_segments$(e) \

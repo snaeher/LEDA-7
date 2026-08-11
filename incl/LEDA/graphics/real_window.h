@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  real_window.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_REAL_WINDOW_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722282
+#define LEDA_ROOT_INCL_ID 723216
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -159,7 +159,7 @@ extern __exportF window& draw_filled(window& W, const r_circle_gen_polygon& p, c
 /*{\Mbinopfunc   displays |p| in the window $W$ filled with color $c$.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 722282
+#if LEDA_ROOT_INCL_ID == 723216
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

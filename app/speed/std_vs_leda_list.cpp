@@ -414,9 +414,6 @@ cout << endl;
   std::list<my_struct> SL4;
   test_list(N,L4,SL4);
 
-  cout << endl;
-  cout << "FINISHED" << endl;
-  cout << endl;
 
   return 0;
 }

@@ -19,9 +19,9 @@ touch:
 	@for f in *; do if [ -f $$f/Makefile ]; \
 	then echo; echo `pwd`/$$f; $(MAKE) -C $$f touch; fi; done
 
-install:
+xx:
 	@echo;echo INSTALL APPS
 	ws -k
 	sleep 1
-	@for f in *; do if [ -d $$f -a $$f != server ]; \
-	then echo;echo `pwd`/$$f; $(MAKE) -C $$f install; fi; done
+	@for f in *; do if [ -f $$f/Makefile -a $$f != server ]; \
+	then echo;echo `pwd`/$$f; $(MAKE) -C $$f xx; fi; done

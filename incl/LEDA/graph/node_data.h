@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  node_data.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_NODE_DATA_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722209
+#define LEDA_ROOT_INCL_ID 723239
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -30,7 +30,7 @@ LEDA_BEGIN_NAMESPACE
 
 
 
-#if LEDA_ROOT_INCL_ID == 722209
+#if LEDA_ROOT_INCL_ID == 723239
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

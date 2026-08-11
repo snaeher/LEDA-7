@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2
++  LEDA 7.2.3
 +
 +
 +  base_window.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_BASE_WINDOW_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722274
+#define LEDA_ROOT_INCL_ID 723205
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -498,6 +498,8 @@ static int screen_height();
 static int screen_dpi();
 static int screen_depth();
 
+static void font_size(string font_name, string txt, int& font_w, int& font_h);
+
 static void default_size(int& w, int& h);
 static int default_width();
 static int default_height();
@@ -592,6 +594,8 @@ char* set_bg_pixrect(char*,double,double);
 void         set_border_width(int);
 void         set_border_color(int);
 
+void         set_rotation(double x, double y, double phi);
+
 void         set_text_font();
 void         set_bold_font();
 void         set_italic_font();
@@ -612,8 +616,9 @@ text_mode    set_text_mode(text_mode m);
 int          set_cursor(int c);
 
 void         set_frame_label(const char* s);
-void         set_tmp_label(const char* s);
 void         set_icon_label(const char* s);
+void         set_label(const char* s);
+
 void         reset_frame_label();
 
 void         set_alpha(int a);
@@ -632,6 +637,7 @@ void         project_d3_point(double& x, double& y, double& z);
 
 void set_icon_pixrect(char*);
 void set_icon_window(BASE_WINDOW&);
+
 
 int          get_line_width() const;
 point_style  get_point_style() const { return pt_style; }
@@ -712,6 +718,7 @@ void set_topmost();
 
 void resize(int xpos, int ypos, int width, int height);
 void resize(int width, int height);
+void resize();
 
 void iconify();
 void maximize();
@@ -857,8 +864,17 @@ void draw_edge(double x1, double y1, double x2, double y2, int col=black);
 
 void draw_circle(double x0, double y0, double r, int col=black);
 void draw_filled_circle(double x0, double y0, double r, int col=black);
+
 void draw_ellipse(double x0, double y0, double a, double b, int col=black);
 void draw_filled_ellipse(double x0, double y0, double a, double b, int col=black);
+
+/*
+// rotated by phi
+void draw_ellipse(double x0, double y0, double a, double b, double phi, int col=black);
+void draw_filled_ellipse(double x0, double y0, double a, double b, double phi, int col=black);
+*/
+
+
 void draw_arc(double x0, double y0, double r1, double r2, double start, double angle, int col=black);
 void draw_filled_arc(double x0, double y0, double r1, double r2, double start, double angle, int col=black);
 
@@ -1049,7 +1065,8 @@ color panel_bg_color;
 color item_bg_color;
 color d3_box_bg_color;
 color shadow_color;
-color press_color;
+color button_color;
+color button_press_color;
 color bitmap_color0;
 color bitmap_color1;
 color disable_color;
@@ -1105,7 +1122,9 @@ void draw_box_with_shadow(int,int,int,int,int,int);
 void draw_d3_box(int x1,int y1,int x2,int y2, int pressed, int enabled=1);
 
 void draw_string_item(panel_item i, const char* s=0);
+
 void activate_string_item(panel_item,int,int=0);
+
 bool panel_text_edit(panel_item i, int=0);
 
 void put_text_item(int x, int y, const char* s, int t_len);
@@ -1191,6 +1210,7 @@ void set_item_margins(int,int);
 void set_button_height(int);
 void set_button_space(int);
 
+void activate_item(panel_item it);
 
 panel_item text_item(const char*);
 
@@ -1420,9 +1440,15 @@ panel_item next_item(panel_item) const;
 
 // scroll bar
 
+void open_scrollbar(int width,
+                    void (*scroll_up)(int),
+                    void (*scroll_down)(int),
+                    void (*scroll_drag)(int), double sz , double pos=0);
+
 void open_scrollbar(void (*scroll_up)(int),
                     void (*scroll_down)(int),
                     void (*scroll_drag)(int), double sz , double pos=0);
+
 void close_scrollbar();
 
 void set_scrollbar_pos(double pos, double sz=-1);
@@ -1455,7 +1481,7 @@ BASE_WINDOW* get_status_window() { return status_win; }
 
 
 
-#if LEDA_ROOT_INCL_ID == 722274
+#if LEDA_ROOT_INCL_ID == 723205
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  node_matrix.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_NODE_MATRIX_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722203
+#define LEDA_ROOT_INCL_ID 723248
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -123,7 +123,7 @@ for later added nodes are not allowed.}*/
 
 
 
-#if LEDA_ROOT_INCL_ID == 722203
+#if LEDA_ROOT_INCL_ID == 723248
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

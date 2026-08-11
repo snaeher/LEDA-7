@@ -25,7 +25,8 @@ sierpinski$(e) \
 spline$(e) \
 windows$(e) \
 win_error$(e) \
-win_pos$(e)
+win_pos$(e) \
+xor$(e)
 
 
 #persist$(e)

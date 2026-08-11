@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  random_variate.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_RANDOM_VARIATE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722048
+#define LEDA_ROOT_INCL_ID 723161
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -206,7 +206,7 @@ public:
 
 };
 
-#if LEDA_ROOT_INCL_ID == 722048
+#if LEDA_ROOT_INCL_ID == 723161
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

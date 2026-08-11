@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  date.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_DATE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722171
+#define LEDA_ROOT_INCL_ID 723195
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -527,7 +527,7 @@ inline bool operator <  (const date& d1, const date& d2)
 inline bool operator >  (const date& d1, const date& d2)
 { return date::cmp(d1, d2) > 0; }
 
-#if LEDA_ROOT_INCL_ID == 722171
+#if LEDA_ROOT_INCL_ID == 723195
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

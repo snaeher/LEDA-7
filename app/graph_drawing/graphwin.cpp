@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  graphwin.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -40,34 +40,14 @@ int main(int argc, char** argv) {
 
   string fname = "undefined";
   
-  if (argc > 1) {
-    fname = argv[1];
-    fname = fname.replace_all("\"","");
-    fname = fname.replace_all("\\","/");
-  }
+  if (argc > 1) fname = argv[1];
 
-  // start in "Graphs" subdirectory (if it exist)
+  // open in "Graphs" subdirectory (if it exist)
   if (is_directory("Graphs")) set_directory("Graphs");
-
-
-/*
-  string frame_label("Leda Graph Editor (GraphWin %.1f)",
-                                              GraphWin::version());
-*/
 
   string frame_label("LEDA  GraphWin %.1f", GraphWin::version());
 
-  int w = window::default_width();
-  int h = window::default_height();
-
-/*
-  if (getenv("LEDA_OPEN_MAXIMIZED")) 
-  { w = window::screen_width();
-    h = window::screen_height();
-  }
-*/
-
-  GraphWin gw(w,h,frame_label);
+  GraphWin gw(frame_label);
 
   window& W = gw.get_window();
 
@@ -81,9 +61,15 @@ int main(int argc, char** argv) {
   frame_label += string("   %d x %d   %d dpi",W.width(),W.height(),dpi);
 
   W.set_frame_label(frame_label);
-
   W.set_icon_label("GraphWin");
 
+  if (getenv("LEDA_OPEN_MAXIMIZED")) {
+    gw.message("\\bf " + frame_label.replace_all(" ","~"));
+    leda_wait(2.0);
+    gw.message("");
+  }
+
+/*
   W.set_cursor(XC_watch);
 
   string home_dir = get_home_directory();
@@ -96,16 +82,15 @@ int main(int argc, char** argv) {
      leda_wait(2.0);
      gw.read_defaults();
     }
-/*
  else
    { gw.message("No\\blue " + rc_file + "\\black ~(using built-in defaults).");
      leda_wait(1.8);
     }
-*/
 
   gw.message("");
 
   W.set_cursor();
+*/
 
   if (is_file(fname))
   {
@@ -149,7 +134,6 @@ int main(int argc, char** argv) {
   int settings_choice = 0;
   bool do_save = false;
 
-
   while (but == 0)
   {
     gw.edit();
@@ -158,27 +142,27 @@ int main(int argc, char** argv) {
     P.text_item("\\bf\\blue Exit GraphWin");
     P.text_item("");
 
-    P.choice_item("Local Settings",settings_choice,"save","discard","reset");
+    if (window::display_type() != "xx") {
+      panel_item it = P.choice_item("Local Settings",settings_choice,
+                                                     "save","discard","reset");
 
     if (gw.unsaved_changes())
-    { P.text_item("\\bf Graph not written since last change.\\n");
+    { P.text_item("\\bf No write since last change.\\n");
       P.bool_item("Save Graph",do_save);
      }
+    }
 
-    P.text_item("");
-    P.button("cancel",0);
-    P.fbutton("ok",1);
+    P.fbutton("cancel",0);
+    P.button("ok",1);
 
     //but = P.open();
     but = gw.open_panel(P);
-   }
+  }
 
-   if (do_save) gw_save_handler(gw);
+  if (do_save) gw_save_handler(gw);
 
-   if (settings_choice == 0) gw.save_defaults();
-   if (settings_choice == 2) gw.reset_defaults();
-
-  if (fname == "CURRENT_GRAPH.gw") delete_file(fname);
+  if (settings_choice == 0) gw.save_defaults();
+  if (settings_choice == 2) gw.reset_defaults();
 
   return 0;
 }

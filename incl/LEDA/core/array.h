@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  array.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_ARRAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722061
+#define LEDA_ROOT_INCL_ID 723159
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -283,7 +283,6 @@ void resize_x(int n)
 
   if (n == sz) return;
 
-  cout << "resize: n = " << n << "  sz = " << sz << endl;
   assert(sz == h+1);
   assert(n > sz);
   E* v = LEDA_NEW_VECTOR(E,n);
@@ -603,7 +602,7 @@ inline void array<int>::sort() { INTSORT(vec,sz); }
 
 
 
-#if LEDA_ROOT_INCL_ID == 722061
+#if LEDA_ROOT_INCL_ID == 723159
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

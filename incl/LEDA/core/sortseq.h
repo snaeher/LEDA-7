@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  sortseq.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_SORTSEQ_H 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722059
+#define LEDA_ROOT_INCL_ID 723171
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -120,7 +120,7 @@ or may not be the sequence containing |it|.
   void copy_key(GenPtr& x)  const  { LEDA_COPY(K,x);  }
   void copy_inf(GenPtr& x)  const  { LEDA_COPY(I,x);  }
 
-  void print_key(ostream& out, GenPtr x)  const  { LEDA_PRINT(K,x,out);  }
+//void print_key(ostream& out, GenPtr x)  const  { LEDA_PRINT(K,x,out);  }
 //void print_inf(ostream& out, GenPtr x)  const  { LEDA_PRINT(I,x,out);  }
 
 public:
@@ -634,7 +634,7 @@ Further examples can be found in section Sorted Sequences of
 
 }*/
 
-#if LEDA_ROOT_INCL_ID == 722059
+#if LEDA_ROOT_INCL_ID == 723171
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  real_line.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_REAL_LINE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722091
+#define LEDA_ROOT_INCL_ID 723088
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -302,7 +302,7 @@ extern __exportF real_line p_bisector(const real_point& p, const real_point& q);
 
 inline const char* leda_tname(const real_line*) { return "real_line"; }
 
-#if LEDA_ROOT_INCL_ID == 722091
+#if LEDA_ROOT_INCL_ID == 723088
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

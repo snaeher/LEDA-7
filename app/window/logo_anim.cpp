@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  logo_anim.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -32,10 +32,11 @@ static color bg_clr   = 0xdddddd;
 static color text_clr = 0x555555;
 static color line_clr = 0x333333;
 
-static bool frame = true;
+static double anim_d = 0.0002;
 
-static double anim_d = 0.0001;
-
+static void exit_handler(window* wp) {
+  exit(0);
+}
 
 void anim_arc_arrows(window& W, point a1, point b1, point c1, 
                                 point a2, point b2, point c2, color col)
@@ -62,7 +63,7 @@ void anim_arc_arrows(window& W, point a1, point b1, point c1,
       W.draw_arc(a2,bb,cc,col);
      }
     W.flush_buffer(-2.3,-0.5,2.3,1.3);
-    //W.get_mouse(); // allow interaction
+    W.get_mouse(); // allow interaction
   }
   W.draw_arc_arrow(a1,b1,c1,col);
   W.draw_arc_arrow(a2,b2,c2,col);
@@ -78,7 +79,7 @@ void draw_varrows(window& W, int n, double* x, color c, bool anim = false)
   { for(double y = ymin; y <= ymax; y += anim_d)
     { for (int i=0; i<n; i++) W.draw_segment(x[i],ymin,x[i],y,c);
       W.flush_buffer(-1.5,-0.6,1.5,1.6);
-      //W.get_mouse(); // allow interaction
+      W.get_mouse(); // allow interaction
      }
    }
   for (int i=0; i<n; i++) W.draw_arrow(x[i],ymin,x[i],ymax,c);
@@ -91,7 +92,7 @@ void draw_harrows(window& W, int n, double* y, color c, bool anim = false)
   { for(double d = -2.5; d <= 2.5; d += anim_d)
     { for (int i=0; i<n; i++) W.draw_segment(-2.5,y[i],d,y[i],c);
       W.flush_buffer(-2.5,-0.1,2.5,0.75);
-      //W.get_mouse(); // allow interaction
+      W.get_mouse(); // allow interaction
      }
    }
   for (int i=0; i<n; i++) W.draw_arrow(-2.5,y[i],2.5,y[i],c);
@@ -210,6 +211,7 @@ void draw_text(window& W,
     }
 
    int steps = int(1.0/anim_d);
+   if (window::display_type() == "xx") steps = int(1.5/anim_d);
 
    color col0 = W.get_bg_color();
 
@@ -283,10 +285,8 @@ void fill_logo(window& W, bool anim=false )
 
    if (anim)
    { 
-     //int steps = int(1.5/anim_d);
-     //if (window::display_type() == "xx") steps = int(8.5/anim_d);
-
-     int steps = int(0.1/anim_d);
+     int steps = int(1.0/anim_d);
+     if (window::display_type() == "x11") steps = int(0.1/anim_d);
      if (window::display_type() == "xx") steps = int(15.0/anim_d);
 
      for(int i=0; i <= steps; i++)
@@ -326,13 +326,10 @@ void draw_title(window& W, bool anim=false)
 
 void draw_copyright(window& W)
 { 
-  if (getenv("LEDA_OPEN_MAXIMIZED"))
-    W.set_font("I25");
-  else
-    W.set_font("I30");
+  W.set_font("I30");
 
   //string text = "LEDA Logo  (sn 1995)";
-  string text = "LEDA Logo (c) 1995 by SN";
+  string text = "LEDA Logo (c) sn 1995";
 
   double xt = W.xmin() + W.pix_to_real(8);
   double yt = W.ymin() + W.text_height(text) + W.pix_to_real(4);
@@ -348,7 +345,8 @@ void redraw(window* wp)
   W.start_buffering();
   W.clear();
 
-  if (frame) draw_title(W);
+  if (getenv("LEDA_OPEN_MAXIMIZED") == 0) draw_title(W,false);
+
   fill_logo(W);
   draw_circles(W);
   draw_lines(W);
@@ -388,35 +386,41 @@ int main()
 {
   leda::copyright_window_string = "";
 
-  if (window::display_type() == "xx") anim_d = 0.02;
+  if (window::display_type() == "xx") anim_d = 0.015;
+  if (window::display_type() == "mswin") anim_d = 0.002;
 
-  int w = 8*window::screen_dpi();
+  int dpi = window::dpi();
+
+  int w = int(6.5*dpi);
   int wmax = int(0.9*window::screen_width());
   if (w > wmax) w = wmax;
-  int h = int(0.55*w);
-
-  if (getenv("LEDA_OPEN_MAXIMIZED")) {
-    w = window::screen_width();
-    h = window::screen_height();
-    frame = false;
-  }
+  int h = 4*w/7;
 
   window W(w,h,version_string);
 
   W.enable_close_button(true);
 
+  W.set_window_close_handler(exit_handler);
+
   W.set_line_width(1);
   W.set_bg_color(bg_clr);
   W.set_clear_on_resize(false);
 
-W.set_text_mode(opaque);
+  W.set_text_mode(opaque);
 
+/*
   W.init(-3.0,3.0,-0.9);
+*/
 
-  if (frame)
-    W.display(window::center,window::center);
-  else
-    W.display(W,window::center,window::center);
+  double xmax = 2.8;
+  double ymin = -1.5*h/w;
+
+  if (getenv("LEDA_OPEN_MAXIMIZED")) ymin = -1.15*h/w;
+
+  W.init(-xmax,xmax,ymin);
+
+
+ W.display(window::center,window::center);
 
   W.set_redraw(redraw);
 
@@ -433,7 +437,7 @@ W.set_text_mode(opaque);
     W.clear();
     W.flush_buffer();
   
-    if (frame) draw_title(W,true);
+    if (getenv("LEDA_OPEN_MAXIMIZED") == 0) draw_title(W,true);
 
     draw_lines(W,true);
     draw_circles(W,true);

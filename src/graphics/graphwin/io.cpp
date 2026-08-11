@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  io.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -2669,7 +2669,10 @@ void GraphWin::file_handler(int what)
   gwp = this; 
 
   string fname = get_graphname();
+
   string dname = get_dirname();
+
+  if (window::display_type() == "xx") dname = gw_dirname;
 
   if (what==SAVE_GW || what==SAVE_GML || what==SAVE_TEX || what==SAVE_PS ||
       what == SAVE_SVG || what==SAVE_MF)
@@ -3001,7 +3004,7 @@ void GraphWin::file_handler(int what)
 
   redraw();
 
-  set_dirname(dname);
+  if (window::display_type() != "xx") set_dirname(dname);
 
 // set_flush(old_flush);
 }

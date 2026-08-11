@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  rat_plane.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_RAT_PLANE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722075
+#define LEDA_ROOT_INCL_ID 723115
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -34,7 +34,7 @@
 #include <LEDA/geo/rat_triangle.h>
 
 
-#if LEDA_ROOT_INCL_ID == 722075
+#if LEDA_ROOT_INCL_ID == 723115
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

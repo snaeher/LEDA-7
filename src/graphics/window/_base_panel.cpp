@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _base_panel.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -346,13 +346,18 @@ void BASE_WINDOW::panel_init()
   bitmap_color1 = black;
 
   panel_bg_color = grey1;
-  press_color    = grey2;
+  button_color   = panel_bg_color;
+  button_press_color = grey2;
   shadow_color   = grey3;
 //disable_color  = grey2;
   disable_color  = color(150,150,150);
 
-  //min_panel_width = int(450*screen_dpi_scaling());
+/*
   min_panel_width = int(550*screen_dpi_scaling());
+*/
+  //min_panel_width = int(2.85 * screen_dpi());
+  min_panel_width = 100;
+
   panel_width = 0;
   panel_height = 0;
 
@@ -383,11 +388,6 @@ void BASE_WINDOW::panel_init()
   choice_w  = 30;          // minimal choice field width
   button_w  = 20;          // minimal button width
 
-/*
-  scrollbar_w = int(0.95*th);
-*/
-
-
   //buts_per_line = 0;  
   buts_per_line = 3;  
 
@@ -409,7 +409,7 @@ void BASE_WINDOW::panel_init()
   th = x_text_height(draw_win,"H");
   x_restore_font(draw_win);
 
-  scrollbar_w = int(0.85*th);
+  scrollbar_w = int(0.7*th);
 
   panel_items_fixed = false;
 
@@ -602,6 +602,7 @@ panel_item BASE_WINDOW::string_item(const char* s, void* x,
   p->dat2 = int(0.5 + string_w/twf) - 1;
   //if (p->offset > p->dat2) p->offset = p->dat2;
   p->str_action = F;
+if (active_item == 0) active_item = p;
   return p;
  }
 
@@ -820,7 +821,7 @@ panel_item BASE_WINDOW::float_item(const char* s, double* x, const char* hlp)
  }
 
 
-panel_item BASE_WINDOW::slider_item(const char* s, int* x, int low, int high, 
+panel_item BASE_WINDOW::slider_item(const char* s, int* x, int low, int high,
                                                       panel_action_func F,
                                                       const char* hlp)
 { panel_item p = new_panel_item(Slider_Item,s,x,slider_h,hlp);
@@ -843,8 +844,7 @@ panel_item BASE_WINDOW::choice_item(const char* s, int* x, int argc,
   p->argv = new char*[argc];
   x_set_button_font(draw_win);
   for(int i=0; i<argc; i++) 
-  { //int w = x_text_width(draw_win,argv[i]) + int(1.5*th);
-    int w = x_text_width(draw_win,argv[i]) + 2*tw;
+  { int w = x_text_width(draw_win,argv[i]) + 2*tw;
     if (w > choice_w) choice_w = w;
     p->argv[i] = string_dup(argv[i]);
    }
@@ -1058,7 +1058,7 @@ static unsigned char* create_style_bitmap(int w, int h, int style)
             pat[0] = 0x00;
             pat[1] = 0xff;
             pat[2] = 0x00;
-            pat[4] = 0xff;
+            pat[3] = 0xff;
             break;
 
     case 2: //dotted
@@ -1276,7 +1276,6 @@ int BASE_WINDOW::menu_button(const char* s, int val, BASE_WINDOW* wp,
   if (wp) wp->owner_item = p;
 
   x_set_button_font(draw_win);
-//int w = x_text_width(draw_win,s) + 10;
   int w = x_text_width(draw_win,s) + 10*panel_line_width;
   x_set_text_font(draw_win);
 
@@ -1330,14 +1329,11 @@ void BASE_WINDOW::draw_label(panel_item it)
 
   int dy = it->height - x_text_height(draw_win,str);
 
-  int yt = y + dy/2;
+  int yt = y + dy/2 - 1;
 
-  //yt -= 2;
-  yt -= 1;
-
-  if (i < slen) str[i] = '\0';
+  if (arrow) str[i] = '\0';
   x_text(draw_win,x,yt,str);
-  if (i < slen) str[i] = '@';
+  if (arrow) str[i] = '@';
 
   if (arrow)
   { int w = x_text_width(draw_win,str);
@@ -1353,11 +1349,11 @@ void BASE_WINDOW::draw_label(panel_item it)
 }
 
 
-void BASE_WINDOW::draw_box_with_shadow(int x1,int y1,int x2,int y2,int c,int w)
+void BASE_WINDOW::draw_box_with_shadow(int x1,int y1,int x2,int y2,int clr,int w)
 { // below and right of box(x1,y1,x2,y2)
   x_set_color(draw_win,shadow_color);
   x_box(draw_win,x1+3,y1+3,x2+w,y2+w);
-  x_set_color(draw_win,c);
+  x_set_color(draw_win,clr);
   x_box(draw_win,x1,y1,x2,y2);
 /*
   x_set_color(draw_win,black);
@@ -1371,17 +1367,18 @@ void BASE_WINDOW::draw_d3_box(int x1,int y1,int x2,int y2, int pressed,
 {
   if (x2 <= x1 || y2 <= y1) return;
 
-  int save_color = press_color;
+  color up_color =  button_color;
+  color down_color =  button_press_color;
 
-  if (press_color == invisible) press_color = panel_bg_color;
+  if (down_color == invisible) down_color = panel_bg_color;
 
-//color dark = color(64,64,64);
+
   color dark = color("#333333");
 
   color c1 = (pressed) ? dark : white;
   color c2 = (pressed) ? shadow_color : panel_bg_color;
   color c3 = (pressed) ? white : shadow_color;
-  color c4 = (pressed) ? press_color : dark;
+  color c4 = (pressed) ? down_color : dark;
 
 
   if (!enabled) 
@@ -1389,19 +1386,16 @@ void BASE_WINDOW::draw_d3_box(int x1,int y1,int x2,int y2, int pressed,
     c2 = c4 = panel_bg_color;
    }
 
-  x_set_color(draw_win,panel_bg_color);
-
-  //x_box(draw_win,x1,y1,x2+1,y2+1);
+  x_set_color(draw_win,up_color);
   x_box(draw_win,x1,y1,x2+1,y2);
 
-
   if (pressed) 
-   { if (enabled)
-       x_set_color(draw_win,press_color);
+  { if (enabled)
+       x_set_color(draw_win,down_color);
      else
        x_set_color(draw_win,color(200,200,200));
      x_box(draw_win,x1,y1,x2+1,y2+1);
-    }
+  }
 
 
   x_set_color(draw_win,c2);
@@ -1430,7 +1424,6 @@ void BASE_WINDOW::draw_d3_box(int x1,int y1,int x2,int y2, int pressed,
   x_pixel(draw_win,x2+1,y1);
 */
 
-  press_color = save_color;
 }
 
 
@@ -1530,14 +1523,14 @@ void BASE_WINDOW::draw_string_item(panel_item it, const char* s)
 
      }
   
-    int save = press_color;
-    //press_color = (selected) ? blue : ivory;
-    press_color = ivory;
     if (selected)
       draw_box_with_shadow(x1,y1,x2,y2+2,blue,1);
     else
+    { int save = button_press_color;
+      button_press_color = ivory;
       draw_d3_box(x1,y1,x2,y2,1,it->enabled);
-    press_color = save;
+      button_press_color = save;
+     }
   }
 
 
@@ -1624,7 +1617,8 @@ cout << string("draw_string_item: chars = %d   width = %d",
     X[3] = X[0];
     Y[3] = Y[0];
 
-    x_set_color(draw_win,0x333333);
+    //x_set_color(draw_win,0x333333);
+    x_set_color(draw_win,0x555555);
     x_fill_polygon(draw_win,4,X,Y);
    }
 
@@ -1648,6 +1642,13 @@ cout << string("draw_string_item: chars = %d   width = %d",
   x_flush_display();
 }
 
+void BASE_WINDOW::activate_item(panel_item it)
+{ if (it->kind != String_Item && it->kind != String_Menu_Item) return;
+  if (is_open()) 
+    activate_string_item(it,string_w,0);
+  else
+    active_item = it;
+}
 
 
 void BASE_WINDOW::activate_string_item(panel_item it, int x, int but)
@@ -1819,6 +1820,7 @@ void BASE_WINDOW::activate_string_item(panel_item it, int x, int but)
 
 bool BASE_WINDOW::panel_text_edit(panel_item it, int key_val)
 { 
+
   int len = 2*str_length(it->data_str);
   if (len < 256) len = 256;
 
@@ -1842,6 +1844,7 @@ bool BASE_WINDOW::panel_text_edit(panel_item it, int key_val)
   { do k = x_get_next_event(w,xc,yc,val1,val2,t);
     while (w != draw_win || (k != key_press_event && k != button_press_event));
    }
+
 
   if (k == button_press_event) 
   { if (it->index < 0)
@@ -1889,16 +1892,17 @@ bool BASE_WINDOW::panel_text_edit(panel_item it, int key_val)
    delete[] it->data_str;
 
 
-  char c    = (char)val1;
-  int  j    = it->offset;
+//char c = (char)val1;
+  int c = val1 & 0xff; // mask out any shift/alt/ctrl bits
+
+  int  j = it->offset;
   int  strl = str_length(str);
 
-  //if (isprint(c))
-  if (!iscntrl(c))
-  { for(int i=strl; i>=j; i--) str[i+1] = str[i];
+  if (isprint(c))
+  { // insert c at position j (offset)
+    for(int i=strl; i>=j; i--) str[i+1] = str[i];
     str[j]=c;
-    j++;
-    if (j > it->dat2)
+    if (++j > it->dat2)
     { it->dat1++;
       it->dat2++;
      }
@@ -2002,6 +2006,7 @@ void BASE_WINDOW::draw_choice_item(panel_item it)
   x_box(draw_win,x,y,x+n*bw,y+choice_h+3);
   x_set_color(draw_win,black);
 
+  int w = lw + n*bw;
 
   for(int j=0; j<n; j++)
   { bool pressed = (j == c); 
@@ -2099,10 +2104,10 @@ void BASE_WINDOW::draw_color_button(int x, int y, int j, int pressed,
 
   int w = color_h/2;
 
-  int save = press_color;
-  press_color = clr;
+  int save = button_press_color;
+  button_press_color = clr;
   draw_d3_box(x-w,y-w,x+w,y+w,pressed,enabled);
-  press_color = save;
+  button_press_color = save;
 
   if (clr == invisible || (pressed && enabled)) return;
 
@@ -2393,7 +2398,7 @@ void BASE_WINDOW::draw_button(panel_item it, int pressed)
        color(grey1).get_rgb(r1,g1,b1);
        color(grey2).get_rgb(r2,g2,b2);
        int fcol = color((r1+r2)/2,(g1+g2)/2,(b1+b2)/2).get_value();
-       if (fcol == -1) fcol = press_color;
+       if (fcol == -1) fcol = button_press_color;
        x_set_color(draw_win,fcol);
        x_box(draw_win,x1+1,y1+1,x2-1,y2-1);
       }
@@ -2635,11 +2640,13 @@ void BASE_WINDOW::draw_up_menu_button(int x, int y, int pressed, int enabled)
   X[3] = X[0];
   Y[3] = Y[0];
 
-//x_set_color(draw_win, (pressed>0) ? press_color : panel_bg_color);
-//x_fill_polygon(draw_win,4,X,Y);
-
+/*
   x_set_color(draw_win, panel_bg_color);
   x_box(draw_win,x-d,y-d,x+d,y+d);
+*/
+
+  x_set_color(draw_win, (pressed>0) ? button_press_color : button_color);
+  x_fill_polygon(draw_win,4,X,Y);
 
   color c1 = shadow_color;
   color c2 = white;
@@ -2687,12 +2694,13 @@ void BASE_WINDOW::draw_down_menu_button(int x, int y, int pressed, int enabled)
   X[3] = X[0];
   Y[3] = Y[0];
 
-//x_set_color(draw_win, (pressed>0) ? press_color : panel_bg_color);
-//x_fill_polygon(draw_win,4,X,Y);
-
+/*
   x_set_color(draw_win, panel_bg_color);
   x_box(draw_win,x-d,y-d,x+d,y+d);
+*/
   
+  x_set_color(draw_win, (pressed>0) ? button_press_color : button_color);
+  x_fill_polygon(draw_win,4,X,Y);
 
   color c1 = white;
   color c2 = shadow_color;
@@ -2749,7 +2757,7 @@ void BASE_WINDOW::draw_right_menu_button(int x, int y, int pressed, int enabled)
 
   if (!enabled) c1 = c2 = disable_color;
 
-//x_set_color((pressed>0) ? press_color : panel_bg_color);
+//x_set_color((pressed>0) ? button_press_color : panel_bg_color);
 //x_fill_polygon(draw_win,4,X,Y);
 
   x_set_color(draw_win,panel_bg_color);
@@ -2799,7 +2807,7 @@ void BASE_WINDOW::draw_left_menu_button(int x, int y, int pressed, int enabled)
 
   if (!enabled) c1 = c2 = disable_color;
 
-//x_set_color((pressed>0) ? press_color : panel_bg_color);
+//x_set_color((pressed>0) ? button_press_color : button_color);
 //x_fill_polygon(draw_win,4,X,Y);
 
   x_set_color(draw_win,panel_bg_color);
@@ -2892,7 +2900,6 @@ void BASE_WINDOW::place_panel_items()
   x_save_font(draw_win);
 
   x_set_fixed_font(draw_win);
-  twf = x_text_width(draw_win,"HHHHHHHHHHHHHHHHHHHH")/20.0;
 
   bool is_menu = (p_win && item_count == but_count);
 
@@ -2938,6 +2945,7 @@ void BASE_WINDOW::place_panel_items()
 
   if (buts_per_line > but_count) buts_per_line = but_count;
 
+  //cout << "panel_width = " << panel_width << endl;
 
 
   // set width for all items and adjust panel width
@@ -3008,17 +3016,13 @@ void BASE_WINDOW::place_panel_items()
 
       case Choice_Item:
       case Choice_Mult_Item: 
-           { 
-             int bw = get_item_button_width(it);
-
+           { int bw = get_item_button_width(it);
              int w = it->argc * bw;
-
              if (w > max_choice_width) 
              { max_choice_it = it;
                max_choice_width = w; 
               }
              it->width = lw + w;
-
              break;
             }
 
@@ -3049,7 +3053,6 @@ void BASE_WINDOW::place_panel_items()
            //it->width = lw + number_w;
              it->width = lw + get_default_width(it);
              break;
-  
      }
 
     if (it->width > max_w) max_w = it->width;
@@ -3074,6 +3077,8 @@ void BASE_WINDOW::place_panel_items()
     number_w = max_choice_width;
    }
 
+  int slider_count = 0;
+
   for(i = 0; i<item_count; i++)
   { panel_item it = Item[i];
     int lw = get_item_label_width(it);
@@ -3092,28 +3097,32 @@ void BASE_WINDOW::place_panel_items()
       case Int_Item:
             //it->width = lw + (it->item_width > 0) ? it->item_width : string_w;
               it->width = lw + get_default_width(it);
+              slider_count++;
               break;
       }
    }
 
 
+/*
   if (max_choice_it && slider_w > max_choice_width
                     && slider_w - choice_w < max_choice_width)
+*/
+
+  if (slider_count > 0 && slider_w > max_choice_width
+                       && slider_w - choice_w < max_choice_width)
   { 
     int dw = (slider_w - max_choice_width)/max_choice_it->argc;
+
     choice_w += dw;
+
     for(i = 0; i<item_count; i++)
     { panel_item it = Item[i];
+      if (it->kind != Choice_Item && it->kind != Choice_Mult_Item) continue;
       int lw = get_item_label_width(it);
-
-      switch (it->kind) {
-        case Choice_Item:
-        case Choice_Mult_Item:
-                it->width = lw + get_item_button_width(it)*it->argc - 3;
-                //it->width = lw + choice_w*it->argc - 3;
-                break;
-      
-       }
+      it->width = lw + get_item_button_width(it)*it->argc - 3;
+      //it->width = lw + choice_w*it->argc - 3;
+      int w = it->width + int(2.5*xoff); 
+      if (w > panel_width) panel_width = w;
      }
    }
 
@@ -3263,7 +3272,9 @@ void BASE_WINDOW::place_panel_items()
 
   int cur_xcoord = panel_width+1;
 
-  int cur_ycoord = (2*yoff)/3;
+  //int cur_ycoord = 0;
+  int cur_ycoord = (2*yoff)/3; // top margin ?
+
 
 /*
   if (item_count > 0 && Item[0]->kind == Text_Item) cur_ycoord = yoff;
@@ -4037,6 +4048,7 @@ int BASE_WINDOW::panel_event_handler(int w, int k, int b, int x, int y,
    fflush(stdout);
 */
 
+
   if (k == button_press_event && b == 4)
   { // scroll wheel up
     k = key_press_event;
@@ -4170,7 +4182,7 @@ int BASE_WINDOW::panel_event_handler(int w, int k, int b, int x, int y,
               //x = it->xcoord + string_w + lw;
               x = it->xcoord + get_default_width(it) + lw;
               y = it->ycoord;
-              x_put_back_event(); // event will be handled by p/anel_text_edit
+              x_put_back_event(); // event will be handled by panel_text_edit
              }
        }
     else
@@ -4759,9 +4771,11 @@ int BASE_WINDOW::panel_event_handler(int w, int k, int b, int x, int y,
 
   if (it == 0 && but == -1 && k == button_press_event && result == -1) {
     // click on panel background (inactivate current active string item)
-    active_item = 0;
-    redraw_panel();
-    keyboard(0);
+    if (active_item) {
+      active_item = 0;
+      redraw_panel();
+      keyboard(0);
+    }
   }
 
 
@@ -5126,12 +5140,26 @@ void BASE_WINDOW::open_scrollbar(void (*scroll_up)(int),
                                  void (*scroll_down)(int),
                                  void (*scroll_drag)(int), 
                                  double sz, double pos)
-{ if (sz > 1) sz = 1;
-  if (sz < 0) sz = 0;
+{ 
+   int w = scrollbar_w;
+   open_scrollbar(w,scroll_up,scroll_down,scroll_drag, sz, pos);
+}
 
+
+
+
+void BASE_WINDOW::open_scrollbar(int w,
+                                 void (*scroll_up)(int),
+                                 void (*scroll_down)(int),
+                                 void (*scroll_drag)(int), 
+                                 double sz, double pos)
+{ 
 //cout << string("open_scrollbar:  sz = %.2f  pos = %.2f", sz, pos) << endl;
 
-  int w = scrollbar_w;
+  if (sz > 1) sz = 1;
+  if (sz < 0) sz = 0;
+
+  scrollbar_w = w;
 
   if (scroll_bar) // adjust slider size and position of existing scroll bar
   { set_scrollbar_pos(pos,sz);
@@ -5140,36 +5168,35 @@ void BASE_WINDOW::open_scrollbar(void (*scroll_up)(int),
 
   BASE_WINDOW* wp = this;
 
-  
   BASE_WINDOW* sp = new BASE_WINDOW(-1,-1);
 
-  //sp->menu_style = 0;
   sp->menu_style = -1;  // this makes sp a scrollbar window
 
   sp->set_inf(wp);
 
   sp->set_border_color(panel_bg_color);
+  sp->button_color = 0xc7c7c7;
+//sp->set_panel_bg_color(0xcccccc);
 
   sp->panel_width = w+3; 
+  sp->yskip = w;
 
-  int spx = window_width - w - 3;
+  int spx = window_width - sp->panel_width;
   int spy = 0;
 
   if (window_height == panel_height)
-  { // menu
-    sp->panel_height = window_height+2;
-    spy = -2;
-
+  { // main window is menu
+    sp->panel_height = window_height;
+    spy = 0;
   }
   else 
-  { // panel & draw window
-    sp->panel_height = window_height - panel_height + 1;
-    spy = panel_height-1;
+  { // normal window (maybe with panel)
+    sp->panel_height = window_height - panel_height;
+    spy = panel_height;
    }
 
   sp->window_width  = sp->panel_width;
   sp->window_height = sp->panel_height;
-  sp->yskip         = w;
 
   sp->button("UP",-1,scroll_up);
   sp->button("DOWN",-1,scroll_down);
@@ -5177,50 +5204,49 @@ void BASE_WINDOW::open_scrollbar(void (*scroll_up)(int),
 
   panel_item p;
 
+  // up -button
   p = sp->Item[0];
   p->ref    = sp;
   p->width  = w;
   p->height = w;
-  p->xcoord = 0;
+  p->xcoord = 1;
   p->ycoord = 0;
   p->menu_but = p;
   p->offset = 50;  // repeat every 50 msec
     
+  // down -button
   p = sp->Item[1];
   p->ref    = sp;
   p->width  = w;
   p->height = w;
-  p->xcoord = 0;
-  p->ycoord = sp->panel_height - w - 1;
+  p->xcoord = 1;
+  p->ycoord = sp->panel_height - w;
   p->menu_but = p;
   p->offset = 50;  // repeat every 50 msec
 
+  // slider
   p = sp->Item[2];
   p->ref    = sp;
-
-//p->width  = w-1;
   p->width  = w;
-
-  p->height = int(sz*(sp->panel_height - 2*w));
-
-//p->xcoord = 2;
-  p->xcoord = 1;
-  p->ycoord = int(w + pos *(sp->panel_height - 2*w - p->height - 5)) + 2;
-
+  p->height = w;
+  p->xcoord = 2;
+  p->ycoord = 0;
   p->menu_but = p;
 
-  x_set_border_width(sp->draw_win,1);
+  if (scroll_bar) delete scroll_bar;
+  scroll_bar = sp;
 
+  set_scrollbar_pos(pos,sz);
+
+  x_set_border_width(sp->draw_win,1);
   x_open_window(sp->draw_win,spx,spy,sp->window_width,sp->window_height,
                                                                  draw_win);
   sp->configure();
   sp->redraw_panel();
   sp->scroll(0);
 
-  if (scroll_bar) delete scroll_bar;
-  scroll_bar = sp;
-  
   redraw_panel();  
+
 //draw_copy_right();
 
 }
@@ -5235,9 +5261,12 @@ void BASE_WINDOW::close_scrollbar()
 
 void BASE_WINDOW::set_scrollbar_pos(double p, double sz)
 {
-  BASE_WINDOW* sp = scroll_bar;
+  // if sz <= 0 keep current slider size 
 
+  BASE_WINDOW* sp = scroll_bar;
   if (sp == 0) return;
+
+  int margin = th/8;
 
   if (p > 1) p = 1;
   if (p < 0) p = 0;
@@ -5246,31 +5275,17 @@ void BASE_WINDOW::set_scrollbar_pos(double p, double sz)
   panel_item it2 = sp->Item[1];
   panel_item it3 = sp->Item[2]; // slider
 
-  int scroll_h = sp->panel_height-it1->height - it2->height-it3->height - 5;
+  int slider_space = sp->panel_height - it1->height - it2->height - 2*margin;
+  
+  int slider_h = (sz <= 0) ? it3->height : int(sz*slider_space);
 
-  int slider_pos = int(it1->height + p*scroll_h) + 2;
-
-  int slider_h = it3->height;
-
-  if (sz > 0) 
-  { int w = button_h - 2;
-    slider_h  = int(sz*(sp->panel_height - 2*w));
-   }
+  int slider_pos = int(it1->height + margin + p*(slider_space-slider_h));
 
   if (it3->ycoord != slider_pos || it3->height != slider_h)
-  { // slider pos has changed
+  { // slider pos or height has changed
     it3->ycoord = slider_pos;
     it3->height = slider_h;
-
- // if (sp->is_open()) sp->draw_panel();
-
-    if (sp->is_open())
-    { //sp->start_buffering();
-      sp->draw_panel();
-      x_flush_buffer(sp->draw_win,0,0,sp->panel_width,sp->panel_height);
-      //sp->stop_buffering();
-    }
-
+    if (sp->is_open()) sp->draw_panel();
    }
 }
   

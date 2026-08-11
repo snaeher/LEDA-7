@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  real_plane.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_REAL_PLANE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722114
+#define LEDA_ROOT_INCL_ID 723108
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -32,7 +32,7 @@
 #include <LEDA/geo/real_rectangle.h>
 #include <LEDA/geo/real_triangle.h>
 
-#if LEDA_ROOT_INCL_ID == 722114
+#if LEDA_ROOT_INCL_ID == 723108
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  filtered_integer.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_FILTERED_INTEGER_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722263
+#define LEDA_ROOT_INCL_ID 723136
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -386,7 +386,7 @@ inline filtered_integer& filtered_integer::operator=(const filtered_integer& x)
 
 
 
-#if LEDA_ROOT_INCL_ID == 722263
+#if LEDA_ROOT_INCL_ID == 723136
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

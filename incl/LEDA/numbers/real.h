@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2
++  LEDA 7.2.3
 +
 +
 +  real.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -25,7 +25,7 @@
 #define _LEDA_REAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722258
+#define LEDA_ROOT_INCL_ID 723126
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -720,7 +720,7 @@ and $i\neq j$. Precondition: Only two of the elements in $R$ are equal.
   bool refine_interval(Polynomial P, Polynomial Q, rational& a, rational& b);
   
 
-#if LEDA_ROOT_INCL_ID == 722258
+#if LEDA_ROOT_INCL_ID == 723126
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

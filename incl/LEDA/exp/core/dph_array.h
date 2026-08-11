@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  dph_array.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_DPHARRAY_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722246
+#define LEDA_ROOT_INCL_ID 723151
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -86,7 +86,7 @@ itype inf(slist_item it) const { return LEDA_CONST_ACCESS(itype,def_list[it]); }
 
 
 
-#if LEDA_ROOT_INCL_ID == 722246
+#if LEDA_ROOT_INCL_ID == 723151
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

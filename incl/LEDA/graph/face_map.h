@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  face_map.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_FACE_MAP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722205
+#define LEDA_ROOT_INCL_ID 723245
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -127,7 +127,7 @@ time $O(1)$.
 
 
 
-#if LEDA_ROOT_INCL_ID == 722205
+#if LEDA_ROOT_INCL_ID == 723245
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

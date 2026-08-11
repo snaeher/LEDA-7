@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  geowin_init.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_GEOWIN_ADDITIONAL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722272
+#define LEDA_ROOT_INCL_ID 723201
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -414,7 +414,7 @@ GeoEditScene<T>* geowin_init_basic_type(T* t,string str, F d3_f)
 
 GEOWIN_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 722272
+#if LEDA_ROOT_INCL_ID == 723201
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

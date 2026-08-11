@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  ch_hash.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -96,7 +96,9 @@ class __exportC ch_hash
    /*{\Xop destroys a hash table by clearing and deleting all list elements
            and by deleting the table}*/
 
+
    ch_hash_item insert_at_pos(ch_hash_item pos, GenPtr x,GenPtr y);
+
 
 public:
 

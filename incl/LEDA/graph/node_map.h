@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  node_map.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_NODE_MAP_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722227
+#define LEDA_ROOT_INCL_ID 723247
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -202,7 +202,7 @@ node_map(const graph_t& G, const E& x) { use_node_data(G,x); }
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 722227
+#if LEDA_ROOT_INCL_ID == 723247
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

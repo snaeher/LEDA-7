@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  win32.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -16,7 +16,7 @@
 #ifndef LEDA_SYS_WIN32_H
 #define LEDA_SYS_WIN32_H
 
-#if defined(_WIN64)
+#if defined(_WIN64) || defined(__GNUC__)
 
 // we compile for 64 bit (x64 platform)
 

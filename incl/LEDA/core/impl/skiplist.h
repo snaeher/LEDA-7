@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  skiplist.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -94,27 +94,16 @@ protected:
   int randomsLeft; 
 
   
-  virtual int cmp(GenPtr, GenPtr) const 
-  { LEDA_EXCEPTION(1,"cmp should never be called"); return 0; }
+  virtual int cmp(GenPtr, GenPtr) const { return 0; }
 
-  virtual void copy_key(GenPtr&)  const  {  }
-  virtual void copy_inf(GenPtr&)  const  {  }
+  virtual void copy_key(GenPtr&)  const {}
+  virtual void copy_inf(GenPtr&)  const {}
 
-  virtual void clear_key(GenPtr&) const 
-  { LEDA_EXCEPTION(1,"clear_key should never be called"); }
-
-  virtual void clear_inf(GenPtr&) const
-  { LEDA_EXCEPTION(1,"clear_inf should never be called"); }
-
-  virtual void print_key(ostream&, GenPtr)  const 
-  { LEDA_EXCEPTION(1,"print_key should never be called"); }
-
-  virtual void print_inf(ostream&, GenPtr)  const 
-  { LEDA_EXCEPTION(1,"print_inf should never be called"); }
-
-  virtual int key_type_id() const 
-  { LEDA_EXCEPTION(1,"key_type_id should never be called"); return 0; }
-
+  virtual void clear_key(GenPtr&) const {}
+  virtual void clear_inf(GenPtr&) const {}
+  virtual void print_key(GenPtr) const  {}
+  virtual void print_inf(GenPtr) const {} 
+  virtual int key_type_id() const { return UNKNOWN_TYPE_ID; } 
   virtual bool key_def_order() const { return false; }
 
   
@@ -155,7 +144,7 @@ protected:
 
   void remove_item(sl_item);
   void insert_item_at_item(sl_item,sl_item,int);
-  void print(const skiplist &, ostream&, string s, char space) const;
+  void print(const skiplist &, string s, char space) const;
   void check_data_structure(const skiplist&, string s);
 
 
@@ -221,8 +210,7 @@ public:
   void delete_subsequence(sl_item,sl_item, skiplist&);
 
 
-  void print(ostream& out, string s, char space) const
-                  { print(*this,out,s,space); }
+  void print(string s, char space) const { print(*this,s,space); }
 
   void check_data_structure(string s)
      { check_data_structure(*this,s); }

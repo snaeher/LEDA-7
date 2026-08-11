@@ -4,11 +4,11 @@
 #define GraphWinVersion   2.1
 #define FileFormatVersion 1.4
 
-#define DefGraphName            "graph"
+#define DefGraphName           "graph"
 
 // window
 
-#define DefWindowLabel          "GraphWin"
+#define DefWindowLabel         "GraphWin"
 
 #define DefWinSizeX            window::default_width()
 #define DefWinSizeY            window::default_height()
@@ -67,7 +67,13 @@
 #define DefNodeBorderWidth      0.8 
 #define DefNodePixmap           NULL
 
+/*
 #define DefNodeLabelFontSize    14.0
+*/
+
+// real screen pixels (not dpi-scaled)!
+#define DefNodeLabelFontSize    (13.0 * 192/window::screen_dpi())
+
 #define DefNodeLabelType        index_label
 #define DefNodeLabelClr         gw_auto_color
 #define DefNodeLabelPos         central_pos
@@ -83,7 +89,14 @@
 #define DefEdgeStyle            solid_edge
 #define DefEdgeDir              directed_edge
 
+/*
 #define DefEdgeLabelFontSize    12.0
+*/
+
+// real screen pixels (not dpi-scaled)!
+#define DefEdgeLabelFontSize    (12.0 * 192/window::screen_dpi())
+
+
 #define DefEdgeLabelType        user_label
 #define DefEdgeLabelClr         black
 #define DefEdgeLabelPos         east_pos

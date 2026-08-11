@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  stream.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_STREAM_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722166
+#define LEDA_ROOT_INCL_ID 723186
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -271,7 +271,7 @@ be applied to command output streams as well.
 #endif
 
 
-#if LEDA_ROOT_INCL_ID == 722166
+#if LEDA_ROOT_INCL_ID == 723186
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

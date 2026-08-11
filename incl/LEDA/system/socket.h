@@ -326,9 +326,9 @@ void socket_receive_object(T& obj, leda_socket& sock)
 receives |obj| from the connection partner of |sock|.
 }*/ 
 {
- string St;
- sock.receive_string(St);
- string_istream IS(St.cstring());
+ string str;
+ sock.receive_string(str);
+ string_istream IS(str.c_str());
  IS >> obj;
 }
 

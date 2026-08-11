@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  mw_matching0.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -14,7 +14,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722224
+#define LEDA_ROOT_INCL_ID 723236
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 // Guido Schäfer, 11/2003 made some modifications
@@ -4714,7 +4714,7 @@ bool CHECK_MIN_WEIGHT_PERFECT_MATCHING_T(const graph &G,
 LEDA_END_NAMESPACE
 
 
-#if LEDA_ROOT_INCL_ID == 722224
+#if LEDA_ROOT_INCL_ID == 723236
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  gw_quicksort.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -34,9 +34,10 @@ static void exit_handler(window*) { exit(0); }
 
 
 inline void statistics(GraphWin& gw)
-{ if (!interactive) return;
-  gw.message(string("\\bf\\black compares:\\blue %d ~~~~~\
-                         \\black swaps:\\blue %d",cmp_count,swap_count));
+{ if (interactive) {
+     gw.message(string("\\bf\\black compares:\\blue %d ~~~~~\
+                           \\black swaps:\\blue %d",cmp_count,swap_count));
+  }
 }
 
 
@@ -136,35 +137,40 @@ void swap_nodes(GraphWin& gw, array<node>& A, int i, int j)
 }
 
 
-//static int ps_count = 0;
 
 void quicksort(GraphWin& gw, array<node>& A, int l, int r)
 { 
+  window& W = gw.get_window();
+
   if (l > r) return;
 
   if (zoom && l < r) zoom_to_interval(gw,A[l],A[r]);
 
-  node split = A[l];
-  gw.set_color(split,red);
+  node pivot = A[l];
 
-  leda_wait(0.5);
+  if (l < r) {
+    gw.set_color(pivot,red);
+    leda_wait(0.5);
+  }
 
   int i = l;
   int j = r+1;
 
   while (i < j)
   { 
-    while (++i <= r && is_smaller(gw,A[i],split)) 
+    while (++i <= r && is_smaller(gw,A[i],pivot)) 
     { gw.set_color(A[i],green2); 
-      gw.get_window().get_mouse();
+      W.get_mouse();
       leda_wait(5.0/speed); 
      }
 
-    while (is_smaller(gw,split,A[--j])) 
+    while (is_smaller(gw,pivot,A[--j])) 
     { gw.set_color(A[j],blue2);  
-      gw.get_window().get_mouse();
+      W.get_mouse();
       leda_wait(5.0/speed);
      }
+
+    W.get_mouse();
 
     if (i <= j)
     { gw.set_color(A[i],blue2);
@@ -173,17 +179,19 @@ void quicksort(GraphWin& gw, array<node>& A, int l, int r)
      }
   }
 
+  W.get_mouse();
+
   leda_wait(0.5);
   swap_nodes(gw,A,l,j);
 
-//gw.save_ps(string("ps-%d.ps",ps_count++));
-
+  leda_wait(0.5);
   gw.set_color(A[j],grey1);  
 
   leda_wait(5.0/speed);
-   
   for(i = l; i <= r; i++) 
+  { W.get_mouse();
     if (i != j) gw.set_color(A[i],ivory);
+   }
 
   quicksort(gw,A,l,j-1);
   quicksort(gw,A,j+1,r);
@@ -205,12 +213,13 @@ int main()
   gw.set_show_status(false);
   gw.set_zoom_objects(true);
 
-  gw.set_frameless(!interactive);
-  
+  gw.hide_menu_bar();
 
-  //int n = 16;
+
   int n = 12;
   int input = 0;
+
+  zoom = interactive;
 
 
   panel P;
@@ -232,6 +241,7 @@ int main()
 
   window& W = gw.get_window();
 
+  W.enable_close_button(true);
   W.set_window_close_handler(exit_handler);
 
   int  but = 0;
@@ -284,12 +294,11 @@ int main()
 
     gw.set_flush(true);
 
+    if (!zoom) zoom_to_interval(gw,A[0],A[n-1]);
+
     quicksort(gw,A,0,n-1);
 
-    if (zoom) {
-      //leda_wait(1.0);
-      zoom_to_interval(gw,A[0],A[n-1]);
-    }
+    if (zoom) zoom_to_interval(gw,A[0],A[n-1]);
 
    string msg = "";
 

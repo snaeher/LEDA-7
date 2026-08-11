@@ -46,7 +46,7 @@ II. CONFIGURATION FOR UNIX
 
 1. Dependencies
    The following packages must be installed:
-   libX11-dev
+   libx11-dev
    libxft-dev
    yasm
 
@@ -64,9 +64,6 @@ II. CONFIGURATION FOR UNIX
     If your compiler is not in the list you might have to
     edit the <LEDA/sys/unix.h> header file.
     
-    If you're installing on a windows machine, please read the 
-    following sections.
-
 
 
 III. Compilation on UNIX 
@@ -75,8 +72,11 @@ III. Compilation on UNIX
 Type make for building the object code library
 libleda.a and libleda.so (if the shared library is used) 
 
-Now follow the instructions given in File Install/unix.txt. 
 
+
+
+If you're installing on a windows machine, please read the 
+following sections.
 
 
 IV. Configuration for MS Visual C++ under Windows
@@ -90,19 +90,33 @@ IV. Configuration for MS Visual C++ under Windows
    The compiler CL.EXE and the linker LINK.EXE require that the 
    environment variables PATH, INCLUDE, and LIB have been set properly. 
    When Visual C++ was installed, setup created a batch file, 
-   VCVARS32.BAT or VSVARS32.BAT containing the commands to modify 
-   PATH, LIB, and INCLUDE. Run VCVARS32.BAT (VSVARS32.BAT) before you 
-   compile LEDA as follows. 
-   (a) At the command prompt, change to the \bin subdirectory of your 
-   Visual C++ installation 
-   ( ,e.g., c:\programs\microsoft visual studio\vc98\bin). 
-   (b) Type VCVARS32 (VSVARS32). 
+   VCVARS32.BAT containing the commands to modify the PATH, LIB, and INCLUDE
+   environment variables. Run VCVARS32.BAT before you compile LEDA as follows. 
+
+   (a) At the command prompt, change to the Auxiliary Build subdirectory of 
+       your Visual C++ installation e.g.
+    C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build 
+
+   (b) Type vcvars32 
+
+
+   Alternativeley (and probably better) you can open the 
+   "Developer Command Prompt for VS" from the Windows Start Menu
+   (in the Visual Studio Folder). This opens a command line window
+   that alreaday has defined all required enviroment settings.
+
+
    
-3. Add the the location of the yasm assembler to your PATH variable
+3. Add the location of the yasm assembler to your PATH variable
 
 4. Go to the LEDA main directory (at the command prompt used above). 
 
 5. Type: lconfig msc [dll] [mt] 
+
+   dll: to build the dll version (dynamic libary)
+   mt:  to build a multi-thread version
+
+   
 
 
 

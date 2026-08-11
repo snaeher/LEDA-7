@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  point.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 #define LEDA_POINT_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722139
+#define LEDA_ROOT_INCL_ID 723091
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -459,7 +459,7 @@ inline const char* leda_tname(const point*) { return "point"; }
 
 
 
-#if LEDA_ROOT_INCL_ID == 722139
+#if LEDA_ROOT_INCL_ID == 723091
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

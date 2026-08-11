@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  allocator.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_ALLOCATOR_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722159
+#define LEDA_ROOT_INCL_ID 723194
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -123,7 +123,7 @@ of modern compiler technology like member templates, partial specialization
 etc. It runs only on a subset of LEDA's general supported platforms like
 |g++ > 2.95|, |SGI CC > 7.3|.}*/
 
-#if LEDA_ROOT_INCL_ID == 722159
+#if LEDA_ROOT_INCL_ID == 723194
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

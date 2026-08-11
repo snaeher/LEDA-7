@@ -34,4 +34,10 @@ build:
 	if [ -d graphics/xx    ]; then $(MAKE) -C graphics/xx clean; fi 
 	if [ -d graphics/geowin ];then $(MAKE) -C graphics/geowin  $(x); fi
 
+core_lib: 
+	$(MAKE) -C core obj
+	$(MAKE) -C system obj
+	$(MAKE) -C numbers/asm obj
+	$(MAKE) -C numbers/system obj
+	rm -f system/_websocket.o*
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  x_window.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -40,37 +40,53 @@ enum {
   motion_event, 
   destroy_event, 
   timer_event,
+  upload_file_event,
   device_connect_event,
   volume_connect_event,
   no_event 
 };
 
 
-extern const char* event_name[];
-
+extern __exportD const char* event_name[];
 
 enum key_codes {
+
   KEY_BACKSPACE,
   KEY_RETURN,
   KEY_ESCAPE,
+
+  KEY_UNUSED_1, // ^C
+
   KEY_LEFT,
   KEY_RIGHT,
   KEY_UP,
+
+  KEY_UNUSED_2, // ^G
+  KEY_UNUSED_3, // ^H
+  KEY_UNUSED_4, // ^I
+  KEY_UNUSED_5, // ^J
+
   KEY_DOWN,
   KEY_HOME,
+
+  KEY_UNUSED_6, // ^M
+
   KEY_END,
   KEY_PAGEUP,
   KEY_PAGEDOWN,
   KEY_TAB,
-  KEY_PRINT,
+  KEY_PRINT, 
   KEY_INSERT,
   KEY_DELETE,
-  KEY_PAGE_UP,
+  KEY_PAGE_UP ,
   KEY_PAGE_DOWN,
   KEY_F1,
   KEY_F2,
   KEY_F3,
   KEY_F4,
+
+  KEY_UNUSED_7, // ^[
+
   KEY_F5,
   KEY_F6,
   KEY_F7,
@@ -78,7 +94,7 @@ enum key_codes {
   KEY_F9,
   KEY_F10,
   KEY_F11,
-  KEY_F12
+  KEY_F12 
 };
 
 
@@ -88,7 +104,10 @@ enum color_values {
   DEF_COLOR = (int)0x02000000,
   black     = (int)0x00000000,
   white     = (int)0x00ffffff,
+
   red       = (int)0x00ff0000,
+//red       = (int)0x00c50f1f,  // dark red
+
   green     = (int)0x0000ee00,
   blue      = (int)0x000000cd,
   yellow    = (int)0x00ffff00,

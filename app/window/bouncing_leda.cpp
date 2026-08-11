@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  bouncing_leda.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -110,15 +110,16 @@ int main()
 { 
   int dpi = window::screen_dpi();
 
-  window W("Bouncing Leda");
+  int w = int(5.0*dpi);
+  int h = int(1.10*w);
+
+  window W(w,h,"Bouncing Leda");
+
 
   W.init(0,200,0);
   W.set_bg_color(grey1);
 
-  if (getenv("LEDA_OPEN_MAXIMIZED"))
-    W.display(W,window::center,window::center);
-  else
-    W.display(window::center,window::center);
+  W.display(window::center,window::center);
 
   double x = (W.xmin() + W.xmax())/2;
   double y = (W.ymin() + W.ymax())/2;
@@ -131,8 +132,10 @@ int main()
   double dy = W.pix_to_real(3);
 
   if (W.display_type() == "xx") {
-    dx = W.pix_to_real(5);
-    dy = W.pix_to_real(4);
+    //dx = W.pix_to_real(5);
+    //dy = W.pix_to_real(4);
+    dx = W.pix_to_real(7);
+    dy = W.pix_to_real(5);
   }
 
   char* leda = W.create_pixrect(leda_icon);
@@ -158,10 +161,10 @@ int main()
     double x,y;
     unsigned long t = 0;
 
-    int timeout = 7;
-/*
+    //int timeout = 7;
+    int timeout = 10;
     if (W.display_type() == "xx") timeout = 1;
-*/
+
     if (W.read_event(val,x,y,t,timeout)== button_press_event) break;
    }
 

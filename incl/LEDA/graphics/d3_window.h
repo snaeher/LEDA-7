@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  d3_window.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_D3_WINDOW_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722276
+#define LEDA_ROOT_INCL_ID 723204
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -396,7 +396,7 @@ node_array<vector>& get_position_array() { return pos1; }
 };
 
 
-#if LEDA_ROOT_INCL_ID == 722276
+#if LEDA_ROOT_INCL_ID == 723204
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

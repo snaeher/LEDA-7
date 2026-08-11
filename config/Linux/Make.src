@@ -28,6 +28,13 @@ $(SLIB): $(OBJECTS)
 obj: $(OBJECTS)
 	@true
 
+
+xx: $(DLIB)
+	@$(MAKE) all
+	@touch *.o
+	@$(MAKE) all
+	cp $(DLIB) /local/www/leda/demos/app
+
 touch:
 	touch -c *.o
 	ar cr $(SLIB) *.o

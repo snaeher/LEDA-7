@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  basic.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,13 +17,13 @@
 #define LEDA_BASIC_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722167
+#define LEDA_ROOT_INCL_ID 723187
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
 // define LEDA version macro
 
-#define __LEDA__ 722
+#define __LEDA__ 723
 
 
 // enable stl-style iterators
@@ -61,7 +61,7 @@
 
 
 
-#if LEDA_ROOT_INCL_ID == 722167
+#if LEDA_ROOT_INCL_ID == 723187
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

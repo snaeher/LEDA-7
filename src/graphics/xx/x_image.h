@@ -57,6 +57,13 @@ static pixel blend_pixels(pixel clr1, pixel clr2, bool use_alpha)
  int anchor_x;
  int anchor_y;
 
+ int rotate_cx;
+ int rotate_cy;
+
+ double rotate_sin;
+ double rotate_cos;
+
+
 void fill(int clr) {
   if (buf) {
     for(int i=0; i<size; i++) buf[i] = clr;
@@ -83,6 +90,8 @@ x_image(int width, int height, pixel bg_clr = 0)
   phi = 0;
   anchor_x = 0;
   anchor_y = 0;
+  rotate_sin = 0;
+  rotate_cos = 1;
 }
 
 x_image(unsigned char* p, int width, int height)
@@ -100,6 +109,8 @@ x_image(unsigned char* p, int width, int height)
   phi = 0;
   anchor_x = 0;
   anchor_y = 0;
+  rotate_sin = 0;
+  rotate_cos = 1;
 }
 
 
@@ -117,16 +128,38 @@ x_image(pixel* p, int width, int height)
   phi = 0;
   anchor_x = 0;
   anchor_y = 0;
+  rotate_sin = 0;
+  rotate_cos = 1;
 }
+
+void rotate_pixel(int& x, int& y)
+{ double xx = (x-rotate_cx) * rotate_cos - (y-rotate_cy) * rotate_sin;
+  double yy = (x-rotate_cx) * rotate_sin + (y-rotate_cy) * rotate_cos;
+  x = int(xx + rotate_cx + 0.5);
+  y = int(yy + rotate_cy + 0.5);
+}
+
+void rotate_pixel(double& x, double& y)
+{ double xx = (x-rotate_cx) * rotate_cos - (y-rotate_cy) * rotate_sin;
+  double yy = (x-rotate_cx) * rotate_sin + (y-rotate_cy) * rotate_cos;
+  x = xx + rotate_cx;
+  y = yy + rotate_cy;
+}
+
 
 void blend_pixel(int x, int y, int clr, int mode=src_mode)
 {
+  rotate_pixel(x,y);
+
   if (x < clip_x0 || x > clip_x1 || y < clip_y0 || y > clip_y1) return;
 
   int index = x + y*w;
 
   if (mode == xor_mode)
-    buf[index] ^= ~clr;
+  { pixel c = buf[index];
+    //buf[index] = (~c ^ clr) & 0xffffff;
+    buf[index] = (c ^ ~clr) & 0xffffff;
+  }
   else
     buf[index] = blend_pixels(buf[index],clr,true);
 }
@@ -141,6 +174,9 @@ pixel getpix(int x, int y)
 
 void setpix(int x, int y, int clr, int mode=src_mode)
 { 
+  rotate_pixel(x,y);
+
+
   if (x < clip_x0 || x > clip_x1 || y < clip_y0 || y > clip_y1) return;
 
   pixel* q = buf + (y*w + x);
@@ -161,8 +197,11 @@ void setpix(int x, int y, int clr, int mode=src_mode)
     case and_mode: *q &= clr;
                    break;
 
-    case xor_mode: *q ^= (~clr & 0xffffff);
-                   break;
+    case xor_mode: { pixel c = *q;
+                     //*q = (~c ^ clr) & 0xffffff;
+                     *q = (c ^ ~clr) & 0xffffff;
+                     break;
+                    }
 
 
     case -1:  // used in fill polygon (add clr as a number)
@@ -264,6 +303,8 @@ pixel interpolate_colors(double f, pixel clr1, pixel clr2)
 
 pixel interpolate_pixel(double x, double y)
 {
+  rotate_pixel(x,y);
+
   if (x < 0 || x >= w || y < 0 || y >= h) return 0x00000000;
 
   int x1 = int(x);

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  draw.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -144,10 +144,10 @@ int main()
 
   W.set_client_data(&sc);
 
-  W.choice_item("Drawing Shape ",shape,shapes);
-  W.color_item ("Line Color    ",fg_col,handler);
-  W.color_item ("Fill Color    ",fill_col,handler);
-//W.color_item ("Background    ",bg_col);
+  W.choice_item("Shape       ", shape,shapes);
+  W.color_item ("Line Color  ", fg_col,handler);
+  W.color_item ("Fill Color  ", fill_col,handler);
+//W.color_item ("Background  ", bg_col);
 
   W.lwidth_item("Line Width",lwidth);
 
@@ -166,11 +166,15 @@ int main()
   W.set_clear_on_resize(false);
   W.set_redraw(redraw);
 
+  W.set_show_coordinates(true);
+
   W.display(window::center,window::center);
 
-W.set_frame_label(string("screen: %d x %d   window:  %d x %d",  
+/*
+  W.set_frame_label(string("screen: %d x %d   window:  %d x %d",  
                           window::screen_width(),window::screen_height(),
                           W.width(),W.height()));
+*/
 
 /*
   BASE_WINDOW* sw = W.open_status_window(30,grey1);
@@ -178,6 +182,11 @@ W.set_frame_label(string("screen: %d x %d   window:  %d x %d",
 */
   
   W.clear();
+
+  double dpi = W.pix_to_real(window::screen_dpi());
+  
+
+  W.draw_segment(200,250,200+dpi,250,black);
 
 /*
   W.clip_mask_window(0);

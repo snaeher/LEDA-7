@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  dijkstra_anim.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -30,11 +30,10 @@ static const char intro_text[] =
 
 
 static const char create_graph_text[] =
-{ "\\tt\\red Construct a Network. \\black\\n\
-   Construct a graph with at least one node. \\n\
-   The cost values can be modified by moving the edge slider\\n \
-   or by pressing the left mouse button on that edge. \\n \
-   When you're ready press the \\blue done \\black button."
+{ "\\tt\\red Construct a Network.\\black\\n\
+   Construct a graph and press the \\blue done \\black button.\\n\
+   The cost values can be modified by moving the edge slider\\n\
+   or by pressing the left mouse button on that edge."
 };   
 
 

@@ -1,12 +1,12 @@
 /******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  mcf_cap_scaling5.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -14,7 +14,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722214
+#define LEDA_ROOT_INCL_ID 723231
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -850,7 +850,7 @@ void statistics(ostream& out) { out << endl; }
 
 LEDA_END_NAMESPACE
 
-#if LEDA_ROOT_INCL_ID == 722214
+#if LEDA_ROOT_INCL_ID == 723231
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

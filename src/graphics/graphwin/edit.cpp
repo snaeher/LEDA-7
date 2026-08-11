@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  edit.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -1605,7 +1605,12 @@ void GraphWin::edit_loop(int event, int but, double x, double y)
 { 
   window& W = get_window();
 
-  assert(event != no_event);
+  //assert(event != no_event);
+
+  if (event == no_event) {
+    cerr << "GraphWin::edit_loop: event = no_event" << endl;
+    return;
+  }
 
 
   if (event == motion_event) find_node(point(x,y));

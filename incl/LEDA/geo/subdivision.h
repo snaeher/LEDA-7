@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  subdivision.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_SUBDIVISION_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722128
+#define LEDA_ROOT_INCL_ID 723058
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -135,7 +135,7 @@ The space requirement is $O(n+m)$ and the initialization time is
 $O(n + m \log m)$, where $m$ is the number of edges in the map.}*/
 
 
-#if LEDA_ROOT_INCL_ID == 722128
+#if LEDA_ROOT_INCL_ID == 723058
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

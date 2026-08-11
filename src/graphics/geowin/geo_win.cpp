@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  geo_win.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -422,7 +422,7 @@ GeoWin::GeoWin(window& win)
 {
   Wp = & win;
   win_created = false;
-  
+
   construct();  
   editables = GeoScenePrototypes::get_all_editables(); 
 }
@@ -935,6 +935,8 @@ void GeoWin::construct()
   
   // show the menu ...
   show_menu = true;
+
+  show_menu_bar = true;
   
   // flags for the different (sub)menus
   show_file_menu = true;
@@ -1304,7 +1306,7 @@ GEOWIN_BEGIN_NAMESPACE
 
 static void avoid_unused_warning(unsigned char**, const char**) {}
 
-void GeoWin::display(int xc, int yc,bool frame)
+void GeoWin::display(int xc, int yc)
 {
   typedef unsigned char* CHAR_PTR;
 
@@ -1391,12 +1393,9 @@ void GeoWin::display(int xc, int yc,bool frame)
   if (! win_created)
    separate_menu_win->open(xc,yc);
   else 
-   if (frame)
-     Wp->display(xc,yc);
-   else
-   { Wp->clear_panel();
-     Wp->display(*Wp,xc,yc);
-    }
+  { if (!show_menu_bar) Wp->clear_panel();
+    Wp->display(xc,yc);
+   }
   
   if (show_status) {
 /*
@@ -4123,7 +4122,7 @@ void GeoWin::user_layer()
        window* w;
        double x,y;
        
-       Wp->set_tmp_label("left button - scribble, right - quit scribble");
+       Wp->set_frame_label("left button - scribble, right - quit scribble");
        Wp->disable_panel();
 
        while (true) {

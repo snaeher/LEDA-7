@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  d3_window_stream.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_D3_WINDOW_STREAM_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722271
+#define LEDA_ROOT_INCL_ID 723199
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -1514,7 +1514,7 @@ void d3_window_stream::insert_graph(const GRAPH<d3_point,int>& G_in, \
 } 
 
 
-#if LEDA_ROOT_INCL_ID == 722271
+#if LEDA_ROOT_INCL_ID == 723199
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

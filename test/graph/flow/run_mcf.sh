@@ -94,7 +94,8 @@ for f in  $net_files; do
  
   run_mcf leda mcf_cost_scaling "" mcf.net sum1
  
-  run_cs2 cs2-4.5 cs2-4.5 "" mcf.net sum2
+# run_cs2 cs2-4.5 cs2-4.5 "" mcf.net sum2
+  run_cs2 cs2-4.6 cs2-4.6 "" mcf.net sum2
  
   line=""
   total=0.0

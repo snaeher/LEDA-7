@@ -98,7 +98,7 @@ void leda_socket::send_size(size_t sz)
     i++;
    }
 
-  if (i > 4 || (i == 4 && sz_bytes[3] == 0xff))
+  if (i > 4 || (i == 4 && sz_bytes[3] == char(0xff)))
   { for(int j=7; j>=4; j--) sz_bytes[j] = sz_bytes[j-1];
     sz_bytes[3] = char(0xff);
     num_bytes = 8;
@@ -172,7 +172,7 @@ void leda_socket::send(char* buf, size_t sz) {
 }
 
 void leda_socket::send(string msg) { 
-  send(msg.cstring(),msg.length()); 
+  send((char*)msg.c_str(),msg.length()); 
 }
 
 
@@ -608,7 +608,7 @@ void leda_socket::send()
 void leda_socket::send_string(string msg)
 { size_t len = msg.length();
   send_size(len);
-  send(msg.cstring(),len);
+  send((char*)msg.c_str(),len);
 }
 
 void leda_socket::send_int(int x) { send_string(string("%d",x)); }

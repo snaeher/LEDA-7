@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  graph_alg.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_GRAPHALG_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722179
+#define LEDA_ROOT_INCL_ID 723252
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -130,7 +130,7 @@ two ways: give a wrong answer or run forever.
 // graph drawing
 #include <LEDA/graph/graph_draw.h>
 
-#if LEDA_ROOT_INCL_ID == 722179
+#if LEDA_ROOT_INCL_ID == 723252
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

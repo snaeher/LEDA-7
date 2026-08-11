@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  delaunay_sweep.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -54,7 +54,6 @@ using std::endl;
 
 
 static bool interactive = true;
-
 
 static list<CIRCLE> circles;
   
@@ -1080,7 +1079,7 @@ geowin_graph_update<list<rat_point>,GRAPH<rat_circle,rat_point> > voro(VORONOI);
 
 int main()
 {
-  if (getenv("LEDA_OPEN_MAXIMIZED")) interactive = false;
+  interactive = !getenv("LEDA_OPEN_MAXIMIZED");
 
   rand_int.set_seed(1234567);
 
@@ -1163,14 +1162,13 @@ int main()
 
   Wp = &GW.get_window();
 
-  if (interactive)
-    GW.display(window::center,window::center,true);
-  else
-  { // frameless
+  if (!interactive) {
+    GW.hide_menu_bar();
     GW.set_show_status(false);
-    GW.display(window::center,window::center,false);
-   }
+  }
 
+  //GW.display(window::center,window::center);
+  GW.display();
 
   if (interactive) Wp->display_help_text("delaunay_sweep");
 

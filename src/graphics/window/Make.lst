@@ -12,4 +12,5 @@ _window$(o) \
 _param_panel$(o) \
 _ps_file$(o) \
 _rat_window$(o) \
-_real_window$(o)
+_real_window$(o) \
+_terminal$(o)

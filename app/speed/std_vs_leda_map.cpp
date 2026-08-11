@@ -161,9 +161,6 @@ cout << endl;
   std::map<double,int> SM2;
   test_map(N,LM2,SM2);
 
-  cout << endl;
-  cout << "FINISHED" << endl;
-  cout << endl;
 
   return 0;
 }

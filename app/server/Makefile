@@ -6,12 +6,13 @@ DOSLIB  = ..\\..\\leda.lib $(XLIB)
 
 include ../Make.pro
 
-
 install: ws_server
 	-ws.stop
-	cp ws_server ~/htdocs/leda/demos/app
+	@echo
+	cp ws_server /local/www/leda/demos/app
 	ws.start&
-	sleep 1
+	@sleep 1
+	@echo
 	server
-
+	@echo
 

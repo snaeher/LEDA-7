@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  draw.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -275,8 +275,8 @@ void GraphWin::split_label(node v,edge e,string label, list<string>& L,
 void GraphWin::draw_obj_label(node v,edge e,string label,color label_clr,
                                                          double dx,double dy)
 {
-  int clr;
-  //int label_clr;
+  //int clr;
+  color clr;
   gw_font_type fn;
   double fn_size;
   string fn_user;

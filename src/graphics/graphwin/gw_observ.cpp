@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  gw_observ.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -20,12 +20,12 @@ LEDA_BEGIN_NAMESPACE
 /* static void write_msg(string s) { cout << s << endl;} */
 
 static void write_msg(GraphWin* gw, string s) 
-{ if (gw->get_window().is_open())
-  { if (s == "")
-      gw->get_window().reset_frame_label(); 
-    else
-      gw->get_window().set_tmp_label(s); 
-   }
+{ window& W = gw->get_window();
+  if (!W.is_open()) return;
+  if (s == "")
+    W.reset_frame_label(); 
+  else
+    W.set_frame_label(s); 
 }
 
 void gw_observer::update_layout()

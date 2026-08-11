@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  file_panel.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_FILE_PANEL_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722277
+#define LEDA_ROOT_INCL_ID 723212
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -46,7 +46,8 @@ public:
 
 class __exportC file_panel {
 
-window W;
+//window W;
+window* wp;
 
 window* wpp; // parent
 
@@ -62,6 +63,7 @@ panel_item dir_item;
 panel_item file_item;
 panel_item pat_item;
 
+string font;
 
 string start_dir;
 string home_dir;
@@ -125,7 +127,9 @@ list<string> xget_files(string dir, int what);
 public:
 
  //panel& get_panel() { return (panel&)P; }
- window& get_window() { return W; }
+
+ //window& get_window() { return W; }
+ window& get_window() { return *wp; }
 
  void init_panel();
 
@@ -174,7 +178,8 @@ public:
 
  void set_mswin(bool b) { mswin = b; }
 
- void set_frame_label(string s) { W.set_frame_label(s); }
+ //void set_frame_label(string s) { W.set_frame_label(s); }
+ void set_frame_label(string s) { wp->set_frame_label(s); }
  
  string get_pattern() const { return pat_string; }
 
@@ -197,7 +202,7 @@ public:
 
 };
 
-#if LEDA_ROOT_INCL_ID == 722277
+#if LEDA_ROOT_INCL_ID == 723212
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

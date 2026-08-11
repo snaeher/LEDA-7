@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2
++  LEDA 7.2.3
 +
 +
 +  _base_window.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -69,6 +69,7 @@ const char* event_name[] = {
  "motion_event", 
  "destroy_event", 
  "timer_event",
+ "upload_file_event",
  "device_connect_event",
  "volume_connect_event",
  "no_event" 
@@ -125,7 +126,6 @@ void BASE_WINDOW::REDRAW_FUNC(void* p, int x, int y, int wi, int he, int val)
   printf("wi = %d  he = %d\n",wi,he);
   fflush(stdout);
 */
-
 
 /*
   if (event == exposure_event &&
@@ -371,28 +371,21 @@ int BASE_WINDOW::is_minimized() const
 { return x_window_minimized(draw_win); }
 
 
-int BASE_WINDOW::set_cursor(int c) { 
-  return x_set_cursor(draw_win,c); 
-}
+int BASE_WINDOW::set_cursor(int c) 
+{ return x_set_cursor(draw_win,c); }
+
 
 void BASE_WINDOW::set_frame_label(const char* label) 
-{ 
-/*
-  strncpy(default_frame_label,label,128);
-  default_frame_label[127] = '\0';
-  x_set_label(draw_win,default_frame_label); 
-  x_set_icon_label(draw_win,default_frame_label); 
-*/
-  x_set_label(draw_win,label); 
-  x_set_icon_label(draw_win,label); 
-}
-
-void BASE_WINDOW::set_tmp_label(const char* label) 
-{ x_set_label(draw_win,label); }
-
+{ x_set_frame_label(draw_win,label); }
 
 void BASE_WINDOW::set_icon_label(const char* label) 
 { x_set_icon_label(draw_win,label); }
+
+void BASE_WINDOW::set_label(const char* label) 
+{ x_set_frame_label(draw_win,label); 
+  x_set_icon_label(draw_win,label); 
+}
+
 
 /*
 int BASE_WINDOW::load_text_font(const char* fname) 
@@ -448,6 +441,10 @@ int BASE_WINDOW::set_node_width(int w)
   node_width = w;
   return save;
  }
+
+
+void BASE_WINDOW::set_rotation(double x, double y, double phi)
+{ x_set_rotation(draw_win,xpix(x),xpix(y),phi); }
 
 
 drawing_mode BASE_WINDOW::set_mode(drawing_mode m) 
@@ -726,8 +723,7 @@ int BASE_WINDOW::event_handler(BASE_WINDOW*& wp, int timeout)
   e = x_get_next_event(win,x,y,val1,val2,t,timeout);
 
 /*
-//if (e == button_press_event || e == button_release_event) 
-if (e != no_event)
+//if (e != no_event)
 { printf("event: w = %d e = %s x = %d y = %d v1 = %d v2 = %d t = %lu \n",
           win,event_name[e],x,y,val1,val2,t);
   fflush(stdout);
@@ -735,16 +731,20 @@ if (e != no_event)
 */
 
 
-  if (e == display_event && win == 0)
-  { 
-    if (val1 == 0)
-      cout << "DISPLAY CLOSED" << endl;
+  if (e == display_event)
+  { if (val1 == 0)
+      cout << "DISPLAY EVENT: CLOSE DISPLAY (dpi = 0)"  << endl;
     else 
-      cout << string ("DISPLAY SIZE CHANGED: %d x %d (%d)",x,y,val1) <<endl;
-
-   return e;
+    { cout << string ("DISPLAY EVENT: win = %d  %d x %d  dpi: %d",
+                                                 win,x,y,val1) <<endl;
+      if (win >= 0)
+      { if (win == 0) win = 1; // resize main window
+        wp = (BASE_WINDOW*)x_window_inf(win);
+        if (wp) wp->resize();
+       }
+     }
+    return e;
   }
- 
   
 
   if (e == device_connect_event || e == volume_connect_event) 
@@ -918,7 +918,8 @@ fflush(stdout);
 */
 
 /*
-     printf("CONFIGURE win = %ld  x = %d  y = %d  wp = %d  h= %d \n",(unsigned long)wp,x,y,val1,val2);
+     printf("CONFIGURE win = %ld  x = %d  y = %d  wp = %d  h= %d \n",
+                                            (unsigned long)wp,x,y,val1,val2);
 */
 
 
@@ -935,7 +936,8 @@ fflush(stdout);
   case key_press_event:
   case key_release_event:
 
-           if (e == key_press_event && val1 == KEY_PRINT) 
+           //if (e == key_press_event && val1 == KEY_PRINT)  // ctrl-L (12) 
+           if (e == key_press_event && val1 == 9999) 
            { char fname[256];
              bool full_color = true;
 #if defined(__win32__)
@@ -969,10 +971,12 @@ fflush(stdout);
              }
            }
 
+
            wp->shift_key_state = val1 >> 8;
            wp->mouse_key = val1 & 0xFF;
            wp->mouse_xpix = x;
            wp->mouse_ypix = wp->window_height-y-1;
+
            break;
 
 
@@ -982,6 +986,31 @@ fflush(stdout);
 
            if (log)
              cout << string("DESTROY EVENT: win = %d",wp->draw_win) << endl;
+
+           if (wp->focus_button)
+           { // simulate button release of focus button
+             if (log) cout << "FOCUS BUTTON" << endl;
+
+             panel_item it = wp->focus_button;
+             wp->last_sel_button = it;
+             wp->draw_button(it,1);
+
+             int ev= button_release_event;
+             int x = it->xcoord + 10;
+             int y = it->ycoord + 10;
+             int v = wp->panel_event_handler(wp->draw_win,ev,1,x,y,t); 
+
+             if (v >= 0)
+             { wp->mouse_key = v;
+               wp->mouse_press_time = t;
+               e = button_press_event;
+              }
+             else
+               e = no_event;
+
+             break;
+           }
+
 
            if (wp->win_close_handler || wp->win_close_ptr) 
            { if (log) cout << "CLOSE HANDLER" << endl;
@@ -1005,30 +1034,6 @@ fflush(stdout);
              wp->mouse_xpix = 0;
              wp->mouse_ypix = 0;
              wp->mouse_press_time = t;
-             break;
-           }
-
-           if (wp->focus_button)
-           { // simulate button release of focus button
-             if (log) cout << "FOCUS BUTTON" << endl;
-
-             panel_item it = wp->focus_button;
-             wp->last_sel_button = it;
-             wp->draw_button(it,1);
-
-             int ev= button_release_event;
-             int x = it->xcoord + 10;
-             int y = it->ycoord + 10;
-             int v = wp->panel_event_handler(wp->draw_win,ev,1,x,y,t); 
-
-             if (v >= 0)
-             { wp->mouse_key = v;
-               wp->mouse_press_time = t;
-               e = button_press_event;
-              }
-             else
-               e = no_event;
-
              break;
            }
 
@@ -1425,7 +1430,12 @@ BASE_WINDOW::BASE_WINDOW() {
 
 BASE_WINDOW::~BASE_WINDOW() 
 { 
-  //cout << "BASE_WINDOW DESTRUCTOR: win_count = " << win_count << endl;
+/*
+  printf("BASE_WINDOW DESTRUCTOR: %ld  win_count = %d\n", (unsigned long)this,
+                                                          win_count);
+  fflush(stdout);
+*/
+
 
   close();
 
@@ -1439,12 +1449,19 @@ BASE_WINDOW::~BASE_WINDOW()
     owner_item->ref = 0;
    }
 
+/*
+  printf("x_delete_icon_pixrect: %ld\n", (unsigned long)icon_pixrect);
+  fflush(stdout);
+*/
+
+/*
+  if (icon_pixrect) x_delete_pixrect(icon_pixrect);
+  icon_pixrect = 0;
+*/
+
   for(int i = 0; i<item_count; i++) delete Item[i];
 
   x_destroy_window(draw_win);
-
-  if (icon_pixrect) x_delete_pixrect(icon_pixrect);
-  icon_pixrect = 0;
 
   if (--win_count == 0) x_close_display(); 
  }
@@ -1453,12 +1470,10 @@ BASE_WINDOW::~BASE_WINDOW()
 
 void BASE_WINDOW::create(int w_width, int w_height, const char* label)
 {
-  //disp_fd = 0;
-  //if (win_count==0) disp_fd = x_open_display();
-
   disp_fd = x_open_display();
-
   if (disp_fd == -1) return;
+
+  win_count++;
 
   int dpi = screen_dpi();
 
@@ -1466,10 +1481,8 @@ void BASE_WINDOW::create(int w_width, int w_height, const char* label)
   int def_height;
   default_size(def_width,def_height);
 
-  if (w_width == 0) w_width = def_width;
+  if (w_width == 0)  w_width = def_width;
   if (w_height == 0) w_height = def_height;
-
-  win_count++;
 
 /*
   cout << "create: " << w_width << " x " << w_height << endl;
@@ -1573,7 +1586,9 @@ void BASE_WINDOW::create(int w_width, int w_height, const char* label)
   mode_for_scaling = scale_x;
   scaling = 1;
   one_over_scaling = 1;
-  scaling_prec = 12;
+
+  //scaling_prec = 12;
+  scaling_prec = 16;
 
   xorigin = 0;
   yorigin = 0;
@@ -1632,6 +1647,21 @@ void BASE_WINDOW::create(int w_width, int w_height, const char* label)
 
 void BASE_WINDOW::set_topmost() { x_set_topmost(draw_win); }
 
+
+void BASE_WINDOW::resize()
+{ 
+  int display_width = screen_width();
+  int display_height = screen_height();
+
+  int width, height;
+  BASE_WINDOW::default_size(width,height);
+
+  int xpos = (display_width - width)/2;
+  int ypos = (display_height - height)/3;
+  resize(xpos,ypos,width,height);
+}
+
+
 void BASE_WINDOW::resize(int xpos, int ypos,int width, int height)
 { /*
   window_xpos = xpos;
@@ -1659,8 +1689,14 @@ void BASE_WINDOW::resize(int xpos, int ypos,int width, int height)
   }
 */
 
+  
+/*
+  // necessary ?
+  // (minimal) change of size to force configure
+  if (width == window_width && height == window_height) width++; 
+*/
 
-  x_resize_window(draw_win,xpos,ypos,width,height, (win_parent != 0));
+  x_resize_window(draw_win,xpos,ypos,width,height, (win_parent!= 0));
   configure();
   clipping(0);
  }
@@ -1682,38 +1718,28 @@ void BASE_WINDOW::set_size_hints(int wmin, int wmax, int hmin, int hmax)
 }
 */
 
-void BASE_WINDOW::display(int xpos, int ypos, BASE_WINDOW* w, bool hidden)
+
+void BASE_WINDOW::display(int xpos, int ypos, BASE_WINDOW* pw, bool hidden)
 {
   assert(draw_win > 0);
 
-  int dpi = screen_dpi();
+  disp_fd = x_open_display();
+  if (disp_fd == -1) return;
 
   if (x_window_opened(draw_win)) 
   { redraw_panel();
     return;
    }
 
-  disp_fd = x_open_display();
-  if (disp_fd == -1) return;
+  win_parent = pw;
 
-  win_parent = w;
-
-  int pw = 0;
-
-  if (w)
-  { if (w != this)  
-      pw = w->draw_win;
-    else
-     { pw = -1;
-       w = 0;
-      }
-   }
-
-
-  // open parent if closed
-  if (w && w->is_closed()) 
-      w->display(BASE_WINDOW::center,BASE_WINDOW::center,0);
-
+/*
+  // not used ?
+  if (w && w != this && w->is_closed())  
+  { // open parent if closed
+    w->display(BASE_WINDOW::center,BASE_WINDOW::center,0);
+  }
+*/
 
   if (item_count > 0)
   { panel_width = window_width;
@@ -1722,13 +1748,13 @@ void BASE_WINDOW::display(int xpos, int ypos, BASE_WINDOW* w, bool hidden)
     if (window_height < panel_height) window_height = panel_height;
    }
 
-
-  int parent_width = (w==0) ? screen_width() : w->width();
-  int parent_height= (w==0) ? screen_height() : w->height();
+  int parent_width  = (pw && pw != this) ? pw->width() : screen_width();
+  int parent_height = (pw && pw != this) ? pw->height() : screen_height();
 
   int width  = window_width;
   int height = window_height;
 
+  int dpi = screen_dpi();
 
   if (xpos > 0xFFFF)
   {  switch (xpos) {
@@ -1738,9 +1764,8 @@ void BASE_WINDOW::display(int xpos, int ypos, BASE_WINDOW* w, bool hidden)
                   break;
 
      case BASE_WINDOW::center: 
-                  //xpos = -(parent_width+window_width)/2;
                   xpos = (parent_width-window_width)/2 - 1;
-                  if (pw == 0) xpos -= (12*screen_dpi())/192;  // frame
+                  if (pw == 0) xpos -= (12*dpi)/192;  // frame
                   if (xpos < 0) xpos = 0;
                   break;
 
@@ -1760,14 +1785,17 @@ void BASE_WINDOW::display(int xpos, int ypos, BASE_WINDOW* w, bool hidden)
                  break;
 
      case BASE_WINDOW::center: { 
-                 if (width > 0.75*screen_width())
-                 { // portrait (xx display)
-                   ypos = int(0.40*(parent_height-window_height));
+                 if (pw == 0 && screen_height() > screen_width()) // portrait
+                 { 
+                   if (window_width < 0.95 *screen_width())
+                     ypos = int(0.4*(parent_height-window_height));
+                   else
+                     ypos = 0;
                   }
                  else
                    ypos = int(0.5*(parent_height-window_height));
 
-                 if (pw == 0) ypos -= (60*screen_dpi())/192;  // frame
+                 if (pw == 0) ypos -= (40*dpi)/192;  // frame
                  if (ypos < 0) ypos = 0;
                  break;
                 }
@@ -1778,36 +1806,21 @@ void BASE_WINDOW::display(int xpos, int ypos, BASE_WINDOW* w, bool hidden)
      }
   }
 
-
-  if (xpos < 0)
-  { xpos  = -xpos;
-    width = -width;
-   }
-    
-  if (ypos < 0)
-  { ypos   = -ypos;
-    height = -height;
-   }
+  if (xpos < 0) { xpos = -xpos; width  = -width;  }
+  if (ypos < 0) { ypos = -ypos; height = -height; }
     
 /*
   window_xpos = xpos;
   window_ypos = ypos;
 */
 
-
   if (window_height == panel_height) // panel
      x_set_bg_color(draw_win,panel_bg_color);
 
-/*
-  char* pr = 0;
-  if (pw > 0) pr = x_create_pixrect(pw,xpos,ypos,xpos+width,ypos+height);
-  if (pr)  
-  { //x_insert_pixrect(draw_win,pr); 
-    x_set_bg_pixmap(draw_win,pr);
-  }
-*/
+  int p = 0;
+  if (pw) p = (pw != this) ? pw->draw_win : -1;
 
-  x_open_window(draw_win,xpos,ypos,width,height,pw,hidden);
+  x_open_window(draw_win,xpos,ypos,width,height,p,hidden);
 
 
 #if !defined(__unix__)
@@ -1827,23 +1840,11 @@ void BASE_WINDOW::display(int xpos, int ypos, BASE_WINDOW* w, bool hidden)
    }
 */
 
-
   // set icon
 
-  if (win_parent == 0) 
+  if (pw == 0) 
   { if (icon_pixrect == 0) icon_pixrect = create_pixrect_from_xpm(XPM_ICON);
     x_set_icon_pixmap(draw_win,icon_pixrect); 
-
-/*
-    if (getenv("LEDA_OPEN_ICONIFIED") && window_height > panel_height) 
-      x_minimize_window(draw_win);
-
-    if (getenv("LEDA_OPEN_MAXIMIZED") && window_height > panel_height) 
-    { x_maximize_window(draw_win);
-      redraw();
-    }
-*/
-
   }
 
 }
@@ -1949,10 +1950,12 @@ int BASE_WINDOW::set_precision(int prec)
 
 void BASE_WINDOW::configure()
 {
-/*
-  printf("CONFIGURE STARTED\n");
-  fflush(stdout);
-*/
+  const bool trace = false;
+
+  if (trace) {
+    printf("CONFIGURE STARTED\n");
+    fflush(stdout);
+  }
 
   int panel_only = (panel_height == window_height); 
 
@@ -2014,56 +2017,76 @@ void BASE_WINDOW::configure()
   //mouse_yreal = 0;
 
 
-  if (!is_open() || !size_changed) {
-/*
-    printf("END OF CONFIGURE 1\n");
-    fflush(stdout);
-*/
+  if (!is_open()) return;
 
-   return;
+
+  if (!size_changed) 
+  {
+    if (trace) {
+      printf("END OF CONFIGURE: SIZE NOT CHANGED\n");
+      fflush(stdout);
+    }
+
+    return;
   }
 
-/*
-  printf("SIZE CHANGED\n");
-  fflush(stdout);
-*/
+
+  if (trace) {
+    printf("SIZE CHANGED\n");
+    fflush(stdout);
+  }
 
   int buffering = x_test_buffer(draw_win);
   x_stop_buffering(draw_win);
 
   if (status_win)
-  { int w = window_width-2;
+  {
+    if (trace) {
+      printf("RESIZE STATUS WINDOW\n");
+      fflush(stdout);
+    }
+
+    int w = window_width;
     int h = status_win->window_height;
     int x = 0; 
-    int y = window_height-h-2;
+    int y = window_height-h;
     status_win->resize(x,y,w,h);
    }
 
+
   if (scroll_bar)
-  { panel_item it0 = scroll_bar->Item[0];
-    panel_item it1 = scroll_bar->Item[1];
-    panel_item it2 = scroll_bar->Item[2];
-    panel_action_func f0 = it0->action;
-    panel_action_func f1 = it1->action;
-    panel_action_func f2 = it2->action;
-    double h = scroll_bar->panel_height - it0->height - it1->height;
-    double sz = it2->height/h;
-    //double y = it2->ycoord - (it2->height - scroll_bar->yskip)/2;
-    double y = it2->ycoord;
-    double pos = (y - it0->height)/(h - it2->height);
-    close_scrollbar();
-    open_scrollbar(f0,f1,f2,sz,pos);
-   }
+  {
+    if (trace) {
+      printf("RESIZE SCROLLBAR\n");
+      fflush(stdout);
+    }
+
+   BASE_WINDOW* sb = scroll_bar;
+
+   //sb->window_height = window_height-1;
+   sb->window_height = window_height;
+   sb->panel_height = sb->window_height;
+
+   panel_item down_but = sb->Item[1];
+   down_but->ycoord = sb->panel_height - down_but->height;
+
+   int xpos = window_width - sb->window_width;
+   int ypos = 1;
+
+   x_resize_window(sb->draw_win,xpos,ypos,sb->window_width,
+                                          sb->window_height,draw_win);
+  }
 
   if (buffering) {
     // create buffer for new window size
     x_start_buffering(draw_win);
   }
 
-/*
-  printf("CONFIGURE FINISHED\n");
-  fflush(stdout);
-*/
+  if (trace) {
+    printf("CONFIGURE FINISHED.\n");
+    fflush(stdout);
+  }
+
 }
 
 
@@ -2469,6 +2492,15 @@ void BASE_WINDOW::draw_ellipse(double x0, double y0, double a, double b, int col
   if (win_flush) flush();
  }
 
+/*
+void BASE_WINDOW::draw_ellipse(double x0, double y0, double a, double b, double phi, int col)
+{
+  x_set_rotation(draw_win,xpix(x0),ypix(y0),phi);
+  draw_ellipse(x0,y0,a,b,col);
+  x_set_rotation(draw_win,0,0,0);
+}
+*/
+
 
 void BASE_WINDOW::draw_filled_ellipse(double x0, double y0, double a, double b, int col)
 { if (col == invisible) return;
@@ -2478,6 +2510,16 @@ void BASE_WINDOW::draw_filled_ellipse(double x0, double y0, double a, double b, 
   x_fill_ellipse(draw_win,xpix(x0),ypix(y0),R1,R2);
   if (win_flush) flush();
  }
+
+/*
+void BASE_WINDOW::draw_filled_ellipse(double x0, double y0, double a, double b, double phi, int col)
+{
+  x_set_rotation(draw_win,xpix(x0),ypix(y0),phi);
+  draw_filled_ellipse(x0,y0,a,b,col);
+  x_set_rotation(draw_win,0,0,0);
+}
+*/
+
 
 
 
@@ -3650,12 +3692,10 @@ void BASE_WINDOW::draw_copyright()
    (and the classes derived from it). It is part of the LEDA license 
    conditions that this function is neither modified nor disabled. 
 */
-  bool maximized = getenv("LEDA_OPEN_MAXIMIZED");
 
-  if (!maximized) {
-    if (window_height <= panel_height+50) return;
-    if (window_width < 500 || window_height < 500) return;
-  }
+  if (window_height <= panel_height+50) return;
+
+  if (window_width < 500 || window_height < 500) return;
 
   //if (is_buffering()) return;
 
@@ -3670,10 +3710,12 @@ void BASE_WINDOW::draw_copyright()
   int save_col = x_set_color(draw_win,col);
   x_set_color(draw_win,col);
 
+/*
   if (maximized)
     x_set_font(draw_win,"T28");
   else
-    x_set_button_font(draw_win);
+*/
+  x_set_button_font(draw_win);
 
   int dx = x_text_width(draw_win,msg) + 6;
   int dy = x_text_height(draw_win,msg) + 2;
@@ -3803,7 +3845,8 @@ static void DRAW_MESSAGE(BASE_WINDOW* wp, const char* s, int i)
   double x1 = wp->xmax() - 0.5*th;
   double y  = wp->ymax() - 0.3*th;
   //wp->draw_text(x0,y+i*th*i,s); 
-  wp->text_box(x0,x1,y+i*th,s);
+  //wp->text_box(x0,x1,y+i*th,s);
+  wp->text_box(x0,x1,y-i*th,s);
 }
 
 
@@ -3876,14 +3919,15 @@ void BASE_WINDOW::draw_text(double x, double y, const char *s, int col)
 
 
 void BASE_WINDOW::draw_ctext(double x, double y, const char *s, int col)
-{ double tw1 = text_width(s);
-  double th1 = text_height(s);
-  draw_text(x-tw1/2,y+th1/2,s,col);
+{ x -= text_width(s)/2;
+  //y += 1.1*text_height(s)/2;
+  y += text_height(s)/2;
+  draw_text(x,y,s,col);
 }
 
 void BASE_WINDOW::draw_ctext(const char* s, int col)
-{ double x = (xmax() - xmin())/2;
-  double y = (ymax() - ymin())/2 + pix_to_real(1);
+{ double x = (xmax() + xmin())/2;
+  double y = (ymax() + ymin())/2;
   draw_ctext(x,y,s,col); 
 }
 
@@ -4330,6 +4374,29 @@ BASE_WINDOW* BASE_WINDOW::active_button_win = 0;
 panel_item   BASE_WINDOW::help_last_item = 0;
 */
 
+void BASE_WINDOW::font_size(string fname, string txt, int& fw, int& fh)
+{ x_open_display();
+
+  if (fname.length() > 1) 
+  x_set_font(0,fname); 
+  else
+  { // font "T","F","B","I" --> default font
+    switch (fname[0]) {
+      case 'T' : x_set_text_font(0);
+                 break;
+      case 'F' : x_set_fixed_font(0);
+                 break;
+      case 'B' : x_set_bold_font(0);
+                 break;
+      case 'I' : x_set_italic_font(0);
+                 break;
+    }
+  }
+
+  fw = x_text_width(0,txt);
+  fh = x_text_height(0,txt);
+}
+
 int  BASE_WINDOW::screen_width()
 { int w,h,dpi;
   x_display_info(w,h,dpi);
@@ -4353,10 +4420,9 @@ string BASE_WINDOW::display_type()
   return x_display_info(w,h,dpi);
 }
 
-void BASE_WINDOW::upload(string fname)   { x_send_text("upload: " + fname); }
-void BASE_WINDOW::download(string fname) { x_send_text("download: " + fname); }
-void BASE_WINDOW::keyboard(int x) { x_send_text(string("keyboard: %d",x)); }
-
+void BASE_WINDOW::upload(string fname)   { x_send_cmd("upload: " + fname); }
+void BASE_WINDOW::download(string fname) { x_send_cmd("download: " + fname); }
+void BASE_WINDOW::keyboard(int x) { x_send_cmd(string("keyboard: %d",x)); }
 
 
 void BASE_WINDOW::default_size(int& w, int& h)
@@ -4364,20 +4430,32 @@ void BASE_WINDOW::default_size(int& w, int& h)
   int screen_w = screen_width();
   int screen_h = screen_height();
 
-  if (getenv("LEDA_OPEN_MAXIMIZED")) {
-    w = screen_w+1;
-    h = screen_h+1;
-    return;
+  int dpi = screen_dpi();
+
+  if (screen_h > screen_w) {
+   // portrait
+   w = screen_w;
+   h = int(1.2*screen_w);
+   return;
   }
 
-  int max_h = int(0.85*screen_h);
+
+  int max_h = int(0.90*screen_h);
   int max_w = int(0.97*screen_w);
 
-  h = int(7.75 * screen_dpi());
+  //if (max_h > 1600) max_h = 1600;
+  if (max_h > 1550) max_h = 1550;
+
+  if (display_type() == "xx") 
+    h = int(7.7 * dpi);
+  else
+    h = int(8.0 * dpi);
+
   if (h > max_h) h = max_h;
 
   w = int(0.87*h);
   if (w > max_w) w = max_w;
+
 }
 
 
@@ -4392,7 +4470,6 @@ int BASE_WINDOW::default_height()
   default_size(w,h);
   return h;
 }
-
 
 
 void BASE_WINDOW::mouse_default_action(double,double) 
@@ -4608,7 +4685,8 @@ void BASE_WINDOW::flush_pixels(int x0, int y0, int x1, int y1)
 
 
 void BASE_WINDOW::flush_buffer(double x0, double y0, double x1, double y1)
-{ assert((buf_level > 0) == is_buffering());
+{ 
+  assert((buf_level > 0) == is_buffering());
 
   if (buf_level > 1) return;
 
@@ -4969,7 +5047,7 @@ BASE_WINDOW* BASE_WINDOW::open_status_window(int h, color col)
 { 
   if (h == 0) 
   { set_fixed_font();
-    h = real_to_pix(1.45*text_height("H"));
+    h = real_to_pix(1.4*text_height("H"));
     set_text_font();
    }
 
@@ -4977,7 +5055,7 @@ BASE_WINDOW* BASE_WINDOW::open_status_window(int h, color col)
 
   if (!status_win->is_open())
   { status_win->display(0,window_height-h,this);
-    // status windows are always buffering
+    //status windows are always buffering
     status_win->start_buffering();
     status_redraw(status_win);
    }

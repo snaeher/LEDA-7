@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  get_set.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -1605,8 +1605,8 @@ int GW::set_grid_mode(int d)
 bool GW::set_show_status(bool b) {
   if (b != show_status && win_p->is_open())
   { if (b) 
-      { //win_p->open_status_window(status_win_height,grey1);
-        win_p->open_status_window();
+      { win_p->open_status_window(status_win_height,grey1);
+        //win_p->open_status_window();
         BASE_WINDOW* sw = win_p->get_status_window();
         sw->set_fixed_font();
        }

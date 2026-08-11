@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  matrix.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -18,7 +18,7 @@
 #define LEDA_MATRIX_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722256
+#define LEDA_ROOT_INCL_ID 723133
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -196,7 +196,7 @@ the test |b == M * b| evaluates to true. The types |integer_vector| and |integer
 inline const char* leda_tname(const matrix*) { return "matrix"; }
 
 
-#if LEDA_ROOT_INCL_ID == 722256
+#if LEDA_ROOT_INCL_ID == 723133
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _x_basic.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -36,7 +36,7 @@
 #include "ttf/roman.64"
 #include "ttf/bold.64"
 #include "ttf/italic.64"
-#include "ttf/fixed.48"
+#include "ttf/fixed.64"
 
 
 LEDA_BEGIN_NAMESPACE
@@ -62,11 +62,12 @@ extern void UPDATE_DISPLAY(unsigned int* pixels, int w, int h,
                            int x, int y); 
 /*
    copy pixel rectangle [x0,y0,x1,y1] from (w x h) pixel buffer (pixels)
-   to display at position (x,y)
+   to display position (x,y)
 */
 
-extern int NEXT_EVENT(string&, int& val, int& x, int& y, unsigned long& t,
-                                                         int msec);
+extern int NEXT_EVENT(string&, int& val1, int& val2, int& x, int& y, 
+                                                             unsigned long& t,
+                                                             int msec);
 // msec > 0: blocking / timeout
 // msec = 0: blocking / no timeout
 // msec < 0: non-blocking (check)
@@ -85,6 +86,12 @@ inline double TRIANGLE_AREA2(double px, double py, double qx, double qy,
                                                    double rx, double ry)
 { // 2 * signed area of triangle (p,q,r)
   return (px-qx) * (py-ry) - (py-qy) * (px-rx); 
+}
+
+
+inline double TRIANGLE_AREA2(double qx, double qy, double rx, double ry)
+{ // 2 * signed area of triangle (0,q,r)
+  return qx * ry - qy * rx; 
 }
 
 
@@ -203,7 +210,8 @@ struct xx_win
   int*           FONT_WIDTH = 0;
   int*           FONT_OFFSET = 0;
   unsigned char* FONT_ALPHA = 0;
-  float          FONT_SCALE = 0.8f;
+  double         FONT_SCALE = 0.8;
+  int            FONT_YOFF = 0;
 
   drawing_mode save_mode;
   line_style   save_ls;
@@ -225,15 +233,21 @@ struct xx_win
 
   Window  id;
 
+  int   state; 
+
   // state & 0x01 :  minimized bit
   // state & 0x02 :  maximized bit
   // 0: normal 1: iconized 2: maximized(normal) 3: iconized(maximized)
 
-  int   state; 
 
   void* inf;
   int   mapped;
   bool  flush;
+
+/*
+  // not used
+  int  blocked; //  do not draw anything on screen buffer if blocked > 0
+*/
 
   xx_win* pwin; // parent
 
@@ -328,15 +342,16 @@ struct xx_win
 
 struct xx_event {
   int ev;
-  int val;
+  int val1;
+  int val2;
   int x;
   int y;
   unsigned long t;
-  xx_event() { ev = -1; val = x = y = 0; t = 0; }
+  xx_event() { ev = -1; val1 = val2 = x = y = 0; t = 0; }
 };
 
 static xx_event event_buf;
-static xx_event last_event;
+static xx_event current_event;
 
 static int focus_window = -1;
 
@@ -372,11 +387,21 @@ static int BUTTON_X[] = { int(3.7*HEADER_W),
                           int(1.3*HEADER_W) };
 
 
+// window manager functions
 
-void redraw_root(int);
+static bool wm_clear_on_resize = false;
+
+static void wm_redraw_root();
+
+static void wm_draw_button(xx_win* win, int i);
+static void wm_set_label(xx_win*, const char* s);
+static void wm_draw_window(xx_win* win, int clear_win=1);
+static bool wm_move(xx_win* win);
+static void wm_resize(xx_win* win,int pos);
+static void wm_resize_canvas(xx_win* win, int width, int height);
+
 
 //----------------------------------------------------------------------------
-
 
 const int win_max = 256;
 
@@ -576,10 +601,14 @@ void SetAlpha(x_image* img, int x0, int y0, int x1, int y1, int alpha, int op)
 
 void FlushDisplay(xx_win* win, int x0, int y0,int x1, int y1)
 { 
-  if (win->flush == false) return;
+  //if (win->blocked > 0) return;
+
+  if (!win->flush) return;
 
   // do not flush if window or its parent is minimized
   if ((win->state & 0x01)) return; 
+
+  // cout << string("FlushDisplay(%d,%d,%d,%d)",x0,y0,x1,y1) << endl;
 
   if (win->pwin && (win->pwin->state & 0x01)) return; 
 
@@ -634,6 +663,7 @@ int x_set_font(Window w, const char* font_name)
   float sz = (float)atoi(font_name+1);
 
   // adjust sz to dpi resolution
+
   sz *= (display_dpi/192.0f);
 
 
@@ -644,14 +674,16 @@ int x_set_font(Window w, const char* font_name)
                win->FONT_OFFSET = ROMAN_FONT_OFFSET;
                win->FONT_ALPHA  = ROMAN_FONT_ALPHA;
                win->FONT_SCALE  = sz/ROMAN_FONT_HEIGHT;
+               win->FONT_YOFF   = 0;
                break;
     
-     case 'F': sz *= 0.8f;
-               win->FONT_WIDTH  = FIXED_FONT_WIDTH;
+     case 'F': win->FONT_WIDTH  = FIXED_FONT_WIDTH;
                win->FONT_HEIGHT = FIXED_FONT_HEIGHT;
                win->FONT_OFFSET = FIXED_FONT_OFFSET;
                win->FONT_ALPHA  = FIXED_FONT_ALPHA;
                win->FONT_SCALE  = sz/FIXED_FONT_HEIGHT;
+               win->FONT_YOFF   = int(0.1 * sz);
+               //win->FONT_YOFF   = 0;
                break;
     
      case 'B': win->FONT_WIDTH  = BOLD_FONT_WIDTH;
@@ -659,6 +691,7 @@ int x_set_font(Window w, const char* font_name)
                win->FONT_OFFSET = BOLD_FONT_OFFSET;
                win->FONT_ALPHA  = BOLD_FONT_ALPHA;
                win->FONT_SCALE  = sz/BOLD_FONT_HEIGHT;
+               win->FONT_YOFF   = 0;
                break;
     
      case 'I': win->FONT_WIDTH  = ITALIC_FONT_WIDTH;
@@ -666,6 +699,7 @@ int x_set_font(Window w, const char* font_name)
                win->FONT_OFFSET = ITALIC_FONT_OFFSET;
                win->FONT_ALPHA  = ITALIC_FONT_ALPHA;
                win->FONT_SCALE  = sz/ITALIC_FONT_HEIGHT;
+               win->FONT_YOFF   = 0;
                break;
     }
 
@@ -689,8 +723,12 @@ void x_restore_font(Window w)
 // predefined fonts
 
 void x_set_text_font(Window w)   { x_set_font(w,"T36"); }
+/*
 void x_set_bold_font(Window w)   { x_set_font(w,"B35"); }
 void x_set_fixed_font(Window w)  { x_set_font(w,"F35"); }
+*/
+void x_set_bold_font(Window w)   { x_set_font(w,"B36"); }
+void x_set_fixed_font(Window w)  { x_set_font(w,"F36"); }
 void x_set_italic_font(Window w) { x_set_font(w,"I36"); }
 void x_set_button_font(Window w) { x_set_font(w,"T36"); }
 
@@ -715,6 +753,15 @@ int x_get_line_width(Window w)   { return wlist[w]->LINEWIDTH; }
 int x_get_color(Window w)        { return wlist[w]->COLOR; }
 int x_get_border_color(Window w) { return wlist[w]->border_clr; }
 int x_get_border_width(Window w) { return wlist[w]->border_w; }
+
+
+void x_set_rotation(Window w, int x, int y, double phi)
+{ xx_win* win = wlist[w];
+  win->canvas->rotate_cx = x;
+  win->canvas->rotate_cy = y;
+  win->canvas->rotate_sin = sin(phi);
+  win->canvas->rotate_cos = cos(phi);
+}
 
 
 int x_set_line_width(Window w, int width)
@@ -755,8 +802,7 @@ drawing_mode x_set_mode(Window w, drawing_mode mode)
 
 int x_text_height(Window w, const char*)
 { xx_win* win = wlist[w];
-  return int(0.5 + win->FONT_HEIGHT * win->FONT_SCALE);
-  //return int(1.0 + win->FONT_HEIGHT * win->FONT_SCALE);
+  return int(win->FONT_HEIGHT * win->FONT_SCALE);
 }
 
 int x_text_width(Window w, const char* s) { 
@@ -784,18 +830,6 @@ inline void bigpix(xx_win* win, int x, int y)
 inline void bigpix1(xx_win* win, int x, int y)
 { x_image* canv = win->canvas;
   canv->bigpix1(x,y,win->LINEWIDTH,win->COLOR,win->MODE);
-}
-
-inline void bigpix_ellipse(xx_win* win, double xc, double yc, 
-                                        double x, double y)
-{ x_image* canv = win->canvas;
-
-  //double phi = M_PI/4;
-  double phi = 0;
-  double dx = x * cos(phi) - y * sin(phi);
-  double dy = x * sin(phi) + y * cos(phi);
-  canv->bigpix(int(xc+dx+0.5),int(yc+dy+0.5),win->LINEWIDTH,win->COLOR,
-                                                            win->MODE);
 }
 
 inline void hline(xx_win* win, int x0, int x1, int y)
@@ -1848,7 +1882,6 @@ void x_clear_window(Window w, int x0, int y0, int x1, int y1, int xorig,
 
   //if (win->mapped == 0) return;
   if (win->canvas == 0) return; // not displayed
-  
 
   char* pm = win->bg_pixmap;
 
@@ -2120,30 +2153,15 @@ static void draw_ellipse(xx_win* win, int x0, int y0, int a, int b, bool fill)
 
     x++;
 
-/*
-double phi = M_PI/4;
-double dx = x * cos(phi) - y * sin(phi);
-double dy = x * sin(phi) + y * cos(phi);
-x = dx;
-y = dy;
-*/
-
     if (fill)
     { hline(win,int(xc-x),int(xc+x),int(yc+y));
       hline(win,int(xc-x),int(xc+x),int(yc-y));
      }
     else
-    { 
-      bigpix_ellipse(win,xc,yc,+x,+y);
-      bigpix_ellipse(win,xc,yc,-x,+y);
-      bigpix_ellipse(win,xc,yc,+x,-y);
-      bigpix_ellipse(win,xc,yc,-x,-y);
-/*
-      bigpix(win,int(xc+x),int(yc+y));
+    { bigpix(win,int(xc+x),int(yc+y));
       bigpix(win,int(xc-x),int(yc+y));
       bigpix(win,int(xc+x),int(yc-y));
       bigpix(win,int(xc-x),int(yc-y));
-*/
      }
   }
 
@@ -2159,29 +2177,16 @@ y = dy;
 
     y--;
 
-/*
-double phi = M_PI/4;
-double dx = x * cos(phi) - y * sin(phi);
-double dy = x * sin(phi) + y * cos(phi);
-x = dx;
-y = dy;
-*/
-
     if (fill)
     { hline(win,int(xc-x),int(xc+x),int(yc+y));
       hline(win,int(xc-x),int(xc+x),int(yc-y));
      }
     else
-    { bigpix_ellipse(win,xc,yc,+x,+y);
-      bigpix_ellipse(win,xc,yc,-x,+y);
-      bigpix_ellipse(win,xc,yc,+x,-y);
-      bigpix_ellipse(win,xc,yc,-x,-y);
-/*
+    { 
       bigpix(win,int(xc+x),int(yc+y));
       bigpix(win,int(xc-x),int(yc+y));
       bigpix(win,int(xc+x),int(yc-y));
       bigpix(win,int(xc-x),int(yc-y));
-*/
      }
   }
 
@@ -2273,15 +2278,23 @@ char* x_create_pixrect(Window w, int x0, int y0, int x1, int y1)
   if (x0 > x1) std::swap(x0,x1);
   if (y0 > y1) std::swap(y0,y1);
 
+  // restrict area to canvas area
+
+  if (x0 < 0) x0 = 0;
+  if (x1 >= win->canvas->w) x1 = win->canvas->w-1;
+
+  if (y0 < 0) y0 = 0;
+  if (y1 >= win->canvas->h) y1 = win->canvas->h-1;
+
   int wi = x1-x0+1;
   int he = y1-y0+1;
 
+  //cout << string("pixrect: %d x %d  [%d %d %d %d]",wi,he,x0,y0,x1,y1) << endl;
 
   x_image* img = new x_image(wi,he);
 
   pixel* p = img->buf;
 
-  //for(int y = y0; y < y1; y++)
   for(int y = y0; y <= y1; y++)
   { pixel* q = win->canvas->buf + x0 + y*win->canvas->w;
     for(int x = x0; x <= x1; x++) *p++ = *q++;
@@ -2505,6 +2518,13 @@ void x_text(Window w, int x, int y, const char *txt)
 
   x_image* canv = win->canvas;
 
+  int tw = x_text_width(w,txt);
+  int th = x_text_height(w,txt);
+
+  // adjust y-position 
+  y += win->FONT_YOFF;
+
+
   int x1 = x + x_text_width(w,txt);
   int y1 = y + x_text_height(w,txt);
 
@@ -2545,7 +2565,7 @@ void x_text(Window w, int x, int y, const char *txt)
 
     x_image* img = new x_image(pixels,tw,th);
 
-    float f = win->FONT_SCALE;
+    double f = win->FONT_SCALE;
     if (f != 1)
     { x_image* p = img->resize_rotate(int(0.5+f*img->w),int(0.5+f*img->h),0);
       delete img;
@@ -2572,7 +2592,10 @@ void x_text(Window w, int x, int y, const char *text, int l)
 }
 
 void x_ctext(Window w, int x, int y, const char* str)
-{ x_text(w,x-(x_text_width(w,str)-1)/2, y-(x_text_height(w,str)-1)/2, str); }
+{ int tw = x_text_width(w,str);
+  int th = x_text_height(w,str);
+  x_text(w,x-tw/2, y-th/2, str); 
+}
 
 void x_text_underline(Window w, int x, int y, const char* text, int, int)
 { x_text(w,x,y,text); }
@@ -2881,72 +2904,138 @@ static int handle_next_event(int* win, int* x, int* y, int* val1, int* val2,
   // msec = 0: blocking without timeout
   // msec < 0: non blocking
 
-  *val2 = 0;
-
   // find next event
 
-  string e_name = "";
+  string arg = "";
+
   int e = no_event;
 
-  int cur_x = last_event.x;
-  int cur_y = last_event.y;
-
-  if (event_buf.ev != -1)
+  if (event_buf.ev == -1)
+    e = NEXT_EVENT(arg,*val1,*val2,*x,*y,*t,msec);
+  else
   { e = event_buf.ev;
-    *val1 = event_buf.val;
-    cur_x = event_buf.x;
-    cur_y = event_buf.y;
+    *val1 = event_buf.val1;
+    *val2 = event_buf.val2;
+    *x = event_buf.x;
+    *y = event_buf.y;
     *t = event_buf.t;
     event_buf.ev = -1;
    }
-  else {
-    e = NEXT_EVENT(e_name,*val1,cur_x,cur_y,*t,msec);
-  }
 
+  *val2 = 0;
 
-  if (e_name.starts_with("upload:") && wlist[0]->special_event_handler) 
-  { // cout << "SPECIAL_EVENT: " << e_name << endl;
-    // e_name = "upload:file"
-
-    string A[2];
-    e_name.split(A,2,':');
-    string fname = A[1].trim();
+  if (e == upload_file_event && wlist[0]->special_event_handler) 
+  { // cout << "SPECIAL_EVENT: upload_file " << arg << endl;
 
     unsigned long i = wlist[0]->special_event_data;
     xx_win* wp = wlist[i]; 
-    wlist[0]->special_event_handler(wp->inf,"upload",fname,0,0);
+    assert(wp);
+    wlist[0]->special_event_handler(wp->inf,"upload",arg,0,0);
     return no_event;
   }
-    
+
 
   if (e == display_event)
-  { //cout << string ("DISPLAY EVENT: %d %d %d",*val1,cur_x,cur_y) << endl;
+  { 
+    //*val1 = 172; // fixed dpi
 
-    if (*val1 > 0) {
-    // display size changed
-    //cout << string ("DISPLAY CHANGED: %d x %d (%d)",cur_x,cur_y,*val1);
-      redraw_root(1);
+    int dpi = *val1;
+
+    cout << string("DISPLAY EVENT: dpi = %d  %d x %d",dpi,*x,*y) << endl;
+
+    if (dpi == 0)
+    { cout << "DISPLAY CLOSED" << endl;
+      CLOSE_DISPLAY();
+      *x = 0;
+      *y = 0;
+      return no_event;
     }
 
-  //cout << "DISPLAY CLOSED" << endl;
+    // display size changed
 
+    int width  = *x;
+    int height = *y;
+
+    double fx = double(width)/display_width;
+    double fy = double(height)/display_height;
+  //double f = std::min(fx,fy);
+    double f = (fx + fy)/2;
+
+    root_win->width  = width;
+    root_win->height = height;
+    root_win->x1 = width-1;
+    root_win->y1 = height-1;
+    if (root_win->canvas) delete root_win->canvas;
+    root_win->canvas = new x_image(width,height);
+    root_win->canvas->fill(root_win->bg_clr);
+
+    display_width = width;
+    display_height = height;
+
+    double dpi_f = double(dpi)/display_dpi;
+
+    //display_dpi = dpi; // keep fixed (initial) dpi
+
+/*
+    // let base_window do the job
     *win = 0;
-    return e;
-  }
+    *x = width;
+    *y = height;
+    *val1 = display_dpi;
+    return display_event;
+*/
 
+    // resize (app) windows
+    for(int i = 1; i <= win_top; i++)
+    { xx_win* wp = wstack[i];
+      
+      if (wp->pwin && wp->pwin != wp) continue; // child window
+      if (wp->state != 0) continue;  // iconified or maximized
+
+
+      if (getenv("LEDA_OPEN_MAXIMIZED")) 
+      { int x = 0;
+        int y = 0;
+        int w = display_width;
+        int h = display_height;
+        x_resize_window(wp->id,x,y,w,h,0);
+      }
+
+/*
+      else if (dpi_f != 1)
+      { int x = int(wp->x0/dpi_f);
+        int y = int(wp->y0/dpi_f);
+        int w = int(wp->width/dpi_f);
+        int h = int(wp->height/dpi_f);
+        x_resize_window(wp->id,x,y,w,h,0);
+      }
+*/
+    }
+
+    wm_redraw_root();
+
+    *win = -1; // prevent base_window from handling this event
+    *x = width;
+    *y = height;
+    *val1 = display_dpi;
+    return display_event;
+ }
 
   if (e != no_event)
-  { last_event.ev  = e;
-    last_event.val = *val1;
-    last_event.x = cur_x;
-    last_event.y = cur_y;
-    last_event.t = *t;
-    if (e != key_press_event && e != key_release_event)
-    { mouse_x = cur_x;
-      mouse_y = cur_y;
-     }
-  }
+  { current_event.ev  = e;
+    current_event.val1 = *val1;
+    current_event.val2 = *val2;
+    current_event.x = *x;
+    current_event.y = *y;
+    current_event.t = *t;
 
+    if (e != key_press_event && e != key_release_event)
+    { // update mouse position (not for key ?)
+      mouse_x = *x;
+      mouse_y = *y;
+     }
+
+  }
 
   // find window of this event
 
@@ -2980,7 +3069,7 @@ static int handle_next_event(int* win, int* x, int* y, int* val1, int* val2,
 
 
 
-static void draw_window_button(xx_win* win, int i)
+static void wm_draw_button(xx_win* win, int i)
 {
   if (win->state & 0x01) return;
 
@@ -3044,18 +3133,19 @@ static int check_window_button(xx_win* win)
 }
 
 
-static void set_window_label(Window w, const char* s)
+static void wm_set_label(xx_win* win, const char* s)
 {
-  xx_win* win = wlist[w];
+  if (win->pwin || (win->state & 0x01)) {
+    // child or frameless window or icon
+    return;
+  }
 
-  if (win->pwin || (win->state & 0x01)) return;
-
-  int          clr = x_set_color(0,win->label_clr);
-  text_mode    tm = x_set_text_mode(0,transparent);
+  int clr = x_set_color(0,win->label_clr);
+  text_mode tm = x_set_text_mode(0,transparent);
   drawing_mode mode = x_set_mode(0,src_mode);
 
-//x_set_font(0,"T32"); 
-  x_set_font(0,"B32"); 
+//x_set_font(0,"B32"); 
+  x_set_font(0,"B34"); 
 
   int label_w = win->x1 - win->x0 - int(1.5*display_dpi);
   int label_h = x_text_height(0,"H");
@@ -3083,16 +3173,17 @@ static void set_window_label(Window w, const char* s)
 
 }
 
-void x_set_label(Window w, const char* s)
+
+void x_set_frame_label(Window w, const char* s)
 { xx_win* win = wlist[w];
   root_win->flush = false;
-  set_window_label(w,s);
+  wm_set_label(win,s);
   root_win->flush = true;
   FlushDisplay(root_win,win->x0,win->y0,win->x1,win->y0+HEADER_W);
 }
 
 
-static void draw_window(xx_win* win, int clear_win=1)
+static void wm_draw_window(xx_win* win, int clear_win)
 {
   assert(win != root_win);
 
@@ -3139,9 +3230,9 @@ static void draw_window(xx_win* win, int clear_win=1)
   drawing_mode save_mode = x_set_mode(0,src_mode);
   int save_lw = x_set_line_width(0,1);
 
-  if (clear_win)
+  //if (clear_win)
+  if (false)
   { x_set_color(0,win->bg_clr);
-  //x_box(x0,y0,x1,y1);
     x_box(0,win->xpos, win->ypos, win->xpos+win->width-1, 
                                   win->ypos+win->height-1);
    }
@@ -3195,33 +3286,30 @@ static void draw_window(xx_win* win, int clear_win=1)
    }
 
   if (label_h > 15) {
-    for(int i=0; i<3; i++) draw_window_button(win,i);
-    set_window_label(win->id,win->header);
+    for(int i=0; i<3; i++) wm_draw_button(win,i);
+    wm_set_label(win,win->header);
    }
   
   x_set_mode(0,save_mode);
   x_set_line_width(0,save_lw);
 
-/*
-  if (win->redraw) win->redraw(win->inf,0,0,win->width,win->height,1);
-*/
-
   x_image* canv = win->canvas;
   if (win->canvas_save) canv = win->canvas_save;
-
   CopyWindowAreaToRoot(win, 0,0,canv->w-1,canv->h-1);
 }
 
 
 
-void redraw_root(int x0, int y0, int x1, int y1)
+void wm_redraw_root(int x0, int y0, int x1, int y1)
 {
-  //cout << string("redraw_root(%d,%d,%d,%d): ",x0,y0,x1,y1) << endl; 
+ //cout << string("wm_redraw_root(%d,%d,%d,%d): ",x0,y0,x1,y1) << endl; 
 
   root_win->flush = false;
 
-  // clear root window
-  root_win->canvas->fill(root_win->bg_clr);
+  if (!getenv("LEDA_OPEN_MAXIMIZED"))
+  { // clear root window
+    root_win->canvas->fill(root_win->bg_clr);
+   }
 
   root_win->COLOR = black;
 
@@ -3229,7 +3317,7 @@ void redraw_root(int x0, int y0, int x1, int y1)
   for(int i=1; i<=win_top; i++) 
   { xx_win* wp = wstack[i];
     if (wp->pwin && (wp->pwin->state & 0x01)) continue;
-    draw_window(wp);
+    wm_draw_window(wp);
    }
 
   // flush to display
@@ -3242,19 +3330,18 @@ void redraw_root(int x0, int y0, int x1, int y1)
   if (y1 >= root_canv->h) y1 = root_canv->h - 1;
 
   root_win->flush = true;
+
   UPDATE_DISPLAY(root_canv->buf,root_canv->w,root_canv->h,x0,y0,x1,y1,x0,y0);
-
 }
 
 
-void redraw_root(int x) { 
-  //cout << x << ": " << std::flush;
-  redraw_root(root_win->x0,root_win->y0,root_win->x1,root_win->y1); 
+void wm_redraw_root() { 
+  wm_redraw_root(root_win->x0,root_win->y0,root_win->x1,root_win->y1); 
 }
 
 
 
-static bool move_win(xx_win* win)
+static bool wm_move(xx_win* win)
 { 
   int xp0 = win->x0;
   int yp0 = win->y0;
@@ -3351,20 +3438,67 @@ static bool move_win(xx_win* win)
     }
    }
   
-  redraw_root(2);
+  wm_redraw_root();
 
   return true;
 }
 
 
-static void resize_win(xx_win* win,int pos)
-{ 
-  // pos = 0,1,2,3 (corner)
+static void wm_resize_canvas(xx_win* win, int w, int h)
+{ //xx_win* win = wlist[w];
+
+  if (win->canvas == 0) return; 
+
+  int buffering = (win->canvas_save != 0); 
+
+  if (buffering)
+  { x_stop_buffering(win->id);
+    x_delete_buffer(win->id);
+   }
+
+  x_image* new_canv = new x_image(w,h,win->bg_clr);
+
+  if (!wm_clear_on_resize)
+  { // copy pixels from old to new canvas
+    int w_min = std::min(w,win->canvas->w);
+    int h_min = std::min(h,win->canvas->h);
+    CopyArea(win->canvas,0,0,new_canv,0,0,w_min,h_min); 
+   }
+
+  delete win->canvas;
+  win->canvas = new_canv;
+
+  if (buffering) x_start_buffering(win->id); 
+
+  if (win->redraw)
+  { //win->blocked++;
+    bool f = win->flush;
+    win->flush = false;
+    win->redraw(win->inf,0,0,w,h,1);
+    win->flush = f;
+    //win->blocked--;
+  }
+
+  // redraw root if win is not a child window
+  // and always if wm_clear_on_resize = false
+
+  if (win->pwin == 0 || !wm_clear_on_resize) wm_redraw_root();
+
+}
+
+
+
+
+static void wm_resize(xx_win* win,int pos)
+{
+  // pos = 0,1,2,3 (corners tl, tr, br, bl) 
+  // pos = 4,5,6,7 (frame top, bot, left, right)
 
   int xp0 = win->x0;
   int yp0 = win->y0;
   int xp1 = win->x1;
   int yp1 = win->y1;
+
   int xb = win->xpos - xp0;
   int yb = win->ypos - yp0;
   
@@ -3384,19 +3518,41 @@ static void resize_win(xx_win* win,int pos)
   int dy=0;
 
   switch(pos) {
-   case 0: dx = xp0-xc; dy = yp0-yc;
+   case 0: // top_left
+           dx = xp0-xc; dy = yp0-yc;
            break;
-   case 1: dx = xp1-xc; dy = yp0-yc;
+
+   case 1: // top_right
+           dx = xp1-xc; dy = yp0-yc;
            break;
-   case 2: dx = xp1-xc; dy = yp1-yc;
+
+   case 2: // bot_right
+           dx = xp1-xc; dy = yp1-yc;
            break;
-   case 3: dx = xp0-xc; dy = yp1-yc;
+
+   case 3: // bot_left
+           dx = xp0-xc; dy = yp1-yc;
+           break;
+
+   case 4: // top
+           dx = 0; dy = yp0-yc;
+           break;
+
+   case 5: // bottom
+           dx = 0; dy = yp1-yc;
+           break;
+
+   case 6: // left
+           dx = xp0-xc; dy = 0;
+           break;
+
+   case 7: // right
+           dx = xp1-xc; dy = 0;
            break;
    }
 
   x_image* root_canv = root_win->canvas;
   root_win->flush = false;
-
 
   Window w;
   int e,x,y,val1,val2;
@@ -3405,40 +3561,83 @@ static void resize_win(xx_win* win,int pos)
   do { e = handle_next_event(&w,&x,&y,&val1,&val2,&t,0);
        if (mouse_x != xc || mouse_y != yc)
         { 
-          int fx0,fy0,fx1,fy1;
+          int fx0=0,fy0=0,fx1=0,fy1=0;
 
           switch(pos) {
-          case 0: x_rect(0,mouse_x+dx-1,mouse_y+dy-1,xp1+1,yp1+1);
+          case 0: // top_left
+                  x_rect(0,mouse_x+dx-1,mouse_y+dy-1,xp1+1,yp1+1);
                   x_rect(0,xc+dx-1,yc+dy-1,xp1+1,yp1+1);
-                  fx0 = min(mouse_x+dx-1,xc+dx-1) - lw;
-                  fy0 = min(mouse_y+dy-1,yc+dy-1) - lw;
+                  fx0 = min(mouse_x,xc)+dx-1 - lw;
+                  fy0 = min(mouse_y,yc)+dy-1 - lw;
                   fx1 = xp1+1 + lw;
                   fy1 = yp1+1 + lw;
                   break;
 
-          case 1: x_rect(0,xp0-1,mouse_y+dy-1,mouse_x+dx+1,yp1+1);
+          case 1: // top_right
+                  x_rect(0,xp0-1,mouse_y+dy-1,mouse_x+dx+1,yp1+1);
                   x_rect(0,xp0-1,yc+dy-1,xc+dx+1,yp1+1);
                   fx0 = xp0-1 - lw;
-                  fy0 = min(mouse_y+dy-1,yc+dy-1) - lw;
-                  fx1 = max(mouse_x+dx+1,xc+dx+1) + lw;
+                  fy0 = min(mouse_y,yc)+dy-1 - lw;
+                  fx1 = max(mouse_x,xc)+dx+1 + lw;
                   fy1 = yp1+1 + lw;
                   break;
-          case 2: x_rect(0,xp0-1,yp0-1,mouse_x+dx+1,mouse_y+dy+1);
+
+          case 2: // bot_right
+                  x_rect(0,xp0-1,yp0-1,mouse_x+dx+1,mouse_y+dy+1);
                   x_rect(0,xp0-1,yp0-1,xc+dx+1,yc+dy+1);
                   fx0 = xp0-1 - lw;
                   fy0 = yp0-1 - lw;
-                  fx1 = max(mouse_x+dx+1,xc+dx+1) + lw;
-                  fy1 = max(mouse_y+dy+1,yc+dy+1) + lw;
-
+                  fx1 = max(mouse_x,xc)+dx+1 + lw;
+                  fy1 = max(mouse_y,yc)+dy+1 + lw;
                   break;
-          case 3: x_rect(0,mouse_x+dx-1,yp0-1,xp1+1,mouse_y+dy+1);
+
+          case 3: // bot_left
+                  x_rect(0,mouse_x+dx-1,yp0-1,xp1+1,mouse_y+dy+1);
                   x_rect(0,xc+dx-1,yp0-1,xp1+1,yc+dy+1);
-                  fx0 = min(mouse_x+dx-1,xc+dx-1) - lw;
+                  fx0 = min(mouse_x,xc)+dx-1 - lw;
                   fy0 = yp0-1 - lw;
                   fx1 = xp1+1 + lw;
-                  fy1 = max(mouse_y+dy+1,yc+dy+1) + lw;
+                  fy1 = max(mouse_y,yc)+dy+1 + lw;
+                  break;
+
+          case 4: // top
+                  x_rect(0,xp0-1,mouse_y-dy-1,xp1+1,yp1+1);
+                  x_rect(0,xp0-1,yc-dy-1,xp1+1,yp1+1);
+                  fx0 = xp0-1 - lw;
+                  fy0 = yp0-1 - lw;
+                  fy0 = min(mouse_y,yc)-dy-1-lw;
+                  fx1 = xp1+1 + lw;
+                  fy1 = yp1+1+lw;
+                  break;
+
+          case 5: // bottom
+                  x_rect(0,xp0-1,yp0-1,xp1+1,mouse_y+dy+1);
+                  x_rect(0,xp0-1,yp0-1,xp1+1,yc+dy+1);
+                  fx0 = xp0-1 - lw;
+                  fy0 = yp0-1 - lw;
+                  fx1 = xp1+1 + lw;
+                  fy1 = max(mouse_y,yc)+dy+1+lw;
+                  break;
+
+          case 6: // left
+                  x_rect(0,mouse_x+dx-1,yp0-1,xp1+1,yp1+1);
+                  x_rect(0,xc+dx-1,yp0-1,xp1+1,yp1+1);
+                  fx0 = min(mouse_x,xc)+dx-1 - lw;
+                  fy0 = yp0-1 - lw;
+                  fx1 = xp1+1 + lw;
+                  fy1 = yp1+1 + lw;
+                  break;
+
+          case 7: // right 
+                  x_rect(0,xp0-1,yp0-1,mouse_x+dx+1,yp1+1);
+                  x_rect(0,xp0-1,yp0-1,xc+dx+1,yp1+1);
+                  fx0 = xp0-1 - lw;
+                  fy0 = yp0-1 - lw;
+                  fx1 = max(mouse_x,xc)+dx+1 + lw;
+                  fy1 = yp1+1 + lw;
                   break;
            }
+
 
          UPDATE_DISPLAY(root_canv->buf,root_canv->w,root_canv->h,
                         fx0,fy0,fx1,fy1,fx0,fy0);
@@ -3459,6 +3658,15 @@ static void resize_win(xx_win* win,int pos)
              break;
      case 3: x_rect(0,xc+dx-1,yp0-1,xp1+1,yc+dy+1);
              break;
+
+     case 4: x_rect(0,xp0-1,yc-dy-1,xp1+1,yp1+1);
+             break;
+     case 5: x_rect(0,xp0-1,yp0-1,xp1+1,yc+dy+1);
+             break;
+     case 6: x_rect(0,xc+dx-1,yp0-1,xp1+1,yp1+1);
+             break;
+     case 7: x_rect(0,xp0-1,yp0-1,xc+dx+1,yp1+1);
+             break;
      }
 
    root_win->MODE = src_mode;
@@ -3477,6 +3685,15 @@ static void resize_win(xx_win* win,int pos)
            break;
    case 3: win->x0 = xc; win->y1 = yc; 
            break;
+
+   case 4: win->y0 = yc; 
+           break;
+   case 5: win->y1 = yc; 
+           break;
+   case 6: win->x0 = xc; 
+           break;
+   case 7: win->x1 = xc; 
+           break;
    }
 
   win->xpos = win->x0 + xb;
@@ -3484,15 +3701,16 @@ static void resize_win(xx_win* win,int pos)
   win->width  = win->x1 - win->x0 - 2*xb + 1; 
   win->height = win->y1 - win->y0 - xb - yb + 1; 
 
+/*
+  // adjust height to muliple of current font height
+  int th = win->FONT_HEIGHT * win->FONT_SCALE;
+  int rows = int(0.5 + double(win->height)/th);
+  int diff = th*rows+th/6 - win->height;
+  win->y1 -= diff;
+  win->height -= diff;
+*/
 
-  if (win->canvas != 0) 
-  { x_image* new_canv = new x_image(win->width,win->height,win->bg_clr);
-    delete win->canvas;
-    win->canvas = new_canv;
-   }
-
-  // NOT NECESSARY if win has children --> x_resize
-  redraw_root(3);
+  wm_resize_canvas(win,win->width,win->height);
 }
 
 
@@ -3500,7 +3718,7 @@ static void resize_win(xx_win* win,int pos)
 //tooltips
 //------------------------------------------------------------------------------
 
-static void close_tt_window(int w) {
+static void tt_close_window(int w) {
   xx_win* wp = wlist[w];
   xx_tooltip* ttp = wp->ttp_open;
   if (ttp == 0) return;
@@ -3511,7 +3729,7 @@ static void close_tt_window(int w) {
   wp->ttp_open = 0;
 }
 
-static void open_tt_window(int w, int x, int y, xx_tooltip* ttp)
+static void tt_open_window(int w, int x, int y, xx_tooltip* ttp)
 { xx_win* wp = wlist[w];
   if (ttp == wp->ttp_open) return;
 
@@ -3519,7 +3737,7 @@ static void open_tt_window(int w, int x, int y, xx_tooltip* ttp)
 
 //cout << "open:  " << ttp << " s = " << s  << endl;
 
-  close_tt_window(w);
+  tt_close_window(w);
 
   x_set_text_font(w);
 
@@ -3563,7 +3781,7 @@ static void check_tooltips(int w, int x, int y)
   wp->ttp_x = x;
   wp->ttp_y = y;
 
-  if (ttp == 0) close_tt_window(w);
+  if (ttp == 0) tt_close_window(w);
 }
 
 
@@ -3597,7 +3815,7 @@ void  x_del_tooltip(int win, int id)
 
   if (i >= 0) 
   { xx_tooltip* ttp = wp->tt_stack[i];
-    if (ttp == wp->ttp_open) close_tt_window(win);
+    if (ttp == wp->ttp_open) tt_close_window(win);
     delete ttp;
     wp->tt_stack[i] = wp->tt_stack[wp->tt_top];
     wp->tt_top--;
@@ -3636,6 +3854,13 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
 
     SET_CURSOR(-1);
 
+    if (e == motion_event && active_win != 0 && *w == 0)
+    { // mouse leaves active window
+      *x = 1;
+      *y = 1;
+      *w = active_win;
+    }
+
     active_win = 0;
 
     if (active_win_button != -1) 
@@ -3643,7 +3868,7 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
       active_win_button = -1;
       for(int i=1; i<=win_count; i++) {
         if (wlist[i]->pwin != 0) continue;
-        draw_window_button(wlist[i],but);
+        wm_draw_button(wlist[i],but);
       }
     }
 
@@ -3666,7 +3891,7 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
     active_win = 0;
     e = handle_next_event(w,x,y,val1,val2,t,msec);
 
-    if (e != button_release_event && move_win(win)) return no_event;
+    if (e != button_release_event && wm_move(win)) return no_event;
 
     // button_release or movement below threshold
     // un-iconify window
@@ -3679,7 +3904,7 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
     else
        win->restore();
 
-    redraw_root(4);
+    wm_redraw_root();
 
     *x = 0;
     *y = 0;
@@ -3693,14 +3918,23 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
   if (win->state & 0x01) return no_event; 
 
 
-  if ((x0<=mouse_x && mouse_x<=x0+border_w) || 
-      (x1>=mouse_x && mouse_x>=x1-border_w) ||  
-      (y0<=mouse_y && mouse_y<=y0+label_h)  || 
-      (y1>=mouse_y && mouse_y>=y1-border_w) )
+  if ((x0 <= mouse_x && mouse_x <= x0+border_w) || 
+      (x1 >= mouse_x && mouse_x >= x1-border_w) ||  
+      (y0 <= mouse_y && mouse_y <= y0+label_h)  || 
+      (y1 >= mouse_y && mouse_y >= y1-border_w) )
   {
     // pointer on window frame: raise/move or resize window
 
-    if (active_win != 0) SET_CURSOR(-1);
+    if (e == motion_event && active_win != 0 && e == motion_event) 
+    { SET_CURSOR(-1);
+      // mouse leaves active window
+      *x = 1;
+      *y = 1;
+      *w = active_win;
+      active_win = 0;
+      return e;
+     }
+
 
     active_win = 0;
 
@@ -3718,33 +3952,76 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
                      XC_bottom_right_corner,
                      XC_bottom_left_corner };
   
-    if (win->state == 0)
-    { // check resize corners only for normal windows
-      for(int i=0; i<4; i++) {
-        if (cy[i] <= mouse_y && mouse_y <= cy[i]+RESIZE_W &&
-            cx[i] <= mouse_x && mouse_x <= cx[i]+RESIZE_W )
-         { 
-           SET_CURSOR(CORNER[i]);
   
-           if (e == button_press_event)
-           { resize_win(win,i);
+    if (win->state == 0)
+    { // check resize corners and resize areas only for normal windows
 
-             x_set_color(win->id,win->bg_clr);
-             x_box(win->id,0,0,*x,*y);
-             *x = 0;
-             *y = 0;
-             *val1 = win->width;
-             *val2 = win->height;
+      int j = -1;
 
-             // resizing happened
-             return exposure_event;
-            }
+      for(int i=0; i<4; i++)
+      { if (cy[i] <= mouse_y && mouse_y <= cy[i]+RESIZE_W &&
+            cx[i] <= mouse_x && mouse_x <= cx[i]+RESIZE_W )
+        { 
+          SET_CURSOR(CORNER[i]);
+          j = i;
+          break;
+        }
+      }
 
-            // no resizing
-            return no_event;
-          }
+      // check frame resize areas
+
+/*
+      // check top frame
+      if (j == -1 && y0-border_w <= mouse_y && mouse_y <= y0+border_w
+                  && x0+RESIZE_W <= mouse_x && mouse_x <= x1-RESIZE_W)
+      { j = 4;
+        //SET_CURSOR(XC_sb_v_double_arrow);
+        SET_CURSOR(XC_top_side);
        }
-    }
+*/
+
+      // check bottom frame
+      if (j == -1 && y1-border_w <= mouse_y && mouse_y <= y1+border_w
+                  && x0+RESIZE_W <= mouse_x && mouse_x <= x1-RESIZE_W)
+      { j = 5;
+        //SET_CURSOR(XC_sb_v_double_arrow);
+        SET_CURSOR(XC_bottom_side);
+      }
+
+      // check left frame
+      if (j == -1 && y0+RESIZE_W <= mouse_y && mouse_y <= y1-RESIZE_W
+                  && x0-border_w <= mouse_x && mouse_x <= x0+border_w)
+      { j = 6;
+        //SET_CURSOR(XC_sb_h_double_arrow);
+        SET_CURSOR(XC_left_side);
+      }
+
+      // check right frame
+      if (j == -1 && y0+RESIZE_W <= mouse_y && mouse_y <= y1-RESIZE_W
+                  && x1-border_w <= mouse_x && mouse_x <= x1+border_w)
+      { j = 7;
+        //SET_CURSOR(XC_sb_h_double_arrow);
+        SET_CURSOR(XC_right_side);
+      }
+
+      if (j != -1)
+      { if (e == button_press_event)
+        { 
+          wm_resize(win,j);
+
+          *x = 0;
+          *y = 0;
+          *val1 = win->width;
+          *val2 = win->height;
+  
+          //return exposure_event;
+          return configure_event;
+         }
+
+        return no_event;
+      }
+
+   }
 
    
     // check window buttons (- o x)
@@ -3764,7 +4041,7 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
 
     if (but != active_win_button) {
        active_win_button = but;
-       for(int i=0; i<3; i++) draw_window_button(win,i);
+       for(int i=0; i<3; i++) wm_draw_button(win,i);
      }
 
     if (e != button_press_event) {
@@ -3779,7 +4056,7 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
       case 0: { // iconize button
                 active_win_button = -1;
                 win->minimize();
-                redraw_root(5);
+                wm_redraw_root();
                 *x = 0;
                 *y = 0;
                 *val1 = win->width;
@@ -3810,7 +4087,7 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
                  }
 
                 // NOT NECESSARY if win has children --> x_resize
-                redraw_root(6);
+                wm_redraw_root();
 
                 return exposure_event;
                }
@@ -3825,7 +4102,7 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
     if (*val1 == 1)
     { // left button: raise and move (normal) window 
       x_set_topmost(*w);
-      if (win->state == 0) move_win(win); 
+      if (win->state == 0) wm_move(win); 
       return configure_event; 
      }
 
@@ -3833,12 +4110,12 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
     { // right button: write pixels (for testing purpose)
       char tmp[512];
       strcpy(tmp,win->header);
-      x_set_label(win->id,"Saving Image to File (pixels.bgra)");
+      x_set_frame_label(win->id,"Saving Image to File (pixels.bgra)");
       int w = x1-x0+1;
       int h = y1-y0+1;
       string fname = string("pixels-%d-%d.bgra",w,h);
       root_win->canvas->write_bin(fname,x0,y0,x1,y1);
-      x_set_label(win->id,tmp);
+      x_set_frame_label(win->id,tmp);
       return no_event;
      }
 
@@ -3854,7 +4131,7 @@ static int manage_next_event(Window* w, int* x, int* y, int* val1, int* val2,
     if (active_win_button != -1) 
     { int but = active_win_button;
       active_win_button = -1;
-      draw_window_button(wp,but);
+      wm_draw_button(wp,but);
     }
 
     if (active_win != *w)
@@ -3875,7 +4152,9 @@ int x_get_next_event(Window& w, int& x, int& y, int& val1, int& val2,
                                                            int msec)
 { // get next event 
 
+/*
 #define HANDLE_TOOLTIPS
+*/
 
 #if defined(HANDLE_TOOLTIPS)
   if (msec == 0)
@@ -3898,9 +4177,9 @@ int x_get_next_event(Window& w, int& x, int& y, int& val1, int& val2,
       if (e != no_event) return e;
 
       if (wp->ttp_current && wp->ttp_current != wp->ttp_open)
-         open_tt_window(w,wp->ttp_x,wp->ttp_y,wp->ttp_current);
+         tt_open_window(w,wp->ttp_x,wp->ttp_y,wp->ttp_current);
       else
-      { close_tt_window(w);
+      { tt_close_window(w);
         wp->ttp_current = 0;
        }
     }
@@ -3923,11 +4202,16 @@ int x_get_next_event(Window& w, int& x, int& y, int& val1, int& val2,
 
 
 void x_put_back_event()
-{ event_buf.ev = last_event.ev;  
-  event_buf.val = last_event.val; 
-  event_buf.x = last_event.x; 
-  event_buf.y = last_event.y; 
-  event_buf.t = last_event.t; 
+{ 
+/*
+  event_buf.ev = current_event.ev;  
+  event_buf.val1 = current_event.val1; 
+  event_buf.val2 = current_event.val2; 
+  event_buf.x = current_event.x; 
+  event_buf.y = current_event.y; 
+  event_buf.t = current_event.t; 
+*/
+  event_buf = current_event;
 }
 
 
@@ -3945,6 +4229,9 @@ int x_open_display()
   display_fd = 
    OPEN_DISPLAY(display_width,display_height,display_depth,display_dpi);
 
+  //display_dpi = 192; // fixed dpi
+
+
   if (display_fd == 0) {
     exit(0);
     return -1;
@@ -3959,11 +4246,12 @@ int x_open_display()
   char* p = getenv("LEDA_DPI");
   if (p != 0) display_dpi = atoi(p);
 
+//HEADER_W = int(display_dpi/3.5);
+  HEADER_W = int(display_dpi/3.7);
 
+//BORDER_W = int(HEADER_W/4.25);
+  BORDER_W = int(HEADER_W/4.0);
 
-  HEADER_W = int(display_dpi/3.5);
-
-  BORDER_W = int(HEADER_W/4.25);
   RESIZE_W = HEADER_W/3;
   BUTTON_W = HEADER_W/3;
 
@@ -4001,9 +4289,6 @@ int x_open_display()
   root_win->y1 = root_win->height-1;
 
   root_win->bg_clr = ROOT_COLOR;
-/*
-  if (getenv("LEDA_OPEN_MAXIMIZED"))  root_win->bg_clr = 0xdddddd;
-*/
 
   root_win->border_clr = black;
   root_win->border_w = 1;
@@ -4036,8 +4321,10 @@ int x_open_display()
   root_win->ttp_open = 0;
   root_win->ttp_current = 0;
 
+/*
   if (win_top==0) // no windows (other than root)
      x_clear_window(0,0,0,root_win->x1, root_win->y1,0,0);
+*/
 
   return display_fd;
 }
@@ -4064,7 +4351,7 @@ void x_close_display()
  }
 
 
-void  x_send_text(const char* text) { 
+void  x_send_cmd(const char* text) { 
   SEND_TEXT(text); 
 }
 
@@ -4092,6 +4379,7 @@ Window x_create_window(void* inf, int width,int height,int bg,
 */
 
   xx_win* win = new xx_win;
+
 
 /*
   wlist[++win_count] = win;
@@ -4169,6 +4457,7 @@ Window x_create_window(void* inf, int width,int height,int bg,
   win->mapped = 0;
 
   win->flush = true;
+//win->blocked = 0;
 
   win->special_event_handler = 0;
   win->special_event_data = 0;
@@ -4181,9 +4470,15 @@ Window x_create_window(void* inf, int width,int height,int bg,
 }
 
 
-void x_open_window(int w, int x, int y, int width, int height, int pw, bool hidden)
+void x_open_window(int w, int x, int y, int width, int height, int pw, 
+                                                               bool hidden)
 {
   xx_win* win = wlist[w];
+
+  // pw = 0:  main (app) window
+  // pw > 0:  child window with parent = wlist[pw]
+  // pw = -1: frameless (app) window
+
 /*
   cout << string("X_OPEN_WINDOW: %s  x = %d  y = %d  width = %d  height = %d",
                                      win->header, x,y,width,height) << endl;
@@ -4191,49 +4486,36 @@ void x_open_window(int w, int x, int y, int width, int height, int pw, bool hidd
 
   if (win->mapped) return;
 
-  if (width < 0)  
-  { width = -width;
-    x -= (width-1);
-    //if (pw == 0) x -= (2 * wm_frame_width);
-   }
-
-  if (height < 0)  
-  { height = -height;
-    y -= (height-1);
-    //if (pw == 0) y -= (wm_frame_width + wm_title_width);
-   }
-
-
   int max_width = display_width;
   int max_height = display_height;
 
-  if (getenv("LEDA_OPEN_MAXIMIZED"))
-  { // to avoid frame problems in fullscreen mode
-    x-=1;
-    y-=1;
-    width += 2;
-    height += 2;
+  if (getenv("LEDA_OPEN_MAXIMIZED") && win_top == 0 && pw <= 0)
+  { // first opened app window will be maximized
+    max_width++;
+    max_height++;
+    width = max_width;
+    height = max_height;
+    win->border_w = 1;
+    x = -1;
+    y = -1;
+    pw = -1; // no frame
    }
-
 
   if (pw == 0)
-  { max_width -= 2*BORDER_W;
+  { // app window 
+    max_width -= 2*BORDER_W;
     max_height -= (HEADER_W + BORDER_W);
-   }
-  else
-  { max_width -= 2;
-    max_height -= 2;
    }
 
   if (pw > 0)
-  { xx_win* p_win = wlist[pw];
+  { // child window of pw: clip to parent
+    xx_win* p_win = wlist[pw];
     max_width = p_win->width - x;
     max_height = p_win->height - y;
    }
 
   if (width > max_width) width = max_width;
   if (height > max_height) height = max_height;
-
 
   if (width < 0)
   { width = -width;
@@ -4250,11 +4532,11 @@ void x_open_window(int w, int x, int y, int width, int height, int pw, bool hidd
   int bw = BORDER_W;
   int hw = (pw==0) ? HEADER_W : BORDER_W;
 
-
-  if (pw)
+  if (pw != 0)
   { bw = win->border_w;
     hw = win->border_w;
    }
+
 
   // push window on wstack
 
@@ -4291,11 +4573,18 @@ void x_open_window(int w, int x, int y, int width, int height, int pw, bool hidd
   height += hw+bw;
 
   if (pw > 0)
-  { xx_win* p_win = wlist[pw];
+  { // place child relative to parent
+    xx_win* p_win = wlist[pw];
     x += p_win->xpos;
     y += p_win->ypos;
+/*
+    x = x - bw + p_win->xpos;
+    y = y - bw + p_win->ypos;
+*/
     win->pwin = p_win;
-   }
+  }
+
+  if (pw < 0)  win->pwin = win;
 
   win->x0 = x;
   win->y0 = y;
@@ -4310,16 +4599,15 @@ void x_open_window(int w, int x, int y, int width, int height, int pw, bool hidd
 
   win->canvas = new x_image(win->width,win->height,win->bg_clr);
 
-  //draw_window(win);
-
-  redraw_root(6);
+  // redraw all windows - or only this one ??
+  wm_redraw_root();
 
 /*
   // consume all pending events
-  string event;
-  int e,val,px,py;
+  string s;
+  int e,v1,v2,x,y;
   unsigned long t;
-  while ((e = NEXT_EVENT(event,val,px,py,t,100)) != no_event) {
+  while ((e = NEXT_EVENT(s,v1,v2,x,y,t,100)) != no_event) {
     cout << "SKIP EVENT: " << event_name[e] << endl;
   }
 */
@@ -4358,7 +4646,7 @@ void x_close_window(Window w)
   win_top--;
   wp->mapped = 0;
 
-  redraw_root(x0,y0,x1,y1);
+  wm_redraw_root(x0,y0,x1,y1);
 }
 
 
@@ -4384,7 +4672,7 @@ void x_set_icon_label(Window w, const char* s)
 { xx_win* win = wlist[w];
   strncpy(win->label,s,265);
   win->label[255] = '\0';
-  if (win->state & 0x01) draw_window(win);
+  if (win->state & 0x01) wm_draw_window(win);
 }
 
 void  x_set_icon_pixmap(Window w, char* pm)
@@ -4409,47 +4697,45 @@ void  x_set_icon_pixmap(Window w, char* pm)
     win->y1 = win->y0 + icon_h-1;
     win->width = icon_w;
     win->height = icon_h;
-    draw_window(win);
+    wm_draw_window(win);
    }
 }
 
 void x_minimize_window(Window w)
 { xx_win* win = wlist[w];
   win->minimize();
-  redraw_root(7);
+  wm_redraw_root();
 }
 
 void x_maximize_window(Window w)
 { xx_win* win = wlist[w];
   win->maximize(display_width, display_height);
-  draw_window(win);
-  redraw_root(7);
+  wm_draw_window(win);
+  wm_redraw_root();
 }
 
 
 void x_grab_pointer(Window w) { grab_win = (w > 0) ? wlist[w] : 0; }
 
 
-void x_resize_window(Window wi, int x, int y, int w, int h, int p) 
-{
+
+void x_resize_window(Window w, int x, int y, int width, int height, int p) 
+{ xx_win* win = wlist[w];
+
   // x,y: position of upper left FRAME corner
   // w,h: width and height of CLIENT area
 
 /*
-  cout << string("resize:  wi = %d x = %d y = %d w = %d h = %d p = %d",
-                                                        wi,x,y,w,h,p) << endl; 
+  cout << string("resize: w = %d x = %d y = %d width = %d height = %d p = %d",
+                                           w,x,y,width,height,p) << endl; 
 */
-
-  int buffering = x_test_buffer(wi);
-  if (buffering) x_delete_buffer(wi);
-
-  xx_win* win = wlist[wi];
 
   xx_win* pw = win->pwin;
 
-  if (pw) {
-   if (w > pw->width - x) w = pw->width - x; 
-   if (h > pw->height - y) h = pw->height - y; 
+  if (pw && pw != win)
+  { // child window
+   if (width > pw->width - x) width = pw->width - x; 
+   if (height > pw->height - y) height = pw->height - y; 
    x += pw->xpos;
    y += pw->ypos;
 
@@ -4457,33 +4743,26 @@ void x_resize_window(Window wi, int x, int y, int w, int h, int p)
 
   win->x0 = x;
   win->y0 = y;
-  win->x1 = x + w;
-  win->y1 = y + h;
+  win->x1 = x + width;
+  win->y1 = y + height;
 
   win->xpos = x;
   win->ypos = y;
-  win->width = w;
-  win->height = h;
+  win->width = width;
+  win->height = height;
   
   if (pw == 0)
-  { win->xpos += BORDER_W;
+  { // non child window with frame
+    win->xpos += BORDER_W;
     win->ypos += HEADER_W;
     win->x1 += 2*BORDER_W;
     win->y1 += HEADER_W + BORDER_W;
   }
 
-  if (win->canvas != 0) 
-  { x_image* new_canv = new x_image(win->width,win->height,win->bg_clr);
-    delete win->canvas;
-    win->canvas = new_canv;
-   }
-
-  redraw_root(8);
-
-  if (buffering) x_start_buffering(wi); 
-
-  if (win->redraw) win->redraw(win->inf,0,0,w,h,1);
+  wm_resize_canvas(win,width,height);
 }
+
+
 
 
 void x_set_topmost(Window w)
@@ -4509,7 +4788,7 @@ void x_set_topmost(Window w)
     grp[i]->mapped = win_top;
   }
 
-  redraw_root(9);
+  wm_redraw_root();
 }
 
 

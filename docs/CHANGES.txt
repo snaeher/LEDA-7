@@ -1,4 +1,15 @@
 +==============================================================================+
+|                               LEDA 7.2.3                                     |
++==============================================================================+
+
+#define __LEDA__ 723
+
+- configuration for Darwin/arm64
+- fix for a memory leak in string constructor
+
+
+
++==============================================================================+
 |                               LEDA 7.2.2                                     |
 +==============================================================================+
 
@@ -10,7 +21,7 @@
 
 - new implementation for MAX_CARD_MATCHING
 
-- Range-based for loops for all item types
+- Range-based for loops for all item based container types
 
   list<int> L({1,2,3,4,5});
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _skiplist.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -1291,17 +1291,16 @@ int skiplist::size() const
   return count;
 }
 
-void skiplist::print(const skiplist & S1,ostream& out,
-string s, char space) const
+void skiplist::print(const skiplist & S1, string s, char space) const
 { 
   sl_item p= ((sl_item) S1.header)->forward[0];
-  out << s;
+  cout << s;
   while (p != S1.STOP)
-  {  out << string(space);
-     print_key(out, p->key);
+  {  cout << string(space);
+     print_key(p->key);
      p = p->forward[0];
   }
-  out.flush();
+  cout.flush();
 }
 
 
@@ -1321,7 +1320,7 @@ void skiplist::check_data_structure(const skiplist& S1, string s)
     if (p != S1.header && q != S1.STOP && 
                          cmp(p->key,q->key) >= 0)
             { t = t + "error in order";
-      print(S1,cout,"wrong order",' '); 
+      print(S1,"wrong order",' '); 
       cout << endl;
                  }
     if (p != S1.STOP)

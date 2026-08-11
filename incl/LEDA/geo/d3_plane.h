@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  d3_plane.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_D3_PLANE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722150
+#define LEDA_ROOT_INCL_ID 723085
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -237,7 +237,7 @@ inline unsigned long ID_Number(const d3_plane& p) { return p.ptr()->id; }
 inline const char* leda_tname(const d3_plane*) { return "d3_plane"; }
 
 
-#if LEDA_ROOT_INCL_ID == 722150
+#if LEDA_ROOT_INCL_ID == 723085
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

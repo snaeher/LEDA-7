@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2
++  LEDA 7.2.3
 +
 +
 +  _x_basic.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -906,8 +906,9 @@ int x_open_display(void)
 //italic_font = create_font("Droid Sans",sz,FW_NORMAL,1);
 
 
-  fixed_font = create_font("Lucida Console",fixed_sz,FW_NORMAL,0);
-//fixed_font = create_font("Consolas",sz,FW_NORMAL,0);
+//fixed_font = create_font("Lucida Console",fixed_sz,FW_NORMAL,0);
+  fixed_font = create_font("Consolas",sz,FW_NORMAL,0);
+
 //fixed_font = create_font("DejaVu Sans Mono",sz,FW_NORMAL,0);
 
   button_font = create_font("Arial",sz,FW_NORMAL,0);
@@ -1269,7 +1270,7 @@ void x_stop_buffering(Window win, char** pr)
 void x_grab_pointer(Window win) 
 { grab_win = win; 
   if (win > 0) 
-    SetCapture(wlist[win]->hwnd); 
+   SetCapture(wlist[win]->hwnd); 
   else
    ReleaseCapture(); 
 }
@@ -1533,11 +1534,19 @@ static void choose_font(Window win, HFONT* hf, LOGFONT* lf)
     InvalidateRect(hwnd,NULL,TRUE);
     printf("\n");
     printf("FaceName       = %s\n", lf->lfFaceName);
+/*
     printf("Height         = %ld\n", lf->lfHeight);
     printf("Width          = %ld\n", lf->lfWidth);
     printf("Escapement     = %ld\n", lf->lfEscapement);
     printf("Orientation    = %ld\n", lf->lfOrientation);
     printf("Weight         = %ld\n", lf->lfWeight);
+*/
+    printf("Height         = %d\n", lf->lfHeight);
+    printf("Width          = %d\n", lf->lfWidth);
+    printf("Escapement     = %d\n", lf->lfEscapement);
+    printf("Orientation    = %d\n", lf->lfOrientation);
+    printf("Weight         = %d\n", lf->lfWeight);
+
     printf("Italic         = %d\n", lf->lfItalic);
     printf("Underline      = %d\n", lf->lfUnderline);
     printf("StrikeOut      = %d\n", lf->lfStrikeOut);
@@ -1749,7 +1758,8 @@ static LRESULT WINAPI WndProc (HWND hwnd, UINT message, WPARAM wParam,
             }
            else
            { char label[32];
-             sprintf(label,"Files dropped at (%ld,%ld)",pt.x,pt.y);
+             //sprintf(label,"Files dropped at (%ld,%ld)",pt.x,pt.y);
+             sprintf(label,"Files dropped at (%d,%d)",pt.x,pt.y);
              char txt[1024];
              sprintf(txt,"\n");
              for(int i=0; i<count; i++)
@@ -1779,12 +1789,16 @@ static LRESULT WINAPI WndProc (HWND hwnd, UINT message, WPARAM wParam,
                if (wParam == DBT_DEVICEARRIVAL)
                { action = 1;
                  if (trace_events)
-                   printf("DBT_DEVICEARRIVAL lParam = %d\n", (int)lParam);
+                 { printf("DBT_DEVICEARRIVAL lParam = %d\n", (int)lParam);
+                   fflush(stdout);
+                  }
                 }
                else
                { action = 0;
                  if (trace_events)
-                   printf("DBT_DEVICEREMOVECOMPLETE lParam = %d\n",(int)lParam);
+                 { printf("DBT_DEVICEREMOVECOMPLETE lParam = %d\n",(int)lParam);
+                   fflush(stdout);
+                  }
                  }
      
                switch (((DEV_BROADCAST_HDR*)lParam)->dbch_devicetype)
@@ -1837,19 +1851,25 @@ static LRESULT WINAPI WndProc (HWND hwnd, UINT message, WPARAM wParam,
      
                  case  DBT_DEVTYP_HANDLE:
                        if (trace_events)
-                       printf("HANDLE\n");
+                       { printf("HANDLE\n");
+                         fflush(stdout);
+                        }
                        //((DEV_BROADCAST_HANDLE*)lParam)
                        break;
      
                  case  DBT_DEVTYP_OEM:
                        if (trace_events)
-                       printf("OEM\n");
+                       { printf("OEM\n");
+                         fflush(stdout);
+                        }
                        //((DEV_BROADCAST_OEM*)lParam)
                        break;
      
                  case  DBT_DEVTYP_PORT:
                        if (trace_events)
-                       printf("PORT\n");
+                       { printf("PORT\n");
+                         fflush(stdout);
+                        }
                        //((DEV_BROADCAST_PORT*)lParam)
                        break;
      
@@ -1889,7 +1909,9 @@ static LRESULT WINAPI WndProc (HWND hwnd, UINT message, WPARAM wParam,
      
              case DBT_DEVNODES_CHANGED:
              if (trace_events)
-             printf("DBT_DEVNODES_CHANGED wParam = %d lParam = %d\n",(int)wParam,(int)lParam);
+             { printf("DBT_DEVNODES_CHANGED wParam = %d lParam = %d\n",(int)wParam,(int)lParam);
+               fflush(stdout);
+              }
               break;
            }
 
@@ -1969,8 +1991,9 @@ static LRESULT WINAPI WndProc (HWND hwnd, UINT message, WPARAM wParam,
           }
 
       case WM_ERASEBKGND: 
-         { if (trace_events) {
-             printf("ERASE BACKGROUND: win = %d\n",win);
+         { if (trace_events)
+           { printf("ERASE BACKGROUND: win = %d\n",win);
+             fflush(stdout);
             }
            return 1;
           }
@@ -1982,8 +2005,9 @@ static LRESULT WINAPI WndProc (HWND hwnd, UINT message, WPARAM wParam,
            GetUpdateRect(hwnd,&rect,TRUE);
 
             if (trace_events) 
-            { printf("PAINT win = %d  count = %d %ld %ld %ld %ld\n", win,
-                            wp->repaint_count, rect.left,rect.top,rect.right,rect.bottom);
+            { //printf("PAINT win = %d  count = %d %ld %ld %ld %ld\n",
+              printf("PAINT win = %d  count = %d %d %d %d %d\n", 
+              win,wp->repaint_count, rect.left,rect.top,rect.right,rect.bottom);
               fflush(stdout);
              }
 
@@ -2081,12 +2105,21 @@ static LRESULT WINAPI WndProc (HWND hwnd, UINT message, WPARAM wParam,
 */
 
       case WM_MOUSEMOVE:
-         { cur_event.kind = motion_event;
-            short x = LOWORD (lParam);
-            short y = HIWORD (lParam);
-            cur_event.x = x;
-            cur_event.y = y;
-            cur_event.t = 0;
+         { 
+           // track mouse leave events
+           TRACKMOUSEEVENT tme;
+           ZeroMemory(&tme,sizeof(tme));
+           tme.cbSize = sizeof(TRACKMOUSEEVENT);
+           tme.dwFlags = TME_LEAVE;
+           tme.hwndTrack = wp->hwnd;
+           TrackMouseEvent(&tme);
+
+           cur_event.kind = motion_event;
+           short x = LOWORD (lParam);
+           short y = HIWORD (lParam);
+           cur_event.x = x;
+           cur_event.y = y;
+           cur_event.t = 0;
 
             if(wp->hwnd_tt)
             { MSG msg;
@@ -2124,10 +2157,34 @@ static LRESULT WINAPI WndProc (HWND hwnd, UINT message, WPARAM wParam,
            return 0;
           }
 
+      case WM_MOUSELEAVE:
+         { if (trace_events) 
+           { printf("MOUSE_LEAVE\n");
+             fflush(stdout);
+            }
+           cur_event.kind = motion_event;
+           cur_event.x = 1;
+           cur_event.y = 1;
+           cur_event.t = 0;
+/*
+           RECT r;
+           GetClientRect(wp->hwnd,&r);
+           cur_event.kind = exposure_event;
+           cur_event.x = 0;
+           cur_event.y = 0;
+           cur_event.val1 = r.right;
+           cur_event.val2 = r.bottom;
+*/
+           return 0;
+          }
+
 
 
       case WM_KILLFOCUS:
-         { if (trace_events) printf("KILLFOCUS\n");
+         { if (trace_events)
+           { printf("KILLFOCUS\n");
+             fflush(stdout);
+            }
            //if (grab_win == w) x_grab_pointer(0);
            return 0;
           }
@@ -2485,13 +2542,19 @@ static LRESULT WINAPI WndProc (HWND hwnd, UINT message, WPARAM wParam,
 
 
       case WM_CLOSE:
-           if (trace_events) printf("WM_CLOSE\n");
+           if (trace_events) 
+           { printf("WM_CLOSE\n");
+             fflush(stdout);
+            }
            cur_event.kind = destroy_event;
            return 0;
 
 
       case WM_DESTROY :
-           if (trace_events) printf("DESTROY: w = %d\n",win);
+           if (trace_events) 
+           { printf("DESTROY: w = %d\n",win);
+             fflush(stdout);
+            }
            return 0;
 
      }
@@ -2710,39 +2773,27 @@ void x_resize_window(Window win, int xpos, int ypos, int width,int height,int)
 { ms_win* wp = wlist[win];
   HWND hwnd = wp->hwnd;
 
-/*
-cout << "resize window" << endl;
-cout << "width = " << width << endl;
-cout << "height = " << height << endl;
-*/
-
   char class_name[32];
   GetClassName(hwnd,class_name,32);
 
-  if (strcmp(class_name,szAppName1) == 0)
-  { width  += 2*GetSystemMetrics(SM_CXFRAME);
-    height += 2*GetSystemMetrics(SM_CYFRAME);
+  width  += 2*GetSystemMetrics(SM_CXFRAME);
+  height += 2*GetSystemMetrics(SM_CYFRAME);
+
+  int dy = 0;
+
+  //dy += GetSystemMetrics(SM_CYFRAME);
+
+  if (strcmp(class_name,szAppName1) == 0) {
     height += GetSystemMetrics(SM_CYCAPTION);
-   }
-  else
-  { width  += 2*GetSystemMetrics(SM_CXBORDER);
-    height += 2*GetSystemMetrics(SM_CYBORDER);
-   }
+    //dy += GetSystemMetrics(SM_CYCAPTION);
+  }
 
-  MoveWindow(hwnd,xpos,ypos,width,height,TRUE);
 
-/*
-  SetWindowPos(hwnd,//HWND_TOP,
-                    //HWND_TOPMOST,
-                    HWND_BOTTOM,
-                    xpos,ypos,width,height,
-                    SWP_DRAWFRAME | SWP_NOACTIVATE);
+  MoveWindow(hwnd,xpos,ypos-dy,width,height,TRUE);
 
-  x_clear_window(win,0,0,width,height);
-*/
-
-  if (wp->repaint)
+  if (wp->repaint) {
      (wp->repaint)(wp->inf,0,0,width,height,0);
+  }
 }
 
 
@@ -3074,7 +3125,7 @@ int x_set_cursor(Window win, int i)
   return i0;
  }
 
-void x_set_label(Window win, const char *s)
+void x_set_frame_label(Window win, const char *s)
 { ms_win* wp = wlist[win];
   HWND hwnd = wp->hwnd;
 /*
@@ -3323,12 +3374,42 @@ void x_rect(Window win, int x1, int y1, int x2, int y2)
 void x_box(Window win, int x1, int y1, int x2, int y2)
 { ms_win* wp = wlist[win];
   HDC  hdc = wp->hdc;
+
   if (x1 > x2) SWAP(x1,x2);
   if (y1 > y2) SWAP(y1,y2);
-  COLORREF col = wp->pen_data.lopnColor;
 
-  RECT r;
-  SetRect(&r,x1,y1,x2+1,y2+1);
+
+  POINT p[4];
+  p[0].x = x1; p[0].y = y1;
+  p[1].x = x2; p[1].y = y1;
+  p[2].x = x2; p[2].y = y2;
+  p[3].x = x1; p[3].y = y2;
+
+  LOGPEN lp = wp->pen_data;
+  lp.lopnStyle = PS_NULL;
+  DeleteObject(SelectObject(hdc,CreatePenIndirect(&lp)));
+
+  HBRUSH hBrush;
+  if (wp->stip_bm)
+  { hBrush = CreatePatternBrush(wp->stip_bm);
+    SetBkColor(hdc,wp->stip_bgcol);
+  }
+  else
+  { COLORREF col = wp->pen_data.lopnColor;
+    hBrush = CreateSolidBrush(col);
+   }
+
+  HBRUSH save_brush = (HBRUSH)SelectObject(hdc,hBrush);
+
+  SetPolyFillMode(hdc,WINDING);
+  Polygon(hdc,p,4);
+
+  DeleteObject(SelectObject(hdc,save_brush));
+  DeleteObject(SelectObject(hdc,CreatePenIndirect(&wp->pen_data)));
+
+
+/*
+  // FillRect does not support xor_mode ?
 
   HBRUSH hBrush;
   if (wp->stip_bm)
@@ -3336,11 +3417,17 @@ void x_box(Window win, int x1, int y1, int x2, int y2)
      SetBkColor(hdc,wp->stip_bgcol);
     }
   else
+  { COLORREF col = wp->pen_data.lopnColor;
     hBrush = CreateSolidBrush(col);
+   }
 
- 
+  RECT r;
+  SetRect(&r,x1,y1,x2+1,y2+1);
   FillRect(hdc,&r,hBrush);
+ 
   DeleteObject(hBrush);
+*/
+
 }
 
 
@@ -3671,7 +3758,14 @@ void x_text(Window win, int x, int y, const char* s0, int l)
   int w = sz.cx;
   int h = sz.cy;
 
-  if (wp->font == fixed_font) y += 3;
+/*
+  if (wp->font == fixed_font) y -= 3;
+  else
+  if (wp->font_name[0] == 'F') 
+  { int sz = atoi(wp->font_name+1);
+    y -= sz/15;
+   }
+*/
 
   if (wp->TMODE == opaque)
   { SetBkColor(hdc,bcol);
@@ -4352,8 +4446,8 @@ static HFONT x_create_font(const char* fname)
   
     case 'F': //lf.lfPitchAndFamily = FF_MODERN | FIXED_PITCH;
               //strcpy(lf.lfFaceName,"Droid Sans Mono");
-              //strcpy(lf.lfFaceName,"Consolas");
-              strcpy(lf.lfFaceName,"Lucida Console");
+              //strcpy(lf.lfFaceName,"Lucida Console");
+              strcpy(lf.lfFaceName,"Consolas");
               lf.lfWeight = FW_NORMAL;
               break;
 
@@ -4579,6 +4673,9 @@ drawing_mode x_set_mode(Window win, drawing_mode mod)
 
   return old_mod;
  }
+
+
+void x_set_rotation(int w, int x, int y, double phi) {}
 
 
 int x_set_line_width(Window win, int lw) 
@@ -4933,11 +5030,12 @@ void x_maximize_window(Window win)
   ShowWindow(wp->hwnd, SW_MAXIMIZE);
 }
 
-void x_flush_display(void)
-{ /* not implemented */ }
+void x_flush_display(void) { 
+  GdiFlush(); 
+}
 
 
-void x_send_text(const char*)
+void x_send_cmd(const char*)
 { /* not implemented */ }
 
 

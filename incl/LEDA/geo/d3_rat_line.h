@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  d3_rat_line.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_D3_RAT_LINE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722144
+#define LEDA_ROOT_INCL_ID 723047
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -205,7 +205,7 @@ inline unsigned long ID_Number(const d3_rat_line& l){ return l.ptr()->id; }
 inline const char* leda_tname(const d3_rat_line*){ return "d3_rat_line"; }
 
 
-#if LEDA_ROOT_INCL_ID == 722144
+#if LEDA_ROOT_INCL_ID == 723047
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  gw_observer.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_GW_OBSERVER_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722284
+#define LEDA_ROOT_INCL_ID 723210
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -104,7 +104,7 @@ class gw_observer : public GraphWin {
 
 
 
-#if LEDA_ROOT_INCL_ID == 722284
+#if LEDA_ROOT_INCL_ID == 723210
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

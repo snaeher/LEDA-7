@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  _file_panel.c
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -151,9 +151,9 @@ static void redraw(window* wp)
 
   W.set_text_font();
 
+/*
   // center buttons
 
-  //int d = W.real_to_pix(W.text_width("H"));
   int d = W.real_to_pix(W.text_width("x"));
 
   panel_item but1 = W.get_button_item(file_load);
@@ -173,9 +173,9 @@ static void redraw(window* wp)
   { int but_x2 = W.width()/2 + d; 
     W.set_item_xpos(but2,but_x2);
    }
+*/
 
   W.redraw_panel();
-
 
   file_panel* fp = (file_panel*)W.get_inf();
 
@@ -407,8 +407,9 @@ static void scroll_drag(int i)
 
  
 file_panel::~file_panel()
-{ //W.close();
+{ //wp->close();
   if (wpp) wpp->redraw();
+  if (wp) delete wp;
  }
 
 
@@ -447,6 +448,8 @@ void file_panel::change_hidden(int b)
 
 void file_panel::init(window* wptr, string& fname, string& dname)
 {
+  window& W = *wp;
+
 #if defined(__win32__)
   mswin = true;
   sep = "\\";
@@ -454,6 +457,16 @@ void file_panel::init(window* wptr, string& fname, string& dname)
   mswin = false;
   sep = "/";
 #endif
+
+  font = "F34";
+
+/*
+  int sz = int(window::screen_dpi()/5.0);
+  font = string("F%d",sz);
+*/
+
+  
+
 
   wpp = wptr;
 
@@ -470,9 +483,14 @@ void file_panel::init(window* wptr, string& fname, string& dname)
   W.set_window_close_handler(win_close_handler);
   W.set_redraw(redraw);
 
+/*
+  // drop_handler (NOT USED ?)
+  // overrides special_event_data used by GraphWin --> crash
   W.set_special_event_handler(special_event_handler);
+*/
 
-  W.set_fixed_font();
+//W.set_fixed_font();
+  W.set_font(font);
 
   W.set_inf(this);
 
@@ -505,40 +523,56 @@ void file_panel::init(window* wptr, string& fname, string& dname)
 
   panel_init = 0;
 
-  char* s;
-  if ((s = getenv("HOME")) != 0)
-  { home_dir = s;
-    global_dir_list.append(s);
-   }
 
-  global_dir_list.append(dname);
-   
-  list<string> drives = get_disk_drives();
-  string drv;
-  forall(drv,drives) {
-    global_dir_list.append(drv + sep);
+  if (window::display_type() != "xx") 
+  {
+    char* s;
+    if ((s = getenv("HOME")) != 0)
+    { home_dir = s;
+      global_dir_list.append(s);
+     }
+  
+    global_dir_list.append(dname);
+     
+    list<string> drives = get_disk_drives();
+    string drv;
+    forall(drv,drives) {
+      global_dir_list.append(drv + sep);
+    }
   }
 
+  global_dir_list.append(start_dir);
+  list<string> sub_dirs = get_directories(start_dir); 
+  string x;
+  forall(x,sub_dirs) {
+   if (x != "tmp") global_dir_list.append(start_dir + "/" + x);
+  }
+  
   global_dir_list.sort();
 }
 
   
 
-file_panel::file_panel(string& fname, string& dname) : 
-W(int(window::screen_width()/2.5),int(window::screen_width()/2.3),"File Panel")
-{ 
+file_panel::file_panel(string& fname, string& dname) 
+{ //int w = int(window::screen_width()/2.5);
+  //int h = int(window::screen_width()/2.3);
+  int w = int(window::screen_height()/5.0);
+  int h = int(window::screen_height()/2.5);
+  wp = new window(w,h,"File Panel");
   init(0,fname,dname); 
 }
 
-file_panel::file_panel(string& fname, string& dname, int width, int height) : 
-           W(width,height,"File Panel")
-{ 
+file_panel::file_panel(string& fname, string& dname, int width, int height)
+{ wp = new window(width,height,"File Panel");
   init(0,fname,dname); 
 }
 
-file_panel::file_panel(window& win, string& fname, string& dname) : 
-W(int(window::screen_width()/2.5),int(window::screen_width()/2.3),"File Panel")
-{ 
+file_panel::file_panel(window& win, string& fname, string& dname)
+{ //int w = int(window::screen_width()/2.5);
+  //int h = int(window::screen_width()/2.3);
+  int w = int(window::screen_height()/5.0);
+  int h = int(window::screen_height()/2.5);
+  wp = new window(w,h,"File Panel");
   init(&win,fname,dname); 
 }
 
@@ -559,13 +593,18 @@ void file_panel::set_cancel_object(const file_panel_handle_base& f)
 
 void file_panel::init_panel()
 {
+  window& W = *wp;
+
   if (panel_init++) return;
 
-  W.set_fixed_font();
+//W.set_fixed_font();
+  W.set_font(font);
+
   int tw = W.real_to_pix(W.text_width("H"));
   int th = W.real_to_pix(W.text_height("H"));
 
-  yskip = int(1.7*th);
+//yskip = int(1.75*th);
+  yskip = int(1.3*th);
 
 
   if (descr_string.tail(1) != "|") descr_string += "|";
@@ -612,36 +651,44 @@ void file_panel::init_panel()
 
   dir_item = W.string_item(" Folder",*dir_name,global_dir_list,10,change_dir);
 
-  W.set_item_label_width(dir_item,int(10*tw));
-  W.set_item_width(dir_item,50*tw);
+  W.set_item_label_width(dir_item,int(11*tw));
+  W.set_item_width(dir_item,48*tw);
+
+  //W.disable_item(dir_item);
 
   W.set_button_height(40);
 
   W.button(" < ",file_back);
   W.button(" > ",file_forward);
 
+  W.disable_item(dir_item);
+
+/*
   if (window::display_type() == "xx") 
   { W.disable_item(dir_item);
     W.disable_button(file_back);
     W.disable_button(file_forward);
   }
+*/
 
 
   W.make_menu_bar();
 
   file_item = W.string_item(" Selection",*file_name);
-  W.set_item_label_width(file_item,int(10.35*tw));
-  W.set_item_width(file_item,50*tw);
+  //W.set_item_label_width(file_item,int(10.35*tw));
+  W.set_item_label_width(file_item,int(11.35*tw));
+  W.set_item_width(file_item,48*tw);
 
   //W.vspace(yskip/2);
   W.text_item("");
 
   pat_item = W.string_item(" Filter",descr_string,descr_list,10,change_filter);
-  W.set_item_label_width(pat_item,int(10.35*tw));
+  //W.set_item_label_width(pat_item,int(10.35*tw));
+  W.set_item_label_width(pat_item,int(11.35*tw));
   W.set_item_width(pat_item,25*tw);
 
-  panel_item it = W.bool_item("                show hidden files",show_hidden,
-                                                                 change_hidden);
+  panel_item it = W.bool_item("              show hidden files",show_hidden,
+                                                                change_hidden);
   W.set_item_label_width(it,int(4*tw));
 
   // buttons
@@ -649,16 +696,17 @@ void file_panel::init_panel()
   W.button(".x");
   W.button(".x");
 
-  if (load_handler || load_ptr) W.fbutton("Load",file_load);
+  if (load_handler || load_ptr) W.button("Load",file_load);
   if (save_handler || save_ptr) W.button("Save",file_save);
   if (open_handler || open_ptr) W.button("Open",file_open);
 
-  W.button("Cancel",file_cancel);
+  W.fbutton("Cancel",file_cancel);
 
 }
 
 void file_panel::update(string dname, string fname)
-{ 
+{ window& W = *wp;
+
   if (dname != "") 
   { 
     if (dname == "..")
@@ -817,8 +865,9 @@ void file_panel::update(string dname, string fname)
   int len = dir_list.length() + file_list.length();
 
   double h = W.real_to_pix(W.ymax() - W.ymin());
-  double sb_sz = h/(yskip*len);
 
+//double sb_sz = h/(yskip*len);
+  double sb_sz = h/(yskip*(len+1));
 
 
 
@@ -852,8 +901,11 @@ void file_panel::update(string dname, string fname)
 
 void file_panel::x_open(int xpos, int ypos)
 { 
+  window& W = *wp;
+
   init_panel();
 
+  W.set_show_notice(false);
   W.display(xpos,ypos);
 
 
@@ -865,15 +917,25 @@ void file_panel::x_open(int xpos, int ypos)
   W.set_status_string("Status Line");
   W.set_topmost();
 
-  W.set_fixed_font();
+//W.set_fixed_font();
+  W.set_font(font);
 
   int tw = W.real_to_pix(W.text_width("H"));
+  int th = W.real_to_pix(W.text_height("H"));
 
-  int wi = 73*tw;
-  int he = 80*tw;
-  int dx = (wi - W.width())/2; 
-  int dy = (he - W.height())/2; 
-  W.resize(W.xpos()-dx,W.ypos()-dy,wi,he);
+  int wi = 75*tw;
+  int he = 27*yskip;
+
+  int dx = (W.width() - wi)/2; 
+  int dy = (W.height() -he)/2 + 15; 
+
+  int x = W.xpos() + dx;
+  if (x < 10) x = 10;
+
+  int y = W.ypos() + dy;
+  if (y < 10) y = 10;
+
+  W.resize(x,y,wi,he);
 
   redraw(&W);
 

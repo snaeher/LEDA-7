@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  max_flow_book.t
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -15,7 +15,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722222
+#define LEDA_ROOT_INCL_ID 723238
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -1362,7 +1362,7 @@ NT MAX_FLOW_T(const graph& G, node s, node t,
 
 
 
-#if LEDA_ROOT_INCL_ID == 722222
+#if LEDA_ROOT_INCL_ID == 723238
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

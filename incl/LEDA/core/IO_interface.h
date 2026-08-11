@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  IO_interface.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -17,7 +17,7 @@
 #define LEDA_IO_INTERFACE_H
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722054
+#define LEDA_ROOT_INCL_ID 723166
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -220,7 +220,7 @@ void write_demo(const string& mes)
 
 
 
-#if LEDA_ROOT_INCL_ID == 722054
+#if LEDA_ROOT_INCL_ID == 723166
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif

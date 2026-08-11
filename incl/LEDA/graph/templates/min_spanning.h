@@ -1,12 +1,12 @@
 /*******************************************************************************
 +
-+  LEDA 7.2.2  
++  LEDA 7.2.3  
 +
 +
 +  min_spanning.h
 +
 +
-+  Copyright (c) 1995-2025
++  Copyright (c) 1995-2026
 +  by Algorithmic Solutions Software GmbH
 +  All rights reserved.
 + 
@@ -14,7 +14,7 @@
 
 
 #if !defined(LEDA_ROOT_INCL_ID)
-#define LEDA_ROOT_INCL_ID 722220
+#define LEDA_ROOT_INCL_ID 723235
 #include <LEDA/internal/PREAMBLE.h>
 #endif
 
@@ -209,7 +209,7 @@ list<edge> MIN_SPANNING_TREE1_T(const graph& G, const edge_array<NT>& cost)
  return result;
 }
 
-#if LEDA_ROOT_INCL_ID == 722220
+#if LEDA_ROOT_INCL_ID == 723235
 #undef LEDA_ROOT_INCL_ID
 #include <LEDA/internal/POSTAMBLE.h>
 #endif
